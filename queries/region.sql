@@ -1,0 +1,1 @@
+select region as shortCode, region as text from branches where entity = ? and is_active=1 and region!='AMN'  group by region

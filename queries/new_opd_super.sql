@@ -1,0 +1,1 @@
+select A.branch as branch,A.trans_date as trans_date,A.ftd_count as ftd_count,B.entity as entity,B.region as region,B.code as branchcode,B. branch as branchname from op_details as A,branches as B where A.trans_date between ? and ? and A.branch=B.code;
