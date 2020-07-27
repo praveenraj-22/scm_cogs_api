@@ -55,5 +55,6 @@ app.post('/api-doctorapprove',modules.routes.fin_doctorapprove)
 app.post('/api-doctorreject',modules.routes.fin_doctorreject)
 app.get('/api-loaddoc',modules.routes.fin_loaddoc)
 app.get('/api-submittedbills/:frmdate/:todate/:status/:branch/:name',modules.routes.ch_submittedbills)
+app.post('/api-finbillexpenseupdate',modules.routes.expense_date)
 
 app.listen(8888, () => console.log(`App listening on port 8888`))

@@ -12,6 +12,6 @@ FROM drt_bills AS bill
 INNER JOIN `drt_customer` AS drcus ON bill.Drt_id=drcus.ID
 INNER JOIN `users` AS usr ON usr.emp_id=bill.Created_by AND usr.role='ch_user'
 LEFT JOIN `users` AS schusr ON schusr.emp_id=bill.Sch_Approved_by AND schusr.role='sch_user'
-WHERE DATE(Created_on) BETWEEN ? AND ? AND bill.Approval_status=?
+WHERE DATE(bill_date) BETWEEN ? AND ? AND bill.Approval_status=?
   AND Billed_branch IN (?)
 ORDER BY Created_on DESC) AS a ORDER BY Billed_branch ASC )AS a1

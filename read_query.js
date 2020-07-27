@@ -80,7 +80,6 @@ exports.billidch=read("./queries/billidch.sql");
 exports.chbillid=read("./queries/billid.sql");
 exports.mtdopticals=read("./queries/mtd_optical.sql");
 exports.lymtdopticals=read("./queries/lymtd_optical.sql");
-exports.totaldrtbill=read("./queries/totaldrtbill.sql");
 exports.challdoctor=read("./queries/challdoctorlist.sql");
 exports.chdoctor=read("./queries/chdoctorlist.sql");
 exports.findocallall=read("./queries/fin_doctor_all_all.sql");

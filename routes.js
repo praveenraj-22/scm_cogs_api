@@ -1,6 +1,6 @@
 const mods = require("./modules");
 const uuid = mods.uuid;
-
+const _ = require('./modules')._;
 const path = require('path');
 const connections = mods.connections;
 const files = mods.sqls;
@@ -202,7 +202,7 @@ exports.logout = (req, res) => {
 // Local test code
 
 exports.testLogin = (req, res) => {
-
+console.log("hit");
   let user = req.body.user.trim();
   let pass = req.body.pass.trim();
   connections.scm_public.query(
@@ -1665,7 +1665,7 @@ exports.drt = (req, res) => {
 
 exports.drtdetail = (req, res) => {
   let id = req.params.id;
-  connections.scm_public.query("SELECT Percentage,Pan_no,GSTIN,Name FROM `drt_customer` WHERE STATUS=1 AND ID= ?", [id], (err, resdrtdetail) => {
+  connections.scm_public.query("SELECT * FROM `drt_customer` WHERE STATUS=1 AND ID= ?", [id], (err, resdrtdetail) => {
     if (err) console.error(err);
     res.json(resdrtdetail)
   })
@@ -1867,9 +1867,11 @@ exports.schbillinsert = (req, res) => {
 exports.schbillcancel = (req, res) => {
   let schbillid = req.body.sch_bill_id;
   let schid = req.body.sch_id;
-
+  let schcomments=req.body.sch_comments;
+  let concat=schcomments.concat("-- By--",schid,"--SCH")
+  console.log(concat);
   // console.log("schid : "+schid);
-  let schdrtbillcancel = "update drt_bills set Approval_status=3,Cancelled_time=now(),Cancelled_by='" + schid + "' where id=" + schbillid
+  let schdrtbillcancel = "update drt_bills set Approval_status=3,Cancelled_time=now(),Cancelled_by='" + schid + "',Comments='"+concat+"' where id=" + schbillid
   console.log(schdrtbillcancel);
 
   connections.scm_root.query(schdrtbillcancel, (err, rescance) => {
@@ -1911,53 +1913,136 @@ exports.finbills = (req, res) => {
   let branch = req.params.branch;
   let name = req.params.name;
   let splitbranches = [];
+  let listmrn=[];
   let string = null;
+  let mergedList=[];
   console.log(req.params);
   if ((status == "All") && (branch == "All")) {
     console.log("hit in branch and visit all");
-    connections.scm_public.query(files.finall, [frmdate, todate, frmdate, todate, frmdate, todate, frmdate, todate, frmdate, todate], (err, resultfin) => {
-      if (err) console.error(err);
-      res.json({
-        "result": {
-          "bill": resultfin
-        }
-      });
-    });
-  } else if ((status == "All") && (!(branch == 'All'))) {
-    console.log("hit in status all");
-    connections.scm_public.query(files.finstatusall, [frmdate, todate, branch, frmdate, todate, branch, frmdate, todate, branch, frmdate, todate, branch, frmdate, todate, branch], (err, resultfin) => {
-      if (err) console.error(err);
 
-      res.json({
-        "result": {
-          "bill": resultfin
-        }
+    connections.scm_public.query("SELECT Mrn FROM `drt_bills` WHERE bill_date BETWEEN ?  and ? group by Mrn",[frmdate,todate],(err,resmrn)=>{
+      if(err) console.error(err);
+
+      resmrn.forEach(element=>{
+      listmrn.push(element.Mrn);
       })
-    });
-  } else if (!(status == "All") && (branch == 'All')) {
-    console.log("hit in branch all");
-    connections.scm_public.query(files.finbranchall, [frmdate, todate, status], (err, resultfin) => {
-      if (err) console.error(err);
 
-      res.json({
-        "result": {
-          "bill": resultfin
-        }
-      });
-    });
+        connections.ideamed.query("SELECT RIP.PATIENTID as Mrn, RIP.PATIENTNAME, RDRT.REFERRALTYPENAME, RDRB.REFERREDBYNAME from RT_INDIVIDUAL_PATIENT RIP JOIN RT_DATA_REFERRAL_TYPE RDRT ON RDRT.ID=RIP.REFERRALTYPE JOIN RT_DATA_REFERRED_BY RDRB ON RDRB.ID=RIP.REFERREDBYCONSULTANT where RIP.PATIENTID IN (?)",[listmrn],(err,resultvalue)=>{
+        if(err) console.error(err);
 
-  } else {
-    console.log("hit in else");
-    connections.scm_public.query(files.finelse, [frmdate, todate, status, branch], (err, resultfin) => {
-      if (err) console.error(err);
-      res.json({
-        "result": {
-          "bill": resultfin
-        }
+        connections.scm_public.query(files.finall, [frmdate, todate, frmdate, todate, frmdate, todate, frmdate, todate, frmdate, todate], (err, resultfin) => {
+          if (err) console.error(err);
+
+
+        mergedList   = _.map(resultfin, function(item){
+              return _.extend(item, _.find(resultvalue, { Mrn: item.Mrn }));
+          });
+
+        res.json({
+          "result": {
+            "bill": mergedList
+          }
+        });
+
+        });
+
       })
     })
 
 
+  } else if ((status == "All") && (!(branch == 'All'))) {
+    console.log("hit in status all");
+
+    connections.scm_public.query("SELECT Mrn FROM `drt_bills` WHERE bill_date BETWEEN ?  and ? group by Mrn",[frmdate,todate],(err,resmrn)=>{
+      if(err) console.error(err);
+
+      resmrn.forEach(element=>{
+      listmrn.push(element.Mrn);
+      })
+
+      connections.ideamed.query("SELECT RIP.PATIENTID as Mrn, RIP.PATIENTNAME, RDRT.REFERRALTYPENAME, RDRB.REFERREDBYNAME from RT_INDIVIDUAL_PATIENT RIP JOIN RT_DATA_REFERRAL_TYPE RDRT ON RDRT.ID=RIP.REFERRALTYPE JOIN RT_DATA_REFERRED_BY RDRB ON RDRB.ID=RIP.REFERREDBYCONSULTANT where RIP.PATIENTID IN (?)",[listmrn],(err,resultvalue)=>{
+        if(err) console.error(err);
+
+        connections.scm_public.query(files.finstatusall, [frmdate, todate, branch, frmdate, todate, branch, frmdate, todate, branch, frmdate, todate, branch, frmdate, todate, branch], (err, resultfin) => {
+          if (err) console.error(err);
+
+          mergedList   = _.map(resultfin, function(item){
+                return _.extend(item, _.find(resultvalue, { Mrn: item.Mrn }));
+            });
+
+            res.json({
+              "result": {
+                "bill": mergedList
+              }
+            });
+
+        });
+
+      });
+    });
+
+
+
+  } else if (!(status == "All") && (branch == 'All')) {
+
+    connections.scm_public.query("SELECT Mrn FROM `drt_bills` WHERE bill_date BETWEEN ?  and ? group by Mrn",[frmdate,todate],(err,resmrn)=>{
+      if(err) console.error(err);
+
+      resmrn.forEach(element=>{
+      listmrn.push(element.Mrn);
+      })
+
+      connections.ideamed.query("SELECT RIP.PATIENTID as Mrn, RIP.PATIENTNAME, RDRT.REFERRALTYPENAME, RDRB.REFERREDBYNAME from RT_INDIVIDUAL_PATIENT RIP JOIN RT_DATA_REFERRAL_TYPE RDRT ON RDRT.ID=RIP.REFERRALTYPE JOIN RT_DATA_REFERRED_BY RDRB ON RDRB.ID=RIP.REFERREDBYCONSULTANT where RIP.PATIENTID IN (?)",[listmrn],(err,resultvalue)=>{
+      if(err) console.error(err);
+
+      connections.scm_public.query(files.finbranchall, [frmdate, todate, status], (err, resultfin) => {
+        if (err) console.error(err);
+        mergedList   = _.map(resultfin, function(item){
+              return _.extend(item, _.find(resultvalue, { Mrn: item.Mrn }));
+          });
+
+        res.json({
+          "result": {
+            "bill": mergedList
+          }
+        });
+
+      });
+    });
+    });
+
+
+  } else {
+    console.log("hit in else");
+
+    connections.scm_public.query("SELECT Mrn FROM `drt_bills` WHERE bill_date BETWEEN ?  and ? group by Mrn",[frmdate,todate],(err,resmrn)=>{
+      if(err) console.error(err);
+
+            resmrn.forEach(element=>{
+            listmrn.push(element.Mrn);
+            })
+
+            connections.ideamed.query("SELECT RIP.PATIENTID as Mrn, RIP.PATIENTNAME, RDRT.REFERRALTYPENAME, RDRB.REFERREDBYNAME from RT_INDIVIDUAL_PATIENT RIP JOIN RT_DATA_REFERRAL_TYPE RDRT ON RDRT.ID=RIP.REFERRALTYPE JOIN RT_DATA_REFERRED_BY RDRB ON RDRB.ID=RIP.REFERREDBYCONSULTANT where RIP.PATIENTID IN (?)",[listmrn],(err,resultvalue)=>{
+            if(err) console.error(err);
+
+            connections.scm_public.query(files.finelse, [frmdate, todate, status, branch], (err, resultfin) => {
+              if (err) console.error(err);
+
+              mergedList   = _.map(resultfin, function(item){
+                    return _.extend(item, _.find(resultvalue, { Mrn: item.Mrn }));
+                });
+
+              res.json({
+                "result": {
+                  "bill": mergedList
+                }
+              });
+
+
+            });
+          });
+
+      });
   }
 
 }
@@ -1966,8 +2051,9 @@ exports.finbills = (req, res) => {
 exports.finbillinsert = (req, res) => {
   let schbillid = req.body.sch_bill_id;
   let schid = req.body.sch_id;
+  let expensedatefin=req.body.sch_expensedate;
   console.log("schbillid :" + schbillid);
-  let findrtbillupdate = "update drt_bills set admin_Approved_by='" + schid + "' ,Approval_status=2,Admin_Approved_time=Now() where id=" + schbillid
+  let findrtbillupdate = "update drt_bills set admin_Approved_by='" + schid + "' ,Approval_status=2,Admin_Approved_time=Now(),Expense_date='"+expensedatefin+"' where id=" + schbillid
   console.log(findrtbillupdate);
 
   connections.scm_root.query(findrtbillupdate, (err, resilt) => {
@@ -1981,8 +2067,11 @@ exports.finbillinsert = (req, res) => {
 exports.finbillcancel = (req, res) => {
   let finbillid = req.body.sch_bill_id;
   let finid = req.body.sch_id;
+  let fincomments=req.body.sch_comments;
+let concat=fincomments.concat("-- by finance")
+  let findrtbillcancel = "update drt_bills set Approval_status=4,Cancelled_time=now(),Cancelled_by='" + finid + "',Comments='"+concat+"' where id=" + finbillid
+// let findrtbillcancel = "update drt_bills set Approval_status=4,Cancelled_time=now(),Cancelled_by='" + finid + "' where id=" + finbillid
 
-  let findrtbillcancel = "update drt_bills set Approval_status=4,Cancelled_time=now(),Cancelled_by='" + finid + "' where id=" + finbillid
   console.log(findrtbillcancel);
 
   connections.scm_root.query(findrtbillcancel, (err, rescance) => {
@@ -2409,4 +2498,21 @@ console.log(fromdata);
   })
 
 }
+}
+
+
+exports.expense_date=(req,res)=>{
+  console.log(req.body);
+  let finbill_id=req.body.sch_bill_id;
+  let fin_expensedate=req.body.sch_expensedate;
+  let findrtbillexpenseupdate = "update drt_bills set Expense_date='"+fin_expensedate+"' where id=" + finbill_id
+  console.log(findrtbillexpenseupdate);
+
+    connections.scm_root.query(findrtbillexpenseupdate,(err,finexpense)=>{
+        if (err) console.error(err);
+        res.json({
+          Dataupdated: "updated"
+        })
+    })
+
 }
