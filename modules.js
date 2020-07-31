@@ -15,6 +15,27 @@ exports.cron = require('node-cron')
 exports.uuid = require('uuid/v1')
 exports.mysql_store = require('express-mysql-session')(this.session)
 exports.cookie_parser = require('cookie-parser')
+// exports.sessionStore = new this.mysql_store({
+//     host: '13.251.255.12',
+//     port: 3306,
+//     user: 'jai',
+//     pass: 'Jai7&@#',
+//     db: 'cogs',
+//     clearExpired: true,
+//     checkExpirationInterval: 900000,
+//     expiration: 86400000,
+//     endConnectionOnClose: true,
+//     charset: 'utf8mb4_bin',
+//     schema: {
+//         tableName: 'sessions',
+//         columnNames: {
+//             session_id: 'session_id',
+//             expires: 'expires',
+//             data: 'data'
+//         }
+//     }
+// }, require('./connection').scm_root)
+//File modules
 
 exports.connections = require('./connection')
 exports.sqls = require('./read_query')

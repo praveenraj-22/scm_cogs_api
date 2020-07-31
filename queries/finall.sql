@@ -11,7 +11,7 @@ SELECT * FROM (SELECT * FROM (SELECT   CASE
 INNER JOIN `drt_customer` AS drcus ON bill.Drt_id=drcus.ID
 INNER JOIN `users` AS usr ON usr.emp_id=bill.Created_by AND usr.role='ch_user'
 left JOIN `users` AS schusr ON schusr.emp_id=bill.Sch_Approved_by AND schusr.role='sch_user'
-WHERE DATE(bill_date) BETWEEN ? AND ? AND Approval_status=1 ORDER BY Approved_time DESC) AS a ORDER BY Billed_branch ASC )AS a1
+WHERE DATE_FORMAT(bill_date,'%Y-%m')= ? AND Approval_status=1 ORDER BY Approved_time DESC) AS a ORDER BY Billed_branch ASC )AS a1
 UNION
 SELECT * FROM (SELECT * FROM (SELECT   CASE
            WHEN Approval_status=0 THEN 'Need SCH Approval'
@@ -26,7 +26,7 @@ FROM drt_bills AS bill
 INNER JOIN `drt_customer` AS drcus ON bill.Drt_id=drcus.ID
 INNER JOIN `users` AS usr ON usr.emp_id=bill.Created_by AND usr.role='ch_user'
 left JOIN `users` AS schusr ON schusr.emp_id=bill.Sch_Approved_by AND schusr.role='sch_user'
-WHERE DATE(bill_date) BETWEEN ? AND ? AND Approval_status=2 ORDER BY Admin_Approved_time DESC ) AS b ORDER BY Billed_branch ASC) AS b1
+WHERE DATE_FORMAT(bill_date,'%Y-%m')= ? AND Approval_status=2 ORDER BY Admin_Approved_time DESC ) AS b ORDER BY Billed_branch ASC) AS b1
 UNION
 SELECT * FROM(SELECT * FROM(
 SELECT   CASE
@@ -42,7 +42,7 @@ SELECT   CASE
 INNER JOIN `drt_customer` AS drcus ON bill.Drt_id=drcus.ID
 INNER JOIN `users` AS usr ON usr.emp_id=bill.Created_by AND usr.role='ch_user'
 left JOIN `users` AS schusr ON schusr.emp_id=bill.Sch_Approved_by AND schusr.role='sch_user'
-WHERE DATE(bill_date) BETWEEN ? AND ? AND Approval_status=4 ORDER BY Approved_time DESC
+WHERE DATE_FORMAT(bill_date,'%Y-%m')= ? AND Approval_status=4 ORDER BY Approved_time DESC
 ) AS c ORDER BY Billed_branch ASC)AS c1
 UNION
 SELECT * FROM (SELECT * FROM (
@@ -59,7 +59,7 @@ FROM drt_bills AS bill
 INNER JOIN `drt_customer` AS drcus ON bill.Drt_id=drcus.ID
 INNER JOIN `users` AS usr ON usr.emp_id=bill.Created_by AND usr.role='ch_user'
 left JOIN `users` AS schusr ON schusr.emp_id=bill.Sch_Approved_by AND schusr.role='sch_user'
-WHERE DATE(bill_date) BETWEEN ? AND ? AND Approval_status=3 ORDER BY Cancelled_time DESC
+WHERE DATE_FORMAT(bill_date,'%Y-%m')= ? AND Approval_status=3 ORDER BY Cancelled_time DESC
 )AS d ORDER BY Billed_branch ASC ) AS d1
 UNION
 SELECT * FROM (SELECT * FROM (
@@ -76,5 +76,5 @@ SELECT   CASE
 INNER JOIN `drt_customer` AS drcus ON bill.Drt_id=drcus.ID
 INNER JOIN `users` AS usr ON usr.emp_id=bill.Created_by AND usr.role='ch_user'
 left JOIN `users` AS schusr ON schusr.emp_id=bill.Sch_Approved_by AND schusr.role='sch_user'
-WHERE DATE(bill_date) BETWEEN ? AND ? AND Approval_status=0 ORDER BY Created_on DESC
+WHERE DATE_FORMAT(bill_date,'%Y-%m')= ? AND Approval_status=0 ORDER BY Created_on DESC
 )AS e ORDER BY Billed_branch ASC) AS e1

@@ -11,4 +11,4 @@ SELECT * FROM (SELECT * FROM (SELECT   CASE
 INNER JOIN `drt_customer` AS drcus ON bill.Drt_id=drcus.ID
 INNER JOIN `users` AS usr ON usr.emp_id=bill.Created_by AND usr.role='ch_user'
 left JOIN `users` AS schusr ON schusr.emp_id=bill.Sch_Approved_by AND schusr.role='sch_user'
-WHERE DATE(bill_date) BETWEEN ? AND ? AND Approval_status=?  AND Billed_branch =? ORDER BY Approved_time DESC) AS a ORDER BY Billed_branch ASC )AS a1
+WHERE DATE_FORMAT(bill_date,'%Y-%m')= ? AND Approval_status=?  AND Billed_branch =? ORDER BY Approved_time DESC) AS a ORDER BY Billed_branch ASC )AS a1

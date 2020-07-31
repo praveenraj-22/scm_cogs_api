@@ -557,7 +557,7 @@ let filterGroupwise = async (
     "Andhra Pradesh",
     "Rest of India(incl. Jaipur)",
     "Kerala",
-    "Kolkata",
+    "Kolkata",  
     "Ahmedabad",
     "Madhya Pradesh",
     "Odisha"
@@ -595,7 +595,7 @@ let filterGroupwise = async (
     Andaman: ["AMN"],
     Karnataka: [
       "BMH",
-	  "JGN",
+	  
       "WFD",
       "KML",
       "CLR",
@@ -611,7 +611,7 @@ let filterGroupwise = async (
 	  "RJN",
 
     ],
-    Banglore: ["BMH","JGN", "WFD", "KML", "CLR", "INR", "PNR", "YLK","SVR","BSK","RRN","RJN"],
+    Banglore: ["BMH", "WFD", "KML", "CLR", "INR", "PNR", "YLK","SVR","BSK","RRN","RJN"],
     "Hubli + Mysore": ["HUB", "MCC", "MYS"],
 	Maharashtra :["VSH", "PUN", "HDP","CMR", "KTD"],
     Telangana: ["DNR", "HMH", "MDA", "SNR", "HIM", "SBD","MPM","GCB"],
@@ -625,8 +625,7 @@ let filterGroupwise = async (
 	  "VSH",
       "PUN",
 	  "HDP",
-      "AHM",
-      "IND",
+      "AHM",      
 	  "JWS",
 	  "APR",
 	  "ATA",
@@ -636,9 +635,9 @@ let filterGroupwise = async (
       "JPR"
     ],
     Kerala: ["TVM","KTM"],
-    Kolkata: ["KOL", "KAS"],
+    Kolkata: ["KOL", "KAS"],   
     Ahmedabad: ["AHM"],
-    "Madhya Pradesh": ["IND","JWS","APR","ATA","KWA"],
+    "Madhya Pradesh": ["JWS","APR","ATA","KWA"],
     Odisha: ["CTK", "BHU"]
 
     //,Ambattur : ['AMB']
@@ -990,35 +989,35 @@ let cogsPercent = (cogs, revenue) => {
 };
 
 
-exports.formation = function(argDetails,fdate){
+exports.formation = function(argDetails,fdate){	
 	//console.log(argDetails);
 	//process.exit(1);
-
+	
 	var brachdetails = argDetails.branches;
 	var OTRevenueDetails = argDetails.montlyOT;
 	var cattrackCogs = argDetails.montlyCattractCogs;
 	var refractiveCogs = argDetails.montlyRefractiveCogs;
 	var vitreoRetinal = argDetails.montlyVitreoRetinalCogs;
-
-
+	
+	
 	var groupCatract = '';
 	var groupRefertactive = '';
 	var groupVitroRetinal = '';
 	//console.log(OTRevenueDetails);
-
+	
 	groupCatract = _.filter(OTRevenueDetails, { group: 'CATARACT' });
 	groupRefertactive = _.filter(OTRevenueDetails, { group: 'REFRACTIVE' });
 	groupVitroRetinal = _.filter(OTRevenueDetails, { group: 'VITREO RETINAL' });
-
+	
 	//groupCatractCogs = _.filter(cattrackCogs, { group: 'CATARACT' });
 	//groupRefertactiveCogs = _.filter(refractiveCogs, { group: 'Refractive' });
 	//groupVitroRetinalCogs = _.filter(vitreoRetinal, { group: 'Vitreo Retinal' });
-
+	
 	//console.log(groupCatract);
 	//console.log(groupRefertactive);
 	//console.log(groupRefertactive);
-
-	var tempObject = {};
+	
+	var tempObject = {};	
 	for (var key in brachdetails) {
 		 var branch = '';
 	     var branchName = '';
@@ -1040,81 +1039,81 @@ exports.formation = function(argDetails,fdate){
 		 var ftdVitroRetinalCogs = 0;
 		   _.filter(groupCatract, { branch: branch }).forEach(element => {
 			   mtdCattraackt=mtdCattraackt+1;
-
+			
 		  });
 		   _.filter(groupCatract, { branch: branch, trans_date : fdate }).forEach(element => {
 			   ftdCattraackt=ftdCattraackt+1;
-
-		  });
-
-
+			
+		  }); 
+		  
+		  
 		   _.filter(groupRefertactive, { branch: branch }).forEach(element => {
 			   mtdRefertactive=mtdRefertactive+1;
-
+			
 		  });
-
+		  
 		   _.filter(groupRefertactive, { branch: branch, trans_date : fdate}).forEach(element => {
 			   ftdRefertactive=ftdRefertactive+1;
-
-		  });
-
+			
+		  });  
+		  
 		  _.filter(groupVitroRetinal, { branch: branch }).forEach(element => {
 			   mtdVitroRetinal=mtdVitroRetinal+1;
-
+			
 		  });
-
+		  
 		   _.filter(groupVitroRetinal, { branch: branch, trans_date : fdate}).forEach(element => {
 			   ftdVitroRetinal=ftdVitroRetinal+1;
-
+			
 		  });
-
+		  
 		  _.filter(cattrackCogs, { branch: branch }).forEach(element => {
 			   mtdCatractCogs=mtdCatractCogs+1;
-
+			
 		  });
-
+		  
 		   _.filter(cattrackCogs, { branch: branch, trans_date : fdate}).forEach(element => {
 			   ftdCatractCogs=ftdCatractCogs+1;
-
+			
 		  });
-
-
+		  
+		  
 		   _.filter(refractiveCogs, { branch: branch }).forEach(element => {
 			   mtdRefertactiveCogs=mtdRefertactiveCogs+1;
-
+			
 		  });
-
+		  
 		   _.filter(refractiveCogs, { branch: branch, trans_date : fdate}).forEach(element => {
 			   ftdRefertactiveCogs=ftdRefertactiveCogs+1;
-
+			
 		  });
-
-
+		  
+		  
 		  _.filter(vitreoRetinal, { branch: branch }).forEach(element => {
 			   mtdVitroRetinalCogs=mtdVitroRetinalCogs+1;
-
+			
 		  });
-
+		  
 		   _.filter(vitreoRetinal, { branch: branch, trans_date : fdate}).forEach(element => {
 			   ftdVitroRetinalCogs=ftdVitroRetinalCogs+1;
-
+			
 		  });
-		  tempObject[branch] = {'branch':branchName,'mtdCattraackt':mtdCattraackt,'ftdCattraackt':ftdCattraackt,'mtdRefertactive':mtdRefertactive,'ftdRefertactive':ftdRefertactive,'mtdVitroRetinal':mtdVitroRetinal,'ftdVitroRetinal':ftdVitroRetinal,
+		  tempObject[branch] = {'branch':branchName,'mtdCattraackt':mtdCattraackt,'ftdCattraackt':ftdCattraackt,'mtdRefertactive':mtdRefertactive,'ftdRefertactive':ftdRefertactive,'mtdVitroRetinal':mtdVitroRetinal,'ftdVitroRetinal':ftdVitroRetinal,		  
 		  'mtdCatractCogs':mtdCatractCogs,
-		  'ftdCatractCogs':ftdCatractCogs,
+		  'ftdCatractCogs':ftdCatractCogs,		  
 		  'mtdRefertactiveCogs':mtdRefertactiveCogs,
 		  'ftdRefertactiveCogs':ftdRefertactiveCogs,
 		  'mtdVitroRetinalCogs':mtdVitroRetinalCogs,
 		  'ftdVitroRetinalCogs':ftdVitroRetinalCogs};
-
+		  
 		  console.log(tempObject);
-
-
-
+		  
+		
+		
 	}
 	return tempObject;
-
-
+	
+	
 }
 
 
@@ -1123,7 +1122,7 @@ exports.newopdNative = async (
   branches,
   ftddate,
   lastyearopd
-
+  
 ) => {
   let entityWise = await filterEntityOpd(dbres2, ftddate,lastyearopd);
   let groupWise = await filterGroupwiseOPD(
@@ -1134,8 +1133,8 @@ exports.newopdNative = async (
     ftddate,
 	lastyearopd
   );
-
-
+  
+  
   return {
 	group: entityWise.group,
     alin: entityWise.alin,
@@ -1163,15 +1162,15 @@ let filterEntityOpd = async (dbres2, ftddate,lastyearopd) => {
     ahcarr = [],
 	ohcrevarr=[],
 	ohcrevarrlastyear=[],
-
+	
     alin = {};
   aehrevarr = _.filter(dbres2, { entity: "AEH" });
-
-
+  
+  
   aehrevarrlastyear = _.filter(lastyearopd, { entity: "AEH" });
   _.filter(aehrevarr, { trans_date: ftddate }).forEach(element => {
     opd += element.ftd_count;
-
+    
   });
   tempObj.AEH = {
     branch: "AEH",
@@ -1182,13 +1181,13 @@ let filterEntityOpd = async (dbres2, ftddate,lastyearopd) => {
     opd += element.ftd_count;
 
   });
-
-
+  
+  
   aehrevarrlastyear.forEach(element => {
     opdlastyear += element.ftd_count;
 
   });
-
+  
   //opdmtdpercentage =0;
   //opdmtdpercentage = (opd-opdlastyear)/ opdlastyear;
   (tempObj.AEH.mtdopdrev = opd);
@@ -1196,11 +1195,11 @@ let filterEntityOpd = async (dbres2, ftddate,lastyearopd) => {
   (tempObj.AEH.mtdopdpercentage = Math.round(((opd-opdlastyear)/ opdlastyear)*100));
   (opd = 0),(opdlastyear = 0);
   ahcrevarr = _.filter(dbres2, { entity: "AHC" });
-
+  
   ahcrevarrlastyear = _.filter(lastyearopd, { entity: "AHC" });
   _.filter(ahcrevarr, { trans_date: ftddate }).forEach(element => {
     opd += element.ftd_count;
-
+   
   });
   tempObj.AHC = {
     branch: "AHC",
@@ -1209,17 +1208,17 @@ let filterEntityOpd = async (dbres2, ftddate,lastyearopd) => {
   (opd = 0),(opdlastyear);
   ahcrevarr.forEach(element => {
     opd += element.ftd_count;
-
+    
   });
   ahcrevarrlastyear.forEach(element => {
     opdlastyear += element.ftd_count;
-
+    
   });
    //opdmtdpercentage =0;
   //opdmtdpercentage = (opd-opdlastyear)/ opdlastyear;
-
-
-
+  
+  
+  
   (tempObj.AHC.mtdopdrev = opd);
   (tempObj.AHC.mtdopdrevlastyear = opdlastyear);
   (tempObj.AHC.mtdopdpercentage = Math.round(((opd-opdlastyear)/ opdlastyear)*100));
@@ -1230,14 +1229,14 @@ let filterEntityOpd = async (dbres2, ftddate,lastyearopd) => {
     alin["branch"] = "All India";
     alin[key] += tempObj.AHC[key];
   }*/
-
+  
   (opd = 0),(opdlastyear = 0);
   ohcrevarr = _.filter(dbres2, { entity: "OHC" });
-
+  
   ohcrevarrlastyear = _.filter(lastyearopd, { entity: "OHC" });
   _.filter(ohcrevarr, { trans_date: ftddate }).forEach(element => {
     opd += element.ftd_count;
-
+   
   });
   tempObj.OHC = {
     branch: "OHC",
@@ -1246,40 +1245,40 @@ let filterEntityOpd = async (dbres2, ftddate,lastyearopd) => {
   (opd = 0),(opdlastyear);
   ohcrevarr.forEach(element => {
     opd += element.ftd_count;
-
+    
   });
   ohcrevarrlastyear.forEach(element => {
     opdlastyear += element.ftd_count;
-
+    
   });
-
+  
   (tempObj.OHC.mtdopdrev = opd);
   (tempObj.OHC.mtdopdrevlastyear = opdlastyear);
   (tempObj.OHC.mtdopdpercentage = Math.round(((opd-opdlastyear)/ opdlastyear)*100));
-  alin["branch"] = "All India";
-  alin['ftdopdrev'] =  tempObj.AEH['ftdopdrev']+tempObj.AHC['ftdopdrev'];
-  alin['mtdopdrev'] =  tempObj.AEH['mtdopdrev']+tempObj.AHC['mtdopdrev'];
+  alin["branch"] = "All India";  
+  alin['ftdopdrev'] =  tempObj.AEH['ftdopdrev']+tempObj.AHC['ftdopdrev']; 
+  alin['mtdopdrev'] =  tempObj.AEH['mtdopdrev']+tempObj.AHC['mtdopdrev']; 
   alin['mtdopdrevlastyear'] =  tempObj.AEH['mtdopdrevlastyear']+tempObj.AHC['mtdopdrevlastyear'];
   alin['mtdopdpercentage'] = Math.round(((alin['mtdopdrev']-alin['mtdopdrevlastyear'])/alin['mtdopdrevlastyear'])*100);
-
+  
   let gropuftd=0,
   gropumtd=0,
   groupmtdlastyear=0,
   groupmtdpercentage=0;
-
+  
   gropuftd = tempObj.AEH['ftdopdrev']+tempObj.AHC['ftdopdrev']+tempObj.OHC['ftdopdrev'];
   gropumtd = tempObj.AEH['mtdopdrev']+tempObj.AHC['mtdopdrev']+tempObj.OHC['mtdopdrev'];
   groupmtdlastyear = tempObj.AEH['mtdopdrevlastyear']+tempObj.AHC['mtdopdrevlastyear']+tempObj.OHC['mtdopdrevlastyear'];
   groupmtdpercentage = Math.round(((gropumtd-groupmtdlastyear)/groupmtdlastyear)*100);
-
+  
   group = {};
-
-  group["branch"] = "Group";
-  group['ftdopdrev'] =  gropuftd;
-  group['mtdopdrev'] =  gropumtd;
+  
+  group["branch"] = "Group";  
+  group['ftdopdrev'] =  gropuftd; 
+  group['mtdopdrev'] =  gropumtd; 
   group['mtdopdrevlastyear'] =  groupmtdlastyear;
   group['mtdopdpercentage'] = groupmtdpercentage;
-
+  
   return {
 	group : group,
     alin :alin,
@@ -1303,21 +1302,21 @@ let filterGroupwiseOPD = async (
   ftddate,
   lastyearopd
 ) => {
-  let ftdopd = 0,
+  let ftdopd = 0,    
     mtdopd = 0,
     mtdopdlastyear = 0,
-    mtdopdpercentage = 0,
+    mtdopdpercentage = 0,    
     aehtempObj = {},
     ahctempObj = {},
 	ohctempObj = {},
-    branchObj = {},
+    branchObj = {}, 
     branchName = null,
     ftdopdrev = 0,
-    mtdopdrev = 0,
-    mtdopdrevlastyear = 0,
+    mtdopdrev = 0, 
+    mtdopdrevlastyear = 0, 	
     code = null;
-
-
+    
+   
   let aehGroups = [
     "Chennai Main Hospital",
     "Chennai Branches",
@@ -1328,7 +1327,7 @@ let filterGroupwiseOPD = async (
     "Jaipur",
     "Madurai KK Nagar"
   ];
-
+  
   let ohcGroups = [
     "Madagascar",
     "Mozambique",
@@ -1341,13 +1340,13 @@ let filterGroupwiseOPD = async (
     "Uganda",
 	"Tanzania"
   ];
-
-
-
-
-
-
-
+  
+  
+  
+  
+  
+  
+  
   let ahcGroups = [
     "Chennai branches",
     "Tirunelveli",
@@ -1366,7 +1365,7 @@ let filterGroupwiseOPD = async (
     "Andhra Pradesh",
     "Rest of India(incl. Jaipur)",
     "Kerala",
-    "Kolkata",
+    "Kolkata",    
     "Ahmedabad",
     "Madhya Pradesh",
     "Odisha"
@@ -1404,7 +1403,7 @@ let filterGroupwiseOPD = async (
     Andaman: ["AMN"],
     Karnataka: [
       "BMH",
-	  "JGN",
+	  
       "WFD",
       "KML",
       "CLR",
@@ -1420,7 +1419,7 @@ let filterGroupwiseOPD = async (
       "MYS",
 
     ],
-    Banglore: ["BMH","JGN", "WFD", "KML", "CLR", "INR", "PNR", "YLK","SVR","BSK","RRN","RJN"],
+    Banglore: ["BMH", "WFD", "KML", "CLR", "INR", "PNR", "YLK","SVR","BSK","RRN","RJN"],
     "Hubli + Mysore": ["HUB", "MCC", "MYS"],
 	Maharashtra :["VSH", "PUN", "HDP","CMR", "KTD"],
     Telangana: ["DNR", "HMH", "MDA", "SNR", "HIM", "SBD","MPM","GCB"],
@@ -1434,8 +1433,7 @@ let filterGroupwiseOPD = async (
 	  "VSH",
       "PUN",
 	  "HDP",
-      "AHM",
-      "IND",
+      "AHM",      
 	  "JWS",
 	  "APR",
 	  "ATA",
@@ -1447,51 +1445,51 @@ let filterGroupwiseOPD = async (
     Kerala: ["TVM","KTM"],
     Kolkata: ["KOL", "KAS"],
     Ahmedabad: ["AHM"],
-    "Madhya Pradesh": ["IND","JWS","APR","ATA","KWA"],
+    "Madhya Pradesh": ["JWS","APR","ATA","KWA"],
     Odisha: ["CTK", "BHU"]
 
     //,Ambattur : ['AMB']
   };
-
-
+  
+  
   let ohcgroupedBranches = {
 	"Madagascar" :["MDR"],
     "Mozambique":["MZQ","BRA"],
     "Nigeria":["NGA"],
     "Rwanda":["RWD"],
-    "Mauritius":["EBN","FLQ","GDL"],
+    "Mauritius":["EBN","FLQ","GDL"],    
 	"Zambia":["ZMB"],
     "Ghana":["GHA"],
     "Nairobi":["NAB"],
     "Uganda":["UGD"],
 	"Tanzania":["TZA"]
   };
-
+  
   aehGroups.forEach(group => {
     aehtempObj[group] = {};
     aehgroupedBranches[group].forEach(branch => {
       _.filter(dbres2, { branch: branch, trans_date: ftddate }).forEach(
         element => {
           ftdopd += element.ftd_count;
-
+          
         }
       );
       (aehtempObj[group].ftdopdrev = ftdopd);
-
+        
       _.filter(dbres2, { branch: branch }).forEach(element => {
         mtdopd += element.ftd_count;
-
+       
       });
-
-
+	  
+	  
 	   _.filter(lastyearopd, { branch: branch }).forEach(element => {
         mtdopdlastyear += element.ftd_count;
-
+       
       });
 	  mtdopdpercentage = Math.round(((mtdopd-mtdopdlastyear)/mtdopdlastyear)*100);
-
-
-
+	  
+	  
+	  
       (aehtempObj[group].mtdopdrev = mtdopd),
 	  (aehtempObj[group].mtdopdrevlastyear = mtdopdlastyear),
 	  (aehtempObj[group].mtdopdpercentage = mtdopdpercentage),
@@ -1499,12 +1497,12 @@ let filterGroupwiseOPD = async (
     });
     (ftdopd = 0),
     (ftdopdrev = 0),
-	(mtdopdrev = 0),
+	(mtdopdrev = 0),	
       (mtdopd = 0),
-	  (mtdopdrevlastyear = 0),
+	  (mtdopdrevlastyear = 0),	
       (mtdopdlastyear = 0),
 	  (mtdopdpercentage = 0);
-
+      
   });
   for (let key in aehgroupedBranches) {
     branchObj[key] = [];
@@ -1514,37 +1512,37 @@ let filterGroupwiseOPD = async (
       });
       _.filter(dbres2, { branch: branch, trans_date: ftddate }).forEach(
         element => {
-
+          
             (ftdopdrev = element.ftd_count);
         }
       );
       _.filter(dbres2, { branch: branch }).forEach(element => {
-
+        
           (mtdopdrev += element.ftd_count);
       });
-
-
+	  
+	  
 	  _.filter(lastyearopd, { branch: branch }).forEach(element => {
-
+        
           (mtdopdrevlastyear += element.ftd_count);
       });
-
+      
       mtdopdpercentage = Math.round(((mtdopdrev-mtdopdrevlastyear)/mtdopdrevlastyear)*100);
-
-
+	  
+      
       branchObj[key].push({
         branch: branchName,
-        code: code,
-        ftdopdrev: ftdopdrev,
+        code: code,       
+        ftdopdrev: ftdopdrev,        
         mtdopdrev: mtdopdrev,
 		mtdopdrevlastyear: mtdopdrevlastyear,
         mtdopdpercentage:mtdopdpercentage
       });
-      (ftdopd = 0),
+      (ftdopd = 0),        
         (mtdopd = 0),
 		(ftdopdrev = 0),
 	    (mtdopdrev = 0),
-		(mtdopdrevlastyear = 0),
+		(mtdopdrevlastyear = 0),	
         (mtdopdlastyear = 0),
 		(mtdopdpercentage = 0),
         (code = null);
@@ -1558,40 +1556,40 @@ let filterGroupwiseOPD = async (
       });
       _.filter(dbres2, { branch: branch, trans_date: ftddate }).forEach(
         element => {
-
+         
             (ftdopdrev = element.ftd_count);
-
+            
         }
       );
-      _.filter(dbres2, { branch: branch }).forEach(element => {
+      _.filter(dbres2, { branch: branch }).forEach(element => {        
           (mtdopdrev += element.ftd_count);
-
+          
       });
-
-	  _.filter(lastyearopd, { branch: branch }).forEach(element => {
+	  
+	  _.filter(lastyearopd, { branch: branch }).forEach(element => {        
           (mtdopdrevlastyear += element.ftd_count);
-
+          
       });
-
+     
       mtdopdpercentage = Math.round(((mtdopdrev-mtdopdrevlastyear)/mtdopdrevlastyear)*100);
-
+	  
       branchObj[key].push({
 		branch: branchName,
-        code: code,
-        ftdopdrev: ftdopdrev,
+        code: code,       
+        ftdopdrev: ftdopdrev,        
         mtdopdrev: mtdopdrev,
 		mtdopdrevlastyear: mtdopdrevlastyear,
 		mtdopdpercentage : mtdopdpercentage
-
+        
       });
       (ftdopd = 0),
       (ftdopdrev = 0),
-	  (mtdopdrev = 0),
+	  (mtdopdrev = 0),    
       (mtdopd = 0),
 	  (mtdopdrevlastyear = 0),
-      (mtdopdpercentage = 0),
+      (mtdopdpercentage = 0),	  
        (mtdopdlastyear = 0);
-
+        
     });
   }
 
@@ -1601,64 +1599,64 @@ let filterGroupwiseOPD = async (
       _.filter(dbres2, { branch: branch, trans_date: ftddate }).forEach(
         element => {
           ftdopd += element.ftd_count;
-
+          
         }
       );
       (ahctempObj[group].ftdopdrev = ftdopd);
-
+        
       _.filter(dbres2, { branch: branch }).forEach(element => {
         mtdopd += element.ftd_count;
-
+       
       });
-
-
+	  
+	  
 	   _.filter(lastyearopd, { branch: branch }).forEach(element => {
         mtdopdlastyear += element.ftd_count;
-
+       
       });
 	   mtdopdpercentage = Math.round(((mtdopd-mtdopdlastyear)/mtdopdlastyear)*100);
-
+	  
       (ahctempObj[group].mtdopdrev = mtdopd),
 	  (ahctempObj[group].mtdopdrevlastyear = mtdopdlastyear),
 	   (ahctempObj[group].mtdopdpercentage = mtdopdpercentage),
 	  (ahctempObj[group].branch = group);
     });
-    (ftdopd = 0),
+    (ftdopd = 0),     
       (mtdopd = 0),
 	  (ftdopdrev = 0),
 	(mtdopdrev = 0),
-	(mtdopdrevlastyear = 0),
+	(mtdopdrevlastyear = 0),	
     (mtdopdlastyear = 0);
   });
-
-
-
-
+  
+  
+  
+  
     ohcGroups.forEach(group => {
     ohctempObj[group] = {};
     ohcgroupedBranches[group].forEach(branch => {
       _.filter(dbres2, { branch: branch, trans_date: ftddate }).forEach(
         element => {
           ftdopd += element.ftd_count;
-
+          
         }
       );
       (ohctempObj[group].ftdopdrev = ftdopd);
-
+        
       _.filter(dbres2, { branch: branch }).forEach(element => {
         mtdopd += element.ftd_count;
-
+       
       });
-
-
+	  
+	  
 	   _.filter(lastyearopd, { branch: branch }).forEach(element => {
         mtdopdlastyear += element.ftd_count;
-
+       
       });
 	  mtdopdpercentage = Math.round(((mtdopd-mtdopdlastyear)/mtdopdlastyear)*100);
-
-
-
+	  
+	  
+	  
       (ohctempObj[group].mtdopdrev = mtdopd),
 	  (ohctempObj[group].mtdopdrevlastyear = mtdopdlastyear),
 	  (ohctempObj[group].mtdopdpercentage = mtdopdpercentage),
@@ -1666,15 +1664,15 @@ let filterGroupwiseOPD = async (
     });
     (ftdopd = 0),
     (ftdopdrev = 0),
-	(mtdopdrev = 0),
+	(mtdopdrev = 0),	
       (mtdopd = 0),
-	  (mtdopdrevlastyear = 0),
+	  (mtdopdrevlastyear = 0),	
       (mtdopdlastyear = 0),
 	  (mtdopdpercentage = 0);
-
+      
   });
-
-
+  
+  
     for (let key in ohcgroupedBranches) {
     branchObj[key] = [];
     ohcgroupedBranches[key].forEach(branch => {
@@ -1683,46 +1681,46 @@ let filterGroupwiseOPD = async (
       });
       _.filter(dbres2, { branch: branch, trans_date: ftddate }).forEach(
         element => {
-
+          
             (ftdopdrev = element.ftd_count);
         }
       );
       _.filter(dbres2, { branch: branch }).forEach(element => {
-
+        
           (mtdopdrev += element.ftd_count);
       });
-
-
+	  
+	  
 	  _.filter(lastyearopd, { branch: branch }).forEach(element => {
-
+        
           (mtdopdrevlastyear += element.ftd_count);
       });
-
+      
       mtdopdpercentage = Math.round(((mtdopdrev-mtdopdrevlastyear)/mtdopdrevlastyear)*100);
-
-
+	  
+      
       branchObj[key].push({
         branch: branchName,
-        code: code,
-        ftdopdrev: ftdopdrev,
+        code: code,       
+        ftdopdrev: ftdopdrev,        
         mtdopdrev: mtdopdrev,
 		mtdopdrevlastyear: mtdopdrevlastyear,
         mtdopdpercentage:mtdopdpercentage
       });
-      (ftdopd = 0),
+      (ftdopd = 0),        
         (mtdopd = 0),
 		(ftdopdrev = 0),
 	    (mtdopdrev = 0),
-		(mtdopdrevlastyear = 0),
+		(mtdopdrevlastyear = 0),	
         (mtdopdlastyear = 0),
 		(mtdopdpercentage = 0),
         (code = null);
      });
   }
-
-
-
-
+  
+  
+  
+  
   return { aeh: aehtempObj, ahc: ahctempObj,ohc: ohctempObj, branchwise: branchObj };
 };
 
@@ -1742,11 +1740,11 @@ exports.newopdnormal = async (
 ) => {
   let branchWise = [],
     seperatedBranchWise = [],
-    groupWise = [],
-    tempObj = {},
+    groupWise = [], 
+    tempObj = {},  
     branchname = null;
   let groupBranchArr = [],
-    branchHeadings = [],
+    branchHeadings = [],      
     ftdopdrev = 0;
 	ftdopdrevlastyear = 0;
   let shouldRemove = [],
@@ -1782,44 +1780,44 @@ exports.newopdnormal = async (
         branch: branch,
         trans_date: ftddate
       });
-
-
-
+	  
+	  
+	  
       if (tempFilterrev.length !== 0) {
         tempFilterrev.forEach(element => {
-
+        
           (ftdopdrev += element.ftd_count);
         });
       } else {
-
+        
         (ftdopdrev += 0);
       }
-      (tempObj.branch = branch),
+      (tempObj.branch = branch),        
         (tempObj.ftdopdrev = ftdopdrev);
 
       _.filter(newopdres, { branch: branch }).forEach(element => {
-
+      
         (mtdopdrev += element.ftd_count);
       });
-
-
+	  
+	  
 	   _.filter(newopdreslastyear, { branch: branch }).forEach(element => {
-
+      
         (mtdopdrevlastyear += element.ftd_count);
       });
-
+	  
 	  mtdopdpercentage =  Math.round(((mtdopdrev-mtdopdrevlastyear)/mtdopdrevlastyear)*100);
-
+      
         (tempObj.mtdopdrev = mtdopdrev),
 		(tempObj.mtdopdrevlastyear = mtdopdrevlastyear),
 		(tempObj.mtdopdpercentage = mtdopdpercentage);
     });
     groupWise.push(tempObj);
     (tempObj = {}),
-
+     
       (mtdopdrev = 0),
-      (mtdopdrevlastyear = 0),
-      (mtdopdpercentage=0),
+      (mtdopdrevlastyear = 0), 
+      (mtdopdpercentage=0),	  
       (ftdopdrev = 0);
   });
 
@@ -1840,33 +1838,33 @@ exports.newopdnormal = async (
         tempFileterev.forEach(element => {
           (tempObj.branch = branchname),
             (tempObj.code = branch),
-
+            
             (tempObj["ftdopdrev"] = element.ftd_count);
         });
       } else {
         (tempObj.branch = branchname),
           (tempObj.code = branch),
-
+          
           (tempObj["ftdopdrev"] = 0);
       }
-
+    
       _.filter(newopdres, { branch: branch }).forEach(element => {
-
+        
           (mtdopdrev += element.ftd_count);
       });
-
+	  
 	  _.filter(newopdreslastyear, { branch: branch }).forEach(element => {
-
+        
           (mtdopdrevlastyear += element.ftd_count);
       });
 	  mtdopdpercentage = Math.round(((mtdopdrev-mtdopdrevlastyear)/mtdopdrevlastyear)*100);
-
+      
         (tempObj.mtdopdrev = mtdopdrev),
 		(tempObj.mtdopdrevlastyear = mtdopdrevlastyear),
 		(tempObj.mtdopdpercentage = mtdopdpercentage);
       branchWise.push(tempObj);
       (tempObj = {}),
-
+        
         (mtdopdrev = 0),
 		(mtdopdrevlastyear = 0),
 		(mtdopdpercentage=0);
@@ -1878,31 +1876,31 @@ exports.newopdnormal = async (
       if (tempFileterev.length !== 0) {
         tempFileterev.forEach(element => {
           (tempObj.branch = branchname),
-            (tempObj.code = branch),
+            (tempObj.code = branch),            
             (tempObj["ftdopdrev"] = element.ftd_count);
         });
       } else {
         (tempObj.branch = branchname),
-          (tempObj.code = branch),
+          (tempObj.code = branch),        
           (tempObj["ftdopdrev"] = 0);
       }
+     
 
-
-      _.filter(newopdres, { branch: branch }).forEach(element => {
+      _.filter(newopdres, { branch: branch }).forEach(element => {        
           (mtdopdrev += element.ftd_count);
       });
-
-	   _.filter(newopdreslastyear, { branch: branch }).forEach(element => {
+	  
+	   _.filter(newopdreslastyear, { branch: branch }).forEach(element => {        
           (mtdopdrevlastyear += element.ftd_count);
       });
 	  mtdopdpercentage = Math.round(((mtdopdrev-mtdopdrevlastyear)/mtdopdrevlastyear)*100);
-
+      
         (tempObj.mtdopdrev = mtdopdrev),
 		(tempObj.mtdopdrevlastyear = mtdopdrevlastyear);
 		(tempObj.mtdopdpercentage = mtdopdpercentage);
       seperatedBranchWise.push(tempObj);
       (tempObj = {}),
-
+        
         (mtdopdrev = 0),
 		(mtdopdrevlastyear = 0),
 		(mtdopdpercentage=0);
@@ -1953,12 +1951,12 @@ let totalgroupbranches={
     "Chennai":["ADY","AMB","ANN","ASN","AVD","CMH","EGM","MGP",
     "NLR","NWP","PMB","PRR","TBM","TLR","TRC","TVT","VLC"],
     Karnataka:["BMH","BSK","CLR","HUB","INR","KML","MCC","MYS",
-                "PNR","RJN","RRN","SVR","WFD","YLK","JGN" ],
+                "PNR","RJN","RRN","SVR","WFD","YLK" ],
     Maharashtra:["VSH","PUN","HDP","CMR", "KTD"],
     ROTN:["APM","CMB","DHA","ERD","HSR","KBK","KNP","KSN",
           "MDU","NVL","PDY","SLM","TCN","TNJ","TPR","TRI",
             "TVL","VLR","VPM"],
-    ROI:["TVM","JPR","IND","AHM"],
+    ROI:["TVM","JPR","AHM"],
     Odisha: ["CTK", "BHU"],
     Kolkata: ["KOL", "KAS"],
     Hyderabad:["DNR","HIM","HMH","MDA","MPM","GCB","SBD","SNR"],
@@ -1971,6 +1969,13 @@ totalgroup.forEach(group =>{
   (opt=0),(mtdopt=0),(optlastyear=0),(targetmtdopt=0);
   totalgroupbranches[group].forEach(branch=>{
 
+    // _.filter(dbresoptical,{branchcode: branch ,trans_date:ftddate})
+    // .forEach(element =>{opt +=element.ftd;});
+    // (grouptempObj[group].ftdoptrev=Math.round(opt));
+    //
+    // _.filter(dbresoptical,{branchcode: branch ,trans_date:ftddate})
+    // .forEach(element =>{targetmtdopt+=element.targetamount;});
+    // (grouptempObj[group].targetmtdrev=Math.round(targetmtdopt));
 
     _.filter(dbresoptical,{branchcode: branch})
     .forEach(element =>{mtdopt +=element.ftd;});
@@ -2049,12 +2054,12 @@ let filterBranchwiseoptical= async(dbresoptical,ftddate,dbreslastyearoptical,bra
       "Chennai":["ADY","AMB","ANN","ASN","AVD","CMH","EGM","MGP",
       "NLR","NWP","PMB","PRR","TBM","TLR","TRC","TVT","VLC"],
       Karnataka:["BMH","BSK","CLR","HUB","INR","KML","MCC","MYS",
-                  "PNR","RJN","RRN","SVR","WFD","YLK","JGN" ],
+                  "PNR","RJN","RRN","SVR","WFD","YLK" ],
       Maharashtra:["VSH","PUN","HDP","CMR", "KTD"],
       ROTN:["APM","CMB","DHA","ERD","HSR","KBK","KNP","KSN",
             "MDU","NVL","PDY","SLM","TCN","TNJ","TPR","TRI",
             "TVL","VLR","VPM"],
-      ROI:["TVM","JPR","IND","AHM"],
+      ROI:["TVM","JPR","AHM"],
       Odisha: ["CTK", "BHU"],
       Kolkata: ["KOL", "KAS"],
       Hyderabad:["DNR","HIM","HMH","MDA","MPM","GCB","SBD","SNR"],
@@ -2164,7 +2169,7 @@ let filterEntityUsageTracker = async (dbres2, ftddate, resdevicehistory, targetr
         ohcrevarr = [],
         ohcdevicehistoty = [],
 		ohcdevicerevenue = [],
-        target = 0,
+        target = 0,	
 		ftddevicerevenueamount=0,
 		mtddevicerevenueamount=0,
 		ftddevicerevenuecount=0,
@@ -2184,13 +2189,13 @@ let filterEntityUsageTracker = async (dbres2, ftddate, resdevicehistory, targetr
     aehdevicehistoty = _.filter(resdevicehistory, {
         entity: "AEH"
     });
-
+	
 	aehdevicerevenue = _.filter(resdevicerevenue, {
         entity: "AEH"
     });
-
-
-
+	
+	
+	
     _.filter(aehrevarr, {
         trans_date: ftddate
     }).forEach(element => {
@@ -2204,15 +2209,15 @@ let filterEntityUsageTracker = async (dbres2, ftddate, resdevicehistory, targetr
         devicehistorycount += element.device_daily_count;
 
     });
-
-
-
+	
+	
+	
 	_.filter(aehdevicerevenue, {
         trans_date: ftddate
     }).forEach(element => {
         ftddevicerevenuecount += element.BILL_COUNT;
 		ftddevicerevenueamount += element.AMOUNT;
-    });
+    });	
     aehtargetarr.forEach(element => {
         target += element.total;
 
@@ -2225,8 +2230,8 @@ let filterEntityUsageTracker = async (dbres2, ftddate, resdevicehistory, targetr
         ftdopdrev: opd,
         target: target,
         devicemtd: devicehistorycount,
-        revenueftdcount: ftddevicerevenuecount,
-        revenueftdamount: ftddevicerevenueamount,
+        revenueftdcount: ftddevicerevenuecount,        
+        revenueftdamount: ftddevicerevenueamount,       
         deviceftd: devicehistorycount
     };
     (opd = 0), (devicehistorycount = 0);
@@ -2240,22 +2245,22 @@ let filterEntityUsageTracker = async (dbres2, ftddate, resdevicehistory, targetr
         devicehistorycount += element.device_daily_count;
 
     });
-
-
+	
+	
 	aehdevicerevenue.forEach(element => {
         mtddevicerevenuecount += element.BILL_COUNT;
 		 mtddevicerevenueamount += element.AMOUNT;
     });
-
-
-
+	
+	
+	
 
     (tempObj.AEH.mtdopdrev = opd);
     (tempObj.AEH.devicemtd = devicehistorycount);
 	(tempObj.AEH.revenuemtdcount = mtddevicerevenuecount);
-	(tempObj.AEH.revenuemtdamount = mtddevicerevenueamount);
+	(tempObj.AEH.revenuemtdamount = mtddevicerevenueamount);	
 	(tempObj.AEH.revenuetargetachived = Math.round(((tempObj.AEH.revenuemtdcount/tempObj.AEH.target)*100)));
-
+	
     (opd = 0), (devicehistorycount = 0), (target = 0),(ftddevicerevenuecount = 0),(ftddevicerevenueamount = 0),(mtddevicerevenuecount = 0),(mtddevicerevenuecount = 0);
     ahcrevarr = _.filter(dbres2, {
         entity: "AHC"
@@ -2269,13 +2274,13 @@ let filterEntityUsageTracker = async (dbres2, ftddate, resdevicehistory, targetr
     ahcdevicehistoty = _.filter(resdevicehistory, {
         entity: "AHC"
     });
-
-
+	
+	
 	ahcdevicerevenue = _.filter(resdevicerevenue, {
         entity: "AHC"
     });
-
-
+	
+	
 
 
     _.filter(ahcrevarr, {
@@ -2284,8 +2289,8 @@ let filterEntityUsageTracker = async (dbres2, ftddate, resdevicehistory, targetr
         opd += element.ftd_count;
 
     });
-
-
+	
+	
 
     _.filter(ahcdevicehistoty, {
         trans_date: ftddate
@@ -2293,16 +2298,16 @@ let filterEntityUsageTracker = async (dbres2, ftddate, resdevicehistory, targetr
         devicehistorycount += element.device_daily_count;
 
     });
-
+	
 	_.filter(ahcdevicerevenue, {
         trans_date: ftddate
     }).forEach(element => {
         ftddevicerevenuecount += element.BILL_COUNT;
 		 ftddevicerevenueamount += element.AMOUNT;
     });
+	
 
-
-
+	
 
     ahctargetarr.forEach(element => {
         target += element.total;
@@ -2315,7 +2320,7 @@ let filterEntityUsageTracker = async (dbres2, ftddate, resdevicehistory, targetr
         ftdopdrev: opd,
         target: target,
         devicemtd: devicehistorycount,
-        revenueftdcount: ftddevicerevenuecount,
+        revenueftdcount: ftddevicerevenuecount,       
         revenueftdamount: ftddevicerevenueamount,
         deviceftd: devicehistorycount
     };
@@ -2333,7 +2338,7 @@ let filterEntityUsageTracker = async (dbres2, ftddate, resdevicehistory, targetr
         mtddevicerevenuecount += element.BILL_COUNT;
 		mtddevicerevenueamount += element.AMOUNT;
     });
-
+	
 
     (tempObj.AHC.mtdopdrev = opd);
     (tempObj.AHC.devicemtd = devicehistorycount);
@@ -2357,37 +2362,37 @@ let filterEntityUsageTracker = async (dbres2, ftddate, resdevicehistory, targetr
     ohcdevicehistoty = _.filter(resdevicehistory, {
         entity: "OHC"
     });
-
-
-
+	
+	
+	
 	ohcdevicerevenue = _.filter(resdevicerevenue, {
         entity: "OHC"
     });
-
-
+	
+	
     _.filter(ohcrevarr, {
         trans_date: ftddate
     }).forEach(element => {
         opd += element.ftd_count;
 
     });
-
-
-
+	
+	
+	
 	 _.filter(ohcdevicehistoty, {
         trans_date: ftddate
     }).forEach(element => {
         devicehistorycount += element.device_daily_count;
 
     });
-
+	
 	_.filter(ohcdevicerevenue, {
         trans_date: ftddate
     }).forEach(element => {
         ftddevicerevenuecount += element.BILL_COUNT;
 		ftddevicerevenueamount += element.AMOUNT;
     });
-
+	
     tempObj.OHC = {
         branch: "OHC",
         ftdopdrev: opd,
@@ -2406,21 +2411,21 @@ let filterEntityUsageTracker = async (dbres2, ftddate, resdevicehistory, targetr
         devicehistorycount += element.device_daily_count;
 
     });
-
-
+	
+	
 	ohcdevicerevenue.forEach(element => {
         mtddevicerevenuecount += element.BILL_COUNT;
         mtddevicerevenueamount += element.AMOUNT;
     });
-
-
+	
+	
 	(tempObj.OHC.mtdopdrev = opd);
     (tempObj.OHC.devicemtd = devicehistorycount);
 	(tempObj.OHC.revenuemtdcount = mtddevicerevenuecount);
     (tempObj.OHC.revenuemtdamount = mtddevicerevenueamount);
 	(tempObj.OHC.revenuetargetachived = Math.round(((tempObj.OHC.revenuemtdcount/tempObj.OHC.target)*100)));
-
-
+	
+	
     alin["branch"] = "All India";
     alin['ftdopdrev'] = tempObj.AEH['ftdopdrev'] + tempObj.AHC['ftdopdrev'];
     alin['mtdopdrev'] = tempObj.AEH['mtdopdrev'] + tempObj.AHC['mtdopdrev'];
@@ -2516,7 +2521,8 @@ let filterGroupwiseUsageTracker = async (
         "Banglore",
         "Hyderabad",
         "Kerala",
-        "Madhya Pradesh"
+        "Madhya Pradesh",
+		"Maharashtra"
         //'Ambattur'
     ];
     let aehgroupedBranches = {
@@ -2525,12 +2531,13 @@ let filterGroupwiseUsageTracker = async (
 
     };
     let ahcgroupedBranches = {
-        "Chennai": ["CMH","MGP", "NWP", "AMB", "ADY", "TVT"],
-        "ROTN": ["TPR"],
-        Banglore: ["KML", "PNR", "RRN"],
+        "Chennai": ["MGP", "NWP", "AMB", "ADY", "TVT"],
+        "ROTN": ["TVL","TPR"],
+        Banglore: ["KML", "PNR", "RRN","SVR"],
         Hyderabad: ["DNR", "MDA", "SNR", "MPM", "GCB"],
         Kerala: ["KTM"],
-        "Madhya Pradesh": ["APR"]
+        "Madhya Pradesh": ["APR"],
+		"Maharashtra":["VSH"]
         //,Ambattur : ['AMB']
     };
 
@@ -2572,8 +2579,8 @@ let filterGroupwiseUsageTracker = async (
 
                 }
             );
-
-
+			
+			
 			_.filter(resdevicehistory, {
                 branch: branch,
                 trans_date: ftddate
@@ -2583,9 +2590,9 @@ let filterGroupwiseUsageTracker = async (
 
                 }
             );
-
-
-
+			
+			
+			
 			_.filter(resdevicerevenue, {
                 branch: branch,
                 trans_date: ftddate
@@ -2596,14 +2603,14 @@ let filterGroupwiseUsageTracker = async (
 
                 }
             );
-
-
+			
+		
             (aehtempObj[group].ftdopdrev = ftdopd);
             (aehtempObj[group].target = target);
 			(aehtempObj[group].deviceftd = ftddevicecount);
 			(aehtempObj[group].revenueftdcount = ftddevicerevenuecount);
 			(aehtempObj[group].revenueftdamount = ftddevicerevenueamount);
-
+			
 
             _.filter(dbres2, {
                 branch: branch
@@ -2619,10 +2626,10 @@ let filterGroupwiseUsageTracker = async (
                 mtddevicecount += element.device_daily_count;
 
             });
-
-
-
-
+			
+			
+			
+			
 			_.filter(resdevicerevenue, {
                 branch: branch
             }).forEach(
@@ -2634,11 +2641,11 @@ let filterGroupwiseUsageTracker = async (
             );
 
             (aehtempObj[group].mtdopdrev = mtdopd),
-            (aehtempObj[group].devicemtd = mtddevicecount),
-            (aehtempObj[group].entity = 'AEH'),
-            (aehtempObj[group].revenuemtdcount = mtddevicerevenuecount),
+            (aehtempObj[group].devicemtd = mtddevicecount),           
+            (aehtempObj[group].entity = 'AEH'),          
+            (aehtempObj[group].revenuemtdcount = mtddevicerevenuecount),           
             (aehtempObj[group].revenuemtdamount = mtddevicerevenueamount),
-			(aehtempObj[group].revenuetargetachived = Math.round(((mtddevicerevenuecount/target)*100))),
+			(aehtempObj[group].revenuetargetachived = Math.round(((mtddevicecount/target)*100))),
             (aehtempObj[group].branch = group);
         });
         (ftdopd = 0),
@@ -2684,20 +2691,20 @@ let filterGroupwiseUsageTracker = async (
                     (ftdopdrev = element.ftd_count);
                 }
             );
-
-
+			
+			
 			 _.filter(resdevicehistory, {
                 branch: branch,
                 trans_date: ftddate
             }).forEach(
                 element => {
 
-                    (ftddevicecount = element.device_daily_count);
+                    (ftddevicecount += element.device_daily_count);
                 }
             );
-
-
-
+			
+			
+			
 			_.filter(resdevicerevenue, {
                 branch: branch,
                 trans_date: ftddate
@@ -2708,8 +2715,8 @@ let filterGroupwiseUsageTracker = async (
 
                 }
             );
-
-
+			
+			
             _.filter(dbres2, {
                 branch: branch
             }).forEach(element => {
@@ -2724,9 +2731,9 @@ let filterGroupwiseUsageTracker = async (
 
                 (mtddevicecount += element.device_daily_count);
             });
-
-
-
+			
+			
+			
 			_.filter(resdevicerevenue, {
                 branch: branch
             }).forEach(
@@ -2735,7 +2742,7 @@ let filterGroupwiseUsageTracker = async (
                      mtddevicerevenueamount += element.AMOUNT;
                 }
             );
-
+			
             branchObj[key].push({
                 branch: branchName,
                 code: code,
@@ -2744,19 +2751,19 @@ let filterGroupwiseUsageTracker = async (
                 deviceftd: ftddevicecount,
                 target: target,
                 entity: 'AEH',
-                devicemtd: mtddevicecount,
+                devicemtd: mtddevicecount,              
                 revenueftdcount: ftddevicerevenuecount,
-                revenuemtdcount: mtddevicerevenuecount,
+                revenuemtdcount: mtddevicerevenuecount,                
                 revenueftdamount: ftddevicerevenueamount,
                 revenuemtdamount: mtddevicerevenueamount,
-				revenuetargetachived : Math.round(((mtddevicerevenuecount/target)*100))
+				revenuetargetachived : Math.round(((mtddevicecount/target)*100))
             });
             (ftdopd = 0),
             (mtdopd = 0),
             (ftdopdrev = 0),
             (mtdopdrev = 0),
             (ftddevicecount = 0),
-            (mtddevicecount = 0),
+            (mtddevicecount = 0),            
             (target = 0),
 			(ftddevicerevenueamount=0),
 			(mtddevicerevenueamount=0),
@@ -2773,8 +2780,8 @@ let filterGroupwiseUsageTracker = async (
             }).forEach(element => {
                 (branchName = element.branch), (code = element.code);
             });
-
-
+			
+			
             _.filter(dbres2, {
                 branch: branch,
                 trans_date: ftddate
@@ -2793,13 +2800,13 @@ let filterGroupwiseUsageTracker = async (
             }).forEach(
                 element => {
 
-                    (ftddevicecount = element.device_daily_count);
+                    (ftddevicecount += element.device_daily_count);
 
                 }
             );
-
-
-
+			
+			
+			
 			_.filter(resdevicerevenue, {
                 branch: branch,
                 trans_date: ftddate
@@ -2809,8 +2816,8 @@ let filterGroupwiseUsageTracker = async (
                     ftddevicerevenueamount += element.AMOUNT;
                 }
             );
-
-
+			
+			
             /* target */
             _.filter(targetres, {
                 branch: branch
@@ -2834,9 +2841,9 @@ let filterGroupwiseUsageTracker = async (
                 (mtddevicecount += element.device_daily_count);
 
             });
-
-
-
+			
+			
+			
 			_.filter(resdevicerevenue, {
                 branch: branch
             }).forEach(
@@ -2845,9 +2852,9 @@ let filterGroupwiseUsageTracker = async (
 					mtddevicerevenueamount += element.AMOUNT;
 
                 }
-            );
+            );	 
 
-
+          
 
             branchObj[key].push({
                 branch: branchName,
@@ -2857,16 +2864,16 @@ let filterGroupwiseUsageTracker = async (
                 deviceftd: ftddevicecount,
                 target: target,
                 entity: 'AHC',
-                devicemtd: mtddevicecount,
+                devicemtd: mtddevicecount,               
                 revenueftdcount: ftddevicerevenuecount,
-                revenuemtdcount: mtddevicerevenuecount,
+                revenuemtdcount: mtddevicerevenuecount,                
                 revenueftdamount: ftddevicerevenueamount,
                 revenuemtdamount: mtddevicerevenueamount,
-				revenuetargetachived : Math.round(((mtddevicerevenuecount/target)*100))
+				revenuetargetachived : Math.round(((mtddevicecount/target)*100))
 
             });
-
-
+			
+			
             (ftdopd = 0),
             (ftdopdrev = 0),
             (mtdopdrev = 0),
@@ -2894,8 +2901,8 @@ let filterGroupwiseUsageTracker = async (
 
                 }
             );
-
-
+			
+			
 			_.filter(resdevicehistory, {
                 branch: branch,
                 trans_date: ftddate
@@ -2905,7 +2912,7 @@ let filterGroupwiseUsageTracker = async (
 
                 }
             );
-
+			
 			_.filter(resdevicerevenue, {
                 branch: branch,
                 trans_date: ftddate
@@ -2915,7 +2922,7 @@ let filterGroupwiseUsageTracker = async (
 					ftddevicerevenueamount += element.AMOUNT;
                 }
             );
-
+			
 
 
             /* target */
@@ -2949,8 +2956,8 @@ let filterGroupwiseUsageTracker = async (
                 mtddevicecount += element.device_daily_count;
 
             });
-
-
+			
+			
 			_.filter(resdevicerevenue, {
                 branch: branch
             }).forEach(
@@ -2959,15 +2966,15 @@ let filterGroupwiseUsageTracker = async (
 					mtddevicerevenueamount += element.AMOUNT;
 
                 }
-            );
+            );	 
+          
 
-
-            (ahctempObj[group].mtdopdrev = mtdopd),
+            (ahctempObj[group].mtdopdrev = mtdopd),            
             (ahctempObj[group].devicemtd = mtddevicecount),
-            (ahctempObj[group].entity = 'AHC'),
+            (ahctempObj[group].entity = 'AHC'),        
             (ahctempObj[group].revenuemtdcount = mtddevicerevenuecount),
 			(ahctempObj[group].revenuemtdamount = mtddevicerevenueamount),
-			(ahctempObj[group].revenuetargetachived = Math.round(((mtddevicerevenuecount/target)*100))),
+			(ahctempObj[group].revenuetargetachived = Math.round(((mtddevicecount/target)*100))),
             (ahctempObj[group].branch = group);
         });
         (ftdopd = 0),
@@ -2995,8 +3002,8 @@ let filterGroupwiseUsageTracker = async (
 
                 }
             );
-
-
+			
+			
 			_.filter(resdevicehistory, {
                 branch: branch,
                 trans_date: ftddate
@@ -3006,8 +3013,8 @@ let filterGroupwiseUsageTracker = async (
 
                 }
             );
-
-
+			
+			
 			_.filter(resdevicerevenue, {
                 branch: branch,
                 trans_date: ftddate
@@ -3027,7 +3034,7 @@ let filterGroupwiseUsageTracker = async (
                     target += element.total;
                 }
             );
-
+			
 			_.filter(resdevicerevenue, {
                 branch: branch
             }).forEach(
@@ -3059,17 +3066,17 @@ let filterGroupwiseUsageTracker = async (
                 mtddevicecount += element.device_daily_count;
 
             });
-
+           
 
 
 
             (ohctempObj[group].mtdopdrev = mtdopd),
             (ohctempObj[group].deviceftd = ftddevicecount),
             (ohctempObj[group].devicemtd = mtddevicecount),
-            (ohctempObj[group].entity = 'OHC'),
+            (ohctempObj[group].entity = 'OHC'),         
             (ohctempObj[group].revenuemtdcount = 0),
-            (ohctempObj[group].revenuemtdamount = 0),
-			(ohctempObj[group].revenuetargetachived = Math.round(((mtddevicerevenuecount/target)*100))),
+            (ohctempObj[group].revenuemtdamount = 0),            
+			(ohctempObj[group].revenuetargetachived = Math.round(((mtddevicecount/target)*100))),    
             (ohctempObj[group].branch = group);
         });
         (ftdopd = 0),
@@ -3095,7 +3102,7 @@ let filterGroupwiseUsageTracker = async (
             }).forEach(element => {
                 (branchName = element.branch), (code = element.code);
             });
-
+			
 
             /* target */
             _.filter(targetres, {
@@ -3113,11 +3120,11 @@ let filterGroupwiseUsageTracker = async (
                 trans_date: ftddate
             }).forEach(
                 element => {
-                    (ftddevicecount = element.device_daily_count);
+                    (ftddevicecount += element.device_daily_count);
                 }
             );
-
-
+			
+			
 			 _.filter(dbres2, {
                 branch: branch,
                 trans_date: ftddate
@@ -3127,10 +3134,10 @@ let filterGroupwiseUsageTracker = async (
                     (ftdopdrev = element.ftd_count);
                 }
             );
-
-
-
-
+			
+			
+			
+			
             _.filter(dbres2, {
                 branch: branch
             }).forEach(element => {
@@ -3144,7 +3151,7 @@ let filterGroupwiseUsageTracker = async (
             }).forEach(element => {
 
                 (mtddevicecount += element.device_daily_count);
-            });
+            });      
 
 
             branchObj[key].push({
@@ -3155,9 +3162,9 @@ let filterGroupwiseUsageTracker = async (
                 deviceftd: ftddevicecount,
                 target: target,
                 entity: 'OHC',
-                devicemtd: mtddevicecount,
+                devicemtd: mtddevicecount,                
                 revenueftdcount: 0,
-                revenuemtdcount: 0,
+                revenuemtdcount: 0,               
                 revenueftdamount: 0,
                 revenuemtdamount: 0,
 				revenuetargetachived : Math.round(((mtddevicerevenuecount/target)*100))
@@ -3192,6 +3199,7 @@ exports.newconsultation=async(consultation,branch,ftddate)=>{
     entityWise.aeharr,entityWise.ahcarr,consultation,branch,ftddate
   );
   return {
+	
 	group: entityWise.group,
     alin: entityWise.alin,
     aeh: entityWise.aeh,
@@ -3402,7 +3410,7 @@ let filternewGroupwise=async(aeh,ahc,consultation,branches,ftddate)=>{
         Andaman: ["AMN"],
         Karnataka: [
           "BMH",
-    	     "JGN",
+    	     
           "WFD",
           "KML",
           "CLR",
@@ -3418,7 +3426,7 @@ let filternewGroupwise=async(aeh,ahc,consultation,branches,ftddate)=>{
           "MYS",
 
         ],
-        Banglore: ["BMH","JGN", "WFD", "KML", "CLR", "INR", "PNR", "YLK","SVR","BSK","RRN","RJN"],
+        Banglore: ["BMH", "WFD", "KML", "CLR", "INR", "PNR", "YLK","SVR","BSK","RRN","RJN"],
         "Hubli + Mysore": ["HUB", "MCC", "MYS"],
     	Maharashtra :["VSH", "PUN", "HDP","CMR", "KTD"],
         Telangana: ["DNR", "HMH", "MDA", "SNR", "HIM", "SBD","MPM","GCB"],
@@ -3432,8 +3440,7 @@ let filternewGroupwise=async(aeh,ahc,consultation,branches,ftddate)=>{
     	     "VSH",
           "PUN",
     	     "HDP",
-          "AHM",
-          "IND",
+          "AHM",          
       	  "JWS",
       	  "APR",
       	  "ATA",
@@ -3445,7 +3452,7 @@ let filternewGroupwise=async(aeh,ahc,consultation,branches,ftddate)=>{
         Kerala: ["TVM","KTM"],
         Kolkata: ["KOL", "KAS"],
         Ahmedabad: ["AHM"],
-        "Madhya Pradesh": ["IND","JWS","APR","ATA","KWA"],
+        "Madhya Pradesh": ["JWS","APR","ATA","KWA"],
         Odisha: ["CTK", "BHU"]
 
       };
@@ -3662,3 +3669,1138 @@ console.log("");
 
 
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+exports.newUsageTrackerNativeNew = async (
+    dbres2,
+    branches,
+    ftddate,
+    resdevicehistory,
+    targetres,
+	resdevicerevenue
+
+) => {
+    let entityWise = await filterEntityUsageTrackerNew(dbres2, ftddate, resdevicehistory, targetres,resdevicerevenue);
+    let groupWise = await filterGroupwiseUsageTrackerNew(
+        entityWise.aeharr,
+        entityWise.ahcarr,
+        dbres2,
+        branches,
+        ftddate,
+        resdevicehistory,
+        targetres,
+		resdevicerevenue
+    );
+	
+	
+	let totalWise = await totalUsageTracker(groupWise.aeh,groupWise.ahc);
+	
+	
+
+    return {
+		total: totalWise,
+        group: entityWise.group,
+        alin: entityWise.alin,
+        aeh: entityWise.aeh,
+        ahc: entityWise.ahc,
+        ohc: entityWise.ohc,
+        aehgroup: groupWise.aeh,
+        ahcgroup: groupWise.ahc,
+        ohcgroup: groupWise.ohc,
+        branchwise: groupWise.branchwise
+    };
+};
+
+
+
+let filterEntityUsageTrackerNew = async (dbres2, ftddate, resdevicehistory, targetres,resdevicerevenue) => {
+    let tempObj = {},
+        opd = 0,
+        devicehistorycount = 0,
+        aeharr = [],
+        aehrevarr = [],
+        aehtargetarr = [],
+        aehdevicehistoty = [],
+		aehdevicerevenue = [],
+        ahcrevarr = [],
+        ahcdevicehistoty = [],
+		ahcdevicerevenue = [],
+        ahcarr = [],
+        ahctargetarr = [],
+        ohcrevarr = [],
+        ohcdevicehistoty = [],
+		ohcdevicerevenue = [],
+        target = 0,	
+		targetamount = 0,	
+		ftddevicerevenueamount=0,
+		mtddevicerevenueamount=0,
+		ftddevicerevenuecount=0,
+		mtddevicerevenuecount=0,
+        alin = {};
+
+
+    aehrevarr = _.filter(dbres2, {
+        entity: "AEH"
+    });
+
+    aehtargetarr = _.filter(targetres, {
+        entity: "AEH"
+    });
+
+
+    aehdevicehistoty = _.filter(resdevicehistory, {
+        entity: "AEH"
+    });
+	
+	aehdevicerevenue = _.filter(resdevicerevenue, {
+        entity: "AEH"
+    });
+	
+	
+	
+    _.filter(aehrevarr, {
+        trans_date: ftddate
+    }).forEach(element => {
+        opd += element.device_daily_count;
+
+    });
+
+    _.filter(aehdevicehistoty, {
+        trans_date: ftddate
+    }).forEach(element => {
+        devicehistorycount += element.device_daily_count;
+
+    });
+	
+	
+	
+	_.filter(aehdevicerevenue, {
+        trans_date: ftddate
+    }).forEach(element => {
+        ftddevicerevenuecount += element.BILL_COUNT;
+		ftddevicerevenueamount += element.AMOUNT;
+    });	
+    aehtargetarr.forEach(element => {
+        target += element.total;
+		targetamount += element.amount;
+
+    });
+
+
+
+    tempObj.AEH = {
+        branch: "AEH",
+        ftdopdrev: opd,
+        target: target,
+        devicemtd: devicehistorycount,
+        revenueftdcount: ftddevicerevenuecount,        
+        revenueftdamount: ftddevicerevenueamount,       
+        deviceftd: devicehistorycount
+    };
+    (opd = 0), (devicehistorycount = 0);
+    aehrevarr.forEach(element => {
+        opd += element.ftd_count;
+
+    });
+
+
+    aehdevicehistoty.forEach(element => {
+        devicehistorycount += element.device_daily_count;
+
+    });
+	
+	
+	aehdevicerevenue.forEach(element => {
+        mtddevicerevenuecount += element.BILL_COUNT;
+		 mtddevicerevenueamount += element.AMOUNT;
+    });
+	
+	
+	
+
+    (tempObj.AEH.mtdopdrev = opd);
+    (tempObj.AEH.devicemtd = devicehistorycount);
+	(tempObj.AEH.revenuemtdcount = mtddevicerevenuecount);
+	(tempObj.AEH.revenuemtdamount = mtddevicerevenueamount);
+    (tempObj.AEH.targetamount = target*targetamount);	
+	(tempObj.AEH.revenuetargetachived = Math.round(((mtddevicerevenuecount/target)*100)));
+	
+    (opd = 0), (devicehistorycount = 0), (target = 0),(targetamount = 0),(ftddevicerevenuecount = 0),(ftddevicerevenueamount = 0),(mtddevicerevenuecount = 0),(mtddevicerevenuecount = 0);
+    ahcrevarr = _.filter(dbres2, {
+        entity: "AHC"
+    });
+
+    ahctargetarr = _.filter(targetres, {
+        entity: "AHC"
+    });
+
+
+    ahcdevicehistoty = _.filter(resdevicehistory, {
+        entity: "AHC"
+    });
+	
+	
+	ahcdevicerevenue = _.filter(resdevicerevenue, {
+        entity: "AHC"
+    });
+	
+	
+
+
+    _.filter(ahcrevarr, {
+        trans_date: ftddate
+    }).forEach(element => {
+        opd += element.ftd_count;
+
+    });
+	
+	
+
+    _.filter(ahcdevicehistoty, {
+        trans_date: ftddate
+    }).forEach(element => {
+        devicehistorycount += element.device_daily_count;
+
+    });
+	
+	_.filter(ahcdevicerevenue, {
+        trans_date: ftddate
+    }).forEach(element => {
+        ftddevicerevenuecount += element.BILL_COUNT;
+		 ftddevicerevenueamount += element.AMOUNT;
+    });
+	
+
+	
+
+    ahctargetarr.forEach(element => {
+        target += element.total;
+		targetamount += element.amount;
+
+    });
+
+
+    tempObj.AHC = {
+        branch: "AHC",
+        ftdopdrev: opd,
+        target: target,
+        devicemtd: devicehistorycount,
+        revenueftdcount: ftddevicerevenuecount,       
+        revenueftdamount: ftddevicerevenueamount,
+        deviceftd: devicehistorycount
+    };
+    (opd = 0), (devicehistorycount = 0),(mtddevicerevenuecount = 0), (mtddevicerevenueamount = 0);
+    ahcrevarr.forEach(element => {
+        opd += element.ftd_count;
+
+    });
+    ahcdevicehistoty.forEach(element => {
+        devicehistorycount += element.device_daily_count;
+
+    });
+
+    ahcdevicerevenue.forEach(element => {
+        mtddevicerevenuecount += element.BILL_COUNT;
+		mtddevicerevenueamount += element.AMOUNT;
+    });
+	
+
+    (tempObj.AHC.mtdopdrev = opd);
+    (tempObj.AHC.devicemtd = devicehistorycount);
+	(tempObj.AHC.revenuemtdcount = mtddevicerevenuecount);
+	(tempObj.AHC.revenuemtdamount = mtddevicerevenueamount);
+	(tempObj.AHC.targetamount = target*targetamount);	
+	(tempObj.AHC.revenuetargetachived = Math.round(((mtddevicerevenuecount/target)*100)));
+
+    /*for (let key in tempObj.AEH) {
+      alin[key] = tempObj.AEH[key];
+    }
+    for (let key in tempObj.AHC) {
+      alin["branch"] = "All India";
+      alin[key] += tempObj.AHC[key];
+    }*/
+
+    (opd = 0), (devicehistorycount = 0), (target = 0),(targetamount = 0),(ftddevicerevenuecount = 0),(ftddevicerevenueamount = 0),(mtddevicerevenuecount = 0),(mtddevicerevenuecount = 0);
+    ohcrevarr = _.filter(dbres2, {
+        entity: "OHC"
+    });
+
+    ohcdevicehistoty = _.filter(resdevicehistory, {
+        entity: "OHC"
+    });
+	
+	
+	
+	ohcdevicerevenue = _.filter(resdevicerevenue, {
+        entity: "OHC"
+    });
+	
+	
+    _.filter(ohcrevarr, {
+        trans_date: ftddate
+    }).forEach(element => {
+        opd += element.ftd_count;
+
+    });
+	
+	
+	
+	 _.filter(ohcdevicehistoty, {
+        trans_date: ftddate
+    }).forEach(element => {
+        devicehistorycount += element.device_daily_count;
+
+    });
+	
+	_.filter(ohcdevicerevenue, {
+        trans_date: ftddate
+    }).forEach(element => {
+        ftddevicerevenuecount += element.BILL_COUNT;
+		ftddevicerevenueamount += element.AMOUNT;
+    });
+	
+    tempObj.OHC = {
+        branch: "OHC",
+        ftdopdrev: opd,
+        target: 50,
+        devicemtd: devicehistorycount,
+        revenueftdcount: ftddevicerevenuecount,
+		revenueftdamount: ftddevicerevenueamount,
+        deviceftd: devicehistorycount
+    };
+    (opd = 0), (devicehistorycount = 0),(ftddevicerevenuecount = 0),(ftddevicerevenueamount = 0),(mtddevicerevenuecount = 0),(mtddevicerevenuecount = 0);
+    ohcrevarr.forEach(element => {
+        opd += element.ftd_count;
+
+    });
+    ohcdevicehistoty.forEach(element => {
+        devicehistorycount += element.device_daily_count;
+
+    });
+	
+	
+	ohcdevicerevenue.forEach(element => {
+        mtddevicerevenuecount += element.BILL_COUNT;
+        mtddevicerevenueamount += element.AMOUNT;
+    });
+	
+	
+	(tempObj.OHC.mtdopdrev = opd);
+    (tempObj.OHC.devicemtd = devicehistorycount);
+	(tempObj.OHC.revenuemtdcount = mtddevicerevenuecount);
+    (tempObj.OHC.revenuemtdamount = mtddevicerevenueamount);
+	(tempObj.OHC.targetamount = target*targetamount);
+	(tempObj.OHC.revenuetargetachived = Math.round(((mtddevicerevenuecount/target)*100)));
+	
+	
+    alin["branch"] = "All India";
+    alin['ftdopdrev'] = tempObj.AEH['ftdopdrev'] + tempObj.AHC['ftdopdrev'];
+    alin['mtdopdrev'] = tempObj.AEH['mtdopdrev'] + tempObj.AHC['mtdopdrev'];
+    alin['deviceftd'] = tempObj.AEH['deviceftd'] + tempObj.AHC['deviceftd'];
+    alin['devicemtd'] = tempObj.AEH['devicemtd'] + tempObj.AHC['devicemtd'];
+    alin['target'] = tempObj.AEH['target'] + tempObj.AHC['target'];
+
+    let gropuftd = 0,
+        gropumtd = 0,
+        groupdeviceftd = 0,
+        groupdevicemtd = 0;
+    grouptarget = 0;
+
+    gropuftd = tempObj.AEH['ftdopdrev'] + tempObj.AHC['ftdopdrev'] + tempObj.OHC['ftdopdrev'];
+    gropumtd = tempObj.AEH['mtdopdrev'] + tempObj.AHC['mtdopdrev'] + tempObj.OHC['mtdopdrev'];
+    groupdeviceftd = tempObj.AEH['deviceftd'] + tempObj.AHC['deviceftd'] + tempObj.OHC['deviceftd'];
+    groupdevicemtd = tempObj.AEH['devicemtd'] + tempObj.AHC['devicemtd'] + tempObj.OHC['devicemtd'];
+    grouptarget = tempObj.AEH['target'] + tempObj.AHC['target'] + tempObj.OHC['target'];
+
+    group = {};
+
+    group["branch"] = "Group";
+    group['ftdopdrev'] = gropuftd;
+    group['mtdopdrev'] = gropumtd;
+    group['deviceftd'] = groupdeviceftd;
+    group['devicemtd'] = groupdevicemtd;
+    group['target'] = grouptarget;
+
+    return {
+        group: group,
+        alin: alin,
+        aeharr: aeharr,
+        ahcarr: ahcarr,
+        aeh: tempObj.AEH,
+        ahc: tempObj.AHC,
+        ohc: tempObj.OHC
+    };
+};
+
+
+
+
+let filterGroupwiseUsageTrackerNew = async (
+    aeh,
+    ahc,
+    dbres2,
+    branches,
+    ftddate,
+    resdevicehistory,
+    targetres,
+	resdevicerevenue
+) => {
+    let ftdopd = 0,
+        mtdopd = 0,
+        ftddevicecount = 0,
+        mtddevicecount = 0,
+        aehtempObj = {},
+        ahctempObj = {},
+        ohctempObj = {},
+       
+        branchName = null,
+        ftdopdrev = 0,
+        mtdopdrev = 0,
+        mtdopdrevlastyear = 0,
+        target = 0,
+		targetamount = 0,
+		ftddevicerevenueamount=0,
+		mtddevicerevenueamount=0,
+		ftddevicerevenuecount=0,
+		mtddevicerevenuecount=0,
+        code = null;
+
+
+    let aehGroups = [
+        "chennai",
+        "rotn"
+    ];
+
+    let ohcGroups = [
+        "Madagascar",
+        "Mozambique",
+        "Nigeria",
+        "Rwanda",
+        "Mauritius",
+        "Zambia",
+        "Ghana",
+        "Nairobi",
+        "Uganda",
+        "Tanzania"
+    ];
+
+    let ahcGroups = [
+        "Chennai",
+		"ROTN",
+        "Banglore",
+        "Hyderabad",
+        "Kerala",
+		"Maharashtra"
+        //'Ambattur'
+    ];
+    let aehgroupedBranches = {
+        "chennai": ["ASN", "TRC", "AVD", "TLR"],
+        "rotn": ["KNP", "VLR", "KSN", "KBK", "HSR", "DHA"]
+
+    };
+    let ahcgroupedBranches = {
+        "Chennai": ["MGP", "NWP", "AMB", "ADY", "TVT"],
+        "ROTN": ["TVL","TPR"],
+        Banglore: ["KML", "PNR", "RRN","SVR"],
+        Hyderabad: ["DNR", "MDA", "SNR", "MPM", "GCB"],
+        Kerala: ["KTM"],
+		"Maharashtra":["VSH"]
+        //,Ambattur : ['AMB']
+    };
+
+
+    let ohcgroupedBranches = {
+        "Madagascar": ["MDR"],
+        "Mozambique": ["MZQ", "BRA"],
+        "Nigeria": ["NGA"],
+        "Rwanda": ["RWD"],
+        "Mauritius": ["EBN", "FLQ", "GDL"],
+        "Zambia": ["ZMB"],
+        "Ghana": ["GHA"],
+        "Nairobi": ["NAB"],
+        "Uganda": ["UGD"],
+        "Tanzania": ["TZA"]
+    };
+
+
+    aehGroups.forEach(group => {
+        aehtempObj[group] = {};
+        aehgroupedBranches[group].forEach(branch => {
+
+            /* target */
+            _.filter(targetres, {
+                branch: branch
+            }).forEach(
+                element => {
+                    target += element.total;
+					targetamount = element.amount;
+                }
+            );
+
+
+            _.filter(dbres2, {
+                branch: branch,
+                trans_date: ftddate
+            }).forEach(
+                element => {
+                    ftdopd += element.ftd_count;
+
+                }
+            );
+			
+			
+			_.filter(resdevicehistory, {
+                branch: branch,
+                trans_date: ftddate
+            }).forEach(
+                element => {
+                    ftddevicecount += element.device_daily_count;
+
+                }
+            );
+			
+			
+			
+			_.filter(resdevicerevenue, {
+                branch: branch,
+                trans_date: ftddate
+            }).forEach(
+                element => {
+					 ftddevicerevenueamount += element.AMOUNT;
+                    ftddevicerevenuecount += element.BILL_COUNT;
+
+                }
+            );
+			
+		
+            (aehtempObj[group].ftdopdrev = ftdopd);
+            (aehtempObj[group].target = target);
+			(aehtempObj[group].deviceftd = ftddevicecount);
+			(aehtempObj[group].revenueftdcount = ftddevicerevenuecount);
+			(aehtempObj[group].revenueftdamount = ftddevicerevenueamount);
+			
+
+            _.filter(dbres2, {
+                branch: branch
+            }).forEach(element => {
+                mtdopd += element.ftd_count;
+
+            });
+
+
+            _.filter(resdevicehistory, {
+                branch: branch
+            }).forEach(element => {
+                mtddevicecount += element.device_daily_count;
+
+            });
+			
+			
+			
+			
+			_.filter(resdevicerevenue, {
+                branch: branch
+            }).forEach(
+                element => {
+                    mtddevicerevenuecount += element.BILL_COUNT;
+					mtddevicerevenueamount += element.AMOUNT;
+
+                }
+            );
+			
+			
+			
+
+            (aehtempObj[group].mtdopdrev = mtdopd),
+            (aehtempObj[group].devicemtd = mtddevicecount),           
+            (aehtempObj[group].entity = 'AEH'),          
+            (aehtempObj[group].revenuemtdcount = mtddevicerevenuecount),           
+            (aehtempObj[group].revenuemtdamount = mtddevicerevenueamount),
+			(aehtempObj[group].revenuetargetachived = Math.round(((mtddevicerevenuecount/target)*100))),
+			(aehtempObj[group].targetamount = target*targetamount),
+			(aehtempObj[group].targetamountach = Math.round(((mtddevicerevenueamount/aehtempObj[group].targetamountach)*100))),
+            (aehtempObj[group].branch = group);
+        });
+        (ftdopd = 0),
+        (ftdopdrev = 0),
+        (mtdopdrev = 0),
+        (mtdopd = 0),
+        (mtddevicecount = 0),
+        (ftddevicecount = 0),
+		(ftddevicerevenueamount=0),
+		(mtddevicerevenueamount=0),
+		(ftddevicerevenuecount=0),
+		(mtddevicerevenuecount=0),
+        (target = 0),
+		(targetamount = 0);
+
+    });
+	
+	
+	let branchObj = [];
+	
+    for (let key in aehgroupedBranches) {
+        //branchObj[key] = [];
+        aehgroupedBranches[key].forEach(branch => {
+            _.filter(branches, {
+                code: branch
+            }).forEach(element => {
+                (branchName = element.branch), (code = element.code);
+            });
+
+            /* target */
+            _.filter(targetres, {
+                branch: branch
+            }).forEach(
+                element => {
+                    target = element.total;
+					targetamount = element.amount;
+                }
+            );
+
+
+
+
+            _.filter(dbres2, {
+                branch: branch,
+                trans_date: ftddate
+            }).forEach(
+                element => {
+
+                    (ftdopdrev = element.ftd_count);
+                }
+            );
+			
+			
+			 _.filter(resdevicehistory, {
+                branch: branch,
+                trans_date: ftddate
+            }).forEach(
+                element => {
+
+                    (ftddevicecount += element.device_daily_count);
+                }
+            );
+			
+			
+			
+			_.filter(resdevicerevenue, {
+                branch: branch,
+                trans_date: ftddate
+            }).forEach(
+                element => {
+                    ftddevicerevenuecount += element.BILL_COUNT;
+					ftddevicerevenueamount += element.AMOUNT;
+
+                }
+            );
+			
+			
+            _.filter(dbres2, {
+                branch: branch
+            }).forEach(element => {
+
+                (mtdopdrev += element.ftd_count);
+            });
+
+
+            _.filter(resdevicehistory, {
+                branch: branch
+            }).forEach(element => {
+
+                (mtddevicecount += element.device_daily_count);
+            });
+			
+			
+			
+			_.filter(resdevicerevenue, {
+                branch: branch
+            }).forEach(
+                element => {
+                    mtddevicerevenuecount += element.BILL_COUNT;
+                     mtddevicerevenueamount += element.AMOUNT;
+                }
+            );
+			
+            branchObj.push({
+                branch: branchName,
+				region:key,
+                code: code,
+                ftdopdrev: ftdopdrev,
+                mtdopdrev: mtdopdrev,
+                deviceftd: ftddevicecount,
+                target: target,
+                entity: 'AEH',
+                devicemtd: mtddevicecount,              
+                revenueftdcount: ftddevicerevenuecount,
+                revenuemtdcount: mtddevicerevenuecount,                
+                revenueftdamount: ftddevicerevenueamount,
+                revenuemtdamount: mtddevicerevenueamount,
+				targetamount : target * targetamount,
+				targetamountach : Math.round(((mtddevicerevenueamount/(target * targetamount))*100)),
+				revenuetargetachived : Math.round(((mtddevicerevenuecount/target)*100))
+            });
+            (ftdopd = 0),
+            (mtdopd = 0),
+            (ftdopdrev = 0),
+            (mtdopdrev = 0),
+            (ftddevicecount = 0),
+            (mtddevicecount = 0),            
+            (target = 0),
+			(targetamount = 0),
+			(ftddevicerevenueamount=0),
+			(mtddevicerevenueamount=0),
+			(ftddevicerevenuecount=0),
+			(mtddevicerevenuecount=0),
+            (code = null);
+        });
+    }
+	
+    for (let key in ahcgroupedBranches) {
+        //branchObj[key] = [];
+        ahcgroupedBranches[key].forEach(branch => {
+            _.filter(branches, {
+                code: branch
+            }).forEach(element => {
+                (branchName = element.branch), (code = element.code);
+            });
+			
+			
+            _.filter(dbres2, {
+                branch: branch,
+                trans_date: ftddate
+            }).forEach(
+                element => {
+
+                    (ftdopdrev = element.ftd_count);
+
+                }
+            );
+
+
+            _.filter(resdevicehistory, {
+                branch: branch,
+                trans_date: ftddate
+            }).forEach(
+                element => {
+
+                    (ftddevicecount += element.device_daily_count);
+
+                }
+            );
+			
+			
+			
+			_.filter(resdevicerevenue, {
+                branch: branch,
+                trans_date: ftddate
+            }).forEach(
+                element => {
+                    ftddevicerevenuecount += element.BILL_COUNT;
+                    ftddevicerevenueamount += element.AMOUNT;
+                }
+            );
+			
+			
+            /* target */
+            _.filter(targetres, {
+                branch: branch
+            }).forEach(
+                element => {
+                    target = element.total;
+					targetamount = element.amount;
+                }
+            );
+
+
+            _.filter(dbres2, {
+                branch: branch
+            }).forEach(element => {
+                (mtdopdrev += element.ftd_count);
+
+            });
+
+            _.filter(resdevicehistory, {
+                branch: branch
+            }).forEach(element => {
+                (mtddevicecount += element.device_daily_count);
+
+            });
+			
+			
+			
+			_.filter(resdevicerevenue, {
+                branch: branch
+            }).forEach(
+                element => {
+                    mtddevicerevenuecount += element.BILL_COUNT;
+					mtddevicerevenueamount += element.AMOUNT;
+
+                }
+            );	 
+
+          
+
+            branchObj.push({
+                branch: branchName,
+				region:key,
+                code: code,
+                ftdopdrev: ftdopdrev,
+                mtdopdrev: mtdopdrev,
+                deviceftd: ftddevicecount,
+                target: target,
+                entity: 'AHC',
+                devicemtd: mtddevicecount,               
+                revenueftdcount: ftddevicerevenuecount,
+                revenuemtdcount: mtddevicerevenuecount,                
+                revenueftdamount: ftddevicerevenueamount,
+                revenuemtdamount: mtddevicerevenueamount,
+				targetamount : target * targetamount,
+				targetamountach : Math.round(((mtddevicerevenueamount/(target * targetamount))*100)),
+				revenuetargetachived : Math.round(((mtddevicerevenuecount/target)*100)),
+				
+
+            });
+			
+			
+            (ftdopd = 0),
+            (ftdopdrev = 0),
+            (mtdopdrev = 0),
+            (mtdopd = 0),
+            (mtddevicecount = 0),
+            (ftddevicecount = 0),
+            (target = 0),
+			(targetamount = 0),
+			(ftddevicerevenueamount=0),
+			(mtddevicerevenueamount=0),
+			(ftddevicerevenuecount=0),
+			(mtddevicerevenuecount=0);
+
+        });
+    }
+
+    ahcGroups.forEach(group => {
+        ahctempObj[group] = {};
+        ahcgroupedBranches[group].forEach(branch => {
+            _.filter(dbres2, {
+                branch: branch,
+                trans_date: ftddate
+            }).forEach(
+                element => {
+                    ftdopd += element.ftd_count;
+
+                }
+            );
+			
+			
+			_.filter(resdevicehistory, {
+                branch: branch,
+                trans_date: ftddate
+            }).forEach(
+                element => {
+                    ftddevicecount += element.device_daily_count;
+
+                }
+            );
+			
+			_.filter(resdevicerevenue, {
+                branch: branch,
+                trans_date: ftddate
+            }).forEach(
+                element => {
+                    ftddevicerevenuecount += element.BILL_COUNT;
+					ftddevicerevenueamount += element.AMOUNT;
+                }
+            );
+			
+
+
+            /* target */
+            _.filter(targetres, {
+                branch: branch
+            }).forEach(
+                element => {
+                    target += element.total;
+					targetamount = element.amount;
+                }
+            );
+
+
+
+            (ahctempObj[group].ftdopdrev = ftdopd);
+			(ahctempObj[group].deviceftd = ftddevicecount);
+            (ahctempObj[group].target = target);
+			(ahctempObj[group].revenueftdcount = ftddevicerevenuecount);
+			(ahctempObj[group].revenueftdamount = ftddevicerevenueamount);
+
+            _.filter(dbres2, {
+                branch: branch
+            }).forEach(element => {
+                mtdopd += element.ftd_count;
+
+            });
+
+
+            _.filter(resdevicehistory, {
+                branch: branch
+            }).forEach(element => {
+                mtddevicecount += element.device_daily_count;
+
+            });
+			
+			
+			_.filter(resdevicerevenue, {
+                branch: branch
+            }).forEach(
+                element => {
+                    mtddevicerevenuecount += element.BILL_COUNT;
+					mtddevicerevenueamount += element.AMOUNT;
+
+                }
+            );	 
+          
+
+            (ahctempObj[group].mtdopdrev = mtdopd),            
+            (ahctempObj[group].devicemtd = mtddevicecount),
+            (ahctempObj[group].entity = 'AHC'),        
+            (ahctempObj[group].revenuemtdcount = mtddevicerevenuecount),
+			(ahctempObj[group].revenuemtdamount = mtddevicerevenueamount),
+			(ahctempObj[group].revenuetargetachived = Math.round(((mtddevicerevenuecount/target)*100))),
+			(ahctempObj[group].targetamountach = Math.round(((mtddevicerevenueamount/ahctempObj[group].targetamountach)*100))),
+			(ahctempObj[group].targetamount = target * targetamount),
+            (ahctempObj[group].branch = group);
+        });
+        (ftdopd = 0),
+        (mtdopd = 0),
+        (ftdopdrev = 0),
+        (mtdopdrev = 0),
+        (mtddevicecount = 0),
+        (target = 0),
+		(targetamount = 0),
+        (ftddevicecount = 0),
+		(ftddevicerevenueamount=0),
+		(mtddevicerevenueamount=0),
+		(ftddevicerevenuecount=0),
+		(mtddevicerevenuecount=0);
+    });
+
+    ohcGroups.forEach(group => {
+        ohctempObj[group] = {};
+        ohcgroupedBranches[group].forEach(branch => {
+            _.filter(dbres2, {
+                branch: branch,
+                trans_date: ftddate
+            }).forEach(
+                element => {
+                    ftdopd += element.ftd_count;
+
+                }
+            );
+			
+			
+			_.filter(resdevicehistory, {
+                branch: branch,
+                trans_date: ftddate
+            }).forEach(
+                element => {
+                    ftddevicecount += element.device_daily_count;
+
+                }
+            );
+			
+			
+			_.filter(resdevicerevenue, {
+                branch: branch,
+                trans_date: ftddate
+            }).forEach(
+                element => {
+                    ftddevicerevenuecount += element.BILL_COUNT;
+					ftddevicerevenueamount += element.AMOUNT;
+                }
+            );
+
+
+            /* target */
+            _.filter(targetres, {
+                branch: branch
+            }).forEach(
+                element => {
+                    target += element.total;
+					targetamount = element.amount;
+                }
+            );
+			
+			_.filter(resdevicerevenue, {
+                branch: branch
+            }).forEach(
+                element => {
+                    mtddevicerevenuecount += element.BILL_COUNT;
+					mtddevicerevenueamount += element.AMOUNT;
+                }
+            );
+
+
+
+            (ohctempObj[group].ftdopdrev = ftdopd);
+			(ohctempObj[group].deviceftd = ftddevicecount);
+            (ohctempObj[group].target = target);
+			(ohctempObj[group].revenueftdcount = mtddevicerevenuecount);
+            (ohctempObj[group].revenueftdamount = mtddevicerevenueamount);
+
+            _.filter(dbres2, {
+                branch: branch
+            }).forEach(element => {
+                mtdopd += element.ftd_count;
+
+            });
+
+
+            _.filter(resdevicehistory, {
+                branch: branch
+            }).forEach(element => {
+                mtddevicecount += element.device_daily_count;
+
+            });
+           
+
+
+
+            (ohctempObj[group].mtdopdrev = mtdopd),
+            (ohctempObj[group].deviceftd = ftddevicecount),
+            (ohctempObj[group].devicemtd = mtddevicecount),
+            (ohctempObj[group].entity = 'OHC'),         
+            (ohctempObj[group].revenuemtdcount = 0),
+            (ohctempObj[group].revenuemtdamount = 0),            
+			(ohctempObj[group].revenuetargetachived = Math.round(((mtddevicerevenuecount/target)*100))),    
+            (ohctempObj[group].branch = group);
+        });
+        (ftdopd = 0),
+        (ftdopdrev = 0),
+        (mtdopdrev = 0),
+        (mtdopd = 0),
+        (mtddevicecount = 0),
+        (ftddevicecount = 0),
+		(ftddevicerevenueamount=0),
+		(mtddevicerevenueamount=0),
+		(ftddevicerevenuecount=0),
+		(mtddevicerevenuecount=0),
+        (target = 0),
+		(targetamount = 0);
+
+    });
+
+    
+    return {
+        aeh: aehtempObj,
+        ahc: ahctempObj,
+        ohc: ohctempObj,
+        branchwise: branchObj
+    };
+};
+
+
+let totalUsageTracker = async (aehGroup,ahcGroup) =>{
+	 let total = {};
+	
+	var totaloptdftd = 0,totaloptdmtd = 0,totaldeviceftd=0,totaldevicemtd=0,totalrevenueftdcount=0,totalrevenuemtdcount=0,totaltarget=0,totalrevenueftdamount=0,totalrevenuemtdamount=0,totaltargetamount=0;
+	
+	 
+		  for (let key in aehGroup) {
+			 totaloptdftd = totaloptdftd+aehGroup[key].ftdopdrev;
+			 totaloptdmtd = totaloptdmtd+aehGroup[key].mtdopdrev;
+			 totaldeviceftd = totaldeviceftd+aehGroup[key].deviceftd;
+			 totaldevicemtd = totaldevicemtd+aehGroup[key].devicemtd;			 
+			 totalrevenueftdcount = totalrevenueftdcount+aehGroup[key].revenueftdcount;
+			 totalrevenuemtdcount = totalrevenuemtdcount+aehGroup[key].revenuemtdcount;
+			 totaltarget = totaltarget+aehGroup[key].target;
+			 totalrevenueftdamount = totalrevenueftdamount+aehGroup[key].revenueftdamount;
+			 totalrevenuemtdamount = totalrevenuemtdamount+aehGroup[key].revenuemtdamount;
+			 totaltargetamount = totaltargetamount+aehGroup[key].targetamount;
+		  }		  
+		  for (let key in ahcGroup) {	  
+			  
+			 totaloptdftd = totaloptdftd+ahcGroup[key].ftdopdrev;
+			 totaloptdmtd = totaloptdmtd+ahcGroup[key].mtdopdrev;
+			 totaldeviceftd = totaldeviceftd+ahcGroup[key].deviceftd;
+			 totaldevicemtd = totaldevicemtd+ahcGroup[key].devicemtd;			 
+			 totalrevenueftdcount = totalrevenueftdcount+ahcGroup[key].revenueftdcount;
+			 totalrevenuemtdcount = totalrevenuemtdcount+ahcGroup[key].revenuemtdcount;
+			 totaltarget = totaltarget+ahcGroup[key].target;
+			 totalrevenueftdamount = totalrevenueftdamount+ahcGroup[key].revenueftdamount;
+			 totalrevenuemtdamount = totalrevenuemtdamount+ahcGroup[key].revenuemtdamount;
+			 totaltargetamount = totaltargetamount+ahcGroup[key].targetamount;
+		  }
+	 
+	total['ftdopdrev'] = totaloptdftd;
+	total['mtdopdrev'] = totaloptdmtd;
+	total['deviceftd'] = totaldeviceftd;	
+	total['devicemtd'] = totaldevicemtd;
+	total['revenueftdcount'] = totalrevenueftdcount;
+	total['revenuemtdcount'] = totalrevenuemtdcount;
+	total['revenueftdamount'] = totalrevenueftdamount;
+	total['revenuemtdamount'] = totalrevenuemtdamount;
+	total['target'] = totaltarget;
+	total['targetamount'] = totaltargetamount;
+	total['targetamountach'] = Math.round(((totalrevenuemtdamount/totaltargetamount)*100)),
+	total['revenuetargetachived'] = Math.round((totalrevenuemtdcount/totaltarget)*100);
+	total['branch'] = 'Total';	
+	return total;
+}
+
+
+
+exports.avaDemoEmail = async (finalResult,todatadate) => {
+	console.log("final template");	
+	let local_template_design = await emailTemplate(finalResult,todatadate);
+	return local_template_design;
+	
+}
+let emailTemplate = async (finalResult,todatadate) => {
+	
+	let  branchlist = finalResult.branchwise;
+	
+    let sortbranches = branchlist.slice().sort((a, b) => b.revenuemtdamount - a.revenuemtdamount);	
+	
+	
+	let avaTemplate = "<html><body><table cellpadding='5' border='1' style='border-collapse: collapse;  border-spacing: 0;border-color: black'><tr><td></td><td></td><td></td><td colspan='2'><b>New OPD</b></td><td colspan='4' align='center'><b>Perimeter (Paid Count)</b></td><td colspan='4' align='center'><b>Perimeter Revenue (INR)	</b></td></tr><tr><td><b>Entity</b></td><td><b>Region</b></td><td><b>Branch</b></td><td><b>FTD</b></td><td><b>MTD</b></td><td><b>FTD</b></td><td><b>MTD</b></td><td><b>Target</b></td><td><b>Tar Ach%</b></td><td><b>FTD</b></td><td><b>MTD</b></td><td><b>Target Amount</b></td><td><b>Tar Ach%</b></td></tr>";
+	
+	avaTemplate+= '<tr><td bgcolor="#a8afba" style="background:#a8afba!important;color:#000000;text-align:center">Total</td><td bgcolor="#a8afba" style="background:#a8afba!important;color:#000000;text-align:center"></td><td bgcolor="#a8afba" style="background:#a8afba!important;color:#000000;text-align:center"></td><td bgcolor="#cddc39" style="background:#cddc39!important;color:#000000;text-align:center">'+ finalResult.total['ftdopdrev'] +'</td><td bgcolor="#cddc39" style="background:#cddc39!important;color:#000000;text-align:center">'+ finalResult.total['mtdopdrev'] +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ finalResult.total['revenueftdcount'] +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ finalResult.total['revenuemtdcount'] +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ finalResult.total['target'] +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ finalResult.total['revenuetargetachived'] +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+ new Intl.NumberFormat('en-IN').format(finalResult.total['revenueftdamount']) +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+ new Intl.NumberFormat('en-IN').format(finalResult.total['revenuemtdamount']) +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+ new Intl.NumberFormat('en-IN').format(finalResult.total['targetamount']) +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+ finalResult.total['targetamountach'] +'</td></tr>';
+	
+	
+	
+	sortbranches.forEach(element => {
+		avaTemplate+= '<tr><td bgcolor="#a8afba" style="background:#a8afba!important;color:#000000;text-align:center">'+ element.entity +'</td><td bgcolor="#a8afba" style="background:#a8afba!important;color:#000000;text-align:center">'+ element.region +'</td><td bgcolor="#a8afba" style="background:#a8afba!important;color:#000000;text-align:center">'+ element.branch +'</td><td bgcolor="#cddc39" style="background:#cddc39!important;color:#000000;text-align:center">'+ element.ftdopdrev +'</td><td bgcolor="#cddc39" style="background:#cddc39!important;color:#000000;text-align:center">'+ element.mtdopdrev +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ element.revenueftdcount +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ element.revenuemtdcount +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ element.target +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ element.revenuetargetachived +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+ new Intl.NumberFormat('en-IN').format(element.revenueftdamount) +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+  new Intl.NumberFormat('en-IN').format(element.revenuemtdamount) +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+ new Intl.NumberFormat('en-IN').format(element.targetamount) +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+ element.targetamountach +'</td></tr>';    
+	});
+	
+	avaTemplate+='</table><br><b>Note: This report is auto generated, please do not reply.</b> <br><p>For any corrections, please drop a mail to  <a href="mailto:helpdesk@dragarwal.com">helpdesk@dragarwal.com</a>. </p> <br><p>Regards,</p><p>Dr.Agarwal IT Team</p></body></html>';
+	return avaTemplate;	
+	
+	
+}
+
+
+

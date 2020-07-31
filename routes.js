@@ -1,12 +1,10 @@
 const mods = require("./modules");
-const uuid = mods.uuid;
 const _ = require('./modules')._;
-const path = require('path');
+const uuid = mods.uuid;
+
 const connections = mods.connections;
 const files = mods.sqls;
 var async = require("async");
-var fs = require('fs')
-
 let sess = null;
 
 var regionMapping = {
@@ -19,13 +17,11 @@ var regionMapping = {
     'AMN': ['AMN'],
     'AP': ['VMH', 'NEL', 'GUN', 'TPT', 'RAJ'],
     'Chennai': ['TBM', 'ADY', 'EGM', 'MGP', 'NWP', 'AMB', 'TVT'],
-    'KA': ['BMH', 'JGN', 'WFD', 'KML', 'CLR', 'INR', 'PNR', 'YLK', 'HUB', 'MCC', 'MYS', 'SVR', 'BSK', 'RRN', 'RJN'],
+    'KA': ['BMH', 'WFD', 'KML', 'CLR', 'INR', 'PNR', 'YLK', 'HUB', 'MCC', 'MYS', 'SVR', 'BSK', 'RRN', 'RJN'],
     'Maharashtra': ['VSH', 'PUN', 'HDP', "CMR", "KTD"],
-    "Madhya Pradesh": ["IND", "JWS", "APR", "ATA", "KWA"],
+    "Madhya Pradesh": ["JWS", "APR", "ATA", "KWA"],
     'OD': ['CTK', 'BHU'],
-    'ROI': ['PDY', 'TVM', 'KTM', 'AHM', 'IND', "JWS", "APR", "ATA",
-      "KWA"
-    ],
+    'ROI': ['PDY', 'TVM', 'KTM', 'AHM', "JWS", "APR", "ATA", "KWA"],
     'ROTN': ['TVL', 'TCN', 'APM', 'TRI', 'TNJ', 'TPR', 'CMB'],
     'TS': ['DNR', 'HMH', 'MDA', 'SNR', 'HIM', 'SBD', 'MPM', 'GCB'],
     'WB': ['KOL', 'KAS'],
@@ -33,15 +29,15 @@ var regionMapping = {
   },
   'Chennai': ['CMH', 'ANN', 'ASN', 'AVD', 'NLR', 'PMB', 'PRR', 'TLR', 'TRC', 'VLC', 'TBM', 'ADY', 'EGM', 'MGP', 'NWP', 'AMB', 'TVT'],
   'ROTN': ['KNP', 'VLR', 'KBK', 'NVL', 'VPM', 'DHA', 'SLM', 'KSN', 'ERD', 'HSR', 'MDU', 'TVL', 'TCN', 'APM', 'TRI', 'TNJ', 'TPR', 'CMB'],
-  'ROI': ['JPR', 'PDY', 'TVM', 'KTM', 'AHM', 'IND', "JWS", "APR", "ATA", "KWA"],
-  'KA': ['BMH', 'JGN', 'WFD', 'KML', 'CLR', 'INR', 'PNR', 'YLK', 'HUB', 'MCC', 'MYS', 'SVR', 'BSK', 'RRN', 'RJN'],
+  'ROI': ['JPR', 'PDY', 'TVM', 'KTM', 'AHM', "JWS", "APR", "ATA", "KWA"],
+  'KA': ['BMH', 'WFD', 'KML', 'CLR', 'INR', 'PNR', 'YLK', 'HUB', 'MCC', 'MYS', 'SVR', 'BSK', 'RRN', 'RJN'],
   'TS': ['DNR', 'HMH', 'MDA', 'SNR', 'HIM', 'SBD', 'MPM', 'GCB'],
   'AMN': ['AMN'],
   'AP': ['VMH', 'NEL', 'GUN', 'TPT', 'RAJ'],
   'WB': ['KOL', 'KAS'],
   'OD': ['CTK', 'BHU'],
   'Maharashtra': ['VSH', 'PUN', 'HDP', "CMR", "KTD"],
-  "Madhya Pradesh": ["IND", "JWS", "APR", "ATA", "KWA"],
+  "Madhya Pradesh": ["JWS", "APR", "ATA", "KWA"],
   'Kerala': ['TVM', 'KTM']
 
 };
@@ -202,7 +198,7 @@ exports.logout = (req, res) => {
 // Local test code
 
 exports.testLogin = (req, res) => {
-console.log("hit");
+  console.log("hit");
   let user = req.body.user.trim();
   let pass = req.body.pass.trim();
   connections.scm_public.query(
@@ -503,11 +499,9 @@ exports.test_route_revenue = (req, res) => {
       if (err) console.log(err);
       userRes.forEach(element => {
         if (element.branches.length < 4) {
-          console.log("branches : " + element.branches);
           individualBranches.push(element.branches);
         } else {
           branchGroups.push(element.branches);
-          console.log("elsebranches : " + element.branches);
           let value = element.branches.split("=")[1];
           if (!mods._.includes(value, "+")) {
             individualBranches.push(value);
@@ -1471,6 +1465,74 @@ exports.consultation = (req, res) => {
 };
 
 
+
+exports.main_route_usage_tracker_new = (req, res) => {
+  // if (sess.superUser === undefined) {
+  //   res.json({ msg: "Not Authorised" });
+  // } else {
+  //  console.log('main_route_revenue');
+  let ftddate = req.params.date;
+  let temp = new Date(ftddate);
+  let mtddate =
+    temp.getFullYear() +
+    "-" +
+    ("0" + (temp.getMonth() + 1)).slice(-2) +
+    "-" +
+    "01";
+
+  let ftddatelastyear = (temp.getFullYear() - 1) + '-' + ("0" + (temp.getMonth() + 1)).slice(-2) + '-' + ("0" + (temp.getDate())).slice(-2);
+  let mtddatelastyear = (temp.getFullYear() - 1) + '-' + ("0" + (temp.getMonth() + 1)).slice(-2) + '-01';
+
+  let tarArr = ftddate.split("-");
+  let tarMonth = tarArr[1];
+  let tarYear = tarArr[0];
+
+  connections.scm_public.query(
+    files.new_opd_super,
+    [mtddate, ftddate],
+    (error, resnewopd) => {
+      if (error) console.error(error);
+      connections.scm_public.query(
+        files.device_history,
+        [mtddate, ftddate],
+        (error, resdevicehistory) => {
+          if (error) console.error(error);
+          connections.scm_public.query(
+            files.device_revenue,
+            [mtddate, ftddate],
+            (error, resdevicerevenue) => {
+              if (error) console.error(error);
+              connections.scm_public.query("select br.entity as entity,br.region as region,br.code as branch,br.branch as branchname,tr.total,tr.amount from branches as br  LEFT JOIN usage_track_target as tr ON br.id=tr.branch_id AND target_month='" + tarMonth + "' AND target_year='" + tarYear + "'", (err, targetres) => {
+                if (err) console.log(err);
+                connections.scm_public.query(
+                  "select * from branches",
+                  (err, branchres) => {
+                    if (err) console.error(err);
+                    mods.nativeFunctions
+                      .newUsageTrackerNativeNew(
+                        resnewopd,
+                        branchres,
+                        ftddate,
+                        resdevicehistory,
+                        targetres,
+                        resdevicerevenue
+                      )
+                      .then(final => res.json(final));
+                  }
+                );
+              });
+            }
+          );
+
+
+        }
+      );
+    }
+  );
+  // }
+};
+
+
 // ch drt
 exports.ch_branch = (req, res) => {
 
@@ -1483,13 +1545,11 @@ exports.ch_branch = (req, res) => {
     "select branches AS TEXT,branches AS shortCode from users where name = ? and role in  ('ch_user')",
     [emp],
     (error, branchesresults) => {
-      console.log(branchesresults);
       if (error) console.error(error);
       branchesresults.forEach(element => {
         branchsplitresult = element.TEXT.split('+');
       });
       branchsplitresult.forEach(resultbranch => {
-
         branchOBJ.push({
           TEXT: resultbranch,
           shortCode: resultbranch
@@ -1652,7 +1712,6 @@ exports.chbills = (req, res) => {
 
 }
 
-
 exports.drt = (req, res) => {
   let drtbranch = req.params.branch;
   let drtquery = 'SELECT ID,CONCAT(NAME," || ",Pan_no) AS "Name"  FROM drt_customer WHERE STATUS=1';
@@ -1693,7 +1752,7 @@ exports.drtbills = (req, res) => {
   connections.scm_public.query(billcheckquery, (err, resbill) => {
 
     if (resbill == '') {
-      let drtbillsquery = "INSERT INTO drt_bills (Bill_id,Net_amount,Drt_percentage_value,Drt_amount,Created_by,Drt_id,Category,Comments,Aggreed_percentage_value,Billed_branch,Bill_no,bill_date,Mrn,Name,Reference) VALUE (" + billid + "," + netamount + "," + commission + "," + drtamount + "," + userid + "," + drtid + ",'" + category + "','" + comments + "'," + aggcommission + ",'" + billedbranch + "', '" + billno + "','" + billdate + "','" + mrn + "','" + name + "','" + ref + "' );"
+      let drtbillsquery = "INSERT INTO drt_bills (Bill_id,Net_amount,Drt_percentage_value,Drt_amount,Created_by,Drt_id,Category,Comments,Aggreed_percentage_value,Billed_branch,Bill_no,bill_date,Mrn,Name,Reference) VALUE (" + billid + "," + netamount + "," + commission + "," + drtamount + "," + userid + ",'" + drtid + "','" + category + "','" + comments + "'," + aggcommission + ",'" + billedbranch + "', '" + billno + "','" + billdate + "','" + mrn + "','" + name + "','" + ref + "' );"
       console.log(drtbillsquery);
       connections.scm_root.query(drtbillsquery, (err, result) => {
         if (err) {
@@ -1710,7 +1769,7 @@ exports.drtbills = (req, res) => {
       })
     } else {
 
-      let updatedrtbillquery = "update drt_bills set Drt_percentage_value=" + commission + ", Drt_amount=" + drtamount + ", Created_by=" + userid + ", Drt_id=" + drtid + ", Category='" + category + "', Comments='" + comments + "', Aggreed_percentage_value=" + aggcommission + ",Billed_branch='" + billedbranch + "',Approval_status=0  where Bill_id=" + billid
+      let updatedrtbillquery = "update drt_bills set Drt_percentage_value='" + commission + "', Drt_amount='" + drtamount + "', Created_by='" + userid + "', Drt_id='" + drtid + "', Category='" + category + "', Comments='" + comments + "', Aggreed_percentage_value='" + aggcommission + "',Billed_branch='" + billedbranch + "',Approval_status=0  where Bill_id='" + billid + "'";
       console.log(updatedrtbillquery);
       connections.scm_root.query(updatedrtbillquery, (err, resupdate) => {
         if (err) console.error(err);
@@ -1769,81 +1828,115 @@ exports.sch_branch = (req, res) => {
 
 exports.schbills = (req, res) => {
   let frmdate = req.params.fromdate;
-  let todate = req.params.todate;
   let status = req.params.status;
   let branch = req.params.branch;
   let name = req.params.name;
+  let date_type = req.params.datetype;
   let splitbranches = [];
   let string = null;
 
   console.log(req.params);
-  if ((status == "All") && (branch == "All")) {
-    console.log("hit in branch and visit all");
-    let drtbillquery = "select branches from users where emp_id ='" + name + "' and role ='sch_user' "
-    console.log("drtbillquery : " + drtbillquery);
-    connections.scm_public.query(drtbillquery, (err, resbranch) => {
 
-      if (err) console.error(err);
-      resbranch.forEach(branch => {
-        splitbranches = branch.branches.split('+')
-      });
-      connections.scm_public.query(files.schall, [frmdate, todate, splitbranches, frmdate, todate, splitbranches, frmdate, todate, splitbranches, frmdate, todate, splitbranches, frmdate, todate, splitbranches], (err, resbill) => {
+  if (date_type == 2) {
+    console.log("hit in expense");
+
+
+    if (branch == 'All') {
+      connections.scm_public.query("select branches from users where emp_id=? and role='sch_user'", [name], (err, resbranch) => {
+        if (err) console.error(err);
+        resbranch.forEach(branch => {
+          splitbranches = branch.branches.split('+')
+        });
+
+        connections.scm_public.query(files.schexpense_all, [frmdate, splitbranches], (err, resbill) => {
+          if (err) console.error(err);
+          res.json({
+            "result": {
+              "bill": resbill
+            }
+          })
+        })
+      })
+
+    } else {
+      connections.scm_public.query(files.schexpense_all, [frmdate, branch], (err, resbill) => {
         if (err) console.error(err);
         res.json({
           "result": {
             "bill": resbill
           }
         })
-      });;
-
-
-    });
-
-
-  } else if ((status == "All") && (!(branch == 'All'))) {
-    console.log("hit in status all");
-    connections.scm_public.query(files.schvisitall, [frmdate, todate, branch, frmdate, todate, branch, frmdate, todate, branch, frmdate, todate, branch, frmdate, todate, branch], (err, resbill) => {
-      if (err) console.error(err);
-
-      res.json({
-        "result": {
-          "bill": resbill
-        }
       })
-    });
-  } else if (!(status == "All") && (branch == 'All')) {
-    console.log("hit in branch all");
+    }
+  } else {
+    if ((status == "All") && (branch == "All")) {
+      console.log("hit in branch and visit all");
+      let drtbillquery = "select branches from users where emp_id ='" + name + "' and role ='sch_user' "
+      console.log("drtbillquery : " + drtbillquery);
+      connections.scm_public.query(drtbillquery, (err, resbranch) => {
 
-    let drtbillquery = "select branches from users where emp_id ='" + name + "' and role ='sch_user' "
-    console.log("drtbillquery : " + drtbillquery);
-    connections.scm_public.query(drtbillquery, (err, resbranch) => {
-      if (err) console.error(err);
-      resbranch.forEach(branch => {
-        splitbranches = branch.branches.split('+')
+        if (err) console.error(err);
+        resbranch.forEach(branch => {
+          splitbranches = branch.branches.split('+')
+        });
+        connections.scm_public.query(files.schall, [frmdate, splitbranches, frmdate, splitbranches, frmdate, splitbranches, frmdate, splitbranches, frmdate, splitbranches], (err, resbill) => {
+          if (err) console.error(err);
+          res.json({
+            "result": {
+              "bill": resbill
+            }
+          })
+        });;
+
+
       });
-      connections.scm_public.query(files.schbranchall, [frmdate, todate, status, splitbranches], (err, resbill) => {
+
+
+    } else if ((status == "All") && (!(branch == 'All'))) {
+      console.log("hit in status all");
+      connections.scm_public.query(files.schvisitall, [frmdate, branch, frmdate, branch, frmdate, branch, frmdate, branch, frmdate, branch], (err, resbill) => {
         if (err) console.error(err);
 
         res.json({
           "result": {
             "bill": resbill
           }
-        });
-
+        })
       });
-    });
-  } else {
-    console.log("hit in else");
-    connections.scm_public.query(files.schelse, [frmdate, todate, status, branch], (err, resbill) => {
-      if (err) console.error(err);
-      res.json({
-        "result": {
-          "bill": resbill
-        }
+    } else if (!(status == "All") && (branch == 'All')) {
+      console.log("hit in branch all");
+
+      let drtbillquery = "select branches from users where emp_id ='" + name + "' and role ='sch_user' "
+      console.log("drtbillquery : " + drtbillquery);
+      connections.scm_public.query(drtbillquery, (err, resbranch) => {
+        if (err) console.error(err);
+        resbranch.forEach(branch => {
+          splitbranches = branch.branches.split('+')
+        });
+        connections.scm_public.query(files.schbranchall, [frmdate, status, splitbranches], (err, resbill) => {
+          if (err) console.error(err);
+
+          res.json({
+            "result": {
+              "bill": resbill
+            }
+          });
+
+        });
+      });
+    } else {
+      console.log("hit in else");
+      connections.scm_public.query(files.schelse, [frmdate, status, branch], (err, resbill) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "bill": resbill
+          }
+        })
       })
-    })
 
 
+    }
 
   }
 
@@ -1853,7 +1946,7 @@ exports.schbillinsert = (req, res) => {
   let schbillid = req.body.sch_bill_id;
   let schid = req.body.sch_id;
 
-  let schdrtbillupdate = "update drt_bills set sch_Approved_by='" + schid + "',Approval_status=1,Approved_time=Now() where id=" + schbillid
+  let schdrtbillupdate = "update drt_bills set sch_Approved_by='" + schid + "',Approval_status=1,Approved_time=Now() where id='" + schbillid + "'";
   console.log(schdrtbillupdate);
 
   connections.scm_root.query(schdrtbillupdate, (err, resilt) => {
@@ -1867,11 +1960,11 @@ exports.schbillinsert = (req, res) => {
 exports.schbillcancel = (req, res) => {
   let schbillid = req.body.sch_bill_id;
   let schid = req.body.sch_id;
-  let schcomments=req.body.sch_comments;
-  let concat=schcomments.concat("-- By--",schid,"--SCH")
+  let schcomments = req.body.sch_comments;
+  let concat = schcomments.concat("-- By--", schid, "--SCH")
   console.log(concat);
   // console.log("schid : "+schid);
-  let schdrtbillcancel = "update drt_bills set Approval_status=3,Cancelled_time=now(),Cancelled_by='" + schid + "',Comments='"+concat+"' where id=" + schbillid
+  let schdrtbillcancel = "update drt_bills set Approval_status=3,Cancelled_time=now(),Cancelled_by='" + schid + "',Comments='" + concat + "' where id=" + schbillid
   console.log(schdrtbillcancel);
 
   connections.scm_root.query(schdrtbillcancel, (err, rescance) => {
@@ -1908,66 +2001,37 @@ exports.fin_branch = (req, res) => {
 
 exports.finbills = (req, res) => {
   let frmdate = req.params.fromdate;
-  let todate = req.params.todate;
   let status = req.params.status;
   let branch = req.params.branch;
   let name = req.params.name;
   let splitbranches = [];
-  let listmrn=[];
+  let listmrn = [];
   let string = null;
-  let mergedList=[];
+  let mergedList = [];
+  let date_type = req.params.datetype;
   console.log(req.params);
-  if ((status == "All") && (branch == "All")) {
-    console.log("hit in branch and visit all");
 
-    connections.scm_public.query("SELECT Mrn FROM `drt_bills` WHERE bill_date BETWEEN ?  and ? group by Mrn",[frmdate,todate],(err,resmrn)=>{
-      if(err) console.error(err);
+  if (date_type == 2) {
+    console.log("hit in expense");
 
-      resmrn.forEach(element=>{
-      listmrn.push(element.Mrn);
-      })
+    if (branch == 'All') {
 
-        connections.ideamed.query("SELECT RIP.PATIENTID as Mrn, RIP.PATIENTNAME, RDRT.REFERRALTYPENAME, RDRB.REFERREDBYNAME from RT_INDIVIDUAL_PATIENT RIP JOIN RT_DATA_REFERRAL_TYPE RDRT ON RDRT.ID=RIP.REFERRALTYPE JOIN RT_DATA_REFERRED_BY RDRB ON RDRB.ID=RIP.REFERREDBYCONSULTANT where RIP.PATIENTID IN (?)",[listmrn],(err,resultvalue)=>{
-        if(err) console.error(err);
+      connections.scm_public.query("SELECT Mrn FROM `drt_bills` WHERE DATE_FORMAT(bill_date,'%Y-%m')= ? group by Mrn", [frmdate], (err, resmrn) => {
+        if (err) console.error(err);
 
-        connections.scm_public.query(files.finall, [frmdate, todate, frmdate, todate, frmdate, todate, frmdate, todate, frmdate, todate], (err, resultfin) => {
+        resmrn.forEach(element => {
+          listmrn.push(element.Mrn);
+        })
+
+        connections.ideamed.query("SELECT RIP.PATIENTID as Mrn, RIP.PATIENTNAME, RDRT.REFERRALTYPENAME, RDRB.REFERREDBYNAME from RT_INDIVIDUAL_PATIENT RIP JOIN RT_DATA_REFERRAL_TYPE RDRT ON RDRT.ID=RIP.REFERRALTYPE JOIN RT_DATA_REFERRED_BY RDRB ON RDRB.ID=RIP.REFERREDBYCONSULTANT where RIP.PATIENTID IN (?)", [listmrn], (err, resultvalue) => {
           if (err) console.error(err);
 
-
-        mergedList   = _.map(resultfin, function(item){
-              return _.extend(item, _.find(resultvalue, { Mrn: item.Mrn }));
-          });
-
-        res.json({
-          "result": {
-            "bill": mergedList
-          }
-        });
-
-        });
-
-      })
-    })
-
-
-  } else if ((status == "All") && (!(branch == 'All'))) {
-    console.log("hit in status all");
-
-    connections.scm_public.query("SELECT Mrn FROM `drt_bills` WHERE bill_date BETWEEN ?  and ? group by Mrn",[frmdate,todate],(err,resmrn)=>{
-      if(err) console.error(err);
-
-      resmrn.forEach(element=>{
-      listmrn.push(element.Mrn);
-      })
-
-      connections.ideamed.query("SELECT RIP.PATIENTID as Mrn, RIP.PATIENTNAME, RDRT.REFERRALTYPENAME, RDRB.REFERREDBYNAME from RT_INDIVIDUAL_PATIENT RIP JOIN RT_DATA_REFERRAL_TYPE RDRT ON RDRT.ID=RIP.REFERRALTYPE JOIN RT_DATA_REFERRED_BY RDRB ON RDRB.ID=RIP.REFERREDBYCONSULTANT where RIP.PATIENTID IN (?)",[listmrn],(err,resultvalue)=>{
-        if(err) console.error(err);
-
-        connections.scm_public.query(files.finstatusall, [frmdate, todate, branch, frmdate, todate, branch, frmdate, todate, branch, frmdate, todate, branch, frmdate, todate, branch], (err, resultfin) => {
-          if (err) console.error(err);
-
-          mergedList   = _.map(resultfin, function(item){
-                return _.extend(item, _.find(resultvalue, { Mrn: item.Mrn }));
+          connections.scm_public.query(files.finexpense_all, [frmdate, status], (err, resultfin) => {
+            if (err) console.error(err);
+            mergedList = _.map(resultfin, function(item) {
+              return _.extend(item, _.find(resultvalue, {
+                Mrn: item.Mrn
+              }));
             });
 
             res.json({
@@ -1976,74 +2040,302 @@ exports.finbills = (req, res) => {
               }
             });
 
-        });
+          })
 
-      });
-    });
+        })
 
-
-
-  } else if (!(status == "All") && (branch == 'All')) {
-
-    connections.scm_public.query("SELECT Mrn FROM `drt_bills` WHERE bill_date BETWEEN ?  and ? group by Mrn",[frmdate,todate],(err,resmrn)=>{
-      if(err) console.error(err);
-
-      resmrn.forEach(element=>{
-      listmrn.push(element.Mrn);
       })
-
-      connections.ideamed.query("SELECT RIP.PATIENTID as Mrn, RIP.PATIENTNAME, RDRT.REFERRALTYPENAME, RDRB.REFERREDBYNAME from RT_INDIVIDUAL_PATIENT RIP JOIN RT_DATA_REFERRAL_TYPE RDRT ON RDRT.ID=RIP.REFERRALTYPE JOIN RT_DATA_REFERRED_BY RDRB ON RDRB.ID=RIP.REFERREDBYCONSULTANT where RIP.PATIENTID IN (?)",[listmrn],(err,resultvalue)=>{
-      if(err) console.error(err);
-
-      connections.scm_public.query(files.finbranchall, [frmdate, todate, status], (err, resultfin) => {
+    } else {
+      console.log("hitin expense branch");
+      connections.scm_public.query(files.finexpense_branch, [frmdate, status, branch], (err, resultfin) => {
+        console.log();
         if (err) console.error(err);
-        mergedList   = _.map(resultfin, function(item){
-              return _.extend(item, _.find(resultvalue, { Mrn: item.Mrn }));
-          });
-
         res.json({
           "result": {
-            "bill": mergedList
+            "bill": resultfin
           }
+        });
+      })
+    }
+  }
+else {
+  if ((status == "All") && (branch == "All")) {
+    console.log("hit in branch and visit all");
+
+    connections.scm_public.query("SELECT Mrn FROM `drt_bills` WHERE DATE_FORMAT(bill_date,'%Y-%m')= ? group by Mrn", [frmdate], (err, resmrn) => {
+      if (err) console.error(err);
+
+      resmrn.forEach(element => {
+        listmrn.push(element.Mrn);
+      })
+
+      connections.ideamed.query("SELECT RIP.PATIENTID as Mrn, RIP.PATIENTNAME, RDRT.REFERRALTYPENAME, RDRB.REFERREDBYNAME from RT_INDIVIDUAL_PATIENT RIP JOIN RT_DATA_REFERRAL_TYPE RDRT ON RDRT.ID=RIP.REFERRALTYPE JOIN RT_DATA_REFERRED_BY RDRB ON RDRB.ID=RIP.REFERREDBYCONSULTANT where RIP.PATIENTID IN (?)", [listmrn], (err, resultvalue) => {
+        if (err) console.error(err);
+
+        connections.scm_public.query(files.finall, [frmdate, frmdate, frmdate, frmdate, frmdate], (err, resultfin) => {
+          if (err) console.error(err);
+
+
+          mergedList = _.map(resultfin, function(item) {
+            return _.extend(item, _.find(resultvalue, {
+              Mrn: item.Mrn
+            }));
+          });
+
+          res.json({
+            "result": {
+              "bill": mergedList
+            }
+          });
+
+        });
+
+      })
+    })
+
+
+  }
+  else if ((status == "All") && (!(branch == 'All'))) {
+    console.log("hit in status all");
+
+    connections.scm_public.query("SELECT Mrn FROM `drt_bills` WHERE DATE_FORMAT(bill_date,'%Y-%m')= ? group by Mrn", [frmdate], (err, resmrn) => {
+      if (err) console.error(err);
+
+      resmrn.forEach(element => {
+        listmrn.push(element.Mrn);
+      })
+
+      connections.ideamed.query("SELECT RIP.PATIENTID as Mrn, RIP.PATIENTNAME, RDRT.REFERRALTYPENAME, RDRB.REFERREDBYNAME from RT_INDIVIDUAL_PATIENT RIP JOIN RT_DATA_REFERRAL_TYPE RDRT ON RDRT.ID=RIP.REFERRALTYPE JOIN RT_DATA_REFERRED_BY RDRB ON RDRB.ID=RIP.REFERREDBYCONSULTANT where RIP.PATIENTID IN (?)", [listmrn], (err, resultvalue) => {
+        if (err) console.error(err);
+
+        connections.scm_public.query(files.finstatusall, [frmdate, branch, frmdate, branch, frmdate, branch, frmdate, branch, frmdate, branch], (err, resultfin) => {
+          if (err) console.error(err);
+
+          mergedList = _.map(resultfin, function(item) {
+            return _.extend(item, _.find(resultvalue, {
+              Mrn: item.Mrn
+            }));
+          });
+
+          res.json({
+            "result": {
+              "bill": mergedList
+            }
+          });
+
         });
 
       });
     });
+
+
+
+  }
+
+  else if (!(status == "All") && (branch == 'All')) {
+  //
+    connections.scm_public.query("SELECT Mrn FROM `drt_bills` WHERE DATE_FORMAT(bill_date,'%Y-%m')= ? group by Mrn", [frmdate], (err, resmrn) => {
+      if (err) console.error(err);
+
+      resmrn.forEach(element => {
+        listmrn.push(element.Mrn);
+      })
+
+      connections.ideamed.query("SELECT RIP.PATIENTID as Mrn, RIP.PATIENTNAME, RDRT.REFERRALTYPENAME, RDRB.REFERREDBYNAME from RT_INDIVIDUAL_PATIENT RIP JOIN RT_DATA_REFERRAL_TYPE RDRT ON RDRT.ID=RIP.REFERRALTYPE JOIN RT_DATA_REFERRED_BY RDRB ON RDRB.ID=RIP.REFERREDBYCONSULTANT where RIP.PATIENTID IN (?)", [listmrn], (err, resultvalue) => {
+        if (err) console.error(err);
+
+        connections.scm_public.query(files.finbranchall, [frmdate, status], (err, resultfin) => {
+          if (err) console.error(err);
+          mergedList = _.map(resultfin, function(item) {
+            return _.extend(item, _.find(resultvalue, {
+              Mrn: item.Mrn
+            }));
+          });
+
+          res.json({
+            "result": {
+              "bill": mergedList
+            }
+          });
+
+        });
+      });
     });
 
 
-  } else {
+  }
+
+  else {
     console.log("hit in else");
 
-    connections.scm_public.query("SELECT Mrn FROM `drt_bills` WHERE bill_date BETWEEN ?  and ? group by Mrn",[frmdate,todate],(err,resmrn)=>{
-      if(err) console.error(err);
+    connections.scm_public.query("SELECT Mrn FROM `drt_bills` WHERE DATE_FORMAT(bill_date,'%Y-%m')= ? group by Mrn", [frmdate], (err, resmrn) => {
+      if (err) console.error(err);
 
-            resmrn.forEach(element=>{
-            listmrn.push(element.Mrn);
-            })
+      resmrn.forEach(element => {
+        listmrn.push(element.Mrn);
+      })
 
-            connections.ideamed.query("SELECT RIP.PATIENTID as Mrn, RIP.PATIENTNAME, RDRT.REFERRALTYPENAME, RDRB.REFERREDBYNAME from RT_INDIVIDUAL_PATIENT RIP JOIN RT_DATA_REFERRAL_TYPE RDRT ON RDRT.ID=RIP.REFERRALTYPE JOIN RT_DATA_REFERRED_BY RDRB ON RDRB.ID=RIP.REFERREDBYCONSULTANT where RIP.PATIENTID IN (?)",[listmrn],(err,resultvalue)=>{
-            if(err) console.error(err);
+      connections.ideamed.query("SELECT RIP.PATIENTID as Mrn, RIP.PATIENTNAME, RDRT.REFERRALTYPENAME, RDRB.REFERREDBYNAME from RT_INDIVIDUAL_PATIENT RIP JOIN RT_DATA_REFERRAL_TYPE RDRT ON RDRT.ID=RIP.REFERRALTYPE JOIN RT_DATA_REFERRED_BY RDRB ON RDRB.ID=RIP.REFERREDBYCONSULTANT where RIP.PATIENTID IN (?)", [listmrn], (err, resultvalue) => {
+        if (err) console.error(err);
 
-            connections.scm_public.query(files.finelse, [frmdate, todate, status, branch], (err, resultfin) => {
-              if (err) console.error(err);
+        connections.scm_public.query(files.finelse, [frmdate,status, branch], (err, resultfin) => {
+          if (err) console.error(err);
 
-              mergedList   = _.map(resultfin, function(item){
-                    return _.extend(item, _.find(resultvalue, { Mrn: item.Mrn }));
-                });
-
-              res.json({
-                "result": {
-                  "bill": mergedList
-                }
-              });
-
-
-            });
+          mergedList = _.map(resultfin, function(item) {
+            return _.extend(item, _.find(resultvalue, {
+              Mrn: item.Mrn
+            }));
           });
 
+          res.json({
+            "result": {
+              "bill": mergedList
+            }
+          });
+
+
+        });
       });
+
+    });
   }
+}
+  //
+  // if ((status == "All") && (branch == "All")) {
+  //   console.log("hit in branch and visit all");
+  //
+  //   connections.scm_public.query("SELECT Mrn FROM `drt_bills` WHERE bill_date BETWEEN ?  and ? group by Mrn", [frmdate, todate], (err, resmrn) => {
+  //     if (err) console.error(err);
+  //
+  //     resmrn.forEach(element => {
+  //       listmrn.push(element.Mrn);
+  //     })
+  //
+  //     connections.ideamed.query("SELECT RIP.PATIENTID as Mrn, RIP.PATIENTNAME, RDRT.REFERRALTYPENAME, RDRB.REFERREDBYNAME from RT_INDIVIDUAL_PATIENT RIP JOIN RT_DATA_REFERRAL_TYPE RDRT ON RDRT.ID=RIP.REFERRALTYPE JOIN RT_DATA_REFERRED_BY RDRB ON RDRB.ID=RIP.REFERREDBYCONSULTANT where RIP.PATIENTID IN (?)", [listmrn], (err, resultvalue) => {
+  //       if (err) console.error(err);
+  //
+  //       connections.scm_public.query(files.finall, [frmdate, todate, frmdate, todate, frmdate, todate, frmdate, todate, frmdate, todate], (err, resultfin) => {
+  //         if (err) console.error(err);
+  //
+  //
+  //         mergedList = _.map(resultfin, function(item) {
+  //           return _.extend(item, _.find(resultvalue, {
+  //             Mrn: item.Mrn
+  //           }));
+  //         });
+  //
+  //         res.json({
+  //           "result": {
+  //             "bill": mergedList
+  //           }
+  //         });
+  //
+  //       });
+  //
+  //     })
+  //   })
+  //
+  //
+  // } else if ((status == "All") && (!(branch == 'All'))) {
+  //   console.log("hit in status all");
+  //
+  //   connections.scm_public.query("SELECT Mrn FROM `drt_bills` WHERE bill_date BETWEEN ?  and ? group by Mrn", [frmdate, todate], (err, resmrn) => {
+  //     if (err) console.error(err);
+  //
+  //     resmrn.forEach(element => {
+  //       listmrn.push(element.Mrn);
+  //     })
+  //
+  //     connections.ideamed.query("SELECT RIP.PATIENTID as Mrn, RIP.PATIENTNAME, RDRT.REFERRALTYPENAME, RDRB.REFERREDBYNAME from RT_INDIVIDUAL_PATIENT RIP JOIN RT_DATA_REFERRAL_TYPE RDRT ON RDRT.ID=RIP.REFERRALTYPE JOIN RT_DATA_REFERRED_BY RDRB ON RDRB.ID=RIP.REFERREDBYCONSULTANT where RIP.PATIENTID IN (?)", [listmrn], (err, resultvalue) => {
+  //       if (err) console.error(err);
+  //
+  //       connections.scm_public.query(files.finstatusall, [frmdate, todate, branch, frmdate, todate, branch, frmdate, todate, branch, frmdate, todate, branch, frmdate, todate, branch], (err, resultfin) => {
+  //         if (err) console.error(err);
+  //
+  //         mergedList = _.map(resultfin, function(item) {
+  //           return _.extend(item, _.find(resultvalue, {
+  //             Mrn: item.Mrn
+  //           }));
+  //         });
+  //
+  //         res.json({
+  //           "result": {
+  //             "bill": mergedList
+  //           }
+  //         });
+  //
+  //       });
+  //
+  //     });
+  //   });
+  //
+  //
+  //
+  // } else if (!(status == "All") && (branch == 'All')) {
+  //
+  //   connections.scm_public.query("SELECT Mrn FROM `drt_bills` WHERE bill_date BETWEEN ?  and ? group by Mrn", [frmdate, todate], (err, resmrn) => {
+  //     if (err) console.error(err);
+  //
+  //     resmrn.forEach(element => {
+  //       listmrn.push(element.Mrn);
+  //     })
+  //
+  //     connections.ideamed.query("SELECT RIP.PATIENTID as Mrn, RIP.PATIENTNAME, RDRT.REFERRALTYPENAME, RDRB.REFERREDBYNAME from RT_INDIVIDUAL_PATIENT RIP JOIN RT_DATA_REFERRAL_TYPE RDRT ON RDRT.ID=RIP.REFERRALTYPE JOIN RT_DATA_REFERRED_BY RDRB ON RDRB.ID=RIP.REFERREDBYCONSULTANT where RIP.PATIENTID IN (?)", [listmrn], (err, resultvalue) => {
+  //       if (err) console.error(err);
+  //
+  //       connections.scm_public.query(files.finbranchall, [frmdate, todate, status], (err, resultfin) => {
+  //         if (err) console.error(err);
+  //         mergedList = _.map(resultfin, function(item) {
+  //           return _.extend(item, _.find(resultvalue, {
+  //             Mrn: item.Mrn
+  //           }));
+  //         });
+  //
+  //         res.json({
+  //           "result": {
+  //             "bill": mergedList
+  //           }
+  //         });
+  //
+  //       });
+  //     });
+  //   });
+  //
+  //
+  // } else {
+  //   console.log("hit in else");
+  //
+  //   connections.scm_public.query("SELECT Mrn FROM `drt_bills` WHERE bill_date BETWEEN ?  and ? group by Mrn", [frmdate, todate], (err, resmrn) => {
+  //     if (err) console.error(err);
+  //
+  //     resmrn.forEach(element => {
+  //       listmrn.push(element.Mrn);
+  //     })
+  //
+  //     connections.ideamed.query("SELECT RIP.PATIENTID as Mrn, RIP.PATIENTNAME, RDRT.REFERRALTYPENAME, RDRB.REFERREDBYNAME from RT_INDIVIDUAL_PATIENT RIP JOIN RT_DATA_REFERRAL_TYPE RDRT ON RDRT.ID=RIP.REFERRALTYPE JOIN RT_DATA_REFERRED_BY RDRB ON RDRB.ID=RIP.REFERREDBYCONSULTANT where RIP.PATIENTID IN (?)", [listmrn], (err, resultvalue) => {
+  //       if (err) console.error(err);
+  //
+  //       connections.scm_public.query(files.finelse, [frmdate, todate, status, branch], (err, resultfin) => {
+  //         if (err) console.error(err);
+  //
+  //         mergedList = _.map(resultfin, function(item) {
+  //           return _.extend(item, _.find(resultvalue, {
+  //             Mrn: item.Mrn
+  //           }));
+  //         });
+  //
+  //         res.json({
+  //           "result": {
+  //             "bill": mergedList
+  //           }
+  //         });
+  //
+  //
+  //       });
+  //     });
+  //
+  //   });
+  // }
 
 }
 
@@ -2051,9 +2343,12 @@ exports.finbills = (req, res) => {
 exports.finbillinsert = (req, res) => {
   let schbillid = req.body.sch_bill_id;
   let schid = req.body.sch_id;
-  let expensedatefin=req.body.sch_expensedate;
+  let expensedatefin = req.body.sch_expensedate;
   console.log("schbillid :" + schbillid);
-  let findrtbillupdate = "update drt_bills set admin_Approved_by='" + schid + "' ,Approval_status=2,Admin_Approved_time=Now(),Expense_date='"+expensedatefin+"' where id=" + schbillid
+  console.log(req.body);
+
+
+  let findrtbillupdate = "update drt_bills set admin_Approved_by='" + schid + "' ,Approval_status=2,Admin_Approved_time=Now(),Expense_date='" + expensedatefin + "' where id=" + schbillid
   console.log(findrtbillupdate);
 
   connections.scm_root.query(findrtbillupdate, (err, resilt) => {
@@ -2067,10 +2362,10 @@ exports.finbillinsert = (req, res) => {
 exports.finbillcancel = (req, res) => {
   let finbillid = req.body.sch_bill_id;
   let finid = req.body.sch_id;
-  let fincomments=req.body.sch_comments;
-let concat=fincomments.concat("-- by finance")
-  let findrtbillcancel = "update drt_bills set Approval_status=4,Cancelled_time=now(),Cancelled_by='" + finid + "',Comments='"+concat+"' where id=" + finbillid
-// let findrtbillcancel = "update drt_bills set Approval_status=4,Cancelled_time=now(),Cancelled_by='" + finid + "' where id=" + finbillid
+  let fincomments = req.body.sch_comments;
+  let concat = fincomments.concat("-- by finance")
+  let findrtbillcancel = "update drt_bills set Approval_status=4,Cancelled_time=now(),Cancelled_by='" + finid + "',Comments='" + concat + "' where id=" + finbillid
+  // let findrtbillcancel = "update drt_bills set Approval_status=4,Cancelled_time=now(),Cancelled_by='" + finid + "' where id=" + finbillid
 
   console.log(findrtbillcancel);
 
@@ -2091,6 +2386,101 @@ exports.approvalbills = (req, res) => {
     res.json(resbills)
   })
 }
+
+
+exports.main_route_usage_tracker_new_email = (yesterday, callback) => {
+  // if (sess.superUser === undefined) {
+  //   res.json({ msg: "Not Authorised" });
+  // } else {
+  //  console.log('main_route_revenue');
+  let ftddate = yesterday;
+  let temp = new Date(ftddate);
+  let mtddate =
+    temp.getFullYear() +
+    "-" +
+    ("0" + (temp.getMonth() + 1)).slice(-2) +
+    "-" +
+    "01";
+
+  let tarArr = ftddate.split("-");
+  let tarMonth = tarArr[1];
+  let tarYear = tarArr[0];
+
+  console.log(ftddate);
+  console.log(mtddate);
+
+  connections.scm_public.query(
+    files.new_opd_super,
+    [mtddate, ftddate],
+    (error, resnewopd) => {
+
+      if (error) {
+        callback("new opd select query error", null);
+      } else {
+        connections.scm_public.query(
+          files.device_history,
+          [mtddate, ftddate],
+          (error, resdevicehistory) => {
+            if (error) {
+              callback("device_history select query error", null);
+            } else {
+              connections.scm_public.query(
+                files.device_revenue,
+                [mtddate, ftddate],
+                (error, resdevicerevenue) => {
+                  if (error) {
+                    callback("device_revenue select query error", null);
+                  } else {
+                    connections.scm_public.query("select br.entity as entity,br.region as region,br.code as branch,br.branch as branchname,tr.total,tr.amount from branches as br  LEFT JOIN usage_track_target as tr ON br.id=tr.branch_id AND target_month='" + tarMonth + "' AND target_year='" + tarYear + "'", (err, targetres) => {
+                      if (err) {
+                        callback("target join query  error", null);
+                      } else {
+                        connections.scm_public.query(
+                          "select * from branches",
+                          (err, branchres) => {
+                            if (err) {
+                              callback("branches query  error", null);
+                            } else {
+                              mods.nativeFunctions
+                                .newUsageTrackerNativeNew(
+                                  resnewopd,
+                                  branchres,
+                                  ftddate,
+                                  resdevicehistory,
+                                  targetres,
+                                  resdevicerevenue
+                                )
+                                .then(final => callback(null, final));
+                            }
+                          });
+                      }
+                    });
+                  }
+                }
+              );
+            }
+
+          }
+        );
+      }
+    }
+  );
+  // }
+};
+
+
+
+exports.avaEmailList = (emailtemp, callback) => {
+  connections.scm_public.query("select fromid,toid,bccid,ccid,passcode from email where scmtype='avaemail'", (error, domesticemailres) => {
+    if (error) {
+      callback("select email query", null);
+    } else {
+      callback(null, domesticemailres);
+    }
+  });
+}
+
+
 
 exports.upload_doctor = (req, res) => {
   console.log("hit in back end ------------------------------------");
@@ -2188,7 +2578,7 @@ exports.upload_doctor = (req, res) => {
           console.log(agreesampleFile.name);
           console.log(aggname);
           if (agreesampleFile.mimetype == "image/jpeg" || agreesampleFile.mimetype == "image/png" || agreesampleFile.mimetype == "image/gif" || agreesampleFile.mimetype == "application/pdf") {
-            agreeuploadPath = 'D:/scm/backend/uploads/' + aggname;
+            agreeuploadPath = '/var/www/andaman/drtfiles/' + aggname;
             console.log("uploadPath : " + agreeuploadPath);
 
             doc_agreement = 'Yes'
@@ -2212,7 +2602,7 @@ exports.upload_doctor = (req, res) => {
           console.log(pansampleFile.name);
           console.log(panname);
           if (pansampleFile.mimetype == "image/jpeg" || pansampleFile.mimetype == "image/png" || pansampleFile.mimetype == "image/gif" || pansampleFile.mimetype == "application/pdf") {
-            panuploadPath = 'D:/scm/backend/uploads/' + panname;
+            panuploadPath = '/var/www/andaman/drtfiles/' + panname;
             console.log("uploadPath : " + panuploadPath);
             doc_agreement = 'Yes'
             console.log(doc_agreement);
@@ -2236,7 +2626,7 @@ exports.upload_doctor = (req, res) => {
           console.log(passname);
 
           if (passbooksampleFile.mimetype == "image/jpeg" || passbooksampleFile.mimetype == "image/png" || passbooksampleFile.mimetype == "image/gif" || passbooksampleFile.mimetype == "application/pdf") {
-            passbookuploadPath = 'D:/scm/backend/uploads/' + passname;
+            passbookuploadPath = '/var/www/andaman/drtfiles/' + passname;
             console.log("uploadPath : " + passbookuploadPath);
             doc_agreement = 'Yes'
             console.log(doc_agreement);
@@ -2337,9 +2727,10 @@ exports.ch_doctorlist = (req, res) => {
 exports.download_file = (req, res) => {
   let filepath = req.params.download
   console.log(filepath);
-  var fileLocation = path.join('./uploads', filepath)
+  //var fileLocation = path.join('/var/www/andaman/drtfiles', filepath)
+  var fileLocation = '/var/www/andaman/drtfiles/' + filepath;
   console.log(fileLocation);
-  res.download(fileLocation, filepath);
+  res.download(fileLocation);
 }
 
 exports.fin_doctorlist = (req, res) => {
@@ -2349,7 +2740,7 @@ exports.fin_doctorlist = (req, res) => {
   console.log(fin_status);
   console.log(fin_branch);
   if ((fin_branch == "All") && (fin_status == "All")) {
-    connections.scm_public.query(files.findocallall,(err, resfin) => {
+    connections.scm_public.query(files.findocallall, (err, resfin) => {
       //  console.log(resfin);
       if (err) console.error(err);
       res.json({
@@ -2392,13 +2783,13 @@ exports.fin_doctorlist = (req, res) => {
   }
 }
 
-exports.fin_doctorapprove=(req,res)=>{
+exports.fin_doctorapprove = (req, res) => {
   console.log(req.body);
-  let fin_id=req.body.fin_id;
+  let fin_id = req.body.fin_id;
   console.log(fin_id);
-  connections.scm_root.query("UPDATE drt_customer SET STATUS=1,Created_by=NOW() WHERE ID=? ",[fin_id],(err,resupdatedoc)=>{
+  connections.scm_root.query("UPDATE drt_customer SET STATUS=1,Created_by=NOW() WHERE ID=? ", [fin_id], (err, resupdatedoc) => {
     console.log(resupdatedoc);
-    if(err) console.error(err);
+    if (err) console.error(err);
     res.json({
       Dataupdated: "updated"
     })
@@ -2406,13 +2797,13 @@ exports.fin_doctorapprove=(req,res)=>{
 
 }
 
-exports.fin_doctorreject=(req,res)=>{
+exports.fin_doctorreject = (req, res) => {
   console.log(req.body);
-  let fin_id=req.body.fin_id;
+  let fin_id = req.body.fin_id;
   console.log(fin_id);
-  connections.scm_root.query("UPDATE drt_customer SET STATUS=-2,Cancelled_time=NOW() WHERE ID=? ",[fin_id],(err,resupdatedoc)=>{
+  connections.scm_root.query("UPDATE drt_customer SET STATUS=-2,Cancelled_time=NOW() WHERE ID=? ", [fin_id], (err, resupdatedoc) => {
     console.log(resupdatedoc);
-    if(err) console.error(err);
+    if (err) console.error(err);
     res.json({
       Dataupdated: "updated"
     })
@@ -2420,99 +2811,121 @@ exports.fin_doctorreject=(req,res)=>{
 
 }
 
-exports.fin_loaddoc=(req,res)=>{
+exports.fin_loaddoc = (req, res) => {
 
-  connections.scm_public.query("SELECT COUNT(*) as count FROM drt_customer WHERE STATUS=-1",(err,resloaddoc)=>{
-    if(err) console.error(err);
+  connections.scm_public.query("SELECT COUNT(*) as count FROM drt_customer WHERE STATUS=-1", (err, resloaddoc) => {
+    if (err) console.error(err);
     res.json(resloaddoc)
   })
 }
 
-exports.ch_submittedbills=(req,res)=>{
-let fromdata=req.params.frmdate;
-let todate=req.params.todate;
-let status=req.params.status;
-let branch=req.params.branch;
-let name=req.params.name;
-let splitbranches = [];
+exports.ch_submittedbills = (req, res) => {
+  let fromdata = req.params.frmdate;
+  let date_type = req.params.datetype;
+  let status = req.params.status;
+  let branch = req.params.branch;
+  let name = req.params.name;
+
+  let splitbranches = [];
+  let splitdate = [];
+  splitdate = fromdata.split("-")
 
 
-if((status=='All')&&(branch=='All')){
-  connections.scm_public.query("select branches from users where emp_id=? and role='ch_user'",[name],(err,ressubill) =>{
-    if(err)console.error(err);
-    console.log(ressubill.length);
-    ressubill.forEach(branch => {
-      splitbranches = branch.branches.split('+')
-    });
-  connections.scm_public.query(files.chsubbillall,[fromdata,todate,splitbranches,fromdata,todate,splitbranches,fromdata,todate,splitbranches,fromdata,todate,splitbranches,fromdata,todate,splitbranches],(err,ressub)=>{
-    if(err) console.error(err);
-    res.json({
-      "result": {
-        "subbill": ressub
-      }
-    })
-  })
-  })
+  if (date_type == 2) {
+    console.log("hit in expense");
+    connections.scm_public.query("select branches from users where emp_id=? and role='ch_user'", [name], (err, ressubill) => {
+      if (err) console.error(err);
+      console.log(ressubill.length);
+      ressubill.forEach(branch => {
+        splitbranches = branch.branches.split('+')
+      });
 
-}
-else if((status=='All')&&(!(branch=='All'))){
-
-  connections.scm_public.query(files.chsubbillall,[fromdata,todate,branch,fromdata,todate,branch,fromdata,todate,branch,fromdata,todate,branch,fromdata,todate,branch],(err,ressub)=>{
-    if(err) console.error(err);
-    res.json({
-      "result": {
-        "subbill": ressub
-      }
-    })
-  })
-
-}
-else if(!(status=='All')&&(branch=='All')){
-  connections.scm_public.query("select branches from users where emp_id=? and role='ch_user'",[name],(err,ressubill) =>{
-    if(err)console.error(err);
-    console.log(ressubill.length);
-    ressubill.forEach(branch => {
-      splitbranches = branch.branches.split('+')
-    });
-    console.log(fromdata+" "+todate+" "+status+" "+splitbranches);
-  connections.scm_public.query(files.chsubbillstatusall,[fromdata,todate,status,splitbranches],(err,ressub)=>{
-    if(err) console.error(err);
-    console.log(ressub);
-    res.json({
-      "result": {
-        "subbill": ressub
-      }
-    })
-  })
-  })
-}
-else{
-console.log(fromdata);
-  connections.scm_public.query(files.chsubbillstatusall,[fromdata,todate,status,branch],(err,ressub)=>{
-    if(err) console.error(err);
-    res.json({
-      "result": {
-        "subbill": ressub
-      }
-    })
-  })
-
-}
-}
-
-
-exports.expense_date=(req,res)=>{
-  console.log(req.body);
-  let finbill_id=req.body.sch_bill_id;
-  let fin_expensedate=req.body.sch_expensedate;
-  let findrtbillexpenseupdate = "update drt_bills set Expense_date='"+fin_expensedate+"' where id=" + finbill_id
-  console.log(findrtbillexpenseupdate);
-
-    connections.scm_root.query(findrtbillexpenseupdate,(err,finexpense)=>{
+      connections.scm_public.query(files.expensedata, [fromdata, status, splitbranches], (err, resexpense) => {
         if (err) console.error(err);
         res.json({
-          Dataupdated: "updated"
+          "result": {
+            "subbill": resexpense
+          }
         })
+      })
     })
+  } else {
+    if ((status == 'All') && (branch == 'All')) {
+      connections.scm_public.query("select branches from users where emp_id=? and role='ch_user'", [name], (err, ressubill) => {
+        if (err) console.error(err);
+        console.log(ressubill.length);
+        ressubill.forEach(branch => {
+          splitbranches = branch.branches.split('+')
+        });
+
+        connections.scm_public.query(files.chsubbillall, [fromdata, splitbranches, fromdata, splitbranches, fromdata, splitbranches, fromdata, splitbranches, fromdata, splitbranches], (err, ressub) => {
+          if (err) console.error(err);
+          res.json({
+            "result": {
+              "subbill": ressub
+            }
+          })
+        })
+      })
+
+    } else if ((status == 'All') && (!(branch == 'All'))) {
+      console.log("hit");
+      connections.scm_public.query(files.chsubbillall, [fromdata, branch, fromdata, branch, fromdata, branch, fromdata, branch, fromdata, branch], (err, ressub) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "subbill": ressub
+          }
+        })
+      })
+
+    } else if (!(status == 'All') && (branch == 'All')) {
+      connections.scm_public.query("select branches from users where emp_id=? and role='ch_user'", [name], (err, ressubill) => {
+        if (err) console.error(err);
+        console.log(ressubill.length);
+        ressubill.forEach(branch => {
+          splitbranches = branch.branches.split('+')
+        });
+        console.log(fromdata + " " + " " + status + " " + splitbranches);
+        connections.scm_public.query(files.chsubbillstatusall, [fromdata, status, splitbranches], (err, ressub) => {
+          if (err) console.error(err);
+          console.log(ressub);
+          res.json({
+            "result": {
+              "subbill": ressub
+            }
+          })
+        })
+      })
+    } else {
+      console.log(fromdata);
+      connections.scm_public.query(files.chsubbillstatusall, [splitdate[0], splitdate[1], status, branch], (err, ressub) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "subbill": ressub
+          }
+        })
+      })
+
+    }
+  }
+}
+
+
+
+exports.expense_date = (req, res) => {
+  console.log(req.body);
+  let finbill_id = req.body.sch_bill_id;
+  let fin_expensedate = req.body.sch_expensedate;
+  let findrtbillexpenseupdate = "update drt_bills set Expense_date='" + fin_expensedate + "' where id=" + finbill_id
+  console.log(findrtbillexpenseupdate);
+
+  connections.scm_root.query(findrtbillexpenseupdate, (err, finexpense) => {
+    if (err) console.error(err);
+    res.json({
+      Dataupdated: "updated"
+    })
+  })
 
 }
