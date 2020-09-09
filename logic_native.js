@@ -547,7 +547,7 @@ let filterGroupwise = async (
     "Trichy",
     "Thanjavur",
     "Tiruppur",
-    "Andaman",
+    "Port Blair",
     "Karnataka",
     "Banglore",
     "Hubli + Mysore",
@@ -592,7 +592,7 @@ let filterGroupwise = async (
     Trichy: ["TRI"],
     Thanjavur: ["TNJ"],
     Tiruppur: ["TPR"],
-    Andaman: ["AMN"],
+    "Port Blair": ["AMN"],
     Karnataka: [
       "BMH",
 	  
@@ -1355,7 +1355,7 @@ let filterGroupwiseOPD = async (
     "Trichy",
     "Thanjavur",
     "Tiruppur",
-    "Andaman",
+    "Port Blair",
     "Karnataka",
     "Banglore",
 	"Maharashtra",
@@ -1400,7 +1400,7 @@ let filterGroupwiseOPD = async (
     Trichy: ["TRI"],
     Thanjavur: ["TNJ"],
     Tiruppur: ["TPR"],
-    Andaman: ["AMN"],
+    "Port Blair": ["AMN"],
     Karnataka: [
       "BMH",
 	  
@@ -2743,6 +2743,8 @@ let filterGroupwiseUsageTracker = async (
                 }
             );
 			
+			
+			
             branchObj[key].push({
                 branch: branchName,
                 code: code,
@@ -3361,7 +3363,7 @@ let filternewGroupwise=async(aeh,ahc,consultation,branches,ftddate)=>{
     "Trichy",
     "Thanjavur",
     "Tiruppur",
-    "Andaman",
+    "Port Blair",
     "Karnataka",
     "Banglore",
     "Hubli + Mysore",
@@ -3407,7 +3409,7 @@ let filternewGroupwise=async(aeh,ahc,consultation,branches,ftddate)=>{
         Trichy: ["TRI"],
         Thanjavur: ["TNJ"],
         Tiruppur: ["TPR"],
-        Andaman: ["AMN"],
+        "Port Blair": ["AMN"],
         Karnataka: [
           "BMH",
     	     
@@ -4345,10 +4347,18 @@ let filterGroupwiseUsageTrackerNew = async (
                      mtddevicerevenueamount += element.AMOUNT;
                 }
             );
+			let avaregion='';
 			
+			if(key=='chennai'){
+				avaregion='Chennai';
+			}else if(key=='rotn'){
+				avaregion='ROTN';
+			}else{
+				avaregion=key;
+			}
             branchObj.push({
                 branch: branchName,
-				region:key,
+				region:avaregion,
                 code: code,
                 ftdopdrev: ftdopdrev,
                 mtdopdrev: mtdopdrev,
@@ -4463,11 +4473,19 @@ let filterGroupwiseUsageTrackerNew = async (
                 }
             );	 
 
-          
+            let avaregion='';
+			
+			if(key=='chennai'){
+				avaregion='Chennai';
+			}else if(key=='rotn'){
+				avaregion='ROTN';
+			}else{
+				avaregion=key;
+			}
 
             branchObj.push({
                 branch: branchName,
-				region:key,
+				region:avaregion,
                 code: code,
                 ftdopdrev: ftdopdrev,
                 mtdopdrev: mtdopdrev,

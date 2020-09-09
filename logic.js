@@ -1312,7 +1312,7 @@ let filterEntity = async (dbres, dbres2, ftddate,overseasCurrency) => {
 let filterGroupwise = async (aeh, ahc,ohc, dbres2, branches, ftddate, vobres, breakupres, breakupmtdres, overseasCurrency) => {
     let ftdpha = 0, ftdopt = 0, ftdlab = 0, ftdot = 0, ftd = 0, mtdpha = 0, mtdopt = 0, mtdlab = 0, mtdot = 0, mtd = 0, aehtempObj = {}, ahctempObj = {}, branchObj = {}, ftdrev = 0, mtdrev = 0, branchName = null, ftdpharev = 0, ftdoptrev = 0, ftdotrev = 0, ftdlabrev = 0, ftdconsultrev = 0, ftdothersrev = 0, mtdpharev = 0, mtdoptrev = 0, mtdotrev = 0, mtdlabrev = 0, mtdconsultrev = 0, mtdothersrev = 0, code = null, ftdotcount = 0, mtdotcount = 0, cogsftdotcount = 0, cogsmtdotcount = 0, aehftdbreakup = 0, aehmtdbreakup = 0, ahcftdbreakup = 0, ahcmtdbreakup = 0 ,ohctempObj = {} , ohcftdbreakup = 0, ohcmtdbreakup = 0
     let aehGroups = ['Chennai Main Hospital', 'Chennai Branches', 'Kanchi + Vellore', 'Kum + Ney + Vil', 'Dha + Salem + Krish', 'Erode + Hosur', 'Jaipur', 'Madurai KK Nagar']
-    let ahcGroups = ['Chennai branches', 'Pondycherry','Tirunelveli', 'Coimbatore','Tuticorin + Madurai', 'Trichy', 'Thanjavur','Tiruppur' ,'Andaman', 'Karnataka', 'Banglore', 'Hubli + Mysore', 'Maharashtra', 'Telangana', 'Hyderabad', 'Andhra Pradesh', 'Rest of India(incl. Jaipur)', 'Kerala', 'Kolkata', 'Ahmedabad', 'Madhya Pradesh', 'Odisha']
+    let ahcGroups = ['Chennai branches', 'Pondycherry','Tirunelveli', 'Coimbatore','Tuticorin + Madurai', 'Trichy', 'Thanjavur','Tiruppur' ,'Port Blair', 'Karnataka', 'Banglore', 'Hubli + Mysore', 'Maharashtra', 'Telangana', 'Hyderabad', 'Andhra Pradesh', 'Rest of India(incl. Jaipur)', 'Kerala', 'Kolkata', 'Ahmedabad', 'Madhya Pradesh', 'Odisha']
     let aehgroupedBranches = {
         'Chennai Main Hospital': ["CMH"],
         'Chennai Branches': ["ANN", "ASN", "AVD", "NLR", "PMB", "PRR", "TLR", "TRC", "VLC"],
@@ -1332,7 +1332,7 @@ let filterGroupwise = async (aeh, ahc,ohc, dbres2, branches, ftddate, vobres, br
         'Trichy': ["TRI"],
         'Thanjavur': ["TNJ"],
         'Tiruppur': ["TPR"],
-        'Andaman': ["AMN"],
+        'Port Blair': ["AMN"],
         'Karnataka': ["BMH", "WFD", "KML", "CLR", "INR", "PNR", "YLK", "SVR","BSK","RRN","HUB", "MCC", "MYS","RJN"],
         'Banglore': ["BMH", "WFD", "KML", "CLR", "INR", "PNR", "YLK","SVR","BSK","RRN","RJN"],
         'Hubli + Mysore': ["HUB", "MCC", "MYS"],
