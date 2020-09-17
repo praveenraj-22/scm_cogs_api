@@ -13,7 +13,9 @@ app.use(modules.session({ name: 'session_ID', secret: 'Bi$$DS@@J&a&i&*', resave:
 
 app.use(modules.upload())
 
-modules.cron_job.schedule;
+//modules.cron_job.schedule;
+
+
 
 app.get('/api-super/:date', modules.routes.main_route)
 app.get('/api-normal/:date/:name', modules.routes.test_route)
@@ -61,22 +63,27 @@ app.post('/api-doctorreject',modules.routes.fin_doctorreject)
 app.get('/api-loaddoc',modules.routes.fin_loaddoc)
 app.get('/api-submittedbills/:frmdate/:datetype/:status/:branch/:name',modules.routes.ch_submittedbills)
 app.post('/api-finbillexpenseupdate',modules.routes.expense_date)
+app.get('/api-rev-vs-cogs/:date/:entity/:region/:branch/:type', modules.routes.revvscogs_services)
 
-// pettycash -- praveenraj
 
-app.get('/api-schpc/:fromdate/:todate/:status/:branch/:name',modules.routes.strchpc)
+app.get('/api-pettycashcategory', modules.routes.pettycash_category)
+app.get('/api-bramch-allocated-amount/:branch',modules.routes.pettycash_allocated_amount)
+app.post('/api-petty-cash-bill-submit',modules.routes.bill_submit)
+app.get('/api-petty-cash-details/:user/:branch/:status/:date',modules.routes.petty_cash_details)
+app.get('/api-voucher-download/:download',modules.routes.download_voucher)
+app.get('/api-bill-download/:download',modules.routes.download_bill)
+
+app.get('/api-schpc/:fromdate/:todate/:branch/:name',modules.routes.strchpc)
 app.get('/api-strchbranchgroupbill/:branch/:fromdate/:todate/:status',modules.routes.strchbranchgroupbills)
 app.get('/api-strchbranchgroupbilldetail/:branch/:categoryname/:fromdate/:todate',modules.routes.strchbranchgroupbilldetail)
 app.post('/api-strchbillgroupapprove',modules.routes.strch_billgroupapprove)
 app.post('/api-strchbillgroupdecline',modules.routes.strch_billgroupdecline)
 app.post('/api-strchbillgroupapproveall',modules.routes.strch_billgroupapproveall)
-
-app.get('/api-finpc/:fromdate/:todate/:status/:branch/:name',modules.routes.finptycsh)
+app.get('/api-finpc/:fromdate/:todate/:branch/:name',modules.routes.finptycsh)
 app.get('/api-finpcbranchgroupbill/:branch/:fromdate/:todate/:status',modules.routes.finpcbranchgroupbills)
 app.get('/api-finpcbranchgroupbilldetail/:branch/:categoryname/:fromdate/:todate',modules.routes.finpcbranchgroupbilldetail)
 app.post('/api-finpcbillgroupdecline',modules.routes.fin_billgroupdecline)
 app.post('/api-finptycshbillgroupapproveall',modules.routes.finptycsh_billgroupapproveall)
-
 app.get('/api-declineamount/:branch/:fromdate/:todate',modules.routes.decline_amount)
 
 app.listen(8888, () => console.log(`App listening on port 8888`))

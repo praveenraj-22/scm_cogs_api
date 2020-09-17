@@ -606,13 +606,14 @@ let filterGroupwise = async (
       "BSK",
       "RRN",
       "HUB",
+	  "DWD",
       "MCC",
       "MYS",
 	  "RJN",
 
     ],
     Banglore: ["BMH", "WFD", "KML", "CLR", "INR", "PNR", "YLK","SVR","BSK","RRN","RJN"],
-    "Hubli + Mysore": ["HUB", "MCC", "MYS"],
+    "Hubli + Mysore": ["HUB","DWD", "MCC", "MYS"],
 	Maharashtra :["VSH", "PUN", "HDP","CMR", "KTD"],
     Telangana: ["DNR", "HMH", "MDA", "SNR", "HIM", "SBD","MPM","GCB"],
     Hyderabad: ["DNR", "HMH", "MDA", "SNR", "HIM", "SBD","MPM","GCB"],
@@ -1415,12 +1416,13 @@ let filterGroupwiseOPD = async (
       "RRN",
 	  "RJN",
       "HUB",
+	  "DWD",
       "MCC",
       "MYS",
 
     ],
     Banglore: ["BMH", "WFD", "KML", "CLR", "INR", "PNR", "YLK","SVR","BSK","RRN","RJN"],
-    "Hubli + Mysore": ["HUB", "MCC", "MYS"],
+    "Hubli + Mysore": ["HUB","DWD", "MCC", "MYS"],
 	Maharashtra :["VSH", "PUN", "HDP","CMR", "KTD"],
     Telangana: ["DNR", "HMH", "MDA", "SNR", "HIM", "SBD","MPM","GCB"],
     Hyderabad: ["DNR", "HMH", "MDA", "SNR", "HIM", "SBD","MPM","GCB"],
@@ -1950,7 +1952,7 @@ let totalgroup=[
 let totalgroupbranches={
     "Chennai":["ADY","AMB","ANN","ASN","AVD","CMH","EGM","MGP",
     "NLR","NWP","PMB","PRR","TBM","TLR","TRC","TVT","VLC"],
-    Karnataka:["BMH","BSK","CLR","HUB","INR","KML","MCC","MYS",
+    Karnataka:["BMH","BSK","CLR","HUB","DWD","INR","KML","MCC","MYS",
                 "PNR","RJN","RRN","SVR","WFD","YLK" ],
     Maharashtra:["VSH","PUN","HDP","CMR", "KTD"],
     ROTN:["APM","CMB","DHA","ERD","HSR","KBK","KNP","KSN",
@@ -2053,7 +2055,7 @@ let filterBranchwiseoptical= async(dbresoptical,ftddate,dbreslastyearoptical,bra
   let totalgroupbranches={
       "Chennai":["ADY","AMB","ANN","ASN","AVD","CMH","EGM","MGP",
       "NLR","NWP","PMB","PRR","TBM","TLR","TRC","TVT","VLC"],
-      Karnataka:["BMH","BSK","CLR","HUB","INR","KML","MCC","MYS",
+      Karnataka:["BMH","BSK","CLR","HUB","DWD","INR","KML","MCC","MYS",
                   "PNR","RJN","RRN","SVR","WFD","YLK" ],
       Maharashtra:["VSH","PUN","HDP","CMR", "KTD"],
       ROTN:["APM","CMB","DHA","ERD","HSR","KBK","KNP","KSN",
@@ -3424,12 +3426,13 @@ let filternewGroupwise=async(aeh,ahc,consultation,branches,ftddate)=>{
           "RRN",
     	     "RJN",
           "HUB",
+		  "DWD",
           "MCC",
           "MYS",
 
         ],
         Banglore: ["BMH", "WFD", "KML", "CLR", "INR", "PNR", "YLK","SVR","BSK","RRN","RJN"],
-        "Hubli + Mysore": ["HUB", "MCC", "MYS"],
+        "Hubli + Mysore": ["HUB","DWD", "MCC", "MYS"],
     	Maharashtra :["VSH", "PUN", "HDP","CMR", "KTD"],
         Telangana: ["DNR", "HMH", "MDA", "SNR", "HIM", "SBD","MPM","GCB"],
         Hyderabad: ["DNR", "HMH", "MDA", "SNR", "HIM", "SBD","MPM","GCB"],
@@ -4804,7 +4807,7 @@ let emailTemplate = async (finalResult,todatadate) => {
     let sortbranches = branchlist.slice().sort((a, b) => b.revenuemtdamount - a.revenuemtdamount);	
 	
 	
-	let avaTemplate = "<html><body><table cellpadding='5' border='1' style='border-collapse: collapse;  border-spacing: 0;border-color: black'><tr><td></td><td></td><td></td><td colspan='2'><b>New OPD</b></td><td colspan='4' align='center'><b>Perimeter (Paid Count)</b></td><td colspan='4' align='center'><b>Perimeter Revenue (INR)	</b></td></tr><tr><td><b>Entity</b></td><td><b>Region</b></td><td><b>Branch</b></td><td><b>FTD</b></td><td><b>MTD</b></td><td><b>FTD</b></td><td><b>MTD</b></td><td><b>Target</b></td><td><b>Tar Ach%</b></td><td><b>FTD</b></td><td><b>MTD</b></td><td><b>Target Amount</b></td><td><b>Tar Ach%</b></td></tr>";
+	let avaTemplate = "<html><body><table cellpadding='5' border='1' style='border-collapse: collapse;  border-spacing: 0;border-color: black'><tr><td></td><td></td><td></td><td colspan='2'><b>New OPD</b></td><td colspan='4' align='center'><b>Perimeter (Paid Count) <br>Individual Eye</b></td><td colspan='4' align='center'><b>Perimeter Revenue (INR)	</b></td></tr><tr><td><b>Entity</b></td><td><b>Region</b></td><td><b>Branch</b></td><td><b>FTD</b></td><td><b>MTD</b></td><td><b>FTD</b></td><td><b>MTD</b></td><td><b>Target</b></td><td><b>Tar Ach%</b></td><td><b>FTD</b></td><td><b>MTD</b></td><td><b>Target Amount</b></td><td><b>Tar Ach%</b></td></tr>";
 	
 	avaTemplate+= '<tr><td bgcolor="#a8afba" style="background:#a8afba!important;color:#000000;text-align:center">Total</td><td bgcolor="#a8afba" style="background:#a8afba!important;color:#000000;text-align:center"></td><td bgcolor="#a8afba" style="background:#a8afba!important;color:#000000;text-align:center"></td><td bgcolor="#cddc39" style="background:#cddc39!important;color:#000000;text-align:center">'+ finalResult.total['ftdopdrev'] +'</td><td bgcolor="#cddc39" style="background:#cddc39!important;color:#000000;text-align:center">'+ finalResult.total['mtdopdrev'] +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ finalResult.total['revenueftdcount'] +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ finalResult.total['revenuemtdcount'] +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ finalResult.total['target'] +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ finalResult.total['revenuetargetachived'] +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+ new Intl.NumberFormat('en-IN').format(finalResult.total['revenueftdamount']) +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+ new Intl.NumberFormat('en-IN').format(finalResult.total['revenuemtdamount']) +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+ new Intl.NumberFormat('en-IN').format(finalResult.total['targetamount']) +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+ finalResult.total['targetamountach'] +'</td></tr>';
 	
@@ -4819,6 +4822,406 @@ let emailTemplate = async (finalResult,todatadate) => {
 	
 	
 }
+
+
+
+exports.revCogsServices = async (
+    revresults,
+    cogsres,
+	revreferalres1,
+	revreferalres2
+	
+) => {
+    let groupWise = await filterGroupwiseRevVsCogs(  
+        revresults,
+        cogsres,
+		revreferalres1,
+		revreferalres2
+    );
+	
+	return groupWise;
+};
+
+
+
+
+let filterGroupwiseRevVsCogs = async (
+    revresults,
+    cogsres,
+	revreferalres1,
+	revreferalres2
+) => {
+	 console.log(22222);
+    let mtdrev = 0,
+        mtdcogs = 0,
+        mtdopdpercentage = 0,
+        aehtempObj = {},
+        ahctempObj = {},
+        ohctempObj = {},
+        branchObj = {},
+        branchName = null,
+        ftdopdrev = 0,
+        mtdopdrev = 0,
+        mtdopdrevlastyear = 0,
+        code = null;
+
+
+    /*let servicesGroups = [
+        "SERVICES",
+        "CATARACT",
+        "REFRACTIVE",
+        "VR_INJ",
+        "VR_SURGERY",
+        "OTHER SURGERY",
+        "OTHERS",
+        "LABORATORY",		
+		"PHARMACY",
+		"CONTACT LENS"
+		
+    ];*/
+	
+	let servicesGroups = [
+        "SERVICES",        
+		"OPTICALS",		
+		"PHARMACY",
+		"CONTACT LENS"
+		
+    ];
+	
+
+    
+   /* let servicesGroupsList = {
+        "SERVICES": ["CATARACT","REFRACTIVE","VR_INJ","VR_SURGERY","LABORATORY"],
+        "OPTICALS": [
+            "OPTICAL FRAME",
+            "OPTICAL LENS",
+            "OPTICAL SUNGLASS",
+           
+        ],
+        "PHARMACY": ["PHARMACY"],
+        "CONTACT LENS": ["CONTACT LENS"]
+    };*/
+	
+	
+	 let servicesGroupsList = {
+        "SERVICES": ["CATARACT","REFRACTIVE","VR_INJ","VR_SURGERY","OTHER SURGERY","OTHERS","LABORATORY",],
+        "OPTICALS": [
+		    "OPTICALS_LENS",
+            "OPTICALS_FRAME",
+			"OPTICALS_OTHERS",            
+            "OPTICALS_SUNGLASS",
+           
+        ],
+        "PHARMACY": ["PHARMACY"],
+        "CONTACT LENS": ["CONTACT LENS"]
+    };
+   
+   // var newItem1 = _.filter(result, obj => /REFRACTIVE/i.test(obj.name));
+
+
+	let  CATARACTFilters = {
+			UNIT : ["SURGERY"] ,
+			GROUP : ["CATARACT"],
+			SUBGROUP :['CATARACT','CATARACT - INVESTIGATION','CATARACT HIGH END','CATARACT LOW END','CATARACT MID END'] 			
+	};
+	let catractarrFilter1=[],
+	 catractarrFilter2=[],
+     vitrorentalFilter=[],
+	 othersurgeryFilter=[],
+	 otherServicesFilter=[],
+	 otherServicesFilter1=[],
+	 opticalothersFilter=[],
+	 
+	 
+	 cogsCatractarrFilter1=[],
+	 otherSurgeryFilter1=[],
+	 otherSurgeryFilter2=[],
+	 otherSurgeryFilter3=[],
+	 cogsOtherOPticalFilter=[],
+	  cogsOtherOPticalLensFilter=[],
+	   cogsOtherOPticalFramFilter=[];
+	 
+	 
+	vitrorentalFilter = _.filter(revresults, {UNIT:'SURGERY',GROUP: 'VITREO RETINAL'});
+	othersurgeryFilter = _.filter(revresults, {UNIT:'SURGERY'});
+	opticalothersFilter = _.filter(revresults, {UNIT:'OPTICALS'});	
+	
+	cogsCatractarrFilter1 = _.filter(cogsres, {'top':'OPERATION THEATRE',second:'Surgery'});
+	
+	cogsOtherOPticalFilter = _.filter(cogsres, {'top':'OPTICALS'});
+	
+	let excludeOpticals = ['OPTICAL SUNGLASS','OPTICAL FRAME','LENS'];
+	let excludeOtherSurgery = ['CATARACT','REFRACTIVE','VITREO RETINAL'];
+//console.log(_.filter(cogsOtherOPticalFilter, (v) => !_.includes(excludeOpticals, v.group)));
+	
+	//console.log(_.reject(cogsOtherOPticalFilter, {group:['OPTICAL SUNGLASS','OPTICAL FRAME']}));
+	
+	
+	
+	
+	
+	otherSurgeryFilter1 =_.reject(cogsCatractarrFilter1, obj => /CATARACT/i.test(obj.sub_group));
+	otherSurgeryFilter2 = _.reject(otherSurgeryFilter1, obj => /REFRACTIVE/i.test(obj.sub_group));
+	otherSurgeryFilter3 = _.reject(otherSurgeryFilter2, obj => /VR/i.test(obj.sub_group));
+	
+    for (let key in servicesGroupsList) {
+        branchObj[key] = [];
+        servicesGroupsList[key].forEach(servicelist => {            
+            
+			if(servicelist=='CATARACT'){
+				/* revenue */			
+				catractarrFilter1 = _.filter(revresults, {UNIT:'SURGERY',GROUP: 'CATARACT'});			
+				_.reject(catractarrFilter1, {SUBGROUP:'OTHERS',SUBGROUP: 'RESURGERY'}).forEach(element => {
+                mtdrev += element.NET_AMOUNT;
+				});				
+				/* revenue */
+				
+				/* cogs */				
+				_.filter(cogsCatractarrFilter1, obj => /CATARACT/i.test(obj.group)).forEach(element => {
+                mtdcogs += element.actual_value;
+				});				
+				/* cogs */
+				
+				
+			}else if(servicelist=='REFRACTIVE'){
+				/* revenue */
+				_.filter(revresults, {UNIT:'SURGERY',GROUP: 'REFRACTIVE'}).forEach(element => {
+                mtdrev += element.NET_AMOUNT;
+				});
+				/* revenue */
+				
+				/* cogs */		
+				_.filter(cogsCatractarrFilter1, obj => /REFRACTIVE/i.test(obj.group)).forEach(element => {
+                mtdcogs += element.actual_value;
+				});				
+				/* cogs */
+			}else if(servicelist=='VR_INJ'){
+                /* revenue */				
+				_.filter(vitrorentalFilter, {SUBGROUP:'VR - INJECTION'}).forEach(element => {
+                mtdrev += element.NET_AMOUNT;
+				});				
+				/* revenue */
+				
+				/* cogs */		
+				_.filter(cogsCatractarrFilter1, {sub_group:'VR INJECTION'}).forEach(element => {
+                mtdcogs += element.actual_value;
+				});					
+				/* cogs */
+			}else if(servicelist=='VR_SURGERY'){
+				/* revenue */
+				_.reject(vitrorentalFilter, {SUBGROUP:'VR - INJECTION'}).forEach(element => {
+                mtdrev += element.NET_AMOUNT;
+				});
+				/* revenue */
+				/* cogs */		
+				_.filter(cogsCatractarrFilter1, obj => /VR SURGERY/i.test(obj.group)).forEach(element => {
+                mtdcogs += element.actual_value;
+				});					
+				/* cogs */
+				
+			}else if(servicelist=='OTHER SURGERY'){				
+				/* revenue */
+				_.filter(othersurgeryFilter, (v) => !_.includes(excludeOtherSurgery, v.GROUP)).forEach(element => {				
+                mtdrev += element.NET_AMOUNT;
+				});
+				/* revenue */
+				
+				/* cogs */
+				 otherSurgeryFilter3.forEach(element => {
+					mtdcogs += element.actual_value;
+				});	
+				/* cogs */
+				
+				
+				
+				
+			}else if(servicelist=='OTHERS'){  
+
+				 otherServicesFilter1 = _.filter(revresults, (v) => !_.includes(['SURGERY','LABORATORY'], v.UNIT));
+				 _.filter(otherServicesFilter1, obj => /SERV/i.test(obj.ITEMCODE)).forEach(element => {
+                mtdrev += element.NET_AMOUNT;
+				});
+			}else if(servicelist=='LABORATORY'){
+				/* revenue */
+				_.filter(revresults, {UNIT:'LABORATORY'}).forEach(element => {
+                mtdrev += element.NET_AMOUNT;
+				});
+				/* revenue */
+				
+				
+				/* cogs */
+				_.filter(cogsres, {'top':'LABORATORY'}).forEach(element => {
+                mtdcogs += element.actual_value;
+				});
+				/* cogs */
+				
+				
+			}else if(servicelist=='OPTICALS_FRAME'){
+				/* revenue */
+				_.filter(revresults, {UNIT:'OPTICALS',GROUP: 'OPTICAL FRAME'}).forEach(element => {
+                mtdrev += element.NET_AMOUNT;
+				});
+				/* revenue */
+				
+				/* cogs */
+				_.filter(cogsOtherOPticalFilter, {group: 'OPTICAL FRAME'}).forEach(element => {
+                mtdcogs += element.actual_value;
+				});
+				/* cogs */
+				
+				
+			}else if(servicelist=='OPTICALS_LENS'){
+				/* revenue */
+				_.filter(revresults, {UNIT:'OPTICALS',GROUP: 'LENS'}).forEach(element => {
+                mtdrev += element.NET_AMOUNT;
+				});
+				/* revenue */
+				
+				/* cogs */
+				_.filter(cogsOtherOPticalFilter, {group: 'LENS'}).forEach(element => {
+                mtdcogs += element.actual_value;
+				});
+				/* cogs */
+			}
+			else if(servicelist=='OPTICALS_OTHERS'){
+				/* revenue */
+				
+				_.filter(opticalothersFilter, (v) => !_.includes(excludeOpticals, v.GROUP)).forEach(element => {
+                mtdrev += element.NET_AMOUNT;
+				});
+				/* revenue */
+				
+				
+				/* cogs */
+				_.filter(cogsOtherOPticalFilter, (v) => !_.includes(excludeOpticals, v.group)).forEach(element => {
+					mtdcogs += element.actual_value;
+				});
+				/* cogs */
+				
+			}else if(servicelist=='OPTICALS_SUNGLASS'){
+				/* revenue */
+				_.filter(revresults, {UNIT:'OPTICALS',GROUP: 'OPTICAL SUNGLASS'}).forEach(element => {
+                mtdrev += element.NET_AMOUNT;
+				});
+				/* revenue */
+				
+				/* cogs */
+				_.filter(cogsOtherOPticalFilter, {group: 'OPTICAL SUNGLASS'}).forEach(element => {
+					mtdcogs += element.actual_value;
+				});
+				/* cogs */
+			}else if(servicelist=='PHARMACY'){
+				/* revenue */
+				_.filter(revresults, {UNIT:'PHARMACY'}).forEach(element => {
+                mtdrev += element.NET_AMOUNT;
+				});
+				/* revenue */
+				
+				
+				/* cogs */
+				_.filter(cogsres, {'top':'PHARMACY'}).forEach(element => {
+					mtdcogs += element.actual_value;
+				});
+				/* cogs */
+			}else if(servicelist=='CONTACT LENS'){
+				/* revenue */
+				_.filter(revresults, {UNIT:'CONTACT LENS',GROUP: 'CONTACT LENS'}).forEach(element => {
+                mtdrev += element.NET_AMOUNT;
+				});
+				/* revenue */
+				
+				/* cogs */
+				_.filter(cogsres, {'top':'OPTICALS',group: 'CONTACT LENS'}).forEach(element => {				
+                mtdcogs += element.actual_value;
+				});
+				/* cogs */
+				
+				
+			}			
+            branchObj[key].push({
+				branch: servicelist,           
+                mtdrev: mtdrev,
+				mtdcogs: mtdcogs,
+				mc:(mtdcogs/mtdrev)*100,
+				contribution: ''
+               
+            });
+            (mtdrev = 0),            
+            (mtdcogs = 0),
+            (mtdopdrev = 0),
+            (mtdopdrevlastyear = 0),
+            (mtdopdlastyear = 0),
+            (mtdopdpercentage = 0),
+            (code = null);
+        });
+    }
+	//console.log(aehtempObj);
+    //console.log(branchObj);
+	var billedrevmtd = 0,billedcogsmtd = 0;
+	let billedObj={};
+	let grpObj = {},
+	grprevmtd=0,grpcogsmtd=0;
+	
+	
+	for (let key in branchObj) {		 
+		  branchObj[key].forEach(individual => { 
+		  billedrevmtd = billedrevmtd+individual.mtdrev;    
+		  billedcogsmtd = billedcogsmtd+individual.mtdcogs;    
+			   
+		  });
+	 }
+	 
+	 let revreferalmtd = revreferalres1[0]['NET_AMOUNT'] - revreferalres2[0]['NET_AMOUNT'];
+	 let cogsreferalmtd = (revreferalmtd/30)*100;
+	 let refertalObject ={},withreferalObj={};
+	 console.log(revreferalres1[0]['NET_AMOUNT']);
+	 console.log(revreferalres2[0]['NET_AMOUNT']);
+	billedObj['BILLED'] = {'branch':'BILLED','mtdrev':billedrevmtd,'mtdcogs':billedcogsmtd,mc:(billedcogsmtd/billedrevmtd)*100,'contribution':100}
+	refertalObject['REFERRAL'] = {'branch':'REFERRAL','mtdrev':revreferalmtd,'mtdcogs':cogsreferalmtd,mc:'','contribution':''}
+	
+	let revwithrefmtd = billedrevmtd+revreferalmtd;
+	let cogswithrefmtd = billedcogsmtd+cogsreferalmtd;
+	withreferalObj['With REFERRAL'] = {'branch':'With REFERRAL',
+										'mtdrev':revwithrefmtd,
+										'mtdcogs':cogswithrefmtd,
+										mc:(cogswithrefmtd/revwithrefmtd)*100,
+										'contribution':''}
+	/*console.log("--------------");
+	console.log(branchObj);
+	console.log("--------------");
+	console.log(billedObj)
+	console.log("--------------");*/
+	 for (let key in branchObj) {
+		 grpObj[key]=[];
+		 //console.log(branchObj[key]);
+		  branchObj[key].forEach(individual => {	 
+			 grprevmtd+=individual.mtdrev;	
+             grpcogsmtd+=individual.mtdcogs;				 
+		  });
+		   grpObj[key].push({
+				branch: key,           
+                mtdrev: grprevmtd,
+				mtdcogs: grpcogsmtd,
+				mc: (grpcogsmtd/grprevmtd)*100,
+				contribution: (grprevmtd/billedObj.BILLED.mtdrev)*100
+               
+            });
+		  
+		  grprevmtd=0;
+	 }
+     
+    
+	 return {
+        servicesGrp: grpObj,
+		servicesWise: branchObj,
+		BilledWise: billedObj,
+		Referal :refertalObject,
+		witReferal :withreferalObj
+        
+    };
+};
+
+
 
 
 

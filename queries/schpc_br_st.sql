@@ -43,7 +43,10 @@ SELECT * FROM (SELECT b.branch,
            (SELECT branch,
                    SUM(credit) AS 'Cancelled_amount'
   FROM pettycash
-  WHERE STATUS IN (3,5)) AS cancelled
+  WHERE STATUS IN (3,5)
+  group by
+  branch
+) AS cancelled
   ON cancelled.branch = b.branch
 
      ORDER BY b.STATUS DESC, Submitted_date DESC)AS c WHERE c.branch IN (?) AND c.status1=?

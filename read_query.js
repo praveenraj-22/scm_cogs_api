@@ -93,6 +93,9 @@ exports.expensedata=read("./queries/expense.sql");
 exports.schexpense_all=read("./queries/schexpenseall.sql");
 exports.finexpense_all=read("./queries/finexpense.sql");
 exports.finexpense_branch=read("./queries/finexpensebranch.sql");
+exports.pettycash_category=read("./queries/pettycashcategory.sql");
+exports.pettycash_allocated_amount=read("./queries/pettycash_allocated_amount.sql");
+
 exports.schpcallall=read("./queries/schpcallall.sql");
 exports.schpcbrst=read("./queries/schpc_br_st.sql");
 exports.strbranchgroupbillz=read("./queries/strbranchgroupbill.sql");

@@ -1,0 +1,1 @@
+SELECT sno as text,category_name as shortCode FROM pettycash_category WHERE status=1
