@@ -164,7 +164,7 @@ var date='';
 //create html table with data from res.
 console.log("month : "+tablemonth);
    for(var i=0; i<result.length; i++){
-	   
+
 	   var sugCogsPer ='';
 	   var optCogsPer ='';
 	   var pharCogsPer ='';
@@ -173,32 +173,32 @@ console.log("month : "+tablemonth);
 	   var optCogsPerColr ='';
 	   var pharCogsPerColr ='';
 	   var mcCogsPerColr ='';
-	   
+
 	   sugCogsPer = result[i].surgery_cogs_perc;
 	   optCogsPer = result[i].optical_cogs_perc;
 	   pharCogsPer = result[i].pharmacy_cogs_perc;
 	   mcCogsPer = result[i].Consump;
-	   
+
 	   if(sugCogsPer!=null){ sugCogsPer =sugCogsPer.replace("%", "");}
 	   if(optCogsPer!=null){  optCogsPer =optCogsPer.replace("%", "");}
 	   if(pharCogsPer!=null){  pharCogsPer =pharCogsPer.replace("%", "");}
 	   if(mcCogsPer!=null){  mcCogsPer =mcCogsPer.replace("%", "");}
-	   
+
 	   if(sugCogsPer <10 || sugCogsPer >13){
-			sugCogsPerColr = 'background-color:red'; 
+			sugCogsPerColr = 'background-color:red';
 		}
 
 		if(pharCogsPer <55 || pharCogsPer >65){
-			pharCogsPerColr = 'background-color:red'; 
+			pharCogsPerColr = 'background-color:red';
 		}
 
 		if(optCogsPer <30 || optCogsPer >35){
-			optCogsPerColr = 'background-color:red'; 
+			optCogsPerColr = 'background-color:red';
 		}
 
-		
 
-         
+
+
 
      table +='<tr align="right"><td>'+ result[i].entity +'</td><td>'+ result[i].branch +'</td><td>'+result[i].surgery_revenue+'</td> <td>'+ result[i].optical_revenue+'</td> <td>'+result[i].pharmacy_revenue+'</td> <td>'+result[i].mtd_revenue+'</td> <td style="background-color:#FFFF33">'+result[i].surgery_revenue_perc+'</td> <td style="background-color:#FFFF33"> '+result[i].opticals_revenue_perc +'</td><td style="background-color:#FFFF33">'+result[i].pharmacy_revenue_perc +'</td> <td>'+result[i].surgery_cogs +'</td> <td>'+result[i].opticals_cogs+'</td><td>'+result[i].pharmacy_cogs+'</td><td>'+result[i].mtd_cogs+'</td><td style="'+sugCogsPerColr+'">'+result[i].surgery_cogs_perc+'</td><td style="'+optCogsPerColr+'">'+result[i].optical_cogs_perc+'</td><td style="'+pharCogsPerColr+'">'+result[i].pharmacy_cogs_perc+'</td><td>'+result[i].Consump+'</td>  </tr>';
 date =result[i].today_date;
@@ -270,8 +270,8 @@ transporter.sendMail(mailOptions, function(error, info){
     //create html table with data from res.
 
        for(var i=0; i<result.length; i++){
-		   
-		   
+
+
 			 var sugCogsPer ='';
 			   var optCogsPer ='';
 			   var pharCogsPer ='';
@@ -280,62 +280,62 @@ transporter.sendMail(mailOptions, function(error, info){
 			   var optCogsPerColr ='';
 			   var pharCogsPerColr ='';
 			   var mcCogsPerColr ='';
-			   
+
 			   sugCogsPer = result[i].surgery_cogs_perc;
 			   optCogsPer = result[i].optical_cogs_perc;
 			   pharCogsPer = result[i].pharmacy_cogs_perc;
 			   mcCogsPer = result[i].Consump;
-			   
+
 			   if(sugCogsPer!=null){ sugCogsPer =sugCogsPer.replace("%", "");}
 			   if(optCogsPer!=null){  optCogsPer =optCogsPer.replace("%", "");}
 			   if(pharCogsPer!=null){  pharCogsPer =pharCogsPer.replace("%", "");}
 			   if(mcCogsPer!=null){  mcCogsPer =mcCogsPer.replace("%", "");}
-			   
+
 			   /*if(sugCogsPer >=11 && sugCogsPer <=13){
-				   sugCogsPerColr = 'background-color:yellow'; 
+				   sugCogsPerColr = 'background-color:yellow';
 			   }else if(sugCogsPer <11){
-				   sugCogsPerColr = 'background-color:green'; 
+				   sugCogsPerColr = 'background-color:green';
 			   }else{
-				   sugCogsPerColr = 'background-color:red'; 
-			   } 
-			   
+				   sugCogsPerColr = 'background-color:red';
+			   }
+
 			   if(pharCogsPer >=55 && pharCogsPer <=60){
-				   pharCogsPerColr = 'background-color:yellow'; 
+				   pharCogsPerColr = 'background-color:yellow';
 			   }else if(pharCogsPer <55){
-				   pharCogsPerColr = 'background-color:green'; 
+				   pharCogsPerColr = 'background-color:green';
 			   }else{
-				   pharCogsPerColr = 'background-color:red'; 
+				   pharCogsPerColr = 'background-color:red';
 			   }
-			   
+
 			   if(optCogsPer >=30 && optCogsPer <=35){
-				   optCogsPerColr = 'background-color:yellow'; 
+				   optCogsPerColr = 'background-color:yellow';
 			   }else if(optCogsPer <30){
-				   optCogsPerColr = 'background-color:green'; 
+				   optCogsPerColr = 'background-color:green';
 			   }else{
-				   optCogsPerColr = 'background-color:red'; 
+				   optCogsPerColr = 'background-color:red';
 			   }
-			   
+
 			   if(mcCogsPer >=21 && mcCogsPer <=23){
-				   mcCogsPerColr = 'background-color:yellow'; 
+				   mcCogsPerColr = 'background-color:yellow';
 			   }else if(mcCogsPer <21){
-				   mcCogsPerColr = 'background-color:green'; 
+				   mcCogsPerColr = 'background-color:green';
 			   }else{
-				   mcCogsPerColr = 'background-color:red'; 
+				   mcCogsPerColr = 'background-color:red';
 			   }*/
-			   
+
 				if(sugCogsPer <10 || sugCogsPer >13){
-					sugCogsPerColr = 'background-color:red'; 
+					sugCogsPerColr = 'background-color:red';
 				}
 
 				if(pharCogsPer <55 || pharCogsPer >65){
-					pharCogsPerColr = 'background-color:red'; 
+					pharCogsPerColr = 'background-color:red';
 				}
 
 				if(optCogsPer <30 || optCogsPer >35){
-					optCogsPerColr = 'background-color:red'; 
+					optCogsPerColr = 'background-color:red';
 				}
 
-				
+
 
 
          table +='<tr align="right"><td>'+ result[i].entity +'</td><td>'+ result[i].branch +'</td><td>'+result[i].surgery_revenue+'</td> <td>'+ result[i].optical_revenue+'</td> <td>'+result[i].pharmacy_revenue+'</td> <td>'+result[i].mtd_revenue+'</td> <td style="background-color:#FFFF33">'+result[i].surgery_revenue_perc+'</td> <td style="background-color:#FFFF33"> '+result[i].opticals_revenue_perc +'</td><td style="background-color:#FFFF33">'+result[i].pharmacy_revenue_perc +'</td> <td>'+result[i].surgery_cogs +'</td> <td>'+result[i].opticals_cogs+'</td><td>'+result[i].pharmacy_cogs+'</td><td>'+result[i].mtd_cogs+'</td><td style="'+sugCogsPerColr+'">'+result[i].surgery_cogs_perc+'</td><td style="'+optCogsPerColr+'">'+result[i].optical_cogs_perc+'</td><td style="'+pharCogsPerColr+'">'+result[i].pharmacy_cogs_perc+'</td><td>'+result[i].Consump+'</td>  </tr>';
@@ -681,7 +681,7 @@ exports.schedule = cron.schedule('30 07 * * *', () => {
             con.beginTransaction(err => {
                 if (err) console.error(err)
                 ideares_op.forEach(record => {
-					
+
 					//console.log(record);
                     connections.scm_root.query('insert into op_details set ?', record, (error) => {
                         if (error) {
@@ -698,7 +698,7 @@ exports.schedule = cron.schedule('30 07 * * *', () => {
                         });
                     })
                 })
-               
+
             })
         })
     })
@@ -720,15 +720,15 @@ exports.schedule = cron.schedule('00 07 * * *', () => {
 	  pass: 'Welcome@##$$'
 	}
 	});
-	  
+
 	let mailOptions={
 		from: 'misreport@dragarwal.com',
-		to:'nandhakumar.b@dragarwal.com',		
+		to:'nandhakumar.b@dragarwal.com',
 		text: ''
 	};
-					 
-					 
-	/*yester day */	
+
+
+	/*yester day */
 
 	var today = new Date();
 	var yesterday = new Date(today);
@@ -737,13 +737,13 @@ exports.schedule = cron.schedule('00 07 * * *', () => {
 	var mm = yesterday.getMonth()+1; //January is 0!
 
 	var yyyy = yesterday.getFullYear();
-	if(dd<10){dd='0'+dd} if(mm<10){mm='0'+mm} 
+	if(dd<10){dd='0'+dd} if(mm<10){mm='0'+mm}
 	yesterday = yyyy+'-'+mm+'-'+dd;
 
 	var apiurl = 'http://openexchangerates.org/api/historical/'+yesterday+'.json?app_id=74e52ac0cde843989f9c9c9d5dba2961&base=USD&symbols=TZS,UGX,GHS,ZMW,MUR,RWF,MZN,MGA,NGN,INR,KES';
-	
-	
-		
+
+
+
 	  /* var d = new Date();
 	  var day = d.toLocaleDateString();
 	  var dat=d.getDate();
@@ -755,17 +755,17 @@ exports.schedule = cron.schedule('00 07 * * *', () => {
 	  var yesterdaydate=yr+'-'+mon+'-'+tdat;
 	  var apiurl = 'https://openexchangerates.org/api/historical/'+yesterdaydate+'.json?app_id=74e52ac0cde843989f9c9c9d5dba2961&base=USD&symbols=TZS,UGX,GHS,ZMW,MUR,RWF,MZN,MGA,NGN,INR,KES';
 	  */
-      /*yester day */		
-	  
+      /*yester day */
+
       //var apiurl = 'https://openexchangerates.org/api/latest.json?app_id=74e52ac0cde843989f9c9c9d5dba2961&base=USD&symbols=TZS,UGX,GHS,ZMW,MUR,RWF,MZN,MGA,NGN,INR,KES';
-	  
- 	  
+
+
 	request(apiurl,{ json: true }, function(error, response,body) {
 	if ((error) || body.hasOwnProperty("error")) {
 
 			mailOptions.subject="Currency api error :: Api url ::"+apiurl;
 			mailOptions.text=body.description;
-			
+
 			transporter.sendMail(mailOptions, function(error, info){
 			  if (error) {
 				console.log(error);
@@ -773,28 +773,28 @@ exports.schedule = cron.schedule('00 07 * * *', () => {
 				console.log('Email sent: ' + info.response);
 			  }
 			});
-			
+
 			var  fileContent = {"date":yesterday,"Api url":apiurl};
 			var newfileContent = Object.assign(fileContent, body);
-			newfileContent = JSON.stringify(newfileContent)+'\n'; 
-			let fileName = '/home/ubuntu/scmlogs/currency_api_err_'+yyyy+'-'+mm+'.txt';			
-			
-			fs.appendFile(fileName, newfileContent, function (err) { 
+			newfileContent = JSON.stringify(newfileContent)+'\n';
+			let fileName = '/home/ubuntu/scmlogs/currency_api_err_'+yyyy+'-'+mm+'.txt';
+
+			fs.appendFile(fileName, newfileContent, function (err) {
 				if (err)
 			console.log(err);
 			else
 				console.log('Append operation complete.');
 			});
 	}else{
-		
+
 		/*var timestamp = body.timestamp;
 		var date = new Date(timestamp * 1000);
-		var currency_date = date.getFullYear()+'-'+ 
-		("0" + (date.getMonth() + 1)).slice(-2)+			
-		'-'+("0" + (date.getDate())).slice(-2);	*/	
+		var currency_date = date.getFullYear()+'-'+
+		("0" + (date.getMonth() + 1)).slice(-2)+
+		'-'+("0" + (date.getDate())).slice(-2);	*/
 		for (var key in body.rates){
 			var countrycode='',currencycode='',inr_amount=0,insetquery='',usd_amount=0;
-			if(key!=='INR'){					
+			if(key!=='INR'){
 				inr_amount = (1/body.rates[key])*body.rates['INR'];
 				if(key=='TZS'){
 					countrycode='TZA'
@@ -816,7 +816,7 @@ exports.schedule = cron.schedule('00 07 * * *', () => {
 					countrycode='NGA';
 				}else if(key=='KES'){
 					countrycode='NAB';
-				}					
+				}
 			}else{
 				countrycode=key;
 				inr_amount = body.rates['INR'];
@@ -825,15 +825,15 @@ exports.schedule = cron.schedule('00 07 * * *', () => {
 			currencycode = key;
 			insetquery = 'insert into currency_rates set INR_rate="'+inr_amount+'",country_code="'+countrycode+'",currency_code="'+currencycode+'",currency_date="'+yesterday+'",USD_rate="'+usd_amount+'",add_date=now()';
 				connections.scm_root.query(insetquery, (error1,res1) => {
-					if (error1) {                            
-							console.log(error1);                           
+					if (error1) {
+							console.log(error1);
 					}else{
 						console.log(res1);
 					}
-					
+
 				})
-			
-			
+
+
 		}
 		mailOptions.subject='Currency api success';
 		mailOptions.text='Api url ::'+apiurl;
@@ -847,7 +847,7 @@ exports.schedule = cron.schedule('00 07 * * *', () => {
 		console.log('inserted');
 	}
 })
-   
+
     console.log('completed');
 })
 
@@ -900,14 +900,14 @@ exports.schedule=cron.schedule('30 09 * * *',()=>{
 	var mm = yesterday.getMonth()+1; //January is 0!
 
 	var yyyy = yesterday.getFullYear();
-	if(dd<10){dd='0'+dd} if(mm<10){mm='0'+mm} 
-	yesterday = yyyy+'-'+mm+'-'+dd;	    
+	if(dd<10){dd='0'+dd} if(mm<10){mm='0'+mm}
+	yesterday = yyyy+'-'+mm+'-'+dd;
 connections.scm_public.query(files.aehcollection_email,function(errs,result1,fields){
  if(errs) throw err;
   console.log('connected');
-  
-  
-  
+
+
+
 
 connections.scm_public.query("SELECT PARENT_BRANCH,BRANCH,PAYMENT_OR_REFUND_DATE,(SUM(CASH_AMOUNT)-SUM(REFUND_CASH_AMOUNT)) AS cashamount,(SUM(CARD_AMOUNT)-SUM(REFUND_CARD_AMOUNT)) AS cardamount,(SUM(CHEQUE_AMOUNT)-SUM(REFUND_CHEQUE_AMOUNT)) AS chequeamount,SUM(DD_AMOUNT) AS ddamount,SUM(FUND_TRANSFER_AMOUNT) AS fund_trns_amt,SUM(PAYTM_AMOUNT) AS paym_amt,SUM(CREDIT_CHEQUE_AMOUNT) AS cred_che_amt,SUM(CREDIT_CASH_AMOUNT) AS cred_cash_amt,SUM(PAYTM_CASH_AMOUNT) AS paytm_cach_amt,SUM(PAYTM_FUND_AMOUNT) AS paytm_fund_amt,ONLINE_AMOUNT FROM collection_detail WHERE PAYMENT_OR_REFUND_DATE=DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND PARENT_BRANCH IN ('AEH','AHC','AHI') GROUP BY branch",function(errs,result,fields)
 {
@@ -939,13 +939,13 @@ connections.scm_public.query("SELECT PARENT_BRANCH,BRANCH,PAYMENT_OR_REFUND_DATE
       pass: passcode
     }
   });
-  
+
   var table='';
    console.log(result);
     console.log(result.length);
   if(result.length>0){
-	  
-	 
+
+
 	  for(i=0;i<result.length;i++)
 	  {
 		table +='<tr> <td >'+ result[i].PAYMENT_OR_REFUND_DATE +'</td> <td>'+ result[i].BRANCH +'</td><td>'+ result[i].PARENT_BRANCH +'</td> <td>'+result[i].cashamount+'</td> <td>'+ result[i].cardamount+'</td> <td>'+result[i].chequeamount+'</td> <td>'+result[i].paym_amt+'</td> <td>'+result[i].ddamount+'</td> <td>'+result[i].fund_trns_amt+'</td><td>'+result[i].ONLINE_AMOUNT+'</td> </tr>';
@@ -982,7 +982,7 @@ transporter.sendMail(mailOptions, function(error, info){
 
 
 exports.schedule = cron.schedule('45 07 * * *', () => {
-//exports.schedule = cron.schedule('02 16 * * *', () => {	
+//exports.schedule = cron.schedule('02 16 * * *', () => {
 	var today = new Date();
 	var yesterday = new Date(today);
 	yesterday.setDate(today.getDate() - 1);
@@ -990,44 +990,42 @@ exports.schedule = cron.schedule('45 07 * * *', () => {
 	var mm = yesterday.getMonth()+1; //January is 0!
 
 	var yyyy = yesterday.getFullYear();
-	if(dd<10){dd='0'+dd} if(mm<10){mm='0'+mm} 
+	if(dd<10){dd='0'+dd} if(mm<10){mm='0'+mm}
 	yesterday = yyyy+'-'+mm+'-'+dd;
-    var filepath = '/home/ubuntu/scmlogs/ava_email_cron_'+'_'+yesterday+'.txt';   
-	//var filepath = 'D:/git/cogs-api-new-final/ava_email_cron_'+'_'+yesterday+'.txt';   
+    var filepath = '/home/ubuntu/scmlogs/ava_email_cron_'+'_'+yesterday+'.txt';
+	//var filepath = 'D:/git/cogs-api-new-final/ava_email_cron_'+'_'+yesterday+'.txt';
     routes.main_route_usage_tracker_new_email(yesterday, (_err, _res) => {
                        	if(_err){
 							console.log(_err);
-							dlog.log(_err,filepath);	
-							dlog.cronErrEmail("AVA email not sent",_err);	
+							dlog.log(_err,filepath);
+							dlog.cronErrEmail("AVA email not sent",_err);
 						}else{
-							
+
 							nativeFunctions.avaDemoEmail(_res,yesterday).then(
 							(emailtemp) => {
 								routes.avaEmailList(emailtemp, (_err1, emailres) => {
 									if(_err1){
 										console.log(_err1);
 										dlog.log(_err1,filepath);
-										dlog.cronErrEmail("AVA email not sent",_err1);	
+										dlog.cronErrEmail("AVA email not sent",_err1);
 									}else{
-										dlog.cronEmail(emailtemp,emailres,yesterday,(_err2, _res2) => {											
+										dlog.cronEmail(emailtemp,emailres,yesterday,(_err2, _res2) => {
 											if(_err2){
 												    console.log(_err2);
 										            dlog.log(_err2,filepath);
-													dlog.cronErrEmail("AVA email not sent","error in cronEmail");	
+													dlog.cronErrEmail("AVA email not sent","error in cronEmail");
 											}else{
-												 console.log(_res2);	
+												 console.log(_res2);
 											}
 										})
-										
+
 									}
-									
+
 								})
-								 
+
 							})
-							
+
 						}
     });
-	
+
 })
-
-

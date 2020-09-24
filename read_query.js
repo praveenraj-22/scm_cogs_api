@@ -96,11 +96,24 @@ exports.finexpense_branch=read("./queries/finexpensebranch.sql");
 exports.pettycash_category=read("./queries/pettycashcategory.sql");
 exports.pettycash_allocated_amount=read("./queries/pettycash_allocated_amount.sql");
 
+exports.schpcschfinapp=read("./queries/schpc_schapp.sql");
+exports.schpcschfindec=read("./queries/schpc_decline.sql");
+exports.schpcpend=read("./queries/schpc_pend.sql");
+
 exports.schpcallall=read("./queries/schpcallall.sql");
 exports.schpcbrst=read("./queries/schpc_br_st.sql");
 exports.strbranchgroupbillz=read("./queries/strbranchgroupbill.sql");
 exports.strbranchgroupbilldetailz=read("./queries/strbranchgroupbilldetail.sql");
+
+exports.finpcpend=read("./queries/finpc_pend.sql");
+exports.finpcschfindec=read("./queries/finpc_decl.sql");
+exports.finpcschfinapp=read("./queries/finpc_app.sql");
+exports.finpcallall=read("./queries/finpc_allall.sql");
 exports.finptycshallall=read("./queries/finptycshallall.sql");
+exports.finpcdeclibrst=read("./queries/finpc_decl_br_st.sql");
+exports.finpcpendbrst=read("./queries/finpc_pend_st_br.sql");
+exports.finpcappstbr=read("./queries/finpc_app_st_br.sql");
+
 exports.finptycshallst=read("./queries/finpc_all_st.sql");
 exports.finptycshbrall=read("./queries/finpty_br_all.sql");
 exports.finptycshbrst=read("./queries/finptycsh_br_st.sql");

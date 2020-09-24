@@ -3,10 +3,25 @@ WHEN pet.status=2 THEN 'Approved'
 WHEN pet.status=3 THEN 'Cancelled'
 WHEN pet.status=4 THEN 'Approved by Finance'
 WHEN pet.status=5 THEN 'Cancelled by Finance'
- END AS 'status',pet.status AS status1,category_id,PCC.category_name,SUM(pet.debit) AS 'totalamount' FROM pettycash AS pet
+ END AS 'status',pet.status AS status1,category_id,PCC.category_name,
+ SUM(pet.debit) AS 'totalamount',DATE(created_date) as 'created_date'
+ ,bill_submission
+ FROM pettycash AS pet
 INNER JOIN pettycash_category AS PCC ON PCC.sno=pet.category_id
-WHERE DATE(created_date) BETWEEN ? AND ? AND pet.branch=?
+WHERE   pet.branch=?  AND DATE(pet.created_date) BETWEEN CONCAT(YEAR(?),'-',MONTH(?),'-','01')
+AND  CONCAT(YEAR(?),'-',MONTH(?),'-','31') 
 GROUP BY branch,category_id
+
+
+-- SELECT branch,CASE WHEN pet.status=1 THEN 'Pending'
+-- WHEN pet.status=2 THEN 'Approved'
+-- WHEN pet.status=3 THEN 'Cancelled'
+-- WHEN pet.status=4 THEN 'Approved by Finance'
+-- WHEN pet.status=5 THEN 'Cancelled by Finance'
+--  END AS 'status',pet.status AS status1,category_id,PCC.category_name,SUM(pet.debit) AS 'totalamount' FROM pettycash AS pet
+-- INNER JOIN pettycash_category AS PCC ON PCC.sno=pet.category_id
+-- WHERE   pet.branch=? and
+-- GROUP BY branch,category_id
 
 -- SELECT branch,CASE WHEN pet.status=1 THEN 'Pending'
 -- WHEN pet.status=2 THEN 'Approved'

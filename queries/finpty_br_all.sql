@@ -1,4 +1,4 @@
-SELECT CASE WHEN (pending<>0) OR (cancelled <>0 AND approved<>0 AND pending<>0)  THEN 'pending'
+SELECT CASE WHEN (pending<>0) OR (cancelled <>0 AND approved<>0 AND pending<>0)  THEN 'Pending'
 WHEN cancelled <>0 AND (approved=0 AND pending=0) THEN 'cancelled'
 WHEN approved <>0 AND pending=0 THEN 'approved'
 END AS STATUS,

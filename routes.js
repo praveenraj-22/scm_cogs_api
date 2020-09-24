@@ -3439,50 +3439,258 @@ exports.download_bill = (req, res) => {
 
 //petty cash praveen
 exports.strchpc = (req, res) => {
-  let fromdate = req.params.fromdate;
-  let todate = req.params.todate;
-  // let status = req.params.status;
+
+  let status = req.params.status;
   let branch = req.params.branch;
   let username = req.params.name;
   let splitbranches = [];
-  console.log(fromdate + " " + todate + " " + " " + branch + " " + username);
-	if(branch=='All'){
-		try {
-			console.log("hit");
-	    connections.scm_public.query("select branches from users where emp_id=? and role='sch_user' AND is_active=1", [username], (err, resbranch) => {
-	      if (err) console.error(err);
-	      resbranch.forEach(branches => {
-	        splitbranches = branches.branches.split('+')
-	      })
-	      console.log(splitbranches);
-	      connections.scm_public.query(files.schpcallall, [splitbranches, fromdate, todate, splitbranches, fromdate, todate, splitbranches, fromdate, todate], (err, resdata) => {
+  console.log(branch + " " + status + username);
 
-					console.log(resdata);
-		      if (err) console.error(err);
-	        res.json({
-	          "result": {
-	            "pcbill": resdata
-	          }
-	        })
-	      })
-	    })
-	  } catch (e) {
-			console.log(e);
-	  }
+  if ((branch == 'All') && (status != 'All')) {
+    if ((status == 2) || (status == 4)) {
+      try {
+        console.log("hit in branch all appr");
+        connections.scm_public.query("select branches from users where emp_id=? and role='sch_user' AND is_active=1", [username], (err, resbranch) => {
+          if (err) {
+            res.json({
+              "result": {
+                "pcbill": err
+              }
+            })
+          } else {
+            resbranch.forEach(branches => {
+              splitbranches = branches.branches.split('+')
+            })
+            //  console.log(splitbranches);
+            connections.scm_public.query(files.schpcschfinapp, [splitbranches, status], (err, resdata) => {
+              console.log(resdata);
+              if (err) console.error(err);
+              res.json({
+                "result": {
+                  "pcbill": resdata
+                }
+              })
+            })
+          }
 
-	}
-	else {
-		connections.scm_public.query(files.schpcallall, [branch, fromdate, todate, branch, fromdate, todate, branch, fromdate, todate], (err, resdata) => {
-			if (err) console.error(err);
-			res.json({
-				"result": {
-					"pcbill": resdata
-				}
-			})
-		})
-	}
+        })
+      } catch (e) {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "pcbill": e
+          }
+        })
+      }
+    } else if ((status == 3) || (status == 5)) {
+      try {
+        console.log("hit in branch all cancel");
+        connections.scm_public.query("select branches from users where emp_id=? and role='sch_user' AND is_active=1", [username], (err, resbranch) => {
+          if (err) {
+            res.json({
+              "result": {
+                "pcbill": err
+              }
+            })
+          } else {
+            resbranch.forEach(branches => {
+              splitbranches = branches.branches.split('+')
+            })
+            //  console.log(splitbranches);
+            connections.scm_public.query(files.schpcschfindec, [splitbranches, status], (err, resdata) => {
+              console.log(resdata);
+              if (err) console.error(err);
+              res.json({
+                "result": {
+                  "pcbill": resdata
+                }
+              })
+            })
+          }
 
+        })
+      } catch (e) {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "pcbill": e
+          }
+        })
+      }
+    } else {
+      try {
+        console.log("hit in branch all pending");
+        connections.scm_public.query("select branches from users where emp_id=? and role='sch_user' AND is_active=1", [username], (err, resbranch) => {
+          if (err) {
+            res.json({
+              "result": {
+                "pcbill": err
+              }
+            })
+          } else {
+            resbranch.forEach(branches => {
+              splitbranches = branches.branches.split('+')
+            })
+            //  console.log(splitbranches);
+            connections.scm_public.query(files.schpcpend, [splitbranches, status], (err, resdata) => {
+              console.log(resdata);
+              if (err) console.error(err);
+              res.json({
+                "result": {
+                  "pcbill": resdata
+                }
+              })
+            })
+          }
+
+        })
+      } catch (e) {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "pcbill": e
+          }
+        })
+      }
+    }
+  } else if ((branch == 'All') && (status == 'All')) {
+
+    console.log("hit in branch all status all");
+    connections.scm_public.query("select branches from users where emp_id=? and role='sch_user' AND is_active=1", [username], (err, resbranch) => {
+      if (err) console.error(err);
+      resbranch.forEach(branches => {
+        splitbranches = branches.branches.split('+')
+      })
+      connections.scm_public.query(files.schpcallall, [splitbranches, splitbranches, splitbranches], (err, resdata) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "pcbill": resdata
+          }
+        })
+      })
+
+    })
+  } else if ((branch != 'All') && (status == 'All')) {
+    console.log("hit in status all");
+
+    connections.scm_public.query(files.schpcallall, [branch, branch, branch], (err, resdata) => {
+      if (err) console.error(err);
+      res.json({
+        "result": {
+          "pcbill": resdata
+        }
+      })
+    })
+
+
+  } else {
+    console.log("hit in else");
+    if ((status == 2) || (status == 4)) {
+      try {
+        console.log("hit in branch all appr");
+
+        connections.scm_public.query(files.schpcschfinapp, [branch, status], (err, resdata) => {
+          console.log(resdata);
+          if (err) console.error(err);
+          res.json({
+            "result": {
+              "pcbill": resdata
+            }
+          })
+        })
+      } catch (e) {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "pcbill": e
+          }
+        })
+      }
+    } else if ((status == 3) || (status == 5)) {
+      try {
+        console.log("hit in branch all cancel");
+
+        connections.scm_public.query(files.schpcschfindec, [branch, status], (err, resdata) => {
+          console.log(resdata);
+          if (err) console.error(err);
+          res.json({
+            "result": {
+              "pcbill": resdata
+            }
+          })
+        })
+      } catch (e) {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "pcbill": e
+          }
+        })
+      }
+    } else {
+      try {
+        console.log("hit in branch all pending");
+
+        connections.scm_public.query(files.schpcpend, [branch, status], (err, resdata) => {
+          console.log(resdata);
+          if (err) console.error(err);
+          res.json({
+            "result": {
+              "pcbill": resdata
+            }
+          })
+        })
+
+      } catch (e) {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "pcbill": e
+          }
+        })
+      }
+    }
+  }
 }
+// 	if(branch=='All'){
+// 		try {
+// 			console.log("hit");
+// 	    connections.scm_public.query("select branches from users where emp_id=? and role='sch_user' AND is_active=1", [username], (err, resbranch) => {
+//       })
+// 	      if (err) console.error(err);
+// 	      resbranch.forEach(branches => {
+// 	        splitbranches = branches.branches.split('+')
+// 	      })
+// 	      console.log(splitbranches);
+// 	      connections.scm_public.query(files.schpcallall, [splitbranches, fromdate, todate, splitbranches, fromdate, todate, splitbranches, fromdate, todate], (err, resdata) => {
+//
+// 					console.log(resdata);
+// 		      if (err) console.error(err);
+// 	        res.json({
+// 	          "result": {
+// 	            "pcbill": resdata
+// 	          }
+// 	        })
+// 	      })
+// 	    })
+// 	  } catch (e) {
+// 			console.log(e);
+// 	  }
+//
+// 	}
+// 	else {
+// 		connections.scm_public.query(files.schpcallall, [branch, fromdate, todate, branch, fromdate, todate, branch, fromdate, todate], (err, resdata) => {
+// 			if (err) console.error(err);
+// 			res.json({
+// 				"result": {
+// 					"pcbill": resdata
+// 				}
+// 			})
+// 		})
+// 	}
+//
+// }
 // exports.strchpc = (req, res) => {
 //   let fromdate = req.params.fromdate;
 //   let todate = req.params.todate;
@@ -3586,16 +3794,15 @@ exports.strchpc = (req, res) => {
 
 exports.strchbranchgroupbills = (req, res) => {
 
-  let fromdate = req.params.fromdate;
-  let todate = req.params.todate;
+  let date = req.params.date;
   let branch = req.params.branch;
-  let status = req.params.status;
+  let status = req.params.statusno;
   console.log(req.params);
   //console.log(fromdate +" "+todate+" "+branch+" "+name);
   try {
-    connections.scm_public.query(files.strbranchgroupbillz, [fromdate, todate, branch], (err, resgroupdata) => {
+    connections.scm_public.query(files.strbranchgroupbillz, [branch, date, date, date, date, date, date], (err, resgroupdata) => {
       if (err) console.error(err);
-      console.log(resgroupdata);
+      //  console.log(resgroupdata);
       res.json(resgroupdata);
     })
   } catch (e) {
@@ -3608,13 +3815,13 @@ exports.strchbranchgroupbills = (req, res) => {
 
 exports.strchbranchgroupbilldetail = (req, res) => {
 
-  let fromdate = req.params.fromdate;
-  let todate = req.params.todate;
+  let date = req.params.date;
   let categoryname = req.params.categoryname;
   let branch = req.params.branch;
+  let status = req.params.status;
 
   try {
-    connections.scm_public.query(files.strbranchgroupbilldetailz, [fromdate, todate, branch, categoryname], (err, resgroupdatadetail) => {
+    connections.scm_public.query(files.strbranchgroupbilldetailz, [date, date, date, date, branch, categoryname, status], (err, resgroupdatadetail) => {
       if (err) console.error(err);
       res.json(resgroupdatadetail);
     })
@@ -3625,12 +3832,12 @@ exports.strchbranchgroupbilldetail = (req, res) => {
 
 
 exports.strch_billgroupapprove = (req, res) => {
-  console.log(req.body);
+  //  console.log(req.body);
   let strch_id = req.body.strch_id;
   let strch_groupcategory = req.body.strch_groupcategory;
   let strch_branch = req.body.strch_branch;
-  let fstrch_date = req.body.strch_fdate;
-  let tstrch_date = req.body.strch_tdate;
+  let strch_date = req.body.strch_date;
+
   let datta = [];
 
   let grpcat = "select * from pettycash_category where category_name='" + strch_groupcategory + "'";
@@ -3642,7 +3849,7 @@ exports.strch_billgroupapprove = (req, res) => {
       datta = data.sno
     })
     console.log(datta);
-    let strchapprovebillgroup = "update pettycash set status=2,sch_id='" + strch_id + "',sch_approved_date=now() where branch='" + strch_branch + "' and category_id='" + datta + "' and status not in (6,3,5,4,2) and date(created_date) between '" + fstrch_date + "' and '" + tstrch_date + "'";
+    let strchapprovebillgroup = "update pettycash set status=2,sch_id='" + strch_id + "',sch_approved_date=now() where branch='" + strch_branch + "' and category_id='" + datta + "' and status not in (6,3,5,4,2) and date(created_date) between concat(year('" + strch_date + "'),'-',month('" + strch_date + "'),'-','01') and concat(year('" + strch_date + "'),'-',month('" + strch_date + "'),'-','31') ";
 
     //let strchapprovebillgroup="select * from pettycash where branch='"+strch_branch+"' and category_id='"+datta+"' and date(created_date)='"+strch_date+"'";
     console.log(strchapprovebillgroup);
@@ -3795,10 +4002,10 @@ exports.strch_billgroupapproveall = (req, res) => {
   let strch_id = req.body.strch_id;
   let strch_groupcategory = req.body.strch_groupcategory;
   let strch_branch = req.body.strch_branch;
-  let fstrch_date = req.body.strch_fdate;
-  let tstrch_date = req.body.strch_tdate;
+  let strch_date = req.body.strch_date;
 
-  let update = "UPDATE pettycash SET STATUS=2,sch_id='" + strch_id + "',sch_approved_date=NOW() WHERE branch='" + strch_branch + "' AND STATUS NOT IN (3,6,5,4,2) AND DATE(created_date) BETWEEN '" + fstrch_date + "' AND '" + tstrch_date + "'";
+
+  let update = "UPDATE pettycash SET STATUS=2,sch_id='" + strch_id + "',sch_approved_date=NOW() WHERE branch='" + strch_branch + "' AND STATUS NOT IN (3,6,5,4,2) AND date(created_date) between concat(year('" + strch_date + "'),'-',month('" + strch_date + "'),'-','01') and concat(year('" + strch_date + "'),'-',month('" + strch_date + "'),'-','31') ";
 
   console.log(update);
 
@@ -3819,17 +4026,51 @@ exports.strch_billgroupapproveall = (req, res) => {
 // [praveen]
 
 exports.finptycsh = (req, res) => {
+
   console.log(req.params);
 
-  let fromdate = req.params.fromdate;
-  let todate = req.params.todate;
 
   let branch = req.params.branch;
+  let status = req.params.status;
 
-  if (branch == 'All') {
-    console.log("hit in status and branch all");
-    //    connections.scm_public.query(files.finptycshallall, [fromdate, todate, fromdate, todate, fromdate, todate, fromdate, todate, fromdate, todate, fromdate, todate, fromdate, todate, fromdate, todate, fromdate, todate, fromdate, todate], (err, resdata) => {
-    connections.scm_public.query(files.finptycshallall, [fromdate, todate, fromdate, todate, fromdate, todate], (err, resdata) => {
+  if ((branch == 'All') && (status != 'All')) {
+    console.log("hit in branch all ");
+    if ((status == 2) || (status == 1)) {
+      console.log("pending");
+      connections.scm_public.query(files.finpcpend, [status], (err, resdata) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "pcbill": resdata
+          }
+        })
+      })
+    } else if ((status == 3) || (status == 5)) {
+      console.log("decline");
+      connections.scm_public.query(files.finpcschfindec, [status], (err, resdata) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "pcbill": resdata
+          }
+        })
+      })
+    } else if ((status == 4)) {
+      console.log("approved");
+      connections.scm_public.query(files.finpcschfinapp, [status], (err, resdata) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "pcbill": resdata
+          }
+        })
+      })
+    }
+
+
+  } else if ((branch != 'All') && (status == 'All')) {
+    console.log("hit in status alll");
+    connections.scm_public.query(files.finptycshallall, [branch, branch, branch], (err, resdata) => {
       if (err) console.error(err);
       res.json({
         "result": {
@@ -3837,18 +4078,69 @@ exports.finptycsh = (req, res) => {
         }
       })
     })
-  } else{
-		connections.scm_public.query(files.finptycshbrall, [branch,fromdate, todate,branch, fromdate, todate,branch, fromdate, todate], (err, resdata) => {
-			if (err) console.error(err);
-			res.json({
-				"result": {
-					"pcbill": resdata
-				}
-			})
-		})
-	}
+  } else if ((branch == 'All') && (status == 'All')) {
+    console.log("hit in all all");
+    connections.scm_public.query(files.finpcallall, (err, resdata) => {
+      if (err) console.error(err);
+      res.json({
+        "result": {
+          "pcbill": resdata
+        }
+      })
+    })
+  } else {
+    if ((status == 4)) {
+      connections.scm_public.query(files.finpcappstbr, [status, branch], (err, resdata) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "pcbill": resdata
+          }
+        })
+      })
+    } else if ((status == 1) || (status == 2)) {
+      connections.scm_public.query(files.finpcpendbrst, [status, branch], (err, resdata) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "pcbill": resdata
+          }
+        })
+      })
+    } else if ((status == 3) || (status == 5)) {
+      connections.scm_public.query(files.finpcdeclibrst, [status, branch], (err, resdata) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "pcbill": resdata
+          }
+        })
+      })
+    }
+  }
+  // if (branch == 'All') {
+  //   console.log("hit in status and branch all");
+  //   //    connections.scm_public.query(files.finptycshallall, [fromdate, todate, fromdate, todate, fromdate, todate, fromdate, todate, fromdate, todate, fromdate, todate, fromdate, todate, fromdate, todate, fromdate, todate, fromdate, todate], (err, resdata) => {
+  //   connections.scm_public.query(files.finptycshallall, [fromdate, todate, fromdate, todate, fromdate, todate], (err, resdata) => {
+  //     if (err) console.error(err);
+  //     res.json({
+  //       "result": {
+  //         "pcbill": resdata
+  //       }
+  //     })
+  //   })
+  // } else {
+  //   connections.scm_public.query(files.finptycshbrall, [branch, fromdate, todate, branch, fromdate, todate, branch, fromdate, todate], (err, resdata) => {
+  //     if (err) console.error(err);
+  //     res.json({
+  //       "result": {
+  //         "pcbill": resdata
+  //       }
+  //     })
+  //   })
+  // }
 
-	// else if ((branch == 'All') && (status != 'All')) {
+  // else if ((branch == 'All') && (status != 'All')) {
   //   console.log("hit in branch all");
   //   connections.scm_public.query(files.finptycshallst, [fromdate, todate, fromdate, todate, status], (err, resdata) => {
   //     if (err) console.error(err);
@@ -3870,7 +4162,7 @@ exports.finptycsh = (req, res) => {
   //   })
   // } else {
   //   console.log("HIT IN else");
-	//
+  //
   //   connections.scm_public.query(files.finptycshbrst, [fromdate, todate, fromdate, todate, branch, status], (err, resdata) => {
   //     if (err) console.error(err);
   //     res.json({
@@ -3885,12 +4177,11 @@ exports.finptycsh = (req, res) => {
 
 exports.finpcbranchgroupbills = (req, res) => {
   console.log(req.params);
-  let fromdate = req.params.fromdate;
-  let todate = req.params.todate;
+  let date = req.params.date;
   let branch = req.params.branch;
   let status = req.params.status;
 
-  connections.scm_public.query(files.finpccshbranchgroupz, [fromdate, todate, branch], (err, resgroupdatadetail) => {
+  connections.scm_public.query(files.finpccshbranchgroupz, [date,date,date,date, branch], (err, resgroupdatadetail) => {
     if (err) console.error(err);
     res.json(resgroupdatadetail);
   })
@@ -3899,13 +4190,13 @@ exports.finpcbranchgroupbills = (req, res) => {
 
 exports.finpcbranchgroupbilldetail = (req, res) => {
   console.log(req.params);
-  let fromdate = req.params.fromdate;
-  let todate = req.params.todate;
+  let date = req.params.date;
+
   let branch = req.params.branch;
   //let status=req.params.status;
   let categoryname = req.params.categoryname;
 
-  connections.scm_public.query(files.finptycshbranchgroupbilldetailz, [fromdate, todate, branch, categoryname], (err, resgroupdatadetail) => {
+  connections.scm_public.query(files.finptycshbranchgroupbilldetailz, [date,date,date,date, branch, categoryname], (err, resgroupdatadetail) => {
     if (err) console.error(err);
     res.json(resgroupdatadetail);
   })
@@ -4048,12 +4339,12 @@ exports.fin_billgroupdecline = (req, res) => {
 
 exports.finptycsh_billgroupapproveall = (req, res) => {
   console.log(req.body);
-  let fromdate = req.body.strch_fdate;
-  let todate = req.body.strch_tdate;
+  let date = req.body.strch_date;
   let status = req.body.status;
   let branch = req.body.strch_branch;
   let username = req.body.strch_id;
   let refillamount = req.body.finrefilledamount;
+
   connections.scm_public.getConnection((err, conn) => {
     conn.beginTransaction(function(err) {
       if (err) {
@@ -4062,7 +4353,7 @@ exports.finptycsh_billgroupapproveall = (req, res) => {
         })
         //      throw err;
       } else {
-        let updatequery = "update pettycash SET STATUS=4,fin_id='" + username + "',fin_approved_date=now() WHERE STATUS=2 AND branch='" + branch + "' and date(created_date) between '" + fromdate + "' and '" + todate + "'";
+        let updatequery = "update pettycash SET STATUS=4,fin_id='" + username + "',fin_approved_date=now() WHERE STATUS=2 AND branch='" + branch + "' and date(created_date) between concat(year('" + date + "'),'-',month('" + date + "'),'-','01') and concat(year('" + date + "'),'-',month('" + date + "'),'-','31') ";
         console.log(updatequery);
         conn.query(updatequery, (err, resupdate) => {
           if (err) {
