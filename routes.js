@@ -4446,3 +4446,53 @@ exports.decline_amount = (req, res) => {
   })
 
 }
+
+exports.cogsdetails=(req,res)=>{
+  console.log(req.params);
+  let fromdate=req.params.date;
+  let entity=req.params.entity;
+  let branch=req.params.branch;
+
+
+
+if((entity=='All')&&(branch=='All')){
+//  console.log("branch all entity all");
+  let transquery="select * from cogs_details where trans_date like '"+fromdate+"%'";
+  //console.log(transquery);
+  connections.scm_public.query(transquery,(err,rescogs)=>{
+    if(err) console.error(err);
+    res.json({
+      "result": {
+        "cogs": rescogs
+      }
+    })
+  })
+}
+else if((entity !='All')&&(branch=='All')){
+//  console.log("branch all entity not all");
+  let transquery="select * from cogs_details where trans_date like '"+fromdate+"%'  and entity='"+entity+"' ";
+//  console.log(transquery);
+  connections.scm_public.query(transquery,(err,rescogs)=>{
+    if(err) console.error(err);
+    res.json({
+      "result": {
+        "cogs": rescogs
+      }
+    })
+  })
+}
+else {
+//  console.log("else");
+  let transquery="select * from cogs_details where trans_date like '"+fromdate+"%' and entity='"+entity+"' and branch='"+branch+"'";
+//  console.log(transquery);
+  connections.scm_public.query(transquery,(err,rescogs)=>{
+    if(err) console.error(err);
+    res.json({
+      "result": {
+        "cogs": rescogs
+      }
+    })
+  })
+}
+
+}

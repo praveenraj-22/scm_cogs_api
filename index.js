@@ -87,4 +87,6 @@ app.post('/api-finpcbillgroupdecline',modules.routes.fin_billgroupdecline)
 app.post('/api-finptycshbillgroupapproveall',modules.routes.finptycsh_billgroupapproveall)
 app.get('/api-declineamount/:branch/:fromdate/:todate',modules.routes.decline_amount)
 
+//praveenraj
+app.get('/api-cogsdetail/:date/:entity/:branch',modules.routes.cogsdetails)
 app.listen(8888, () => console.log(`App listening on port 8888`))
