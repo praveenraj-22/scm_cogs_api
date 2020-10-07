@@ -119,3 +119,5 @@ exports.finptycshbrall=read("./queries/finpty_br_all.sql");
 exports.finptycshbrst=read("./queries/finptycsh_br_st.sql");
 exports.finpccshbranchgroupz=read("./queries/finptycshbranchgroup.sql");
 exports.finptycshbranchgroupbilldetailz=read("./queries/finptycshbranchgroupbilldetail.sql");
+
+exports.claimamountvalid=read("./queries/claimamountvalidate.sql");

@@ -2361,7 +2361,7 @@ exports.avaEmailList = (emailtemp, callback) => {
 
 
 
-exports.upload_doctor = (req, res) => {
+exports.upload_doctor = async (req, res) => {
   console.log("hit in back end ------------------------------------");
 
   let agreesampleFile = '';
@@ -2443,114 +2443,433 @@ exports.upload_doctor = (req, res) => {
       }
     })
   } else {
-    connections.scm_public.query("select Pan_no from drt_customer where Pan_no=? and status in (1,-1) group by Pan_no", [doctor_pan], (err, resultpan) => {
-      if (err) console.error(err);
-      if ((resultpan == '') || (resultpan[0].Pan_no == "NO PAN")) {
+    let pansearch = await pansearchfile(req);
+    console.log(pansearch);
+    if ((pansearch.result == null) || (pansearch.result == "")) {
+      let agreementfile = await moveagreementfile(req);
 
-        if (((upload.fileagreementupload) == null) || ((upload.fileagreementupload) === '')) {
-          console.log("hit");
-        } else {
-          agreesampleFile = upload.fileagreementupload;
-          console.log("====================================");
-          datetime = date.concat(agreesampleFile.name);
-          aggname = user_name.concat("_", "aggreement_", datetime)
-          console.log(agreesampleFile.name);
-          console.log(aggname);
-          if (agreesampleFile.mimetype == "image/jpeg" || agreesampleFile.mimetype == "image/png" || agreesampleFile.mimetype == "image/gif" || agreesampleFile.mimetype == "application/pdf") {
-            agreeuploadPath = '/var/www/andaman/drtfiles/' + aggname;
-            console.log("uploadPath : " + agreeuploadPath);
-
-            doc_agreement = 'Yes'
-            console.log(doc_agreement);
-            agreesampleFile.mv(agreeuploadPath, function(err) {
-              if (err) {
-                return res.status(500).send(err);
-              }
-              doc_agreement = 'Yes'
-            });
-          }
-
-        }
-        if (((upload.filepanupload) == null) || ((upload.filepanupload) == '')) {
-          console.log("hit");
-        } else {
-          pansampleFile = upload.filepanupload;
-          console.log("====================================");
-          datetime = date.concat(pansampleFile.name);
-          panname = user_name.concat("_", "pan_", datetime)
-          console.log(pansampleFile.name);
-          console.log(panname);
-          if (pansampleFile.mimetype == "image/jpeg" || pansampleFile.mimetype == "image/png" || pansampleFile.mimetype == "image/gif" || pansampleFile.mimetype == "application/pdf") {
-            panuploadPath = '/var/www/andaman/drtfiles/' + panname;
-            console.log("uploadPath : " + panuploadPath);
-            doc_agreement = 'Yes'
-            console.log(doc_agreement);
-            pansampleFile.mv(panuploadPath, function(err) {
-              if (err) {
-                return res.status(500).send(err);
-              }
-              isAgreement = 'Yes'
-            });
-          }
-
-        }
-        if (((upload.filepassbookupload) == null) || ((upload.filepassbookupload) == '')) {
-          console.log('hir');
-        } else {
-          passbooksampleFile = upload.filepassbookupload;
-          console.log("====================================");
-          datetime = date.concat(passbooksampleFile.name);
-          passname = user_name.concat("_", "passbook_", datetime)
-          console.log(passbooksampleFile.name);
-          console.log(passname);
-
-          if (passbooksampleFile.mimetype == "image/jpeg" || passbooksampleFile.mimetype == "image/png" || passbooksampleFile.mimetype == "image/gif" || passbooksampleFile.mimetype == "application/pdf") {
-            passbookuploadPath = '/var/www/andaman/drtfiles/' + passname;
-            console.log("uploadPath : " + passbookuploadPath);
-            doc_agreement = 'Yes'
-            console.log(doc_agreement);
-
-            passbooksampleFile.mv(passbookuploadPath, function(err) {
-              if (err) {
-                return res.status(500).send(err);
-              }
-              isAgreement = 'Yes'
-            });
-          }
-
-        }
-
-        connections.scm_root.query("INSERT INTO `drt_customer` (Name,Address,Contact_no,Email,Pan_no,GSTIN,Percentage,STATUS,Branch,Account_no,Bank_ifsc,Bank_name,Agreement,Agreement_url,Pan_url,Passbook_url,uploaded_user,Payment_type,Infavour_of) VALUE (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-          [doctor_name, doctor_branch, doctor_contact, doctor_email, doctor_pan, doctor_gstin, doctor_agreed, isActive, doctor_branch, doctor_acc, doctor_IFSC, doctor_bankbranch, doc_agreement, aggname, panname, passname, user_name, paymenttype, doctor_infavour], (err, resdrtcustomer) => {
-            console.log();
-            if (err) {
-              console.error(err);
-              res.json({
-                doctordatainserted: false
-              })
-            } else {
-              res.json({
-                doctordatainserted: true
-              })
-            }
-
-
-          })
-
-      } else {
-        console.log("alredy Available");
+      if ((agreementfile.result == 'erroragg') || (agreementfile.result == 'invalid')) {
         res.json({
-          doctordatainserted: "Available"
-        })
+          "ResponseCode": 202,
+          "ResponseMsg": "Agreement not Uploaded .. Please upload valid format"
+        });
+        agreementfile = 'error'
+      } else {
+        console.log("hit in agrre");
+        console.log(agreementfile);
       }
 
-    })
+      let panfile = await movepanfile(req);
+      if ((panfile.result == 'errorpan') || (panfile.result == 'invalid')) {
+        res.json({
+          "ResponseCode": 203,
+          "ResponseMsg": "Pan not Uploaded .. Please upload valid format"
+        });
+        panfile = 'error'
+      } else {
+        console.log("hitin panfile");
+
+      }
+
+      let passbookfile = await movepassbookfile(req);
+      if ((passbookfile.result == 'errorpassbook') || (passbookfile.result == 'invalid')) {
+        res.json({
+          "ResponseCode": 204,
+          "ResponseMsg": "Passbook not Uploaded .. Please upload valid format"
+        });
+        passbookfile = 'error'
+      } else {
+        console.log("hitin passfile");
+      }
+
+      if ((agreementfile == "error") || (panfile == "error") || (passbookfile == "error") || (agreementfile == "") || (panfile == "") || (passbookfile == "")) {
+        console.log("error");
+      } else {
+
+        let results = await errorresult(agreementfile, panfile, passbookfile)
+  //      console.log(results);
+        doc_agreement = 'Yes'
+        if (results.result == "updated") {
+          connections.scm_root.query("INSERT INTO `drt_customer` (Name,Address,Contact_no,Email,Pan_no,GSTIN,Percentage,STATUS,Branch,Account_no,Bank_ifsc,Bank_name,Agreement,Agreement_url,Pan_url,Passbook_url,uploaded_user,Payment_type,Infavour_of) VALUE (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            [doctor_name, doctor_branch, doctor_contact, doctor_email, doctor_pan, doctor_gstin, doctor_agreed, isActive, doctor_branch, doctor_acc, doctor_IFSC, doctor_bankbranch, doc_agreement, results.agg, results.pan, results.pass, user_name, paymenttype, doctor_infavour], (err, resdrtcustomer) => {
+              console.log(resdrtcustomer);
+              if (err) {
+                console.error(err);
+                res.json({
+                  doctordatainserted: false
+                })
+              } else {
+                res.json({
+                  doctordatainserted: true
+                })
+              }
+            })
+        } else {
+          console.log("please");
+        }
+      }
+
+
+    } else {
+      console.log("alredy Available");
+      res.json({
+        "ResponseCode": 201,
+        "ResponseMsg": "Pan Number already exists"
+      });
+    }
+
   }
 
 
 }
 
+let pansearchfile = async (req) => {
+  let agreesampleFile = '';
+  let agreeuploadPath = '';
+  let pansampleFile = '';
+  let panuploadPath = '';
+  let passbooksampleFile = '';
+  let passbookuploadPath = '';
+  let datetime = '';
+  let doctor_name = req.body.doctorname;
+  let doctor_branch = req.body.doctorbranch;
+  let doctor_contact = req.body.doctorcontact;
+  let doctor_email = req.body.doctoremail;
+  let doctor_pan = req.body.doctorpan;
+  let doctor_gstin = req.body.doctorgstin;
+  let doctor_agreed = req.body.doctoragreed;
+  let doctor_acc = req.body.doctoracc;
+  let doctor_IFSC = req.body.doctorIFSC;
+  let doctor_bankbranch = req.body.doctorbankbranch;
+  let user_name = req.body.username;
+  let paymenttype = req.body.docpaymenttype;
+  let doctor_infavour = req.body.docfavourname;
+  let doc_agreement = '';
+  let isActive = "-1";
+  let aggname = '';
+  let panname = '';
+  let passname = '';
 
+  return new Promise(value => {
+    connections.scm_public.query("select Pan_no from drt_customer where Pan_no=? and status in (1,-1) group by Pan_no", [doctor_pan], (err, resultpan) => {
+      if (err) {
+        value({
+          "result": null
+        })
+      } else {
+        value({
+          "result": resultpan
+        })
+      }
+
+    })
+  })
+}
+
+let moveagreementfile = async (req) => {
+  function formatDate(date) {
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours >= 12 ? 'pm' : 'am';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    var strTime = hours + '_' + minutes + '_' + ampm;
+    return date.getDate() + "_" + (date.getMonth() + 1) + "_" + date.getFullYear() + "_" + strTime + "_";
+  }
+
+  var d = new Date();
+  var date = formatDate(d);
+  let upload = req.files;
+
+  let agreesampleFile = '';
+  let agreeuploadPath = '';
+  let pansampleFile = '';
+  let panuploadPath = '';
+  let passbooksampleFile = '';
+  let passbookuploadPath = '';
+  let datetime = '';
+  let doctor_name = req.body.doctorname;
+  let doctor_branch = req.body.doctorbranch;
+  let doctor_contact = req.body.doctorcontact;
+  let doctor_email = req.body.doctoremail;
+  let doctor_pan = req.body.doctorpan;
+  let doctor_gstin = req.body.doctorgstin;
+  let doctor_agreed = req.body.doctoragreed;
+  let doctor_acc = req.body.doctoracc;
+  let doctor_IFSC = req.body.doctorIFSC;
+  let doctor_bankbranch = req.body.doctorbankbranch;
+  let user_name = req.body.username;
+  let paymenttype = req.body.docpaymenttype;
+  let doctor_infavour = req.body.docfavourname;
+  let doc_agreement = '';
+  let isActive = "-1";
+  let aggname = '';
+  let panname = '';
+  let passname = '';
+
+  if (upload.fileagreementupload != null) {
+
+    return new Promise(resolve => {
+      if ((upload.fileagreementupload != null) || (upload.fileagreementupload != '')) {
+        agreesampleFile = upload.fileagreementupload;
+        console.log("====================================");
+        datetime = date.concat(agreesampleFile.name);
+        aggname = user_name.concat("_", "aggreement_", datetime)
+
+        if (agreesampleFile.mimetype == "image/jpeg" || agreesampleFile.mimetype == "image/png" ||
+          agreesampleFile.mimetype == "image/gif" || agreesampleFile.mimetype == "application/pdf") {
+          agreeuploadPath = 'D:/scm/backend/bill/' + aggname;
+          doc_agreement = 'Yes'
+          resolve({
+            "result": agreeuploadPath,
+            "file": agreesampleFile,
+            "doc_agreement": doc_agreement,
+            "upload_file": aggname
+          })
+
+        } else {
+          console.log("hit");
+          resolve({
+            "result": "invalid"
+          })
+        }
+      } else {
+
+        resolve({
+          "result": "null"
+        })
+      }
+
+    })
+
+  } else {
+    return new Promise(resolve => {
+      resolve({
+        "result": "null"
+      })
+    })
+  }
+
+}
+
+let movepanfile = async (req) => {
+  function formatDate(date) {
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours >= 12 ? 'pm' : 'am';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    var strTime = hours + '_' + minutes + '_' + ampm;
+    return date.getDate() + "_" + (date.getMonth() + 1) + "_" + date.getFullYear() + "_" + strTime + "_";
+  }
+
+  var d = new Date();
+  var date = formatDate(d);
+  let upload = req.files;
+
+  let agreesampleFile = '';
+  let agreeuploadPath = '';
+  let pansampleFile = '';
+  let panuploadPath = '';
+  let passbooksampleFile = '';
+  let passbookuploadPath = '';
+  let datetime = '';
+  let doctor_name = req.body.doctorname;
+  let doctor_branch = req.body.doctorbranch;
+  let doctor_contact = req.body.doctorcontact;
+  let doctor_email = req.body.doctoremail;
+  let doctor_pan = req.body.doctorpan;
+  let doctor_gstin = req.body.doctorgstin;
+  let doctor_agreed = req.body.doctoragreed;
+  let doctor_acc = req.body.doctoracc;
+  let doctor_IFSC = req.body.doctorIFSC;
+  let doctor_bankbranch = req.body.doctorbankbranch;
+  let user_name = req.body.username;
+  let paymenttype = req.body.docpaymenttype;
+  let doctor_infavour = req.body.docfavourname;
+  let doc_agreement = '';
+  let isActive = "-1";
+  let aggname = '';
+  let panname = '';
+  let passname = '';
+  let docname = '';
+  return new Promise(resolve => {
+    if (upload.filepanupload != null) {
+      pansampleFile = upload.filepanupload;
+      console.log("====================================");
+      datetime = date.concat(pansampleFile.name);
+      panname = user_name.concat("_", "pan_", datetime)
+
+      if (pansampleFile.mimetype == "image/jpeg" ||
+        pansampleFile.mimetype == "image/png" ||
+        pansampleFile.mimetype == "image/gif" ||
+        pansampleFile.mimetype == "application/pdf") {
+        panuploadPath = 'D:/scm/backend/bill/' + panname;
+        doc_agreement = 'Yes'
+        resolve({
+          "result": panuploadPath,
+          "file": pansampleFile,
+          "doc_agreement": doc_agreement,
+          "upload_file": panname
+        })
+
+      } else {
+        resolve({
+          "result": "invalid"
+        })
+      }
+    } else {
+
+      resolve({
+        "result": "null"
+      })
+    }
+
+  })
+
+}
+
+let movepassbookfile = async (req) => {
+  function formatDate(date) {
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours >= 12 ? 'pm' : 'am';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    var strTime = hours + '_' + minutes + '_' + ampm;
+    return date.getDate() + "_" + (date.getMonth() + 1) + "_" + date.getFullYear() + "_" + strTime + "_";
+  }
+
+  var d = new Date();
+  var date = formatDate(d);
+  let upload = req.files;
+
+  let agreesampleFile = '';
+  let agreeuploadPath = '';
+  let pansampleFile = '';
+  let panuploadPath = '';
+  let passbooksampleFile = '';
+  let passbookuploadPath = '';
+  let datetime = '';
+  let doctor_name = req.body.doctorname;
+  let doctor_branch = req.body.doctorbranch;
+  let doctor_contact = req.body.doctorcontact;
+  let doctor_email = req.body.doctoremail;
+  let doctor_pan = req.body.doctorpan;
+  let doctor_gstin = req.body.doctorgstin;
+  let doctor_agreed = req.body.doctoragreed;
+  let doctor_acc = req.body.doctoracc;
+  let doctor_IFSC = req.body.doctorIFSC;
+  let doctor_bankbranch = req.body.doctorbankbranch;
+  let user_name = req.body.username;
+  let paymenttype = req.body.docpaymenttype;
+  let doctor_infavour = req.body.docfavourname;
+  let doc_agreement = '';
+  let isActive = "-1";
+  let aggname = '';
+  let panname = '';
+  let passname = '';
+
+
+  return new Promise(resolve => {
+    console.log(upload.filepassbookupload);
+    if (((upload.filepassbookupload) != null)) {
+      passbooksampleFile = upload.filepassbookupload;
+      console.log("====================================");
+      datetime = date.concat(passbooksampleFile.name);
+      passname = user_name.concat("_", "passbook_", datetime)
+
+      if (passbooksampleFile.mimetype == "image/jpeg" ||
+        passbooksampleFile.mimetype == "image/png" ||
+        passbooksampleFile.mimetype == "image/gif" ||
+        passbooksampleFile.mimetype == "application/pdf") {
+        passbookuploadPath = 'D:/scm/backend/bill/' + passname;
+        doc_agreement = 'Yes'
+        resolve({
+          "result": passbookuploadPath,
+          "file": passbooksampleFile,
+          "doc_agreement": doc_agreement,
+          "upload_file": passname
+        })
+
+      } else {
+        resolve({
+          "result": "invalid"
+        })
+
+      }
+    } else {
+      resolve({
+        "result": "null"
+      })
+    }
+  })
+}
+
+let errorresult = async (a, b, c) => {
+
+  console.log(a + " " + b + " " + c);
+  let aggfile = '';
+  let panfile = '';
+  let passbookfile = '';
+  let astatus = '';
+  let bstatus = '';
+  let cstatus = '';
+  return new Promise(resolve => {
+    if ((a == 'error') || (b == 'error') || (c == "error")) {
+
+    } else {
+      console.log(a.file + " " + b.file + " " + c.file);
+
+      if (a.result != "null") {
+        console.log("a");
+        aggfile = a.file.mv(a.result, function(err) {
+          if (err) {
+            astatus = 'false'
+          } else {
+            console.log("updated");
+            astatus = "true"
+          }
+        })
+      }
+      if (b.result != "null") {
+        console.log("b");
+        panfile = b.file.mv(b.result, function(err) {
+          if (err) {
+            bstatus = "false"
+          } else {
+            console.log("updated");
+            bstatus = "true"
+          }
+        })
+
+      }
+      if (c.result != "null") {
+        console.log("c");
+        passbookfile = c.file.mv(c.result, function(err) {
+          if (err) {
+            cstatus = "false"
+          } else {
+            console.log("updated");
+            cstatus = "true"
+          }
+        })
+
+      }
+    }
+    resolve({
+      "result": "updated",
+      "agg": a.upload_file,
+      "pan": b.upload_file,
+      "pass": c.upload_file
+    })
+
+  })
+
+}
 
 exports.ch_doctorlist = (req, res) => {
   let statustype = req.params.id;
@@ -4181,7 +4500,7 @@ exports.finpcbranchgroupbills = (req, res) => {
   let branch = req.params.branch;
   let status = req.params.status;
 
-  connections.scm_public.query(files.finpccshbranchgroupz, [date,date,date,date, branch], (err, resgroupdatadetail) => {
+  connections.scm_public.query(files.finpccshbranchgroupz, [date, date, date, date, branch], (err, resgroupdatadetail) => {
     if (err) console.error(err);
     res.json(resgroupdatadetail);
   })
@@ -4196,7 +4515,7 @@ exports.finpcbranchgroupbilldetail = (req, res) => {
   //let status=req.params.status;
   let categoryname = req.params.categoryname;
 
-  connections.scm_public.query(files.finptycshbranchgroupbilldetailz, [date,date,date,date, branch, categoryname], (err, resgroupdatadetail) => {
+  connections.scm_public.query(files.finptycshbranchgroupbilldetailz, [date, date, date, date, branch, categoryname], (err, resgroupdatadetail) => {
     if (err) console.error(err);
     res.json(resgroupdatadetail);
   })
@@ -4447,52 +4766,97 @@ exports.decline_amount = (req, res) => {
 
 }
 
-exports.cogsdetails=(req,res)=>{
+exports.cogsdetails = (req, res) => {
   console.log(req.params);
-  let fromdate=req.params.date;
-  let entity=req.params.entity;
-  let branch=req.params.branch;
+  let fromdate = req.params.date;
+  let entity = req.params.entity;
+  let branch = req.params.branch;
+  let depart=req.params.department;
+  let start = fromdate + '-01';
+  let end = fromdate + '-31';
 
 
 
-if((entity=='All')&&(branch=='All')){
-//  console.log("branch all entity all");
-  let transquery="select * from cogs_details where trans_date like '"+fromdate+"%'";
-  //console.log(transquery);
-  connections.scm_public.query(transquery,(err,rescogs)=>{
-    if(err) console.error(err);
-    res.json({
-      "result": {
-        "cogs": rescogs
-      }
+  if ((entity == 'All') && (branch == 'All') && (depart=='All')) {
+    //  console.log("branch all entity all");
+    let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "'";
+    //console.log(transquery);
+    connections.scm_public.query(transquery, (err, rescogs) => {
+      if (err) console.error(err);
+      res.json({
+        "result": {
+          "cogs": rescogs
+        }
+      })
     })
-  })
-}
-else if((entity !='All')&&(branch=='All')){
-//  console.log("branch all entity not all");
-  let transquery="select * from cogs_details where trans_date like '"+fromdate+"%'  and entity='"+entity+"' ";
-//  console.log(transquery);
-  connections.scm_public.query(transquery,(err,rescogs)=>{
-    if(err) console.error(err);
-    res.json({
-      "result": {
-        "cogs": rescogs
-      }
+
+  }
+else if ((entity == 'All') && (branch == 'All') && (depart !='All')) {
+    //  console.log("branch all entity all");
+    let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "' and top='"+depart+"'";
+    console.log(transquery);
+    connections.scm_public.query(transquery, (err, rescogs) => {
+      if (err) console.error(err);
+      res.json({
+        "result": {
+          "cogs": rescogs
+        }
+      })
     })
-  })
 }
-else {
-//  console.log("else");
-  let transquery="select * from cogs_details where trans_date like '"+fromdate+"%' and entity='"+entity+"' and branch='"+branch+"'";
-//  console.log(transquery);
-  connections.scm_public.query(transquery,(err,rescogs)=>{
-    if(err) console.error(err);
-    res.json({
-      "result": {
-        "cogs": rescogs
-      }
+   else if ((entity != 'All') && (branch == 'All') && (depart=='All') ) {
+    //  console.log("branch all entity not all");
+    let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "'  and entity='" + entity + "' ";
+    console.log(transquery);
+    connections.scm_public.query(transquery, (err, rescogs) => {
+      if (err) console.error(err);
+      res.json({
+        "result": {
+          "cogs": rescogs
+        }
+      })
     })
-  })
-}
+  }
+  else if ((entity != 'All') && (branch == 'All') && (depart !='All') ) {
+   //  console.log("branch all entity not all");
+   let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "'  and entity='" + entity + "' and top='"+depart+"'";
+   console.log(transquery);
+   connections.scm_public.query(transquery, (err, rescogs) => {
+     if (err) console.error(err);
+     res.json({
+       "result": {
+         "cogs": rescogs
+       }
+     })
+   })
+  }
+   else if ((entity != 'All') && (branch != 'All') && (depart=='All')) {
+    //  console.log("else");
+    let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "' and entity='" + entity + "' and branch='" + branch + "'";
+    console.log(transquery);
+    connections.scm_public.query(transquery, (err, rescogs) => {
+      if (err) console.error(err);
+      res.json({
+        "result": {
+          "cogs": rescogs
+        }
+      })
+    })
+  }
+  else
+  {
+        let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "' and entity='" + entity + "' and branch='" + branch + "' and top='"+depart+"'";
+          console.log(transquery);
+            connections.scm_public.query(transquery, (err, rescogs) => {
+              if (err) console.error(err);
+              res.json({
+                "result": {
+                  "cogs": rescogs
+                }
+              })
+            })
+
+  }
+
 
 }
