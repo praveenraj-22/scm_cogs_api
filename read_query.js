@@ -121,3 +121,21 @@ exports.finpccshbranchgroupz=read("./queries/finptycshbranchgroup.sql");
 exports.finptycshbranchgroupbilldetailz=read("./queries/finptycshbranchgroupbilldetail.sql");
 
 exports.claimamountvalid=read("./queries/claimamountvalidate.sql");
+exports.tpabillsch=read("./queries/tpabillch.sql");
+exports.tpabillfin_all=read("./queries/tpabillfinall.sql");
+exports.tpabillfinallbr=read("./queries/tpabillfin_all_br.sql");
+exports.tpabillfinenall=read("./queries/tpabillfin_en_all.sql");
+exports.tpabillfinenbr=read("./queries/tpabillfin_en_br.sql");
+
+exports.tpabillfin_allpen=read("./queries/tpabillfinall_pen.sql");
+exports.tpabillfin_allbrpen=read("./queries/tpabillfinallbr_pen.sql");
+exports.tpabillfin_enallpen=read("./queries/tpabillfinenall_pen.sql");
+exports.tpabillfin_enbrpen=read("./queries/tpabillfinenbr_pen.sql");
+
+exports.tpabillfin_allack=read("./queries/tpabillfinall_ack.sql");
+exports.tpabillfin_enallack=read("./queries/tpabillfinenall_ack.sql");
+exports.tpabillfin_enbrack=read("./queries/tpabillfinenbr_ack.sql");
+
+exports.tpabillfin_allsub=read("./queries/tpabillfinall_sub.sql");
+exports.tpabillfin_enallsub=read("./queries/tpabillfinenall_sub.sql");
+exports.tpabillfin_enbrsub=read("./queries/tpabillfinenbr_sub.sql");

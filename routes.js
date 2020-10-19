@@ -2487,7 +2487,7 @@ exports.upload_doctor = async (req, res) => {
       } else {
 
         let results = await errorresult(agreementfile, panfile, passbookfile)
-  //      console.log(results);
+        //      console.log(results);
         doc_agreement = 'Yes'
         if (results.result == "updated") {
           connections.scm_root.query("INSERT INTO `drt_customer` (Name,Address,Contact_no,Email,Pan_no,GSTIN,Percentage,STATUS,Branch,Account_no,Bank_ifsc,Bank_name,Agreement,Agreement_url,Pan_url,Passbook_url,uploaded_user,Payment_type,Infavour_of) VALUE (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -3972,144 +3972,6 @@ exports.strchpc = (req, res) => {
     }
   }
 }
-// 	if(branch=='All'){
-// 		try {
-// 			console.log("hit");
-// 	    connections.scm_public.query("select branches from users where emp_id=? and role='sch_user' AND is_active=1", [username], (err, resbranch) => {
-//       })
-// 	      if (err) console.error(err);
-// 	      resbranch.forEach(branches => {
-// 	        splitbranches = branches.branches.split('+')
-// 	      })
-// 	      console.log(splitbranches);
-// 	      connections.scm_public.query(files.schpcallall, [splitbranches, fromdate, todate, splitbranches, fromdate, todate, splitbranches, fromdate, todate], (err, resdata) => {
-//
-// 					console.log(resdata);
-// 		      if (err) console.error(err);
-// 	        res.json({
-// 	          "result": {
-// 	            "pcbill": resdata
-// 	          }
-// 	        })
-// 	      })
-// 	    })
-// 	  } catch (e) {
-// 			console.log(e);
-// 	  }
-//
-// 	}
-// 	else {
-// 		connections.scm_public.query(files.schpcallall, [branch, fromdate, todate, branch, fromdate, todate, branch, fromdate, todate], (err, resdata) => {
-// 			if (err) console.error(err);
-// 			res.json({
-// 				"result": {
-// 					"pcbill": resdata
-// 				}
-// 			})
-// 		})
-// 	}
-//
-// }
-// exports.strchpc = (req, res) => {
-//   let fromdate = req.params.fromdate;
-//   let todate = req.params.todate;
-//   let status = req.params.status;
-//   let branch = req.params.branch;
-//   let username = req.params.name;
-//   let splitbranches = [];
-//   console.log(fromdate + " " + todate + " " + status + " " + branch + " " + username);
-//
-//   if ((branch == 'All') && (status == 'All')) {
-//
-//     try {
-//       connections.scm_public.query("select branches from users where emp_id=? and role='sch_user' AND is_active=1", [username], (err, resbranch) => {
-//         if (err) console.error(err);
-//         resbranch.forEach(branches => {
-//           splitbranches = branches.branches.split('+')
-//         });
-//         console.log(splitbranches);
-//         connections.scm_public.query(files.schpcallall, [splitbranches, fromdate, todate, splitbranches, fromdate, todate, splitbranches, fromdate, todate], (err, resdata) => {
-//     //  connections.scm_public.query(files.schpcallall,[fromdate,todate,fromdate,todate,splitbranches], (err, resdata) => {
-//           if (err) console.error(err);
-//           res.json({
-//             "result": {
-//               "pcbill": resdata
-//             }
-//           })
-//         })
-//
-//       })
-//     } catch (e) {
-//       console.log("hit");
-//       console.log(e);
-//     }
-//
-//
-//   } else if ((branch == 'All') && (status != 'All')) {
-//     try {
-//       console.log("hit in branch all");
-//       connections.scm_public.query("select branches from users where emp_id=? and role='sch_user'", [username], (err, resbranch) => {
-//         if (err) console.error(err);
-//         resbranch.forEach(branches => {
-//           splitbranches = branches.branches.split('+')
-//         });
-//         console.log(splitbranches);
-//         console.log(status);
-//         console.log(fromdate + " " + todate);
-//     //    connections.scm_public.query(files.schpcbrst, [status, splitbranches, fromdate, todate, splitbranches, fromdate, todate, status], (err, resdata) => {
-//       connections.scm_public.query(files.schpcbrst,[fromdate, todate,fromdate, todate,splitbranches,status],(err,resdata)=>{
-//
-//           console.log(resdata);
-//
-//           if (err) console.error(err);
-//           res.json({
-//             "result": {
-//               "pcbill": resdata
-//             }
-//           })
-//         })
-//
-//
-//       })
-//     } catch (e) {
-//       console.log(e);
-//     }
-//   } else if ((branch != 'All') && (status == 'All')) {
-//     try {
-//       console.log(branch);
-//       console.log("hit in status all");
-//       connections.scm_public.query(files.schpcallall, [fromdate,todate,fromdate,todate,branch], (err, resdata) => {
-//         console.log(resdata);
-//         if (err) console.error(err);
-//         res.json({
-//           "result": {
-//             "pcbill": resdata
-//           }
-//         })
-//       })
-//     } catch (e) {
-//       console.log(e);
-//     }
-//
-//   } else {
-//     try {
-//       console.log(status + " " + branch);
-//       console.log("else");
-//       connections.scm_public.query(files.schpcbrst, [fromdate, todate,fromdate, todate,branch,status], (err, resdata) => {
-//         if (err) console.error(err);
-//         res.json({
-//           "result": {
-//             "pcbill": resdata
-//           }
-//         })
-//       })
-//     } catch (e) {
-//       console.log(e);
-//
-//     }
-//   }
-//
-// }
 
 exports.strchbranchgroupbills = (req, res) => {
 
@@ -4131,7 +3993,6 @@ exports.strchbranchgroupbills = (req, res) => {
 
 }
 
-
 exports.strchbranchgroupbilldetail = (req, res) => {
 
   let date = req.params.date;
@@ -4148,7 +4009,6 @@ exports.strchbranchgroupbilldetail = (req, res) => {
     console.log(e);
   }
 }
-
 
 exports.strch_billgroupapprove = (req, res) => {
   //  console.log(req.body);
@@ -4215,7 +4075,7 @@ exports.strch_billgroupdecline = (req, res) => {
         res.json({
           dataupdated: false
         })
-        //      throw err;
+
       }
 
       let grpcat = "select * from pettycash_category where category_name='" + strch_groupcategory + "'";
@@ -4437,62 +4297,8 @@ exports.finptycsh = (req, res) => {
       })
     }
   }
-  // if (branch == 'All') {
-  //   console.log("hit in status and branch all");
-  //   //    connections.scm_public.query(files.finptycshallall, [fromdate, todate, fromdate, todate, fromdate, todate, fromdate, todate, fromdate, todate, fromdate, todate, fromdate, todate, fromdate, todate, fromdate, todate, fromdate, todate], (err, resdata) => {
-  //   connections.scm_public.query(files.finptycshallall, [fromdate, todate, fromdate, todate, fromdate, todate], (err, resdata) => {
-  //     if (err) console.error(err);
-  //     res.json({
-  //       "result": {
-  //         "pcbill": resdata
-  //       }
-  //     })
-  //   })
-  // } else {
-  //   connections.scm_public.query(files.finptycshbrall, [branch, fromdate, todate, branch, fromdate, todate, branch, fromdate, todate], (err, resdata) => {
-  //     if (err) console.error(err);
-  //     res.json({
-  //       "result": {
-  //         "pcbill": resdata
-  //       }
-  //     })
-  //   })
-  // }
 
-  // else if ((branch == 'All') && (status != 'All')) {
-  //   console.log("hit in branch all");
-  //   connections.scm_public.query(files.finptycshallst, [fromdate, todate, fromdate, todate, status], (err, resdata) => {
-  //     if (err) console.error(err);
-  //     res.json({
-  //       "result": {
-  //         "pcbill": resdata
-  //       }
-  //     })
-  //   })
-  // } else if ((branch != 'All') && (status == 'All')) {
-  //   console.log("hit in status all");
-  //   connections.scm_public.query(files.finptycshbrall, [fromdate, todate, fromdate, todate, branch], (err, resdata) => {
-  //     if (err) console.error(err);
-  //     res.json({
-  //       "result": {
-  //         "pcbill": resdata
-  //       }
-  //     })
-  //   })
-  // } else {
-  //   console.log("HIT IN else");
-  //
-  //   connections.scm_public.query(files.finptycshbrst, [fromdate, todate, fromdate, todate, branch, status], (err, resdata) => {
-  //     if (err) console.error(err);
-  //     res.json({
-  //       "result": {
-  //         "pcbill": resdata
-  //       }
-  //     })
-  //   })
-  // }
 }
-
 
 exports.finpcbranchgroupbills = (req, res) => {
   console.log(req.params);
@@ -4749,6 +4555,7 @@ exports.finptycsh_billgroupapproveall = (req, res) => {
 
 
 }
+
 exports.decline_amount = (req, res) => {
   console.log(req.params);
   let branch = req.params.branch;
@@ -4771,92 +4578,543 @@ exports.cogsdetails = (req, res) => {
   let fromdate = req.params.date;
   let entity = req.params.entity;
   let branch = req.params.branch;
-  let depart=req.params.department;
+  let depart = req.params.department;
+  let start = fromdate + '-01';
+  let end = fromdate + '-31';
+
+  if (entity == 'OHC') {
+    if ((branch == 'All') && (depart == "All")) {
+      let transquery = "select * from cogs_details WHERE region='ORB' and trans_date between '" + start + "' and '" + end + "'";
+      connections.scm_public.query(transquery, (err, rescogs) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "cogs": rescogs
+          }
+        })
+      })
+    } else if ((branch == 'All') && (depart != "All")) {
+      let transquery = "select * from cogs_details WHERE region='ORB' and trans_date between '" + start + "' and '" + end + "' and top='" + depart + "'";
+      connections.scm_public.query(transquery, (err, rescogs) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "cogs": rescogs
+          }
+        })
+      })
+
+    } else if ((branch != 'All') && (depart == "All")) {
+      let transquery = "select * from cogs_details WHERE region='ORB' and trans_date between '" + start + "' and '" + end + "' and  branch='" + branch + "'";
+      connections.scm_public.query(transquery, (err, rescogs) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "cogs": rescogs
+          }
+        })
+      })
+    } else {
+      let transquery = "select * from cogs_details WHERE region='ORB' and trans_date between '" + start + "' and '" + end + "'  and branch='" + branch + "' and top='" + depart + "'";
+      connections.scm_public.query(transquery, (err, rescogs) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "cogs": rescogs
+          }
+        })
+      })
+    }
+
+  } else {
+    if ((entity == 'All') && (branch == 'All') && (depart == 'All')) {
+      //  console.log("branch all entity all");
+      let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "'";
+      //console.log(transquery);
+      connections.scm_public.query(transquery, (err, rescogs) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "cogs": rescogs
+          }
+        })
+      })
+
+    } else if ((entity == 'All') && (branch == 'All') && (depart != 'All')) {
+      //  console.log("branch all entity all");
+      let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "' and top='" + depart + "'";
+      console.log(transquery);
+      connections.scm_public.query(transquery, (err, rescogs) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "cogs": rescogs
+          }
+        })
+      })
+    } else if ((entity != 'All') && (branch == 'All') && (depart == 'All')) {
+      //  console.log("branch all entity not all");
+      let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "'  and entity='" + entity + "' ";
+      console.log(transquery);
+      connections.scm_public.query(transquery, (err, rescogs) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "cogs": rescogs
+          }
+        })
+      })
+    } else if ((entity != 'All') && (branch == 'All') && (depart != 'All')) {
+      //  console.log("branch all entity not all");
+      let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "'  and entity='" + entity + "' and top='" + depart + "'";
+      console.log(transquery);
+      connections.scm_public.query(transquery, (err, rescogs) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "cogs": rescogs
+          }
+        })
+      })
+    } else if ((entity != 'All') && (branch != 'All') && (depart == 'All')) {
+      //  console.log("else");
+      let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "' and entity='" + entity + "' and branch='" + branch + "'";
+      console.log(transquery);
+      connections.scm_public.query(transquery, (err, rescogs) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "cogs": rescogs
+          }
+        })
+      })
+    } else {
+      let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "' and entity='" + entity + "' and branch='" + branch + "' and top='" + depart + "'";
+      console.log(transquery);
+      connections.scm_public.query(transquery, (err, rescogs) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "cogs": rescogs
+          }
+        })
+      })
+
+    }
+
+
+  }
+
+
+
+}
+
+exports.stockledgers = (req, res) => {
+  console.log(req.params);
+  let fromdate = req.params.date;
+  let entity = req.params.entity;
+  let branch = req.params.branch;
+  let depart = req.params.department;
   let start = fromdate + '-01';
   let end = fromdate + '-31';
 
 
 
-  if ((entity == 'All') && (branch == 'All') && (depart=='All')) {
-    //  console.log("branch all entity all");
-    let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "'";
-    //console.log(transquery);
-    connections.scm_public.query(transquery, (err, rescogs) => {
-      if (err) console.error(err);
-      res.json({
-        "result": {
-          "cogs": rescogs
-        }
-      })
+}
+
+exports.tpabills = (req, res) => {
+  let fromdate = req.params.date;
+  let branch = req.params.branch;
+  console.log(fromdate);
+  let start = fromdate + '-01';
+  let end = fromdate + '-31';
+
+  console.log("hit in tpa");
+  connections.scm_public.query(files.tpabillsch, [branch, start, end], (err, resdata) => {
+    if (err) console.error(err);
+    res.json({
+      "result": {
+        "tpabills": resdata
+      }
     })
 
-  }
-else if ((entity == 'All') && (branch == 'All') && (depart !='All')) {
-    //  console.log("branch all entity all");
-    let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "' and top='"+depart+"'";
-    console.log(transquery);
-    connections.scm_public.query(transquery, (err, rescogs) => {
-      if (err) console.error(err);
-      res.json({
-        "result": {
-          "cogs": rescogs
-        }
-      })
-    })
+
+  })
+
+
 }
-   else if ((entity != 'All') && (branch == 'All') && (depart=='All') ) {
-    //  console.log("branch all entity not all");
-    let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "'  and entity='" + entity + "' ";
-    console.log(transquery);
-    connections.scm_public.query(transquery, (err, rescogs) => {
-      if (err) console.error(err);
-      res.json({
-        "result": {
-          "cogs": rescogs
-        }
-      })
-    })
-  }
-  else if ((entity != 'All') && (branch == 'All') && (depart !='All') ) {
-   //  console.log("branch all entity not all");
-   let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "'  and entity='" + entity + "' and top='"+depart+"'";
-   console.log(transquery);
-   connections.scm_public.query(transquery, (err, rescogs) => {
-     if (err) console.error(err);
-     res.json({
-       "result": {
-         "cogs": rescogs
-       }
-     })
-   })
-  }
-   else if ((entity != 'All') && (branch != 'All') && (depart=='All')) {
-    //  console.log("else");
-    let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "' and entity='" + entity + "' and branch='" + branch + "'";
-    console.log(transquery);
-    connections.scm_public.query(transquery, (err, rescogs) => {
-      if (err) console.error(err);
-      res.json({
-        "result": {
-          "cogs": rescogs
-        }
-      })
-    })
-  }
-  else
-  {
-        let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "' and entity='" + entity + "' and branch='" + branch + "' and top='"+depart+"'";
-          console.log(transquery);
-            connections.scm_public.query(transquery, (err, rescogs) => {
-              if (err) console.error(err);
-              res.json({
-                "result": {
-                  "cogs": rescogs
-                }
-              })
+
+exports.tpabill_submit = (req, res) => {
+  let tpa_billid = req.body.tpabillid;
+  let tpa_id = req.body.tpaid;
+  let id = req.body.submitted_id;
+
+  console.log(tpa_billid + "  " + tpa_id + " " + id);
+
+
+  connections.scm_root.getConnection((err, conn) => {
+    conn.beginTransaction(function(err) {
+      if (err) {
+        res.json({
+          dataupdated: false
+        })
+
+      }
+      conn.query('UPDATE revenue_detail_tpa SET send_date=NOW(),sent_id=? WHERE bill_id=? AND id=?', [id, tpa_billid, tpa_id], (err, resdata) => {
+        if (err) {
+          conn.rollback(function() {
+            res.json({
+              dataupdated: false
             })
 
+          });
+        } else {
+          console.log(resdata);
+          conn.commit(function(err) {
+            if (err) {
+              conn.rollback(function() {
+                res.json({
+                  dataupdated: false
+                })
+                throw err;
+              });
+
+            } else {
+              res.json({
+                dataupdated: true
+              })
+
+            }
+
+          })
+        }
+      })
+    })
+  })
+
+}
+
+exports.tpabillsfin = (req, res) => {
+  let entity = req.params.entity;
+  let branch = req.params.branch;
+  let fromdate = req.params.date;
+  let status = req.params.status
+  let start = fromdate + '-01';
+  let end = fromdate + '-31';
+
+  if ((entity == 'All') && (branch == 'All')) {
+    connections.scm_public.query(files.tpabillfin_all, [start, end], (err, resdata) => {
+      if (err) console.error(err);
+      res.json({
+        "result": {
+          "tpabillfin": resdata
+        }
+      })
+
+
+    })
+  } else if ((entity == 'All') && (branch != 'All')) {
+    connections.scm_public.query(files.tpabillfinallbr, [start, end, branch], (err, resdata) => {
+      if (err) console.error(err);
+      res.json({
+        "result": {
+          "tpabillfin": resdata
+        }
+      })
+
+
+    })
+
+
+  } else if ((entity != 'All') && (branch == 'All')) {
+
+    connections.scm_public.query(files.tpabillfinenall, [start, end, entity], (err, resdata) => {
+      if (err) console.error(err);
+      res.json({
+        "result": {
+          "tpabillfin": resdata
+        }
+      })
+
+    })
+  } else {
+    connections.scm_public.query(files.tpabillfinenbr, [start, end, entity, branch], (err, resdata) => {
+      if (err) console.error(err);
+      res.json({
+        "result": {
+          "tpabillfin": resdata
+        }
+      })
+
+
+    })
   }
+
+}
+
+exports.tpabillsfinpen = (req, res) => {
+
+  let entity = req.params.entity;
+  let branch = req.params.branch;
+  let fromdate = req.params.date;
+  let status = req.params.status
+  let start = fromdate + '-01';
+  let end = fromdate + '-31';
+
+  if ((entity == 'All') && (branch == 'All') && (status == 0)) {
+    console.log("hit in pending");
+    connections.scm_public.query(files.tpabillfin_allpen, [start, end, start, end], (err, resdata) => {
+      if (err) console.error(err);
+      //  console.log(resdata);
+      res.json({
+        "result": {
+          "tpabillfin": resdata
+        }
+      })
+
+
+    })
+  } else if ((entity == 'All') && (branch != 'All') && (status == 0)) {
+    connections.scm_public.query(files.tpabillfin_allbrpen, [start, end, start, end, branch], (err, resdata) => {
+      if (err) console.error(err);
+      res.json({
+        "result": {
+          "tpabillfin": resdata
+        }
+      })
+
+
+    })
+
+
+  } else if ((entity != 'All') && (branch == 'All') && (status == 0)) {
+
+    connections.scm_public.query(files.tpabillfin_enallpen, [start, end, start, end, entity], (err, resdata) => {
+      if (err) console.error(err);
+      res.json({
+        "result": {
+          "tpabillfin": resdata
+        }
+      })
+
+    })
+  } else {
+    connections.scm_public.query(files.tpabillfin_enbrpen, [start, end, start, end, entity, branch], (err, resdata) => {
+      if (err) console.error(err);
+      res.json({
+        "result": {
+          "tpabillfin": resdata
+        }
+      })
+
+
+    })
+  }
+
+}
+
+exports.tpabillsfinack = (req, res) => {
+  let entity = req.params.entity;
+  let branch = req.params.branch;
+  let fromdate = req.params.date;
+  let status = req.params.status
+  let start = fromdate + '-01';
+  let end = fromdate + '-31';
+
+  if ((entity == 'All') && (branch == 'All') && (status == 1)) {
+    console.log("hit in pending");
+    connections.scm_public.query(files.tpabillfin_allack, [start, end, start, end], (err, resdata) => {
+      if (err) console.error(err);
+      //  console.log(resdata);
+      res.json({
+        "result": {
+          "tpabillfin": resdata
+        }
+      })
+
+
+    })
+  } else if ((entity == 'All') && (branch != 'All') && (status == 1)) {
+    connections.scm_public.query(files.tpabillfin_allbrpen, [start, end, start, end, branch], (err, resdata) => {
+      if (err) console.error(err);
+      res.json({
+        "result": {
+          "tpabillfin": resdata
+        }
+      })
+
+
+    })
+
+
+  } else if ((entity != 'All') && (branch == 'All') && (status == 1)) {
+
+    connections.scm_public.query(files.tpabillfin_enallack, [start, end, start, end, entity], (err, resdata) => {
+      if (err) console.error(err);
+      res.json({
+        "result": {
+          "tpabillfin": resdata
+        }
+      })
+
+    })
+  } else {
+    connections.scm_public.query(files.tpabillfin_enbrack, [start, end, start, end, entity, branch], (err, resdata) => {
+      if (err) console.error(err);
+      res.json({
+        "result": {
+          "tpabillfin": resdata
+        }
+      })
+
+
+    })
+  }
+}
+
+exports.tpabillsfinsub = (req, res) => {
+  let entity = req.params.entity;
+  let branch = req.params.branch;
+  let fromdate = req.params.date;
+  let status = req.params.status
+  let start = fromdate + '-01';
+  let end = fromdate + '-31';
+
+  if ((entity == 'All') && (branch == 'All') && (status == 2)) {
+    console.log("hit in pending");
+    connections.scm_public.query(files.tpabillfin_allsub, [start, end, start, end], (err, resdata) => {
+      if (err) console.error(err);
+      //  console.log(resdata);
+      res.json({
+        "result": {
+          "tpabillfin": resdata
+        }
+      })
+
+
+    })
+  } else if ((entity != 'All') && (branch == 'All') && (status == 2)) {
+    connections.scm_public.query(files.tpabillfin_enallsub, [start, end, start, end, entity], (err, resdata) => {
+      if (err) console.error(err);
+      res.json({
+        "result": {
+          "tpabillfin": resdata
+        }
+      })
+
+    })
+  }
+  else {
+    connections.scm_public.query(files.tpabillfin_enbrsub, [start, end, start, end, entity, branch], (err, resdata) => {
+      if (err) console.error(err);
+      res.json({
+        "result": {
+          "tpabillfin": resdata
+        }
+      })
+
+
+    })
+  }
+}
+exports.tpabill_ack = (req, res) => {
+  let tpa_billid = req.body.tpabillid;
+  let tpa_id = req.body.tpaid;
+  let id = req.body.submitted_id;
+
+  console.log("hit");
+
+  connections.scm_root.getConnection((err, conn) => {
+    conn.beginTransaction(function(err) {
+      if (err) {
+        res.json({
+          dataupdated: false
+        })
+
+      }
+      conn.query('UPDATE revenue_detail_tpa SET acknowledge_date=NOW(),acknowledge_id=? WHERE bill_id=? AND id=?', [id, tpa_billid, tpa_id], (err, resdata) => {
+        if (err) {
+          conn.rollback(function() {
+            res.json({
+              dataupdated: false
+            })
+
+          });
+        } else {
+          console.log(resdata);
+          conn.commit(function(err) {
+            if (err) {
+              conn.rollback(function() {
+                res.json({
+                  dataupdated: false
+                })
+                throw err;
+              });
+
+            } else {
+              res.json({
+                dataupdated: true
+              })
+
+            }
+
+          })
+        }
+      })
+    })
+  })
+
+
+}
+
+
+exports.tpabill_sub = (req, res) => {
+  let tpa_billid = req.body.tpabillid;
+  let tpa_id = req.body.tpaid;
+  let id = req.body.submitted_id;
+
+  console.log("hit");
+
+  connections.scm_root.getConnection((err, conn) => {
+    conn.beginTransaction(function(err) {
+      if (err) {
+        res.json({
+          dataupdated: false
+        })
+
+      }
+      conn.query('UPDATE revenue_detail_tpa SET submitted_date=NOW(),submitted_id=? WHERE bill_id=? AND id=?', [id, tpa_billid, tpa_id], (err, resdata) => {
+console.log("hit in sub ");
+        if (err) {
+          conn.rollback(function() {
+            res.json({
+              dataupdated: false
+            })
+
+          });
+        } else {
+          console.log(resdata);
+          conn.commit(function(err) {
+            if (err) {
+              conn.rollback(function() {
+                res.json({
+                  dataupdated: false
+                })
+                throw err;
+              });
+
+            } else {
+              res.json({
+                dataupdated: true
+              })
+
+            }
+
+          })
+        }
+      })
+    })
+  })
 
 
 }

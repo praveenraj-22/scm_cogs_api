@@ -6,38 +6,38 @@ exports.ideamed = {
     db: 'RDPV_IDEAMED'
 }
 
-exports.scm_root = {
-    host: '3.0.131.60',
-    port: 3306,
-    user: 'medics',
-    pass: 'medics@123',
-    db: 'cogs'
-}
-
 // exports.scm_root = {
-//     host: 'localhost',
+//     host: '3.0.131.60',
 //     port: 3306,
-//     user: 'root',
-//     pass: 'praveen',
+//     user: 'medics',
+//     pass: 'medics@123',
 //     db: 'cogs'
 // }
 
-exports.scm_public = {
-    host: '3.0.131.60',
+exports.scm_root = {
+    host: 'localhost',
     port: 3306,
-    user: 'medics',
-    pass: 'medics@123',
+    user: 'root',
+    pass: 'praveen',
     db: 'cogs'
 }
-
 
 // exports.scm_public = {
-//     host: 'localhost',
+//     host: '3.0.131.60',
 //     port: 3306,
-//     user: 'root',
-//     pass: 'praveen',
+//     user: 'medics',
+//     pass: 'medics@123',
 //     db: 'cogs'
 // }
+
+
+exports.scm_public = {
+    host: 'localhost',
+    port: 3306,
+    user: 'root',
+    pass: 'praveen',
+    db: 'cogs'
+}
 
 // exports.local = {
 //     host: 'localhost',

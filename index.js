@@ -89,4 +89,18 @@ app.get('/api-declineamount/:branch/:fromdate/:todate',modules.routes.decline_am
 
 //praveenraj
 app.get('/api-cogsdetail/:date/:entity/:branch/:department',modules.routes.cogsdetails)
+app.get('/api-stockledger/:date/:entity/:branch/:department',modules.routes.stockledgers)
+
+//praveenraj
+app.get('/api-tpabill/:branch/:date',modules.routes.tpabills)
+app.post('/api-tpabillsubmit',modules.routes.tpabill_submit)
+app.get('/api-tpabillfin/:entity/:branch/:date/:status',modules.routes.tpabillsfin)
+app.get('/api-tpabillfinpend/:entity/:branch/:date/:status',modules.routes.tpabillsfinpen)
+app.get('/api-tpabillfinack/:entity/:branch/:date/:status',modules.routes.tpabillsfinack)
+app.get('/api-tpabillfinsub/:entity/:branch/:date/:status',modules.routes.tpabillsfinsub)
+
+
+app.post('/api-tpabillack',modules.routes.tpabill_ack)
+app.post('/api-tpabillsub',modules.routes.tpabill_sub)
+
 app.listen(8888, () => console.log(`App listening on port 8888`))

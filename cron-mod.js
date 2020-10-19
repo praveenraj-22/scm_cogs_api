@@ -375,7 +375,7 @@ exports.schedule = cron.schedule('00 08 * * *', () => {
 })
 
 
-exports.schedule = cron.schedule('00 06 * * *', () => {
+exports.schedule = cron.schedule('36 10 * * *', () => {
   //exports.schedule = cron.schedule('44 10 * * *', () => {
   connections.ideamed.getConnection((err, con) => {
     if (err) console.log('Connection Error.')
@@ -514,7 +514,37 @@ exports.schedule = cron.schedule('00 06 * * *', () => {
     })
   })
 
-  console.log('completed');
+  connections.ideamed.getConnection((err, con) => {
+    if (err) console.log("connections err");
+    let queryres = "SELECT  BPB.ID as 'bill_id',BPB.BILL_NO as 'bill_no',BPB.TPA_CLAIM_ID as 'tpa_claim' FROM BILL_PATIENT_BILL AS BPB WHERE DATE(REVENUE_DATE)=DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND CLAIM_AMOUNT >0";
+    con.query(queryres, (err, res) => {
+      if (err) console.error(err);
+      console.log("connected to ideamed");
+      console.log("inserting record for tpa bill.. please wait");
+      con.beginTransaction(err => {
+        if (err) console.error(err);
+        res.forEach(record => {
+          connections.scm_root.query("insert into revenue_detail_tpa set ?", record, (error) => {
+            if (error) {
+              return con.rollback(function() {
+                console.error(error);
+              })
+            }
+            con.commit(function(err) {
+              if (error) {
+                return con.rollback(function() {
+                  console.error(error);
+                })
+              }
+
+            })
+
+          });
+        });
+      });
+    });
+  })
+console.log("completed");
 })
 
 exports.schedule = cron.schedule('30 07 * * *', () => {
@@ -886,7 +916,7 @@ exports.schedule = cron.schedule('45 07 * * *', () => {
 
 })
 // praveen validation of claim Amount
-exports.schedule = cron.schedule('12 11 * * *', () => {
+exports.schedule = cron.schedule('45 10 * * *', () => {
   var d = new Date();
   var day = d.toLocaleDateString();
   var dat = d.getDate();
@@ -902,7 +932,7 @@ exports.schedule = cron.schedule('12 11 * * *', () => {
   } else {
     connections.scm_public.query("SELECT  fromid,toid,bccid,ccid,passcode FROM email WHERE scmtype='claimamtvalid'", function(err, result1, fields) {
       if (err) throw err;
-    //  console.log(result1);
+      //  console.log(result1);
       console.log("connected to mis");
       connections.ideamed.query(files.claimamountvalid, function(err, result, fields) {
         if (err) throw err;
