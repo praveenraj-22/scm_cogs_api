@@ -635,6 +635,11 @@ TZA*/
 			overseastempObj['FLQ']= {'ftd' : mauritiusftd,'mtd' :mauritiusmtd};
 			overseastempObj['EBN']= {'ftd' : mauritiusftd,'mtd' :mauritiusmtd};
 			overseastempObj['MUR']= {'ftd' : mauritiusftd,'mtd' :mauritiusmtd};
+			
+			
+			
+			
+			overseastempObj['CGU'] = {'ftd' : overseastempObj.RWD.ftd,'mtd' :overseastempObj.RWD.mtd};
 		}
 	}else if((currencyres.length==0) && (currencylastres.length>0) && (ftddate>='2019-11-01')){				
 		overseasCountryCode.forEach(countrycode => {		
@@ -670,6 +675,9 @@ TZA*/
 			overseastempObj['FLQ']= {'ftd' : mauritiusftd,'mtd' :mauritiusmtd};
 			overseastempObj['EBN']= {'ftd' : mauritiusftd,'mtd' :mauritiusmtd};
 			overseastempObj['MUR']= {'ftd' : mauritiusftd,'mtd' :mauritiusmtd};
+			
+			
+			overseastempObj['CGU'] = {'ftd' : overseastempObj.RWD.ftd,'mtd' :overseastempObj.RWD.mtd};
 		}
 		
 	}	
@@ -1907,6 +1915,384 @@ let filterGroupwise = async (aeh, ahc,ohc, dbres2, branches, ftddate, vobres, br
     return {ohc: ohctempObj, aeh: aehtempObj, ahc: ahctempObj, branchwise: branchObj }
 }
 
+
+
+exports.materialcogs = async (dbres, dbres2, branches, ftddate,  currencyres,currencylastres) => { 
+	
+	
+	
+	
+	let overseasCurrency = await overseasCurrencyConversion(ftddate,currencyres,currencylastres)
+	let entityWise = await filterEntity(dbres, dbres2, ftddate,overseasCurrency)	
+    let groupWise = await filterGroupwiseMaterialCogs(entityWise.ohcarr, dbres2, branches, ftddate,  overseasCurrency)
+	
+	//console.log(groupWise.ohc);
+	let ohcTotal = await totalOverseasCogs(groupWise.ohc1);
+	
+	//console.log(ohcTotal);
+	
+    return {  ohc: groupWise.ohc,ohc1: groupWise.ohc1,ohcgroup: groupWise.ohcgroup,total:ohcTotal }
+}
+
+
+let filterGroupwiseMaterialCogs = async (ohc, dbres2, branches, ftddate, overseasCurrency) => {
+    let  branchName = null,  code = null ;
+    
+	//console.log(overseasCurrency);
+	//process.exit(1)
+	
+	let ohcGroups = [
+    "Madagascar",
+    "Mozambique",
+    "Nigeria",
+    "Rwanda",
+    "Mauritius",
+    "Zambia",
+    "Ghana",
+    "Nairobi",
+    "Uganda",
+	"Tanzania"
+  ];
+  
+  let ohcgroupedBranches = {
+	"Madagascar" :["MDR"],
+    "Mozambique":["MZQ","BRA"],
+    "Nigeria":["NGA"],
+    "Rwanda":["RWD"],
+    "Mauritius":["EBN","FLQ","GDL"],    
+	"Zambia":["ZMB"],
+    "Ghana":["GHA"],
+    "Nairobi":["NAB"],
+    "Uganda":["UGD"],
+	"Tanzania":["TZA"]
+  };
+  
+  
+    let  mtdphacogs = 0, mtdoptcogs = 0, mtdlabcogs = 0, mtdotcogs = 0, mtdcogs = 0, mtdsurgerycogs=0,  mtdrev = 0, mtdpharev = 0, mtdoptrev = 0, mtdlabrev = 0, mtdotrev = 0,mtdconsurev=0,mtdothersrev=0,mtdsurgeryrev=0;
+	
+	
+	
+	let pharevperc=0,optrevperc=0,surrevperc=0,phacogsperc=0,optcogsperc=0,surcogsperc=0;
+  
+    let ohcBranch={},ohcBranch1={},ohctempObj={};
+	
+	
+	//console.log(ohc);
+	
+	
+    ohcGroups.forEach(group => {
+        ohctempObj[group] = {}
+        ohcgroupedBranches[group].forEach(branch => {
+			mtdphacogs = 0, mtdoptcogs = 0, mtdlabcogs = 0, mtdotcogs = 0, mtdcogs = 0, mtdsurgerycogs=0,  mtdrev = 0, mtdpharev = 0, mtdoptrev = 0, mtdlabrev = 0, mtdotrev = 0,mtdconsurev=0,mtdothersrev=0,mtdsurgeryrev=0;
+						
+            /*_.filter(ohc, { branch: branch, trans_date: ftddate }).forEach(element => {
+                ftdpha += element.pharmacy;
+                ftdopt += element.opticals;
+                ftdlab += element.laboratory;
+                ftdot += element.operation_theatre;
+                ftd += element.ftd
+            })
+			
+			
+			if((Object.keys(overseasCurrency).length) > 0){
+				ftdpha = ftdpha*overseasCurrency[branch].mtd;
+				ftdopt = ftdopt*overseasCurrency[branch].mtd;
+                ftdlab = ftdlab*overseasCurrency[branch].mtd;
+                ftdot = ftdot*overseasCurrency[branch].mtd;
+                ftd = ftd*overseasCurrency[branch].mtd;
+                
+			}
+			
+            ohctempObj[group].ftdpha = ftdpha, ohctempObj[group].ftdopt = ftdopt, ohctempObj[group].ftdlab = ftdlab, ohctempObj[group].ftdot = ftdot, ohctempObj[group].ftd = ftd*/
+            _.filter(ohc, { branch: branch }).forEach(element => {
+                mtdphacogs += element.pharmacy;
+                mtdoptcogs += element.opticals;
+                mtdlabcogs += element.laboratory;
+                mtdotcogs += element.operation_theatre;
+                mtdcogs += element.ftd
+            })
+			
+			
+			
+			if((Object.keys(overseasCurrency).length) > 0){
+				
+				if(branch!='CUG'){
+					mtdphacogs = mtdphacogs*overseasCurrency[branch].mtd;
+					mtdoptcogs = mtdoptcogs*overseasCurrency[branch].mtd;
+					mtdlabcogs = mtdlabcogs*overseasCurrency[branch].mtd;
+					mtdotcogs = mtdotcogs*overseasCurrency[branch].mtd;				
+					mtdcogs = mtdcogs*overseasCurrency[branch].mtd;
+				}else{
+					
+					mtdphacogs = mtdphacogs*overseasCurrency['RWD'].mtd;
+					mtdoptcogs = mtdoptcogs*overseasCurrency['RWD'].mtd;
+					mtdlabcogs = mtdlabcogs*overseasCurrency['RWD'].mtd;
+					mtdotcogs = mtdotcogs*overseasCurrency['RWD'].mtd;				
+					mtdcogs = mtdcogs*overseasCurrency['RWD'].mtd;
+				}
+				
+               
+			}
+			mtdsurgerycogs = parseFloat(mtdlabcogs)+parseFloat(mtdotcogs);
+			
+			
+			
+            ohctempObj[group].mtdphacogs = mtdphacogs;
+			ohctempObj[group].mtdoptcogs = mtdoptcogs;
+			ohctempObj[group].mtdsurgerycogs = mtdsurgerycogs;
+			ohctempObj[group].mtdcogs = mtdcogs;
+            
+			
+			
+			
+			/*_.filter(dbres2, { branch: branch, trans_date: ftddate }).forEach(element => {
+                ftdpharev += element.pharmacy;
+                ftdoptrev += element.opticals;
+                ftdlabrev += element.laboratory;
+                ftdotrev += element.surgery;
+				ftdrev += element.ftd;
+                
+            })
+			
+			
+			
+			if((Object.keys(overseasCurrency).length) > 0){
+				ftdpharev = ftdpharev*overseasCurrency[branch].mtd;
+				ftdoptrev = ftdoptrev*overseasCurrency[branch].mtd;
+				ftdlabrev = ftdlabrev*overseasCurrency[branch].mtd;
+				ftdotrev = ftdotrev*overseasCurrency[branch].mtd;
+				ftdrev = ftdrev*overseasCurrency[branch].mtd;
+			}
+			
+            ohctempObj[group].ftdrev = ftdrev, ohctempObj[group].ftd_cogs_percent = cogsPercent(ftd, ftdrev)
+            */
+			
+			
+			_.filter(dbres2, { branch: branch }).forEach(element => {
+				
+				
+				
+				
+                mtdpharev += element.pharmacy;
+                mtdoptrev += element.opticals;
+                mtdlabrev += element.laboratory;
+                mtdotrev += element.surgery;
+				mtdconsurev += element.consultation;
+				mtdothersrev += element.others;
+                mtdrev += element.ftd;
+            })
+			
+			
+			
+			//mtdsurgeryrev = mtdotrev;
+						
+			
+			if((Object.keys(overseasCurrency).length) > 0){	
+			    if(branch!='CUG'){
+					mtdpharev = mtdpharev*overseasCurrency[branch].mtd;
+					mtdoptrev = mtdoptrev*overseasCurrency[branch].mtd;
+					mtdlabrev = mtdlabrev*overseasCurrency[branch].mtd;
+					mtdotrev = mtdotrev*overseasCurrency[branch].mtd;				
+					mtdconsurev = mtdconsurev*overseasCurrency[branch].mtd;
+					mtdothersrev = mtdothersrev*overseasCurrency[branch].mtd;
+					mtdrev = mtdrev*overseasCurrency[branch].mtd;
+				}else{
+					mtdpharev = mtdpharev*overseasCurrency['RWD'].mtd;
+					mtdoptrev = mtdoptrev*overseasCurrency['RWD'].mtd;
+					mtdlabrev = mtdlabrev*overseasCurrency['RWD'].mtd;
+					mtdotrev = mtdotrev*overseasCurrency['RWD'].mtd;				
+					mtdconsurev = mtdconsurev*overseasCurrency['RWD'].mtd;
+					mtdothersrev = mtdothersrev*overseasCurrency['RWD'].mtd;
+					mtdrev = mtdrev*overseasCurrency['RWD'].mtd;
+				}
+			}
+			mtdsurgeryrev = parseFloat(mtdotrev)+parseFloat(mtdconsurev)+parseFloat(mtdlabrev)+parseFloat(mtdothersrev);
+			
+            ohctempObj[group].mtdpharev = mtdpharev;
+			ohctempObj[group].mtdoptrev = mtdoptrev;
+			ohctempObj[group].mtdsurgeryrev = mtdsurgeryrev;
+			ohctempObj[group].mtdrev = mtdrev;
+			ohctempObj[group].mtd_cogs_percent = cogsPercent(mtdcogs, mtdrev);
+			ohctempObj[group].branch = group;
+			
+			_.filter(branches, { code: branch }).forEach(element => { branchName = element.branch, code = element.code })
+			
+			ohcBranch[branch] = {				
+				'mtdphacogs':lakshFormatRevenue(mtdphacogs),
+				'mtdoptcogs':lakshFormatRevenue(mtdoptcogs),
+				'mtdsurgerycogs':lakshFormatRevenue(mtdsurgerycogs),
+				'mtdcogs':lakshFormatRevenue(mtdcogs),
+				'mtdpharev':lakshFormatRevenue(mtdpharev),
+				'mtdoptrev':lakshFormatRevenue(mtdoptrev),
+				'mtdsurgeryrev':lakshFormatRevenue(mtdsurgeryrev),				
+				'mtdrev':lakshFormatRevenue(mtdrev),
+				'mtd_cogs_percent':(cogsPercent(mtdcogs, mtdrev)).toFixed(2),
+				'branchname':branchName,
+				'code' : branch,
+				'entity' : 'OHC',
+				'pharevperc':(cogsPercent(mtdpharev, mtdrev)).toFixed(2),
+				'optrevperc':(cogsPercent(mtdoptrev, mtdrev)).toFixed(2),
+				'surrevperc':(cogsPercent(mtdsurgeryrev, mtdrev)).toFixed(2),
+				'phacogsperc':(cogsPercent(mtdphacogs, mtdpharev)).toFixed(2),
+				'optcogsperc':(cogsPercent(mtdoptcogs, mtdoptrev)).toFixed(2),
+				'surcogsperc':(cogsPercent(mtdsurgerycogs, mtdsurgeryrev)).toFixed(2)
+			}
+			
+			ohcBranch1[branch] = {
+				'mtdphacogs':mtdphacogs,
+				'mtdoptcogs':mtdoptcogs,
+				'mtdsurgerycogs':mtdsurgerycogs,
+				'mtdcogs':mtdcogs,
+				'mtdpharev':mtdpharev,
+				'mtdoptrev':mtdoptrev,
+				'mtdsurgeryrev':mtdsurgeryrev,			
+				'mtdrev':mtdrev,
+				'mtd_cogs_percent':cogsPercent(mtdcogs, mtdrev),
+				'branchname':branchName,
+				'code' : branch,
+				'entity' : 'OHC',
+				'pharevperc':(cogsPercent(mtdpharev, mtdrev)).toFixed(2),
+				'optrevperc':(cogsPercent(mtdoptrev, mtdrev)).toFixed(2),
+				'surrevperc':(cogsPercent(mtdsurgeryrev, mtdrev)).toFixed(2),
+				'phacogsperc':(cogsPercent(mtdphacogs, mtdpharev)).toFixed(2),
+				'optcogsperc':(cogsPercent(mtdoptcogs, mtdoptrev)).toFixed(2),
+				'surcogsperc':(cogsPercent(mtdsurgerycogs, mtdsurgeryrev)).toFixed(2)
+			}
+			
+			//ohcBranch[branch] = {'mtdrev':mtdrev,'mtd_cogs_percent':cogsPercent(mtd, mtdrev),'branch':group}
+			
+        })
+        mtdphacogs = 0, mtdoptcogs = 0, mtdlabcogs = 0, mtdotcogs = 0, mtdcogs = 0, mtdsurgerycogs=0,  mtdrev = 0, mtdpharev = 0, mtdoptrev = 0, mtdlabrev = 0, mtdotrev = 0,mtdconsurev=0,mtdothersrev=0,mtdsurgeryrev=0;
+    })
+	
+    return {ohc: ohcBranch, ohc1: ohcBranch1,ohcgroup:ohctempObj  }
+}
+
+
+let totalOverseasCogs = async (overseasGroup) =>{
+	 let totalOverseas = {};
+	
+	var totalphacogs = 0,totaloptcogs = 0,totalsurgerycogs=0,totalcogs=0,totalpharev=0,totaloptrev=0,totalsurgeryrev=0,totalrev=0,totalcogs_percent=0,totalpharevperc=0,totaloptrevperc=0,totalsurrevperc=0,totalphacogsperc=0,totaloptcogsperc=0,totalsurcogsperc=0;
+	
+	
+		 
+		  for (let key in overseasGroup) {	  
+			  
+			 totalphacogs = totalphacogs+overseasGroup[key].mtdphacogs;
+			 totaloptcogs = totaloptcogs+overseasGroup[key].mtdoptcogs;
+			 totalsurgerycogs = totalsurgerycogs+overseasGroup[key].mtdsurgerycogs;
+			 totalcogs = totalcogs+overseasGroup[key].mtdcogs;			 
+			 totalpharev = totalpharev+overseasGroup[key].mtdpharev;
+			 totaloptrev = totaloptrev+overseasGroup[key].mtdoptrev;
+			 totalsurgeryrev = totalsurgeryrev+overseasGroup[key].mtdsurgeryrev;
+			 totalrev = totalrev+overseasGroup[key].mtdrev;
+			 
+		  }
+	 
+	totalOverseas['mtdphacogs'] = lakshFormatRevenue(totalphacogs);
+	totalOverseas['mtdoptcogs'] = lakshFormatRevenue(totaloptcogs);
+	totalOverseas['mtdsurgerycogs'] = lakshFormatRevenue(totalsurgerycogs);	
+	totalOverseas['mtdcogs'] = lakshFormatRevenue(totalcogs);
+	totalOverseas['mtdpharev'] = lakshFormatRevenue(totalpharev);
+	totalOverseas['mtdoptrev'] = lakshFormatRevenue(totaloptrev);
+	totalOverseas['mtdsurgeryrev'] = lakshFormatRevenue(totalsurgeryrev);
+	totalOverseas['mtdrev'] = lakshFormatRevenue(totalrev);	
+	totalOverseas['pharevperc']=(cogsPercent(totalpharev, totalrev)).toFixed(2);
+	totalOverseas['optrevperc']=(cogsPercent(totaloptrev, totalrev)).toFixed(2);
+	totalOverseas['surrevperc']=(cogsPercent(totalsurgeryrev, totalrev)).toFixed(2);
+	totalOverseas['phacogsperc']=(cogsPercent(totalphacogs, totalpharev)).toFixed(2);
+	totalOverseas['optcogsperc']=(cogsPercent(totaloptcogs, totaloptrev)).toFixed(2);
+	totalOverseas['surcogsperc']=(cogsPercent(totalsurgerycogs, totalsurgeryrev)).toFixed(2);
+	totalOverseas['mtd_cogs_percent']=(cogsPercent(totalcogs, totalrev)).toFixed(2);
+
+	return totalOverseas;
+}
+
+
+
+
+exports.cogsOverseasEmail = async (finalResult,todatadate) => {
+	//console.log("final template");	
+	let local_template_design_overseas = await cogsEmailTemplateOverseas(finalResult,todatadate);
+	return local_template_design_overseas;
+	
+}
+let cogsEmailTemplateOverseas = async (finalResult,todatadate) => {
+	
+	let  branchlist = finalResult.ohc; 
+	let  totalOhc = finalResult.total;
+	
+	
+	//console.log(branchlist);
+	//process.exit(1);
+	
+	
+	let cogsTemplateOverseas = '<html><body><html><body><table border="0"><tr><th colspan="17">Revenue vs Cogs '+todatadate+' </th></tr><tr><th></th><th></th><th colspan ="4">Revenue</th><th colspan="3" style="background-color:#FFFF33">Revenue Contribution</th><th colspan="4">COGS</th><th colspan="3">COGS %</th><th>Material</th></tr><tr><th>Entity</th><th>Branch</th><th>Surgery</th><th>Opticals</th><th>Pharmacy</th><th>MTD</th> <th style="background-color:#FFFF33">Surgery</th> <th style="background-color:#FFFF33">Opticals</th> <th style="background-color:#FFFF33">Pharmacy</th><th>Surgery</th><th>Opticals</th><th>Pharmacy</th> <th>MTD</th> <th style="background-color:#FFFF33">Surgery</th><th style="background-color:#FFFF33">Opticals</th><th style="background-color:#FFFF33">Pharmacy</th><th style="background-color:#9ACD32">Consump %</th> </tr>';
+	
+	
+	
+	for (let key in branchlist) {
+		
+	    var sugCogsPer ='';
+	   var optCogsPer ='';
+	   var pharCogsPer ='';
+	   var mcCogsPer ='';
+	   var sugCogsPerColr ='';
+	   var optCogsPerColr ='';
+	   var pharCogsPerColr ='';
+	   var mcCogsPerColr ='';
+	   sugCogsPer = branchlist[key].surcogsperc;
+	   optCogsPer = branchlist[key].optcogsperc;
+	   pharCogsPer = branchlist[key].phacogsperc;
+	   if(sugCogsPer <8 || sugCogsPer >15){
+			sugCogsPerColr = 'background-color:red'; 
+		}
+
+		if(pharCogsPer <55 || pharCogsPer >65){
+			pharCogsPerColr = 'background-color:red'; 
+		}
+
+		if(optCogsPer <20 || optCogsPer >40){
+			optCogsPerColr = 'background-color:red'; 
+		}
+		cogsTemplateOverseas+= '<tr align="right"><td>'+ branchlist[key].entity  +'</td><td>'+ branchlist[key].code  +'</td><td>'+ branchlist[key].mtdsurgeryrev +'</td> <td>'+ branchlist[key].mtdoptrev +'</td> <td>'+ branchlist[key].mtdpharev +'</td> <td>'+ branchlist[key].mtdrev +'</td> <td style="background-color:#FFFF33">'+ branchlist[key].surrevperc +'%</td> <td style="background-color:#FFFF33"> '+ branchlist[key].optrevperc  +'%</td><td style="background-color:#FFFF33">'+ branchlist[key].pharevperc  +'%</td> <td>'+ branchlist[key].mtdsurgerycogs  +'</td> <td>'+ branchlist[key].mtdoptcogs +'</td><td>'+ branchlist[key].mtdphacogs +'</td><td>'+ branchlist[key].mtdcogs +'</td><td style="'+sugCogsPerColr+'">'+ branchlist[key].surcogsperc +'%</td><td style="'+optCogsPerColr+'">'+ branchlist[key].optcogsperc +'%</td><td style="'+pharCogsPerColr+'">'+ branchlist[key].phacogsperc +'%</td><td>'+ branchlist[key].mtd_cogs_percent +'%</td>  </tr>';    
+	//});
+	}
+	
+	    var sugCogsPer ='';
+	   var optCogsPer ='';
+	   var pharCogsPer ='';
+	   var mcCogsPer ='';
+	   var sugCogsPerColr ='';
+	   var optCogsPerColr ='';
+	   var pharCogsPerColr ='';
+	   var mcCogsPerColr ='';
+	
+	   sugCogsPer = totalOhc.surcogsperc;
+	   optCogsPer = totalOhc.optcogsperc;
+	   pharCogsPer = totalOhc.phacogsperc;
+	   
+	   if(sugCogsPer <8 || sugCogsPer >15){
+			sugCogsPerColr = 'background-color:red'; 
+		}
+
+		if(pharCogsPer <55 || pharCogsPer >65){
+			pharCogsPerColr = 'background-color:red'; 
+		}
+
+		if(optCogsPer <20 || optCogsPer >40){
+			optCogsPerColr = 'background-color:red'; 
+		}
+	
+	cogsTemplateOverseas+='<tr align="right"><td>Total</td><td></td><td>'+ totalOhc.mtdsurgeryrev +'</td> <td>'+ totalOhc.mtdoptrev +'</td> <td>'+ totalOhc.mtdpharev +'</td> <td>'+ totalOhc.mtdrev +'</td> <td style="background-color:#FFFF33">'+ totalOhc.surrevperc +'%</td> <td style="background-color:#FFFF33"> '+ totalOhc.optrevperc  +'%</td><td style="background-color:#FFFF33">'+ totalOhc.pharevperc  +'%</td> <td>'+ totalOhc.mtdsurgerycogs  +'</td> <td>'+ totalOhc.mtdoptcogs +'</td><td>'+ totalOhc.mtdphacogs +'</td><td>'+ totalOhc.mtdcogs +'</td><td style="'+sugCogsPerColr+'">'+ totalOhc.surcogsperc +'%</td><td style="'+optCogsPerColr+'">'+ totalOhc.optcogsperc +'%</td><td style="'+pharCogsPerColr+'">'+ totalOhc.phacogsperc +'%</td><td>'+ totalOhc.mtd_cogs_percent +'%</td>  </tr>';
+	
+	cogsTemplateOverseas+='</table><br><b>Note: This report is auto generated, please do not reply.</b> <br><p>For any corrections, please drop a mail to  <a href="mailto:helpdesk@dragarwal.com">helpdesk@dragarwal.com</a>. </p> <br><p>Regards,</p><p>Dr.Agarwal IT Team</p></body></html>';
+	return cogsTemplateOverseas;	
+	
+	
+}
+
+
 let cogsPercent = (cogs, revenue) => {
     if ((cogs !== 0 && revenue !== 0) || (cogs === 0 && revenue !== 0)) {
         return (cogs / revenue) * 100;
@@ -1914,4 +2300,15 @@ let cogsPercent = (cogs, revenue) => {
     else if ((revenue === 0) || (cogs === 0 && revenue === 0)) {
         return 0;
     }
+}
+
+
+let lakshFormatRevenue = (num)  => {
+    let ftdmtdAmount =(Number(num) / 100000).toFixed(2); 
+	//console.log(ftdmtdAmount);
+	if((parseFloat(ftdmtdAmount)===0.00)){
+		return '-';
+	}else{
+		return ftdmtdAmount;
+	}
 }

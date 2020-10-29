@@ -119,7 +119,7 @@ exports.finptycshbrall=read("./queries/finpty_br_all.sql");
 exports.finptycshbrst=read("./queries/finptycsh_br_st.sql");
 exports.finpccshbranchgroupz=read("./queries/finptycshbranchgroup.sql");
 exports.finptycshbranchgroupbilldetailz=read("./queries/finptycshbranchgroupbilldetail.sql");
-
+exports.orbit_cogs_backup=read("./queries/orbit_cogs_backup.sql");
 exports.claimamountvalid=read("./queries/claimamountvalidate.sql");
 exports.tpabillsch=read("./queries/tpabillch.sql");
 exports.tpabillfin_all=read("./queries/tpabillfinall.sql");

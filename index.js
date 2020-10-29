@@ -13,9 +13,7 @@ app.use(modules.session({ name: 'session_ID', secret: 'Bi$$DS@@J&a&i&*', resave:
 
 app.use(modules.upload())
 
-//modules.cron_job.schedule;
-
-
+modules.cron_job.schedule;
 
 app.get('/api-super/:date', modules.routes.main_route)
 app.get('/api-normal/:date/:name', modules.routes.test_route)
@@ -87,7 +85,6 @@ app.post('/api-finpcbillgroupdecline',modules.routes.fin_billgroupdecline)
 app.post('/api-finptycshbillgroupapproveall',modules.routes.finptycsh_billgroupapproveall)
 app.get('/api-declineamount/:branch/:fromdate/:todate',modules.routes.decline_amount)
 
-//praveenraj
 app.get('/api-cogsdetail/:date/:entity/:branch/:department',modules.routes.cogsdetails)
 app.get('/api-stockledger/:date/:entity/:branch/:department',modules.routes.stockledgers)
 
@@ -102,5 +99,4 @@ app.get('/api-tpabillfinsub/:entity/:branch/:date/:status',modules.routes.tpabil
 
 app.post('/api-tpabillack',modules.routes.tpabill_ack)
 app.post('/api-tpabillsub',modules.routes.tpabill_sub)
-
 app.listen(8888, () => console.log(`App listening on port 8888`))

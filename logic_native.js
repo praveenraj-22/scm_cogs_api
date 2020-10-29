@@ -1107,7 +1107,7 @@ exports.formation = function(argDetails,fdate){
 		  'mtdVitroRetinalCogs':mtdVitroRetinalCogs,
 		  'ftdVitroRetinalCogs':ftdVitroRetinalCogs};
 		  
-		  console.log(tempObject);
+		  //console.log(tempObject);
 		  
 		
 		
@@ -1135,6 +1135,7 @@ exports.newopdNative = async (
 	lastyearopd
   );
   
+  let tamilNaduBranches = await filterTamilNaduRevenue(dbres2, ftddate,lastyearopd,branches); 
   
   return {
 	group: entityWise.group,
@@ -1142,6 +1143,9 @@ exports.newopdNative = async (
     aeh: entityWise.aeh,
     ahc: entityWise.ahc,
 	ohc: entityWise.ohc,
+	allchennai: tamilNaduBranches.AllChennaiBranches,
+	tnbranches: tamilNaduBranches.TNBranches,
+	rotn: tamilNaduBranches.ROTNBranches,
     aehgroup: groupWise.aeh,
     ahcgroup: groupWise.ahc,
 	ohcgroup: groupWise.ohc,
@@ -1193,7 +1197,7 @@ let filterEntityOpd = async (dbres2, ftddate,lastyearopd) => {
   //opdmtdpercentage = (opd-opdlastyear)/ opdlastyear;
   (tempObj.AEH.mtdopdrev = opd);
   (tempObj.AEH.mtdopdrevlastyear = opdlastyear);
-  (tempObj.AEH.mtdopdpercentage = Math.round(((opd-opdlastyear)/ opdlastyear)*100));
+  (tempObj.AEH.mtdopdpercentage = mtdGR(opd,opdlastyear));
   (opd = 0),(opdlastyear = 0);
   ahcrevarr = _.filter(dbres2, { entity: "AHC" });
   
@@ -1222,7 +1226,7 @@ let filterEntityOpd = async (dbres2, ftddate,lastyearopd) => {
   
   (tempObj.AHC.mtdopdrev = opd);
   (tempObj.AHC.mtdopdrevlastyear = opdlastyear);
-  (tempObj.AHC.mtdopdpercentage = Math.round(((opd-opdlastyear)/ opdlastyear)*100));
+  (tempObj.AHC.mtdopdpercentage = mtdGR(opd,opdlastyear));
   /*for (let key in tempObj.AEH) {
     alin[key] = tempObj.AEH[key];
   }
@@ -1255,13 +1259,12 @@ let filterEntityOpd = async (dbres2, ftddate,lastyearopd) => {
   
   (tempObj.OHC.mtdopdrev = opd);
   (tempObj.OHC.mtdopdrevlastyear = opdlastyear);
-  (tempObj.OHC.mtdopdpercentage = Math.round(((opd-opdlastyear)/ opdlastyear)*100));
+  (tempObj.OHC.mtdopdpercentage = mtdGR(opd,opdlastyear));
   alin["branch"] = "All India";  
   alin['ftdopdrev'] =  tempObj.AEH['ftdopdrev']+tempObj.AHC['ftdopdrev']; 
   alin['mtdopdrev'] =  tempObj.AEH['mtdopdrev']+tempObj.AHC['mtdopdrev']; 
   alin['mtdopdrevlastyear'] =  tempObj.AEH['mtdopdrevlastyear']+tempObj.AHC['mtdopdrevlastyear'];
-  alin['mtdopdpercentage'] = Math.round(((alin['mtdopdrev']-alin['mtdopdrevlastyear'])/alin['mtdopdrevlastyear'])*100);
-  
+  alin['mtdopdpercentage'] = mtdGR(alin['mtdopdrev'],alin['mtdopdrevlastyear']);
   let gropuftd=0,
   gropumtd=0,
   groupmtdlastyear=0,
@@ -1270,7 +1273,7 @@ let filterEntityOpd = async (dbres2, ftddate,lastyearopd) => {
   gropuftd = tempObj.AEH['ftdopdrev']+tempObj.AHC['ftdopdrev']+tempObj.OHC['ftdopdrev'];
   gropumtd = tempObj.AEH['mtdopdrev']+tempObj.AHC['mtdopdrev']+tempObj.OHC['mtdopdrev'];
   groupmtdlastyear = tempObj.AEH['mtdopdrevlastyear']+tempObj.AHC['mtdopdrevlastyear']+tempObj.OHC['mtdopdrevlastyear'];
-  groupmtdpercentage = Math.round(((gropumtd-groupmtdlastyear)/groupmtdlastyear)*100);
+  groupmtdpercentage = mtdGR(gropumtd,groupmtdlastyear);
   
   group = {};
   
@@ -1423,7 +1426,7 @@ let filterGroupwiseOPD = async (
     ],
     Banglore: ["BMH", "WFD", "KML", "CLR", "INR", "PNR", "YLK","SVR","BSK","RRN","RJN"],
     "Hubli + Mysore": ["HUB","DWD", "MCC", "MYS"],
-	Maharashtra :["VSH", "PUN", "HDP","CMR", "KTD"],
+	Maharashtra :["VSH", "PUN", "HDP","CMR" ],
     Telangana: ["DNR", "HMH", "MDA", "SNR", "HIM", "SBD","MPM","GCB"],
     Hyderabad: ["DNR", "HMH", "MDA", "SNR", "HIM", "SBD","MPM","GCB"],
     "Andhra Pradesh": ["VMH", "NEL", "GUN", "TPT", "RAJ"],
@@ -1458,7 +1461,7 @@ let filterGroupwiseOPD = async (
 	"Madagascar" :["MDR"],
     "Mozambique":["MZQ","BRA"],
     "Nigeria":["NGA"],
-    "Rwanda":["RWD"],
+    "Rwanda":["RWD","CGU"],
     "Mauritius":["EBN","FLQ","GDL"],    
 	"Zambia":["ZMB"],
     "Ghana":["GHA"],
@@ -1488,7 +1491,7 @@ let filterGroupwiseOPD = async (
         mtdopdlastyear += element.ftd_count;
        
       });
-	  mtdopdpercentage = Math.round(((mtdopd-mtdopdlastyear)/mtdopdlastyear)*100);
+	  mtdopdpercentage = mtdGR(mtdopd,mtdopdlastyear);
 	  
 	  
 	  
@@ -1529,7 +1532,7 @@ let filterGroupwiseOPD = async (
           (mtdopdrevlastyear += element.ftd_count);
       });
       
-      mtdopdpercentage = Math.round(((mtdopdrev-mtdopdrevlastyear)/mtdopdrevlastyear)*100);
+      mtdopdpercentage = mtdGR(mtdopdrev,mtdopdrevlastyear);
 	  
       
       branchObj[key].push({
@@ -1573,7 +1576,7 @@ let filterGroupwiseOPD = async (
           
       });
      
-      mtdopdpercentage = Math.round(((mtdopdrev-mtdopdrevlastyear)/mtdopdrevlastyear)*100);
+      mtdopdpercentage = mtdGR(mtdopdrev,mtdopdrevlastyear);
 	  
       branchObj[key].push({
 		branch: branchName,
@@ -1616,7 +1619,7 @@ let filterGroupwiseOPD = async (
         mtdopdlastyear += element.ftd_count;
        
       });
-	   mtdopdpercentage = Math.round(((mtdopd-mtdopdlastyear)/mtdopdlastyear)*100);
+	   mtdopdpercentage = mtdGR(mtdopd,mtdopdlastyear);
 	  
       (ahctempObj[group].mtdopdrev = mtdopd),
 	  (ahctempObj[group].mtdopdrevlastyear = mtdopdlastyear),
@@ -1655,7 +1658,7 @@ let filterGroupwiseOPD = async (
         mtdopdlastyear += element.ftd_count;
        
       });
-	  mtdopdpercentage = Math.round(((mtdopd-mtdopdlastyear)/mtdopdlastyear)*100);
+	  mtdopdpercentage = mtdGR(mtdopd,mtdopdlastyear);
 	  
 	  
 	  
@@ -1698,7 +1701,7 @@ let filterGroupwiseOPD = async (
           (mtdopdrevlastyear += element.ftd_count);
       });
       
-      mtdopdpercentage = Math.round(((mtdopdrev-mtdopdrevlastyear)/mtdopdrevlastyear)*100);
+      mtdopdpercentage = mtdGR(mtdopdrev,mtdopdrevlastyear);
 	  
       
       branchObj[key].push({
@@ -1729,7 +1732,63 @@ let filterGroupwiseOPD = async (
 
 
 
+let filterTamilNaduRevenue = async (dbres2, ftddate,lastyearopd,branches) => {
+	
+	let tntempObj = {};
+	
+	
+	 tamilnaduGroups = [
+    "All Chennai Branches",
+	"ROTN Branches",
+	"TN Branches"
+ ]
+  
 
+	tamilnaduBranches = {
+	"All Chennai Branches" :['CMH','ANN','ASN','AVD','NLR','PMB','PRR','TLR','TRC','VLC','TBM','ADY','EGM','MGP','NWP','AMB','TVT'],
+    "ROTN Branches":['KNP','VLR','KBK','NVL','VPM','DHA','SLM','KSN','ERD','HSR','MDU','TVL','TCN','APM','TRI','TNJ','TPR','CMB'],
+	"TN Branches":['CMH','ANN','ASN','AVD','NLR','PMB','PRR','TLR','TRC','VLC','TBM','ADY','EGM','MGP','NWP','AMB','TVT','KNP','VLR','KBK','NVL','VPM','DHA','SLM','KSN','ERD','HSR','MDU','TVL','TCN','APM','TRI','TNJ','TPR','CMB','PDY'],
+  
+  };
+	
+	tamilnaduGroups.forEach(group => {
+	let tnftd=0,tnmtd=0,tnmtdlastyear=0,tnmtdpercetage=0,tntarget=0,tnmtdachived=0;
+    tntempObj[group] = {};
+    tamilnaduBranches[group].forEach(branch => {
+		
+		
+      _.filter(dbres2, { branch: branch, trans_date: ftddate }).forEach(
+        element => {
+          tnftd += element.ftd_count;
+		  //target += element.target_amount;
+          
+        }
+      );
+      (tntempObj[group].ftdopdrev = tnftd);
+        
+      _.filter(dbres2, { branch: branch }).forEach(element => {
+        tnmtd += element.ftd_count;
+       
+      });  
+	  
+	   _.filter(lastyearopd, { branch: branch }).forEach(element => {
+        tnmtdlastyear += element.ftd_count;
+       
+      });
+	  tnmtdpercetage = mtdGR(tnmtd,tnmtdlastyear);	  
+      (tntempObj[group].mtdopdrev = tnmtd),
+	  (tntempObj[group].mtdopdrevlastyear = tnmtdlastyear),
+	  (tntempObj[group].mtdopdpercentage = tnmtdpercetage),	  
+	  (tntempObj[group].branch = group);
+    });   
+      
+  });    
+  return {"AllChennaiBranches" : tntempObj["All Chennai Branches"],
+  "ROTNBranches" : tntempObj["ROTN Branches"],
+  "TNBranches" : tntempObj["TN Branches"]
+  };    
+ 
+};
 
 
 exports.newopdnormal = async (
@@ -2023,9 +2082,9 @@ alin['mtdoptperc']=Math.round((((alin['mtdoptrev'])/(alin['lstoptrev']))-1)*100)
 // mrdpercentage for all india
 alin['mtdoptpercachieved']=Math.round(((alin['mtdoptrev'])/(alin['targetmtdrev']))*100);
 
-console.log(alin);
+//console.log(alin);
 
-console.log(grouptempObj);
+//console.log(grouptempObj);
 return{
   alin : alin,
   group :grouptempObj
@@ -2112,7 +2171,7 @@ targetachieved=Math.round(((mtdopt)/(targetmtdopt))*100)
 (branchName=null);
 });
 }//END OF for(let key in totalgroupbranches)
-console.log(branchObj);
+//console.log(branchObj);
 
 return{branch:branchObj}
 };
@@ -2529,13 +2588,13 @@ let filterGroupwiseUsageTracker = async (
     ];
     let aehgroupedBranches = {
         "chennai": ["ASN", "TRC", "AVD", "TLR"],
-        "rotn": ["KNP", "VLR", "KSN", "KBK", "HSR", "DHA"]
+        "rotn": ["KNP", "VLR", "KSN", "KBK","NVL", "HSR", "DHA"]
 
     };
     let ahcgroupedBranches = {
         "Chennai": ["MGP", "NWP", "AMB", "ADY", "TVT"],
         "ROTN": ["TVL","TPR"],
-        Banglore: ["KML", "PNR", "RRN","SVR"],
+        Banglore: ["KML", "PNR", "RRN","SVR","DWD"],
         Hyderabad: ["DNR", "MDA", "SNR", "MPM", "GCB"],
         Kerala: ["KTM"],
         "Madhya Pradesh": ["APR"],
@@ -3495,13 +3554,13 @@ let filternewGroupwise=async(aeh,ahc,consultation,branches,ftddate)=>{
      (aehtempObj[group].branch = group);
 
 
-console.log("");
-console.log("ftdopdcount : "+aehtempObj[group].ftdopdcount);
-console.log("ftdconsultcount : "+aehtempObj[group].ftdconsultcount);
-console.log("mtdopdcount : "+aehtempObj[group].mtdopdcount);
-console.log("mtdconsultcount : "+aehtempObj[group].mtdconsultcount);
-console.log("branch : "+aehtempObj[group].branch );
-console.log("");
+//console.log("");
+//console.log("ftdopdcount : "+aehtempObj[group].ftdopdcount);
+//console.log("ftdconsultcount : "+aehtempObj[group].ftdconsultcount);
+//console.log("mtdopdcount : "+aehtempObj[group].mtdopdcount);
+//console.log("mtdconsultcount : "+aehtempObj[group].mtdconsultcount);
+//console.log("branch : "+aehtempObj[group].branch );
+//console.log("");
 
     });
 
@@ -3560,13 +3619,13 @@ console.log("");
      (ahctempObj[group].branch = group);
 
 
-console.log("");
-console.log("ftdopdcount : "+ahctempObj[group].ftdopdcount);
-console.log("ftdconsultcount : "+ahctempObj[group].ftdconsultcount);
-console.log("mtdopdcount : "+ahctempObj[group].mtdopdcount);
-console.log("mtdconsultcount : "+ahctempObj[group].mtdconsultcount);
-console.log("branch : "+ahctempObj[group].branch );
-console.log("");
+//console.log("");
+//console.log("ftdopdcount : "+ahctempObj[group].ftdopdcount);
+//console.log("ftdconsultcount : "+ahctempObj[group].ftdconsultcount);
+//console.log("mtdopdcount : "+ahctempObj[group].mtdopdcount);
+//console.log("mtdconsultcount : "+ahctempObj[group].mtdconsultcount);
+//console.log("branch : "+ahctempObj[group].branch );
+//console.log("");
 
   });
 
@@ -3626,13 +3685,13 @@ console.log("");
      (ohctempObj[group].branch = group);
 
 
-console.log("");
-console.log("ftdopdcount : "+ohctempObj[group].ftdopdcount);
-console.log("ftdconsultcount : "+ohctempObj[group].ftdconsultcount);
-console.log("mtdopdcount : "+ohctempObj[group].mtdopdcount);
-console.log("mtdconsultcount : "+ohctempObj[group].mtdconsultcount);
-console.log("branch : "+ohctempObj[group].branch );
-console.log("");
+//console.log("");
+//console.log("ftdopdcount : "+ohctempObj[group].ftdopdcount);
+//console.log("ftdconsultcount : "+ohctempObj[group].ftdconsultcount);
+//console.log("mtdopdcount : "+ohctempObj[group].mtdopdcount);
+//console.log("mtdconsultcount : "+ohctempObj[group].mtdconsultcount);
+//console.log("branch : "+ohctempObj[group].branch );
+//console.log("");
 
 
   });
@@ -3706,9 +3765,13 @@ exports.newUsageTrackerNativeNew = async (
     ftddate,
     resdevicehistory,
     targetres,
-	resdevicerevenue
+	resdevicerevenue,
+	currencyres,
+	currencylastres
 
 ) => {
+	
+	let overseasCurrency = await overseasCurrencyConversion(ftddate,currencyres,currencylastres);
     let entityWise = await filterEntityUsageTrackerNew(dbres2, ftddate, resdevicehistory, targetres,resdevicerevenue);
     let groupWise = await filterGroupwiseUsageTrackerNew(
         entityWise.aeharr,
@@ -3718,16 +3781,19 @@ exports.newUsageTrackerNativeNew = async (
         ftddate,
         resdevicehistory,
         targetres,
-		resdevicerevenue
+		resdevicerevenue,
+		overseasCurrency
     );
 	
 	
 	let totalWise = await totalUsageTracker(groupWise.aeh,groupWise.ahc);
 	
+	let totalOverseasWise = await totalOverseasUsageTracker(groupWise.overseaswise);
 	
 
     return {
 		total: totalWise,
+		totalOverseas: totalOverseasWise,
         group: entityWise.group,
         alin: entityWise.alin,
         aeh: entityWise.aeh,
@@ -3736,11 +3802,78 @@ exports.newUsageTrackerNativeNew = async (
         aehgroup: groupWise.aeh,
         ahcgroup: groupWise.ahc,
         ohcgroup: groupWise.ohc,
-        branchwise: groupWise.branchwise
+        branchwise: groupWise.branchwise,
+		overseaswise: groupWise.overseaswise
     };
 };
 
 
+
+
+
+let overseasCurrencyConversion = async (ftddate,currencyres,currencylastres) => {
+	
+	let overseasftd=0,overseasmtd=0,mozamftd=0,mozammtd=0,overseastempObj={},mauritiusftd=0,mauritiusmtd=0,overseaslasttempObj={},overseaslastftd=0,overseaslastmtd=0,overseas_last_arr=[];
+	var lastdate = currencylastres[0].currency_date;
+	
+/*MZQ
+BRA
+NGA
+RWD
+EBN
+FLQ
+GDL
+ZMB
+GHA
+NAB
+UGD
+TZA*/
+
+//console.log(currencyres);
+
+	let overseasCountryCode = ['MDR','NGA','RWD','ZMB','GHA','NAB','UGD','TZA','MZN','MUR'];
+	//console.log(currencyres);
+		overseasCountryCode.forEach(countrycode => {		
+		   overseasftd=0,overseasmtd=0,overseaslastftd=0,overseaslastmtd=0;
+		   overseastempObj[countrycode] = {};
+      		_.filter(currencyres, { country_code: countrycode, currency_date: ftddate }).forEach(element => {
+				overseasftd += parseFloat(element.INR_rate);
+			})
+			
+			
+			if(overseasftd==0){
+				_.filter(currencylastres, { country_code: countrycode, currency_date: lastdate }).forEach(element => {				
+				overseasftd = element.INR_rate;
+				overseasmtd = element.INR_rate;
+				})
+			}else{
+				let overseasarr = _.filter(currencyres, { country_code: countrycode })		
+				overseasarr.forEach(element => {
+					
+					overseasmtd += parseFloat(element.INR_rate);
+				})
+				overseasmtd = overseasmtd/(overseasarr.length);
+			}
+			overseastempObj[countrycode].ftd = overseasmtd;
+			overseastempObj[countrycode].mtd = overseasmtd;
+			overseastempObj[countrycode].lastmtd = overseaslastmtd;
+		})
+	if((Object.keys(overseastempObj).length) > 0){
+			overseastempObj['CGU'] = {'ftd' : overseastempObj.RWD.ftd,'mtd' :overseastempObj.RWD.mtd,'lastmtd':overseastempObj.RWD.lastmtd};
+			overseastempObj['MZQ'] = {'ftd' : overseastempObj.MZN.ftd,'mtd' :overseastempObj.MZN.mtd,'lastmtd':overseastempObj.MZN.lastmtd};
+			overseastempObj['BRA'] = {'ftd' : overseastempObj.MZN.ftd,'mtd' :overseastempObj.MZN.mtd,'lastmtd':overseastempObj.MZN.lastmtd};
+			overseastempObj['GDL'] = {'ftd' : overseastempObj.MUR.ftd,'mtd' :overseastempObj.MUR.mtd,'lastmtd':overseastempObj.MUR.lastmtd};
+			overseastempObj['FLQ'] = {'ftd' : overseastempObj.MUR.ftd,'mtd' :overseastempObj.MUR.mtd,'lastmtd':overseastempObj.MUR.lastmtd};
+			overseastempObj['EBN'] = {'ftd' : overseastempObj.MUR.ftd,'mtd' :overseastempObj.MUR.mtd,'lastmtd':overseastempObj.MUR.lastmtd};
+	}
+	
+	
+	
+	//console.log(overseastempObj);
+	
+	return overseastempObj;
+
+}
 
 let filterEntityUsageTrackerNew = async (dbres2, ftddate, resdevicehistory, targetres,resdevicerevenue) => {
     let tempObj = {},
@@ -4072,7 +4205,8 @@ let filterGroupwiseUsageTrackerNew = async (
     ftddate,
     resdevicehistory,
     targetres,
-	resdevicerevenue
+	resdevicerevenue,
+	overseasCurrency
 ) => {
     let ftdopd = 0,
         mtdopd = 0,
@@ -4124,13 +4258,13 @@ let filterGroupwiseUsageTrackerNew = async (
     ];
     let aehgroupedBranches = {
         "chennai": ["ASN", "TRC", "AVD", "TLR"],
-        "rotn": ["KNP", "VLR", "KSN", "KBK", "HSR", "DHA"]
+        "rotn": ["KNP", "VLR", "KSN", "KBK","NVL", "HSR", "DHA"]
 
     };
     let ahcgroupedBranches = {
         "Chennai": ["MGP", "NWP", "AMB", "ADY", "TVT"],
         "ROTN": ["TVL","TPR"],
-        Banglore: ["KML", "PNR", "RRN","SVR"],
+        Banglore: ["KML", "PNR", "RRN","SVR","DWD"],
         Hyderabad: ["DNR", "MDA", "SNR", "MPM", "GCB"],
         Kerala: ["KTM"],
 		"Maharashtra":["VSH"]
@@ -4142,7 +4276,7 @@ let filterGroupwiseUsageTrackerNew = async (
         "Madagascar": ["MDR"],
         "Mozambique": ["MZQ", "BRA"],
         "Nigeria": ["NGA"],
-        "Rwanda": ["RWD"],
+        "Rwanda": ["RWD","CGU"],
         "Mauritius": ["EBN", "FLQ", "GDL"],
         "Zambia": ["ZMB"],
         "Ghana": ["GHA"],
@@ -4206,7 +4340,7 @@ let filterGroupwiseUsageTrackerNew = async (
             (aehtempObj[group].target = target);
 			(aehtempObj[group].deviceftd = ftddevicecount);
 			(aehtempObj[group].revenueftdcount = ftddevicerevenuecount);
-			(aehtempObj[group].revenueftdamount = ftddevicerevenueamount);
+			(aehtempObj[group].revenueftdamount = ftddevicerevenueamount.toFixed(2));
 			
 
             _.filter(dbres2, {
@@ -4244,9 +4378,9 @@ let filterGroupwiseUsageTrackerNew = async (
             (aehtempObj[group].devicemtd = mtddevicecount),           
             (aehtempObj[group].entity = 'AEH'),          
             (aehtempObj[group].revenuemtdcount = mtddevicerevenuecount),           
-            (aehtempObj[group].revenuemtdamount = mtddevicerevenueamount),
+            (aehtempObj[group].revenuemtdamount = mtddevicerevenueamount.toFixed(2)),
 			(aehtempObj[group].revenuetargetachived = Math.round(((mtddevicerevenuecount/target)*100))),
-			(aehtempObj[group].targetamount = target*targetamount),
+			(aehtempObj[group].targetamount = (target*targetamount).toFixed(2)),
 			(aehtempObj[group].targetamountach = Math.round(((mtddevicerevenueamount/aehtempObj[group].targetamountach)*100))),
             (aehtempObj[group].branch = group);
         });
@@ -4371,9 +4505,9 @@ let filterGroupwiseUsageTrackerNew = async (
                 devicemtd: mtddevicecount,              
                 revenueftdcount: ftddevicerevenuecount,
                 revenuemtdcount: mtddevicerevenuecount,                
-                revenueftdamount: ftddevicerevenueamount,
-                revenuemtdamount: mtddevicerevenueamount,
-				targetamount : target * targetamount,
+                revenueftdamount: ftddevicerevenueamount.toFixed(2),
+                revenuemtdamount: mtddevicerevenueamount.toFixed(2),
+				targetamount : (target * targetamount).toFixed(2),
 				targetamountach : Math.round(((mtddevicerevenueamount/(target * targetamount))*100)),
 				revenuetargetachived : Math.round(((mtddevicerevenuecount/target)*100))
             });
@@ -4498,9 +4632,9 @@ let filterGroupwiseUsageTrackerNew = async (
                 devicemtd: mtddevicecount,               
                 revenueftdcount: ftddevicerevenuecount,
                 revenuemtdcount: mtddevicerevenuecount,                
-                revenueftdamount: ftddevicerevenueamount,
-                revenuemtdamount: mtddevicerevenueamount,
-				targetamount : target * targetamount,
+                revenueftdamount: ftddevicerevenueamount.toFixed(2),
+                revenuemtdamount: mtddevicerevenueamount.toFixed(2),
+				targetamount : (target * targetamount).toFixed(2),
 				targetamountach : Math.round(((mtddevicerevenueamount/(target * targetamount))*100)),
 				revenuetargetachived : Math.round(((mtddevicerevenuecount/target)*100)),
 				
@@ -4576,7 +4710,7 @@ let filterGroupwiseUsageTrackerNew = async (
 			(ahctempObj[group].deviceftd = ftddevicecount);
             (ahctempObj[group].target = target);
 			(ahctempObj[group].revenueftdcount = ftddevicerevenuecount);
-			(ahctempObj[group].revenueftdamount = ftddevicerevenueamount);
+			(ahctempObj[group].revenueftdamount = ftddevicerevenueamount.toFixed(2));
 
             _.filter(dbres2, {
                 branch: branch
@@ -4609,10 +4743,10 @@ let filterGroupwiseUsageTrackerNew = async (
             (ahctempObj[group].devicemtd = mtddevicecount),
             (ahctempObj[group].entity = 'AHC'),        
             (ahctempObj[group].revenuemtdcount = mtddevicerevenuecount),
-			(ahctempObj[group].revenuemtdamount = mtddevicerevenueamount),
+			(ahctempObj[group].revenuemtdamount = mtddevicerevenueamount.toFixed(2)),
 			(ahctempObj[group].revenuetargetachived = Math.round(((mtddevicerevenuecount/target)*100))),
 			(ahctempObj[group].targetamountach = Math.round(((mtddevicerevenueamount/ahctempObj[group].targetamountach)*100))),
-			(ahctempObj[group].targetamount = target * targetamount),
+			(ahctempObj[group].targetamount = (target * targetamount).toFixed(2)),
             (ahctempObj[group].branch = group);
         });
         (ftdopd = 0),
@@ -4690,7 +4824,7 @@ let filterGroupwiseUsageTrackerNew = async (
 			(ohctempObj[group].deviceftd = ftddevicecount);
             (ohctempObj[group].target = target);
 			(ohctempObj[group].revenueftdcount = mtddevicerevenuecount);
-            (ohctempObj[group].revenueftdamount = mtddevicerevenueamount);
+            (ohctempObj[group].revenueftdamount = mtddevicerevenueamount.toFixed(2));
 
             _.filter(dbres2, {
                 branch: branch
@@ -4733,13 +4867,166 @@ let filterGroupwiseUsageTrackerNew = async (
 		(targetamount = 0);
 
     });
+	
+	let overseasbranchObj=[];
+	for (let key in ohcgroupedBranches) {
+        //branchObj[key] = [];
+        ohcgroupedBranches[key].forEach(branch => {
+            _.filter(branches, {
+                code: branch
+            }).forEach(element => {
+                (branchName = element.branch), (code = element.code);
+            });
+			
+			
+            _.filter(dbres2, {
+                branch: branch,
+                trans_date: ftddate
+            }).forEach(
+                element => {
+
+                    (ftdopdrev = element.ftd_count);
+
+                }
+            );
+			
+			
+            _.filter(resdevicehistory, {
+                branch: branch,
+                trans_date: ftddate
+            }).forEach(
+                element => {
+                    (ftddevicecount += element.device_daily_count);
+
+                }
+            );
+			
+			
+			
+			
+			
+			
+			_.filter(resdevicerevenue, {
+                branch: branch,
+                trans_date: ftddate
+            }).forEach(
+                element => {
+                    ftddevicerevenuecount += element.BILL_COUNT;
+                    ftddevicerevenueamount += element.AMOUNT;
+                }
+            );
+			
+			
+			if((Object.keys(overseasCurrency).length) > 0){		
+				
+                ftddevicerevenueamount = ftddevicerevenueamount*overseasCurrency[branch].ftd;
+			}
+			
+			
+			
+			
+            /* target */
+            _.filter(targetres, {
+                branch: branch
+            }).forEach(
+                element => {
+                    target = 0;
+					targetamount = 0;
+                }
+            );
+
+
+            _.filter(dbres2, {
+                branch: branch
+            }).forEach(element => {
+                (mtdopdrev += element.ftd_count);
+
+            });
+
+            _.filter(resdevicehistory, {
+                branch: branch
+            }).forEach(element => {
+                (mtddevicecount += element.device_daily_count);
+
+            });
+			
+			
+			
+			_.filter(resdevicerevenue, {
+                branch: branch
+            }).forEach(
+                element => {
+                    mtddevicerevenuecount += element.BILL_COUNT;
+					mtddevicerevenueamount += element.AMOUNT;
+
+                }
+            );
+
+
+			if((Object.keys(overseasCurrency).length) > 0){	
+				
+                mtddevicerevenueamount = mtddevicerevenueamount*overseasCurrency[branch].mtd;
+			}
+
+            let avaregion='';
+			
+			if(key=='chennai'){
+				avaregion='Chennai';
+			}else if(key=='rotn'){
+				avaregion='ROTN';
+			}else{
+				avaregion=key;
+			}
+
+            overseasbranchObj.push({
+                branch: branchName,
+				region:avaregion,
+                code: code,
+                ftdopdrev: ftdopdrev,
+                mtdopdrev: mtdopdrev,
+                deviceftd: ftddevicecount,
+                target: target,
+                entity: 'AHC',
+                devicemtd: mtddevicecount,               
+                revenueftdcount: ftddevicerevenuecount,
+                revenuemtdcount: mtddevicerevenuecount,                
+                revenueftdamount: ftddevicerevenueamount.toFixed(2),
+                revenuemtdamount: mtddevicerevenueamount.toFixed(2),
+				targetamount : 0,
+				targetamountach : 0,
+				revenuetargetachived : 0,
+				
+
+            });
+			
+			
+            (ftdopd = 0),
+            (ftdopdrev = 0),
+            (mtdopdrev = 0),
+            (mtdopd = 0),
+            (mtddevicecount = 0),
+            (ftddevicecount = 0),
+            (target = 0),
+			(targetamount = 0),
+			(ftddevicerevenueamount=0),
+			(mtddevicerevenueamount=0),
+			(ftddevicerevenuecount=0),
+			(mtddevicerevenuecount=0);
+
+        });
+    }
+	
+	
+	
+	
 
     
     return {
         aeh: aehtempObj,
         ahc: ahctempObj,
         ohc: ohctempObj,
-        branchwise: branchObj
+        branchwise: branchObj,
+		overseaswise: overseasbranchObj
     };
 };
 
@@ -4758,9 +5045,9 @@ let totalUsageTracker = async (aehGroup,ahcGroup) =>{
 			 totalrevenueftdcount = totalrevenueftdcount+aehGroup[key].revenueftdcount;
 			 totalrevenuemtdcount = totalrevenuemtdcount+aehGroup[key].revenuemtdcount;
 			 totaltarget = totaltarget+aehGroup[key].target;
-			 totalrevenueftdamount = totalrevenueftdamount+aehGroup[key].revenueftdamount;
-			 totalrevenuemtdamount = totalrevenuemtdamount+aehGroup[key].revenuemtdamount;
-			 totaltargetamount = totaltargetamount+aehGroup[key].targetamount;
+			 totalrevenueftdamount = (parseFloat(totalrevenueftdamount)+parseFloat(aehGroup[key].revenueftdamount)).toFixed(2);
+			 totalrevenuemtdamount = (parseFloat(totalrevenuemtdamount)+parseFloat(aehGroup[key].revenuemtdamount)).toFixed(2);
+			 totaltargetamount = (parseFloat(totaltargetamount)+parseFloat(aehGroup[key].targetamount)).toFixed(2);
 		  }		  
 		  for (let key in ahcGroup) {	  
 			  
@@ -4771,9 +5058,9 @@ let totalUsageTracker = async (aehGroup,ahcGroup) =>{
 			 totalrevenueftdcount = totalrevenueftdcount+ahcGroup[key].revenueftdcount;
 			 totalrevenuemtdcount = totalrevenuemtdcount+ahcGroup[key].revenuemtdcount;
 			 totaltarget = totaltarget+ahcGroup[key].target;
-			 totalrevenueftdamount = totalrevenueftdamount+ahcGroup[key].revenueftdamount;
-			 totalrevenuemtdamount = totalrevenuemtdamount+ahcGroup[key].revenuemtdamount;
-			 totaltargetamount = totaltargetamount+ahcGroup[key].targetamount;
+			 totalrevenueftdamount = (parseFloat(totalrevenueftdamount)+parseFloat(ahcGroup[key].revenueftdamount)).toFixed(2);
+			 totalrevenuemtdamount = (parseFloat(totalrevenuemtdamount)+parseFloat(ahcGroup[key].revenuemtdamount)).toFixed(2);
+			 totaltargetamount = (parseFloat(totaltargetamount)+parseFloat(ahcGroup[key].targetamount)).toFixed(2);
 		  }
 	 
 	total['ftdopdrev'] = totaloptdftd;
@@ -4795,7 +5082,7 @@ let totalUsageTracker = async (aehGroup,ahcGroup) =>{
 
 
 exports.avaDemoEmail = async (finalResult,todatadate) => {
-	console.log("final template");	
+	//console.log("final template");	
 	let local_template_design = await emailTemplate(finalResult,todatadate);
 	return local_template_design;
 	
@@ -4809,12 +5096,12 @@ let emailTemplate = async (finalResult,todatadate) => {
 	
 	let avaTemplate = "<html><body><table cellpadding='5' border='1' style='border-collapse: collapse;  border-spacing: 0;border-color: black'><tr><td></td><td></td><td></td><td colspan='2'><b>New OPD</b></td><td colspan='4' align='center'><b>Perimeter (Paid Count) <br>Individual Eye</b></td><td colspan='4' align='center'><b>Perimeter Revenue (INR)	</b></td></tr><tr><td><b>Entity</b></td><td><b>Region</b></td><td><b>Branch</b></td><td><b>FTD</b></td><td><b>MTD</b></td><td><b>FTD</b></td><td><b>MTD</b></td><td><b>Target</b></td><td><b>Tar Ach%</b></td><td><b>FTD</b></td><td><b>MTD</b></td><td><b>Target Amount</b></td><td><b>Tar Ach%</b></td></tr>";
 	
-	avaTemplate+= '<tr><td bgcolor="#a8afba" style="background:#a8afba!important;color:#000000;text-align:center">Total</td><td bgcolor="#a8afba" style="background:#a8afba!important;color:#000000;text-align:center"></td><td bgcolor="#a8afba" style="background:#a8afba!important;color:#000000;text-align:center"></td><td bgcolor="#cddc39" style="background:#cddc39!important;color:#000000;text-align:center">'+ finalResult.total['ftdopdrev'] +'</td><td bgcolor="#cddc39" style="background:#cddc39!important;color:#000000;text-align:center">'+ finalResult.total['mtdopdrev'] +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ finalResult.total['revenueftdcount'] +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ finalResult.total['revenuemtdcount'] +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ finalResult.total['target'] +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ finalResult.total['revenuetargetachived'] +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+ new Intl.NumberFormat('en-IN').format(finalResult.total['revenueftdamount']) +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+ new Intl.NumberFormat('en-IN').format(finalResult.total['revenuemtdamount']) +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+ new Intl.NumberFormat('en-IN').format(finalResult.total['targetamount']) +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+ finalResult.total['targetamountach'] +'</td></tr>';
+	avaTemplate+= '<tr><td bgcolor="#a8afba" style="background:#a8afba!important;color:#000000;text-align:center">Total</td><td bgcolor="#a8afba" style="background:#a8afba!important;color:#000000;text-align:center"></td><td bgcolor="#a8afba" style="background:#a8afba!important;color:#000000;text-align:center"></td><td bgcolor="#cddc39" style="background:#cddc39!important;color:#000000;text-align:center">'+ finalResult.total['ftdopdrev'] +'</td><td bgcolor="#cddc39" style="background:#cddc39!important;color:#000000;text-align:center">'+ finalResult.total['mtdopdrev'] +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ finalResult.total['revenueftdcount'] +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ finalResult.total['revenuemtdcount'] +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ finalResult.total['target'] +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ finalResult.total['revenuetargetachived'] +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+ new Intl.NumberFormat("en-IN").format(finalResult.total['revenueftdamount']) +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+ new Intl.NumberFormat("en-IN").format(finalResult.total['revenuemtdamount']) +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+ new Intl.NumberFormat("en-IN").format(finalResult.total['targetamount']) +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+ finalResult.total['targetamountach'] +'</td></tr>';
 	
 	
 	
 	sortbranches.forEach(element => {
-		avaTemplate+= '<tr><td bgcolor="#a8afba" style="background:#a8afba!important;color:#000000;text-align:center">'+ element.entity +'</td><td bgcolor="#a8afba" style="background:#a8afba!important;color:#000000;text-align:center">'+ element.region +'</td><td bgcolor="#a8afba" style="background:#a8afba!important;color:#000000;text-align:center">'+ element.branch +'</td><td bgcolor="#cddc39" style="background:#cddc39!important;color:#000000;text-align:center">'+ element.ftdopdrev +'</td><td bgcolor="#cddc39" style="background:#cddc39!important;color:#000000;text-align:center">'+ element.mtdopdrev +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ element.revenueftdcount +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ element.revenuemtdcount +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ element.target +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ element.revenuetargetachived +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+ new Intl.NumberFormat('en-IN').format(element.revenueftdamount) +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+  new Intl.NumberFormat('en-IN').format(element.revenuemtdamount) +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+ new Intl.NumberFormat('en-IN').format(element.targetamount) +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+ element.targetamountach +'</td></tr>';    
+		avaTemplate+= '<tr><td bgcolor="#a8afba" style="background:#a8afba!important;color:#000000;text-align:center">'+ element.entity +'</td><td bgcolor="#a8afba" style="background:#a8afba!important;color:#000000;text-align:center">'+ element.region +'</td><td bgcolor="#a8afba" style="background:#a8afba!important;color:#000000;text-align:center">'+ element.branch +'</td><td bgcolor="#cddc39" style="background:#cddc39!important;color:#000000;text-align:center">'+ element.ftdopdrev +'</td><td bgcolor="#cddc39" style="background:#cddc39!important;color:#000000;text-align:center">'+ element.mtdopdrev +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ element.revenueftdcount +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ element.revenuemtdcount +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ element.target +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ element.revenuetargetachived +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+ new Intl.NumberFormat("en-IN").format(element.revenueftdamount) +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+  new Intl.NumberFormat("en-IN").format(element.revenuemtdamount) +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+ new Intl.NumberFormat("en-IN").format(element.targetamount) +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+ element.targetamountach +'</td></tr>';    
 	});
 	
 	avaTemplate+='</table><br><b>Note: This report is auto generated, please do not reply.</b> <br><p>For any corrections, please drop a mail to  <a href="mailto:helpdesk@dragarwal.com">helpdesk@dragarwal.com</a>. </p> <br><p>Regards,</p><p>Dr.Agarwal IT Team</p></body></html>';
@@ -4851,7 +5138,7 @@ let filterGroupwiseRevVsCogs = async (
 	revreferalres1,
 	revreferalres2
 ) => {
-	 console.log(22222);
+	 //console.log(22222);
     let mtdrev = 0,
         mtdcogs = 0,
         mtdopdpercentage = 0,
@@ -5174,8 +5461,8 @@ let filterGroupwiseRevVsCogs = async (
 	 let revreferalmtd = revreferalres1[0]['NET_AMOUNT'] - revreferalres2[0]['NET_AMOUNT'];
 	 let cogsreferalmtd = (revreferalmtd/30)*100;
 	 let refertalObject ={},withreferalObj={};
-	 console.log(revreferalres1[0]['NET_AMOUNT']);
-	 console.log(revreferalres2[0]['NET_AMOUNT']);
+	 //console.log(revreferalres1[0]['NET_AMOUNT']);
+	 //console.log(revreferalres2[0]['NET_AMOUNT']);
 	billedObj['BILLED'] = {'branch':'BILLED','mtdrev':billedrevmtd,'mtdcogs':billedcogsmtd,mc:(billedcogsmtd/billedrevmtd)*100,'contribution':100}
 	refertalObject['REFERRAL'] = {'branch':'REFERRAL','mtdrev':revreferalmtd,'mtdcogs':cogsreferalmtd,mc:'','contribution':''}
 	
@@ -5223,5 +5510,463 @@ let filterGroupwiseRevVsCogs = async (
 
 
 
+exports.inactiveEmail = async (finalResult) => {
+	//console.log("final template");	
+	let inactive_template_design = await inactiveEmailTemplate(finalResult);
+	return inactive_template_design;
+	
+}
+let inactiveEmailTemplate = async (finalResult) => {
+
+	let inactiveTemplate="<html><body><table cellpadding='5' border='1' style='border-collapse: collapse;  border-spacing: 0;border-color: black'><tr><td align='center'><b>Account ID</b></td><td align='center'><b>First Name </b></td><td align='center'><b>Last Name	</b></td><td align='center'><b>Organiztion </b></td><td align='center'><b>TimezoneId</b></td><td align='center'><b>Date</b></td></tr>";
+	finalResult.forEach(element => {
+		
+		inactiveTemplate+= '<tr><td>'+element.LOGIN+'</td><td>'+element.FIRST_NAME+'</td><td>'+element.LAST_NAME+'</td><td >'+element.BRANCH+'</td><td>'+element.TIMEZONE+'</td><td>'+element.LAST_LOGIN+'</td></tr>';
+		
+	});
+	
+	inactiveTemplate+='</table><br><b>Note: This report is auto generated, please do not reply.</b> <br><p>For any corrections, please drop a mail to  <a href="mailto:helpdesk@dragarwal.com">helpdesk@dragarwal.com</a>. </p> <br><p>Regards,</p><p>Dr.Agarwal IT Team</p></body></html>';
+	
+	return inactiveTemplate;
+	
+}
 
 
+
+exports.avaOverseasEmail = async (finalResult,todatadate) => {
+	//console.log("final template");	
+	let local_template_design_overseas = await emailTemplateOverseas(finalResult,todatadate);
+	return local_template_design_overseas;
+	
+}
+let emailTemplateOverseas = async (finalResult,todatadate) => {
+	
+	let  branchlist = finalResult.overseaswise; 
+	
+	
+	let avaTemplateOverseas = "<html><body><table cellpadding='5' border='1' style='border-collapse: collapse;  border-spacing: 0;border-color: black'><tr><td></td><td></td><td></td><td colspan='2'><b>New OPD</b></td><td colspan='4' align='center'><b>Perimeter (Paid Count) <br>Individual Eye</b></td><td colspan='4' align='center'><b>Perimeter Revenue (INR)</b></td></tr><tr><td><b>Entity</b></td><td><b>Region</b></td><td><b>Branch</b></td><td><b>FTD</b></td><td><b>MTD</b></td><td><b>FTD</b></td><td><b>MTD</b></td><td><b>Target</b></td><td><b>Tar Ach%</b></td><td><b>FTD</b></td><td><b>MTD</b></td><td><b>Target Amount</b></td><td><b>Tar Ach%</b></td></tr>";
+	
+	avaTemplateOverseas+= '<tr><td bgcolor="#a8afba" style="background:#a8afba!important;color:#000000;text-align:center">Total</td><td bgcolor="#a8afba" style="background:#a8afba!important;color:#000000;text-align:center"></td><td bgcolor="#a8afba" style="background:#a8afba!important;color:#000000;text-align:center"></td><td bgcolor="#cddc39" style="background:#cddc39!important;color:#000000;text-align:center">'+ finalResult.totalOverseas['ftdopdrev'] +'</td><td bgcolor="#cddc39" style="background:#cddc39!important;color:#000000;text-align:center">'+ finalResult.totalOverseas['mtdopdrev'] +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ finalResult.totalOverseas['revenueftdcount'] +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ finalResult.totalOverseas['revenuemtdcount'] +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ finalResult.totalOverseas['target'] +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ finalResult.totalOverseas['revenuetargetachived'] +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+ new Intl.NumberFormat("en-IN").format(finalResult.totalOverseas['revenueftdamount']) +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+ new Intl.NumberFormat("en-IN").format(finalResult.totalOverseas['revenuemtdamount']) +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+ new Intl.NumberFormat("en-IN").format(finalResult.totalOverseas['targetamount']) +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+ finalResult.totalOverseas['targetamountach'] +'</td></tr>';
+	
+	
+	
+	branchlist.forEach(element => {
+		avaTemplateOverseas+= '<tr><td bgcolor="#a8afba" style="background:#a8afba!important;color:#000000;text-align:center">'+ element.entity +'</td><td bgcolor="#a8afba" style="background:#a8afba!important;color:#000000;text-align:center">'+ element.region +'</td><td bgcolor="#a8afba" style="background:#a8afba!important;color:#000000;text-align:center">'+ element.branch +'</td><td bgcolor="#cddc39" style="background:#cddc39!important;color:#000000;text-align:center">'+ element.ftdopdrev +'</td><td bgcolor="#cddc39" style="background:#cddc39!important;color:#000000;text-align:center">'+ element.mtdopdrev +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ element.revenueftdcount +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ element.revenuemtdcount +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ element.target +'</td><td bgcolor="#f0ae19" style="background:#f0ae19!important;color:#000000;text-align:center">'+ element.revenuetargetachived +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+new Intl.NumberFormat("en-IN").format(element.revenueftdamount)+'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+  new Intl.NumberFormat("en-IN").format(element.revenuemtdamount) +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+ new Intl.NumberFormat("en-IN").format(element.targetamount) +'</td><td bgcolor="#f7fcff" style="background:#f7fcff!important;color:#000000;text-align:center">'+ element.targetamountach +'</td></tr>';    
+	});
+	
+	avaTemplateOverseas+='</table><br><b>Note: This report is auto generated, please do not reply.</b> <br><p>For any corrections, please drop a mail to  <a href="mailto:helpdesk@dragarwal.com">helpdesk@dragarwal.com</a>. </p> <br><p>Regards,</p><p>Dr.Agarwal IT Team</p></body></html>';
+	return avaTemplateOverseas;	
+	
+	
+}
+
+
+let totalOverseasUsageTracker = async (overseasGroup) =>{
+	 let totalOverseas = {};
+	
+	var totaloptdftd = 0,totaloptdmtd = 0,totaldeviceftd=0,totaldevicemtd=0,totalrevenueftdcount=0,totalrevenuemtdcount=0,totaltarget=0,totalrevenueftdamount=0,totalrevenuemtdamount=0,totaltargetamount=0;
+	
+	 
+		 
+		  for (let key in overseasGroup) {	  
+			  
+			 totaloptdftd = totaloptdftd+overseasGroup[key].ftdopdrev;
+			 totaloptdmtd = totaloptdmtd+overseasGroup[key].mtdopdrev;
+			 totaldeviceftd = totaldeviceftd+overseasGroup[key].deviceftd;
+			 totaldevicemtd = totaldevicemtd+overseasGroup[key].devicemtd;			 
+			 totalrevenueftdcount = totalrevenueftdcount+overseasGroup[key].revenueftdcount;
+			 totalrevenuemtdcount = totalrevenuemtdcount+overseasGroup[key].revenuemtdcount;
+			 totaltarget = totaltarget+overseasGroup[key].target;
+			 totalrevenueftdamount = (parseFloat(totalrevenueftdamount)+parseFloat(overseasGroup[key].revenueftdamount)).toFixed(2);
+			 totalrevenuemtdamount =(parseFloat(totalrevenuemtdamount)+parseFloat(overseasGroup[key].revenuemtdamount)).toFixed(2);
+			 totaltargetamount = totaltargetamount+overseasGroup[key].targetamount;
+		  }
+	 
+	totalOverseas['ftdopdrev'] = totaloptdftd;
+	totalOverseas['mtdopdrev'] = totaloptdmtd;
+	totalOverseas['deviceftd'] = totaldeviceftd;	
+	totalOverseas['devicemtd'] = totaldevicemtd;
+	totalOverseas['revenueftdcount'] = totalrevenueftdcount;
+	totalOverseas['revenuemtdcount'] = totalrevenuemtdcount;
+	totalOverseas['revenueftdamount'] = totalrevenueftdamount;
+	totalOverseas['revenuemtdamount'] = totalrevenuemtdamount;
+	totalOverseas['target'] = 0;
+	totalOverseas['targetamount'] = 0;
+	totalOverseas['targetamountach'] = 0,
+	totalOverseas['revenuetargetachived'] = 0;
+	totalOverseas['branch'] = 'Total';	
+	return totalOverseas;
+}
+
+
+
+
+exports.newOPDEmail = async (finalResult,yesterday) => {
+	console.log("final template");	
+	let local_template_design_opd = await emailTemplateOPD(finalResult,yesterday);
+	return local_template_design_opd;
+	
+}
+let emailTemplateOPD = async (finalResult,todatadate) => {	
+
+    let dateArr = todatadate.split("-");
+	let dateDay = dateArr[2];
+    let dateMonth = dateArr[1];
+    let dateYear = dateArr[0];
+	var monthName = '';
+	if(dateMonth==01){
+		monthName='Jan';
+	}else if(dateMonth==02){
+		monthName='Feb';
+	}else if(dateMonth==03){
+		monthName='March';
+	}else if(dateMonth==04){
+		monthName='April';
+	}else if(dateMonth==05){
+		monthName='May';
+	}else if(dateMonth==06){
+		monthName='June';
+	}else if(dateMonth==07){
+		monthName='July';
+	}else if(dateMonth==08){
+		monthName='Aug';
+	}else if(dateMonth==09){
+		monthName='Sep';
+	}else if(dateMonth==10){
+		monthName='Oct';
+	}else if(dateMonth==11){
+		monthName='Nov';
+	}else if(dateMonth==12){
+		monthName='Dec';
+	}
+	
+	
+	let day = dateDay+' '+monthName+' '+dateYear;
+
+    
+
+	let cmh = finalResult.branchwise["Chennai Main Hospital"];
+	let aeh_chennai = finalResult.aehgroup["Chennai Branches"];	
+	let aeh_chennai_branches = finalResult.branchwise["Chennai Branches"];
+	let kanchi_vel = finalResult.aehgroup["Kanchi + Vellore"];
+	let kanchi_vel_branches = finalResult.branchwise["Kanchi + Vellore"];
+	let kum_ney_vil = finalResult.aehgroup["Kum + Ney + Vil"];
+	let kum_ney_vil_branches = finalResult.branchwise["Kum + Ney + Vil"];
+	let dha_salem_krish = finalResult.aehgroup["Dha + Salem + Krish"];
+	let dha_salem_krish_branches = finalResult.branchwise["Dha + Salem + Krish"];	
+	let erod_hosure = finalResult.aehgroup["Erode + Hosur"];
+	let erod_hosure_branches = finalResult.branchwise["Erode + Hosur"];
+	let jaipur = finalResult.branchwise["Jaipur"];
+	let madurai = finalResult.aehgroup["Madurai KK Nagar"];
+	let ahc_chennai = finalResult.ahcgroup["Chennai branches"];
+	let ahc_chennai_branches = finalResult.branchwise["Chennai branches"];
+	let tirunelveli = finalResult.branchwise["Tirunelveli"];
+	//let coim_trippur = finalResult.ahcgroup["Coimbatore + Tiruppur"];
+	//let coim_trippur_branches = finalResult.branchwise["Coimbatore + Tiruppur"];
+    let tiruppur = finalResult.branchwise["Tiruppur"];
+	let coimbatore = finalResult.branchwise["Coimbatore"];
+	
+	
+	let tuti_madurai = finalResult.ahcgroup["Tuticorin + Madurai"];
+	let tuti_madurai_branches = finalResult.branchwise["Tuticorin + Madurai"].concat(finalResult.branchwise["Madurai KK Nagar"]);
+	let trichy = finalResult.branchwise["Trichy"];
+	let thanjavur = finalResult.branchwise["Thanjavur"];
+	let andaman = finalResult.ahcgroup["Port Blair"];
+	let karnataka = finalResult.ahcgroup["Karnataka"];
+	let banglore = finalResult.ahcgroup["Banglore"];
+	let banglore_branches = finalResult.branchwise["Banglore"];
+	let hub_mys = finalResult.ahcgroup["Hubli + Mysore"];
+	let hub_mys_branches = finalResult.branchwise["Hubli + Mysore"];
+	let maharashtra = finalResult.ahcgroup["Maharashtra"];
+	let maharashtra_branches = finalResult.branchwise["Maharashtra"];
+	let telangana = finalResult.ahcgroup["Telangana"];
+	let hyderabad = finalResult.ahcgroup["Hyderabad"];
+	let hyderabad_branches = finalResult.branchwise["Hyderabad"];
+	
+	let andhra = finalResult.ahcgroup["Andhra Pradesh"];
+	let andhra_branches = finalResult.branchwise["Andhra Pradesh"];
+	let roi = finalResult.ahcgroup["Rest of India(incl. Jaipur)"];
+	
+	let kerla = finalResult.ahcgroup["Kerala"];
+    let kerla_branches = finalResult.branchwise["Kerala"];
+	
+    let kolk = finalResult.ahcgroup["Kolkata"];
+    let kolk_branches = finalResult.branchwise["Kolkata"];
+   
+    let ahmedabad = finalResult.branchwise["Ahmedabad"];
+    let madhyapradesh = finalResult.ahcgroup["Madhya Pradesh"];
+    let madhyapradesh_branches = finalResult.branchwise["Madhya Pradesh"];
+    let odisha = finalResult.ahcgroup["Odisha"];
+    let odisha_branches = finalResult.branchwise["Odisha"];	
+	let pondycherry = finalResult.branchwise["Pondycherry"];
+	
+	let madagascar = finalResult.branchwise["Madagascar"];
+	let mozambique = finalResult.ohcgroup["Mozambique"];
+	let mozambique_branches = finalResult.branchwise["Mozambique"];
+	let nigeria = finalResult.branchwise["Nigeria"];
+	let rwanda = finalResult.ohcgroup["Rwanda"];
+	let rwanda_branches = finalResult.branchwise["Rwanda"];
+	let mauritius = finalResult.ohcgroup["Mauritius"];
+	let mauritius_branches = finalResult.branchwise["Mauritius"];
+	let zambia = finalResult.branchwise["Zambia"];
+	let ghana = finalResult.branchwise["Ghana"];
+	let nairobi = finalResult.branchwise["Nairobi"];
+	let uganda = finalResult.branchwise["Uganda"];
+	let tanzania = finalResult.branchwise["Tanzania"];
+
+
+
+	
+	let opdTemplate = "<html><body><table cellspacing='0'><tr><td colspan='5' style='text-align:left'><img src='https://mis.dragarwal.com/andaman/mis_logo.png'></td></tr><tr><td colspan='5'></br></td></tr></table><table cellpadding='5' border='1' style='border-collapse: collapse;  border-spacing: 0;border-color: black'><tr><td colspan='5' style='text-align:center'><b>DAILY NEW OPD REPORT AS ON "+ day +"<b></td></tr><tr><td><b>Branch</b></td><td><b>FTD</b></td><td><b>MTD</b></td><td><b>LYSMTD</b></td><td><b>MTD Gr.%</b></td></tr>";
+	
+	opdTemplate+= '<tr style="text-align:center"><td align="left" style="color:#5d6476">'+ finalResult.group['branch'] +'</td><td>'+ finalResult.group['ftdopdrev'] +'</td><td>'+ finalResult.group['mtdopdrev'] +'</td><td>'+ finalResult.group['mtdopdrevlastyear'] +'</td><td>'+ finalResult.group['mtdopdpercentage'] +'</td></tr>';
+	
+	
+	opdTemplate+='<tr bgcolor="#f0ae19" style="background:#f0ae19!important;text-align:center;color:#FFFFFF"><td align="left">'+ finalResult.alin['branch'] +'</td><td>'+ finalResult.alin['ftdopdrev'] +'</td><td>'+ finalResult.alin['mtdopdrev'] +'</td><td>'+ finalResult.alin['mtdopdrevlastyear'] +'</td><td>'+ finalResult.alin['mtdopdpercentage'] +'</td></tr>';
+	
+	opdTemplate+='<tr bgcolor="#f0ae19" style="background:#f0ae19!important;text-align:center;color:#FFFFFF"><td align="left">'+ finalResult.aeh['branch'] +'</td><td>'+ finalResult.aeh['ftdopdrev'] +'</td><td>'+ finalResult.aeh['mtdopdrev'] +'</td><td>'+ finalResult.aeh['mtdopdrevlastyear'] +'</td><td>'+ finalResult.aeh['mtdopdpercentage'] +'</td></tr>';
+	
+	
+	
+	opdTemplate+='<tr  bgcolor="#f0ae19" style="background:#f0ae19!important;text-align:center;color:#FFFFFF"><td align="left">'+ finalResult.ahc['branch'] +'</td><td>'+ finalResult.ahc['ftdopdrev'] +'</td><td>'+ finalResult.ahc['mtdopdrev'] +'</td><td>'+ finalResult.ahc['mtdopdrevlastyear'] +'</td><td>'+ finalResult.ahc['mtdopdpercentage'] +'</td></tr>';
+	
+	opdTemplate+='<tr  bgcolor="#f9e699" style="background:#f9e699!important;text-align:center"><td align="left" style="color:#5b5e60">'+ finalResult.ohc['branch'] +'</td><td>'+ finalResult.ohc['ftdopdrev'] +'</td><td>'+ finalResult.ohc['mtdopdrev'] +'</td><td>'+ finalResult.ohc['mtdopdrevlastyear'] +'</td><td>'+ finalResult.ohc['mtdopdpercentage'] +'</td></tr>';
+	
+	
+	opdTemplate+='<tr bgcolor="#3a75b5" style="background:#3a75b5!important;text-align:center;color:#FFFFFF"><td align="left">'+ finalResult.allchennai['branch'] +'</td><td>'+ finalResult.allchennai['ftdopdrev'] +'</td><td>'+ finalResult.allchennai['mtdopdrev'] +'</td><td>'+ finalResult.allchennai['mtdopdrevlastyear'] +'</td><td>'+ finalResult.allchennai['mtdopdpercentage'] +'</td></tr>';
+		
+		
+		opdTemplate+='<tr bgcolor="#3a75b5" style="background:#3a75b5!important;text-align:center;color:#FFFFFF"><td align="left">'+ finalResult.rotn['branch'] +'</td><td>'+ finalResult.rotn['ftdopdrev'] +'</td><td>'+ finalResult.rotn['mtdopdrev'] +'</td><td>'+ finalResult.rotn['mtdopdrevlastyear'] +'</td><td>'+ finalResult.rotn['mtdopdpercentage'] +'</td></tr>';
+		
+		opdTemplate+='<tr bgcolor="#3a75b5" style="background:#3a75b5!important;text-align:center;color:#FFFFFF"><td align="left">'+ finalResult.tnbranches['branch'] +'</td><td>'+ finalResult.tnbranches['ftdopdrev'] +'</td><td>'+ finalResult.tnbranches['mtdopdrev'] +'</td><td>'+ finalResult.tnbranches['mtdopdrevlastyear'] +'</td><td>'+ finalResult.tnbranches['mtdopdpercentage'] +'</td></tr>';	
+	
+	
+	
+	opdTemplate+=  '<tr  bgcolor="#3a75b5" style="background:#3a75b5!important;color:#FFFFFF;text-align:center"><td align="left">'+ karnataka.branch +'</td><td>'+ karnataka.ftdopdrev +'</td><td>'+ karnataka.mtdopdrev +'</td><td>'+ karnataka.mtdopdrevlastyear +'</td><td>'+ karnataka.mtdopdpercentage +'</td></tr>';
+		
+		opdTemplate+=  '<tr bgcolor="#3a75b5" style="background:#3a75b5!important;color:#FFFFFF;text-align:center"><td align="left">'+ maharashtra.branch +'</td><td>'+ maharashtra.ftdopdrev +'</td><td>'+ maharashtra.mtdopdrev +'</td><td>'+ maharashtra.mtdopdrevlastyear +'</td><td>'+ maharashtra.mtdopdpercentage +'</td></tr>';
+		
+		
+		opdTemplate+=  '<tr bgcolor="#3a75b5" style="background:#3a75b5!important;color:#FFFFFF;text-align:center"><td align="left">'+ telangana.branch +'</td><td>'+ telangana.ftdopdrev +'</td><td>'+ telangana.mtdopdrev +'</td><td>'+ telangana.mtdopdrevlastyear +'</td><td>'+ telangana.mtdopdpercentage +'</td></tr>';
+		
+		opdTemplate+=  '<tr bgcolor="#3a75b5" style="background:#3a75b5!important;color:#FFFFFF;text-align:center"><td align="left">'+ andhra.branch +'</td><td>'+ andhra.ftdopdrev +'</td><td>'+ andhra.mtdopdrev +'</td><td>'+ andhra.mtdopdrevlastyear +'</td><td>'+ andhra.mtdopdpercentage +'</td></tr>';
+		
+		
+		opdTemplate+=  '<tr bgcolor="#3a75b5" style="background:#3a75b5!important;color:#FFFFFF;text-align:center"><td align="left">'+ kerla.branch +'</td><td>'+ kerla.ftdopdrev +'</td><td>'+ kerla.mtdopdrev +'</td><td>'+ kerla.mtdopdrevlastyear +'</td><td>'+ kerla.mtdopdpercentage +'</td></tr>';
+		
+		opdTemplate+=  '<tr bgcolor="#3a75b5" style="background:#3a75b5!important;color:#FFFFFF;text-align:center"><td align="left">'+ kolk.branch +'</td><td>'+ kolk.ftdopdrev +'</td><td>'+ kolk.mtdopdrev +'</td><td>'+ kolk.mtdopdrevlastyear +'</td><td>'+ kolk.mtdopdpercentage +'</td></tr>';
+		
+		opdTemplate+=  '<tr  bgcolor="#3a75b5" style="background:#3a75b5!important;color:#FFFFFF;text-align:center"><td align="left">'+ ahmedabad[0].branch +'</td><td>'+ ahmedabad[0].ftdopdrev +'</td><td>'+ ahmedabad[0].mtdopdrev +'</td><td>'+ ahmedabad[0].mtdopdrevlastyear +'</td><td>'+ ahmedabad[0].mtdopdpercentage +'</td></tr>';
+
+
+		opdTemplate+=  '<tr  bgcolor="#3a75b5" style="background:#3a75b5!important;color:#FFFFFF;text-align:center"><td align="left">'+ madhyapradesh.branch +'</td><td>'+ madhyapradesh.ftdopdrev +'</td><td>'+ madhyapradesh.mtdopdrev +'</td><td>'+ madhyapradesh.mtdopdrevlastyear +'</td><td>'+ madhyapradesh.mtdopdpercentage +'</td></tr>';
+		
+		opdTemplate+=  '<tr bgcolor="#3a75b5" style="background:#3a75b5!important;color:#FFFFFF;text-align:center"><td align="left">'+ odisha.branch +'</td><td>'+ odisha.ftdopdrev +'</td><td>'+ odisha.mtdopdrev +'</td><td>'+ odisha.mtdopdrevlastyear +'</td><td>'+ odisha.mtdopdpercentage +'</td></tr>';
+	
+	opdTemplate+='<tr bgcolor="#3a75b5"  style="background:#3a75b5!important;color:#FFFFFF"><td>AEHL:</td><td></td><td></td><td></td><td></td></tr>';
+	
+	opdTemplate+='<tr style="text-align:center" style="color:#5d6476"><td align="left" style="color:#5d6476">'+ cmh[0].branch +'</td><td>'+ cmh[0].ftdopdrev +'</td><td>'+ cmh[0].mtdopdrev +'</td><td>'+ cmh[0].mtdopdrevlastyear +'</td><td>'+ cmh[0].mtdopdpercentage +'</td></tr>';
+	
+	opdTemplate+='<tr bgcolor="#7083a9" style="background:#7083a9!important;color:#FFFFFF;text-align:center"><td align="left">'+ aeh_chennai.branch +'</td><td>'+ aeh_chennai.ftdopdrev +'</td><td>'+ aeh_chennai.mtdopdrev +'</td><td>'+ aeh_chennai.mtdopdrevlastyear +'</td><td>'+ aeh_chennai.mtdopdpercentage +'</td></tr>';
+	
+	
+	aeh_chennai_branches.forEach(element => {
+		opdTemplate+= '<tr style="text-align:center"><td align="left" style="color:#5d6476">'+ element.branch +'</td><td>'+ element.ftdopdrev +'</td><td>'+ element.mtdopdrev +'</td><td>'+ element.mtdopdrevlastyear +'</td><td>'+ element.mtdopdpercentage +'</td></tr>';    
+	});
+	
+	
+    opdTemplate+=  '<tr  bgcolor="#7083a9" style="background:#7083a9!important;color:#FFFFFF;text-align:center"><td align="left">'+ kanchi_vel.branch +'</td><td>'+ kanchi_vel.ftdopdrev +'</td><td>'+ kanchi_vel.mtdopdrev +'</td><td>'+ kanchi_vel.mtdopdrevlastyear +'</td><td>'+ kanchi_vel.mtdopdpercentage +'</td></tr>';
+	
+	
+	kanchi_vel_branches.forEach(element => {
+		opdTemplate+= '<tr style="text-align:center"><td align="left" style="color:#5d6476">'+ element.branch +'</td><td>'+ element.ftdopdrev +'</td><td>'+ element.mtdopdrev +'</td><td>'+ element.mtdopdrevlastyear +'</td><td>'+ element.mtdopdpercentage +'</td></tr>';
+		});	
+	
+		
+	opdTemplate+=  '<tr  bgcolor="#7083a9" style="background:#7083a9!important;color:#FFFFFF;text-align:center"><td align="left">'+ kum_ney_vil.branch +'</td><td>'+ kum_ney_vil.ftdopdrev +'</td><td>'+ kum_ney_vil.mtdopdrev +'</td><td>'+ kum_ney_vil.mtdopdrevlastyear +'</td><td>'+ kum_ney_vil.mtdopdpercentage +'</td></tr>';
+	
+	kum_ney_vil_branches.forEach(element => {
+		opdTemplate+= '<tr style="text-align:center"><td align="left" style="color:#5d6476">'+ element.branch +'</td><td>'+ element.ftdopdrev +'</td><td>'+ element.mtdopdrev +'</td><td>'+ element.mtdopdrevlastyear +'</td><td>'+ element.mtdopdpercentage +'</td></tr>';
+		});
+		
+		
+	opdTemplate+=  '<tr  bgcolor="#7083a9" style="background:#7083a9!important;color:#FFFFFF;text-align:center"><td align="left">'+ dha_salem_krish.branch +'</td><td>'+ dha_salem_krish.ftdopdrev +'</td><td>'+ dha_salem_krish.mtdopdrev +'</td><td>'+ dha_salem_krish.mtdopdrevlastyear +'</td><td>'+ dha_salem_krish.mtdopdpercentage +'</td></tr>';
+
+		dha_salem_krish_branches.forEach(element => {
+		opdTemplate+= '<tr style="text-align:center"><td align="left" style="color:#5d6476">'+ element.branch +'</td><td>'+ element.ftdopdrev +'</td><td>'+ element.mtdopdrev +'</td><td>'+ element.mtdopdrevlastyear +'</td><td>'+ element.mtdopdpercentage +'</td></tr>';
+		});
+		
+	opdTemplate+=  '<tr  bgcolor="#7083a9" style="background:#7083a9!important;color:#FFFFFF;text-align:center"><td align="left">'+ erod_hosure.branch +'</td><td>'+ erod_hosure.ftdopdrev +'</td><td>'+ erod_hosure.mtdopdrev +'</td><td>'+ erod_hosure.mtdopdrevlastyear +'</td><td>'+ erod_hosure.mtdopdpercentage +'</td></tr>';
+
+		erod_hosure_branches.forEach(element => {
+		opdTemplate+= '<tr style="text-align:center"><td align="left" style="color:#5d6476">'+ element.branch +'</td><td>'+ element.ftdopdrev +'</td><td>'+ element.mtdopdrev +'</td><td>'+ element.mtdopdrevlastyear +'</td><td>'+ element.mtdopdpercentage +'</td></tr>';
+		});
+		
+	opdTemplate+=  '<tr  bgcolor="#7083a9" style="background:#7083a9!important;color:#FFFFFF;text-align:center"><td align="left">'+ jaipur[0].branch +'</td><td>'+ jaipur[0].ftdopdrev +'</td><td>'+ jaipur[0].mtdopdrev +'</td><td>'+ jaipur[0].mtdopdrevlastyear +'</td><td>'+ jaipur[0].mtdopdpercentage +'</td></tr>';
+
+		opdTemplate+=  '<tr bgcolor="#f0ae19" style="background:#f0ae19!important;color:#FFFFFF"><td>AHCL:</td><td></td><td></td><td></td><td></td></tr><tr  bgcolor="#7083a9" style="background:#7083a9!important;color:#FFFFFF;text-align:center"><td align="left">'+ ahc_chennai.branch +'</td><td>'+ ahc_chennai.ftdopdrev +'</td><td>'+ ahc_chennai.mtdopdrev +'</td><td>'+ ahc_chennai.mtdopdrevlastyear +'</td><td>'+ ahc_chennai.mtdopdpercentage +'</td></tr>';
+		
+		
+	ahc_chennai_branches.forEach(element => {
+		opdTemplate+= '<tr style="text-align:center"><td align="left" style="color:#5d6476">'+ element.branch +'</td><td>'+ element.ftdopdrev +'</td><td>'+ element.mtdopdrev +'</td><td>'+ element.mtdopdrevlastyear +'</td><td>'+ element.mtdopdpercentage +'</td></tr>';    
+		});
+
+		opdTemplate+=  '<tr style="text-align:center"><td align="left" style="color:#5d6476">'+ pondycherry[0].branch +'</td><td>'+ pondycherry[0].ftdopdrev +'</td><td>'+ pondycherry[0].mtdopdrev +'</td><td>'+ pondycherry[0].mtdopdrevlastyear +'</td><td>'+ pondycherry[0].mtdopdpercentage +'</td></tr>';
+
+		opdTemplate+=  '<tr  bgcolor="#7083a9" style="background:#7083a9!important;color:#FFFFFF;text-align:center"><td align="left">'+ tirunelveli[0].branch +'</td><td>'+ tirunelveli[0].ftdopdrev +'</td><td>'+ tirunelveli[0].mtdopdrev +'</td><td>'+ tirunelveli[0].mtdopdrevlastyear +'</td><td>'+ tirunelveli[0].mtdopdpercentage +'</td></tr>';
+
+		opdTemplate+=  '<tr style="text-align:center"><td align="left" style="color:#5d6476">'+ tirunelveli[0].branch +'</td><td>'+ tirunelveli[0].ftdopdrev +'</td><td>'+ tirunelveli[0].mtdopdrev +'</td><td>'+ tirunelveli[0].mtdopdrevlastyear +'</td><td>'+ tirunelveli[0].mtdopdpercentage +'</td></tr>';
+
+
+		opdTemplate+=  '<tr  bgcolor="#7083a9" style="background:#7083a9!important;color:#FFFFFF;text-align:center"><td align="left">'+ coimbatore[0].branch +'</td><td>'+ coimbatore[0].ftdopdrev +'</td><td>'+ coimbatore[0].mtdopdrev +'</td><td>'+ coimbatore[0].mtdopdrevlastyear +'</td><td>'+ coimbatore[0].mtdopdpercentage +'</td></tr>';
+		
+		opdTemplate+=  '<tr  bgcolor="#7083a9" style="background:#7083a9!important;color:#FFFFFF;text-align:center"><td align="left">'+ tiruppur[0].branch +'</td><td>'+ tiruppur[0].ftdopdrev +'</td><td>'+ tiruppur[0].mtdopdrev +'</td><td>'+ tiruppur[0].mtdopdrevlastyear +'</td><td>'+ tiruppur[0].mtdopdpercentage +'</td></tr>';
+		
+		
+		opdTemplate+=  '<tr  bgcolor="#7083a9" style="background:#7083a9!important;color:#FFFFFF;text-align:center"><td align="left">'+ tuti_madurai.branch +'</td><td>'+ tuti_madurai.ftdopdrev +'</td><td>'+ tuti_madurai.mtdopdrev +'</td><td>'+ tuti_madurai.mtdopdrevlastyear +'</td><td>'+ tuti_madurai.mtdopdpercentage +'</td></tr>';
+
+		tuti_madurai_branches.forEach(element => {
+		opdTemplate+= '<tr style="text-align:center"><td align="left" style="color:#5d6476">'+ element.branch +'</td><td>'+ element.ftdopdrev +'</td><td>'+ element.mtdopdrev +'</td><td>'+ element.mtdopdrevlastyear +'</td><td>'+ element.mtdopdpercentage +'</td></tr>';    
+		});
+
+
+		opdTemplate+=  '<tr  bgcolor="#7083a9" style="background:#7083a9!important;color:#FFFFFF;text-align:center"><td align="left">'+ trichy[0].branch +'</td><td>'+trichy[0].ftdopdrev +'</td><td>'+ trichy[0].mtdopdrev +'</td><td>'+ trichy[0].mtdopdrevlastyear +'</td><td>'+ trichy[0].mtdopdpercentage +'</td></tr>';
+
+		opdTemplate+=  '<tr style="text-align:center"><td align="left" style="color:#5d6476">'+ thanjavur[0].branch +'</td><td>'+ thanjavur[0].ftdopdrev +'</td><td>'+ thanjavur[0].mtdopdrev +'</td><td>'+ thanjavur[0].mtdopdrevlastyear +'</td><td>'+ thanjavur[0].mtdopdpercentage +'</td></tr>';
+
+
+        opdTemplate+=  '<tr  bgcolor="#264e99" style="background:#264e99!important;color:#FFFFFF;text-align:center"><td align="left">'+ karnataka.branch +'</td><td>'+ karnataka.ftdopdrev +'</td><td>'+ karnataka.mtdopdrev +'</td><td>'+ karnataka.mtdopdrevlastyear +'</td><td>'+ karnataka.mtdopdpercentage +'</td></tr>';
+
+		opdTemplate+=  '<tr bgcolor="#7083a9" style="background:#7083a9!important;color:#FFFFFF;text-align:center"><td align="left">'+ banglore.branch +'</td><td>'+ banglore.ftdopdrev +'</td><td>'+ banglore.mtdopdrev +'</td><td>'+ banglore.mtdopdrevlastyear +'</td><td>'+ banglore.mtdopdpercentage +'</td></tr>';
+
+
+		banglore_branches.forEach(element => {
+		opdTemplate+= '<tr style="text-align:center"><td align="left" style="color:#5d6476">'+ element.branch +'</td><td>'+ element.ftdopdrev +'</td><td>'+ element.mtdopdrev +'</td><td>'+ element.mtdopdrevlastyear +'</td><td>'+ element.mtdopdpercentage +'</td></tr>';    
+		});
+
+
+		opdTemplate+=  '<tr bgcolor="#7083a9" style="background:#7083a9!important;color:#FFFFFF;text-align:center"><td align="left">'+ hub_mys.branch +'</td><td>'+ hub_mys.ftdopdrev +'</td><td>'+ hub_mys.mtdopdrev +'</td><td>'+ hub_mys.mtdopdrevlastyear +'</td><td>'+ hub_mys.mtdopdpercentage +'</td></tr>';
+
+		hub_mys_branches.forEach(element => {
+		opdTemplate+= '<tr style="text-align:center"><td align="left" style="color:#5d6476">'+ element.branch +'</td><td>'+ element.ftdopdrev +'</td><td>'+ element.mtdopdrev +'</td><td>'+ element.mtdopdrevlastyear +'</td><td>'+ element.mtdopdpercentage +'</td></tr>';
+		});
+
+
+
+
+		opdTemplate+=  '<tr bgcolor="#264e99" style="background:#264e99!important;color:#FFFFFF;text-align:center"><td align="left">'+ maharashtra.branch +'</td><td>'+ maharashtra.ftdopdrev +'</td><td>'+ maharashtra.mtdopdrev +'</td><td>'+ maharashtra.mtdopdrevlastyear +'</td><td>'+ maharashtra.mtdopdpercentage +'</td></tr>';
+
+		maharashtra_branches.forEach(element => {
+		opdTemplate+= '<tr style="text-align:center"><td align="left" style="color:#5d6476">'+ element.branch +'</td><td>'+ element.ftdopdrev +'</td><td>'+ element.mtdopdrev +'</td><td>'+ element.mtdopdrevlastyear +'</td><td>'+ element.mtdopdpercentage +'</td></tr>';
+		});
+
+
+		opdTemplate+=  '<tr bgcolor="#264e99" style="background:#264e99!important;color:#FFFFFF;text-align:center"><td align="left">'+ telangana.branch +'</td><td>'+ telangana.ftdopdrev +'</td><td>'+ telangana.mtdopdrev +'</td><td>'+ telangana.mtdopdrevlastyear +'</td><td>'+ telangana.mtdopdpercentage +'</td></tr>';
+
+
+		opdTemplate+=  '<tr bgcolor="#7083a9" style="background:#7083a9!important;color:#FFFFFF;text-align:center"><td align="left">'+ hyderabad.branch +'</td><td>'+ hyderabad.ftdopdrev +'</td><td>'+ hyderabad.mtdopdrev +'</td><td>'+ hyderabad.mtdopdrevlastyear +'</td><td>'+ hyderabad.mtdopdpercentage +'</td></tr>';
+
+
+		hyderabad_branches.forEach(element => {
+		opdTemplate+= '<tr style="text-align:center"><td align="left" style="color:#5d6476">'+ element.branch +'</td><td>'+ element.ftdopdrev +'</td><td>'+ element.mtdopdrev +'</td><td>'+ element.mtdopdrevlastyear +'</td><td>'+ element.mtdopdpercentage +'</td></tr>';    
+		});
+		
+		
+		opdTemplate+=  '<tr bgcolor="#264e99" style="background:#264e99!important;color:#FFFFFF;text-align:center"><td align="left">'+ andhra.branch +'</td><td>'+ andhra.ftdopdrev +'</td><td>'+ andhra.mtdopdrev +'</td><td>'+ andhra.mtdopdrevlastyear +'</td><td>'+ andhra.mtdopdpercentage +'</td></tr>';
+
+
+		andhra_branches.forEach(element => {
+		opdTemplate += '<tr style="text-align:center"><td align="left" style="color:#5d6476">'+ element.branch +'</td><td>'+ element.ftdopdrev +'</td><td>'+ element.mtdopdrev +'</td><td>'+ element.mtdopdrevlastyear +'</td><td>'+ element.mtdopdpercentage +'</td></tr>';    
+		});
+
+		opdTemplate+=  '<tr bgcolor="#264e99" style="background:#264e99!important;color:#FFFFFF;text-align:center"><td align="left">'+ roi.branch +'</td><td>'+ roi.ftdopdrev +'</td><td>'+ roi.mtdopdrev +'</td><td>'+ roi.mtdopdrevlastyear +'</td><td>'+ roi.mtdopdpercentage +'</td></tr>';
+
+
+		opdTemplate+=  '<tr bgcolor="#264e99" style="background:#264e99!important;color:#FFFFFF;text-align:center"><td align="left">'+ kerla.branch +'</td><td>'+ kerla.ftdopdrev +'</td><td>'+ kerla.mtdopdrev +'</td><td>'+ kerla.mtdopdrevlastyear +'</td><td>'+ kerla.mtdopdpercentage +'</td></tr>';
+
+		kerla_branches.forEach(element => {
+		opdTemplate+= '<tr style="text-align:center"><td align="left" style="color:#5d6476">'+ element.branch +'</td><td>'+ element.ftdopdrev +'</td><td>'+ element.mtdopdrev +'</td><td>'+ element.mtdopdrevlastyear +'</td><td>'+ element.mtdopdpercentage +'</td></tr>';
+		});
+
+		opdTemplate+=  '<tr bgcolor="#7083a9" style="background:#7083a9!important;color:#FFFFFF;text-align:center"><td align="left">'+ kolk.branch +'</td><td>'+ kolk.ftdopdrev +'</td><td>'+ kolk.mtdopdrev +'</td><td>'+ kolk.mtdopdrevlastyear +'</td><td>'+ kolk.mtdopdpercentage +'</td></tr>';
+
+		kolk_branches.forEach(element => {
+		opdTemplate += '<tr style="text-align:center"><td align="left" style="color:#5d6476">'+ element.branch +'</td><td>'+ element.ftdopdrev +'</td><td>'+ element.mtdopdrev +'</td><td>'+ element.mtdopdrevlastyear +'</td><td>'+ element.mtdopdpercentage +'</td></tr>';
+		}); 	
+
+
+		opdTemplate+=  '<tr  bgcolor="#7083a9" style="background:#7083a9!important;color:#FFFFFF;text-align:center"><td align="left">'+ ahmedabad[0].branch +'</td><td>'+ ahmedabad[0].ftdopdrev +'</td><td>'+ ahmedabad[0].mtdopdrev +'</td><td>'+ ahmedabad[0].mtdopdrevlastyear +'</td><td>'+ ahmedabad[0].mtdopdpercentage +'</td></tr>';
+
+
+		opdTemplate+=  '<tr  bgcolor="#264e99" style="background:#264e99!important;color:#FFFFFF;text-align:center"><td align="left">'+ madhyapradesh.branch +'</td><td>'+ madhyapradesh.ftdopdrev +'</td><td>'+ madhyapradesh.mtdopdrev +'</td><td>'+ madhyapradesh.mtdopdrevlastyear +'</td><td>'+ madhyapradesh.mtdopdpercentage +'</td></tr>';
+
+		madhyapradesh_branches.forEach(element => {
+		opdTemplate += '<tr style="text-align:center"><td align="left" style="color:#5d6476">'+ element.branch +'</td><td>'+ element.ftdopdrev +'</td><td>'+ element.mtdopdrev +'</td><td>'+ element.mtdopdrevlastyear +'</td><td>'+ element.mtdopdpercentage +'</td></tr>';
+		});
+		
+		
+		
+		opdTemplate+=  '<tr bgcolor="#264e99" style="background:#264e99!important;color:#FFFFFF;text-align:center"><td align="left">'+ odisha.branch +'</td><td>'+ odisha.ftdopdrev +'</td><td>'+ odisha.mtdopdrev +'</td><td>'+ odisha.mtdopdrevlastyear +'</td><td>'+ odisha.mtdopdpercentage +'</td></tr>';
+
+		odisha_branches.forEach(element => {
+		opdTemplate+= '<tr style="text-align:center"><td align="left" style="color:#5d6476">'+ element.branch +'</td><td>'+ element.ftdopdrev +'</td><td>'+ element.mtdopdrev +'</td><td>'+ element.mtdopdrevlastyear +'</td><td>'+ element.mtdopdpercentage +'</td></tr>';
+		});
+
+		opdTemplate+= '<tr  bgcolor="#3a75b5" style="background:#3a75b5!important;color:#FFFFFF;"><td>OHCL:</td><td></td><td></td><td></td><td></td></tr>';
+
+		opdTemplate+=  '<tr  bgcolor="#f9e699" style="background:#f9e699!important;text-align:center"><td align="left" style="color:#5b5e60">'+ madagascar[0].branch +'</td><td>'+ madagascar[0].ftdopdrev +'</td><td>'+ madagascar[0].mtdopdrev +'</td><td>'+ madagascar[0].mtdopdrevlastyear +'</td><td>'+ madagascar[0].mtdopdpercentage +'</td></tr>';
+
+		opdTemplate+=  '<tr bgcolor="#f9e699" style="background:#f9e699!important;text-align:center"><td align="left" style="color:#5b5e60">'+ mozambique.branch +'</td><td>'+ mozambique.ftdopdrev +'</td><td>'+ mozambique.mtdopdrev +'</td><td>'+ mozambique.mtdopdrevlastyear +'</td><td>'+ mozambique.mtdopdpercentage +'</td></tr>';
+
+		mozambique_branches.forEach(element => {
+		opdTemplate+= '<tr style="text-align:center"><td align="left" style="color:#5b5e60">'+ element.branch +'</td><td>'+ element.ftdopdrev +'</td><td>'+ element.mtdopdrev +'</td><td>'+ element.mtdopdrevlastyear +'</td><td>'+ element.mtdopdpercentage +'</td></tr>';
+		});
+
+		opdTemplate+=  '<tr bgcolor="#f9e699" style="background:#f9e699!important;text-align:center"><td align="left" style="color:#5b5e60">'+ nigeria[0].branch +'</td><td>'+ nigeria[0].ftdopdrev +'</td><td>'+ nigeria[0].mtdopdrev +'</td><td>'+ nigeria[0].mtdopdrevlastyear +'</td><td>'+ nigeria[0].mtdopdpercentage +'</td></tr>';
+
+
+		opdTemplate+=  '<tr bgcolor="#f9e699" style="background:#f9e699!important;text-align:center;"><td align="left" style="color:#5b5e60">'+ rwanda.branch +'</td><td>'+ rwanda.ftdopdrev +'</td><td>'+ rwanda.mtdopdrev +'</td><td>'+ rwanda.mtdopdrevlastyear +'</td><td>'+ rwanda.mtdopdpercentage +'</td></tr>';
+
+		rwanda_branches.forEach(element => {
+		opdTemplate+= '<tr style="text-align:center"><td align="left" style="color:#5b5e60">'+ element.branch +'</td><td>'+ element.ftdopdrev +'</td><td>'+ element.mtdopdrev +'</td><td>'+ element.mtdopdrevlastyear +'</td><td>'+ element.mtdopdpercentage +'</td></tr>';
+		});
+
+		opdTemplate+=  '<tr bgcolor="#f9e699" style="background:#f9e699!important;text-align:center"><td align="left" style="color:#5b5e60">'+ mauritius.branch +'</td><td>'+ mauritius.ftdopdrev +'</td><td>'+ mauritius.mtdopdrev +'</td><td>'+ mauritius.mtdopdrevlastyear +'</td><td>'+ mauritius.mtdopdpercentage +'</td></tr>';
+
+		mauritius_branches.forEach(element => {
+		opdTemplate+= '<tr style="text-align:center"><td align="left" style="color:#5b5e60">'+ element.branch +'</td><td>'+ element.ftdopdrev +'</td><td>'+ element.mtdopdrev +'</td><td>'+ element.mtdopdrevlastyear +'</td><td>'+ element.mtdopdpercentage +'</td></tr>';
+		});
+
+		opdTemplate+=  '<tr bgcolor="#f9e699" style="background:#f9e699!important;text-align:center"><td align="left" style="color:#5b5e60">'+ zambia[0].branch +'</td><td>'+ zambia[0].ftdopdrev +'</td><td>'+ zambia[0].mtdopdrev +'</td><td>'+ zambia[0].mtdopdrevlastyear +'</td><td>'+ zambia[0].mtdopdpercentage +'</td></tr>';
+
+
+		opdTemplate+=  '<tr bgcolor="#f9e699" style="background:#f9e699!important;text-align:center"><td align="left" style="color:#5b5e60">'+ ghana[0].branch +'</td><td>'+ ghana[0].ftdopdrev +'</td><td>'+ ghana[0].mtdopdrev +'</td><td>'+ ghana[0].mtdopdrevlastyear +'</td><td>'+ ghana[0].mtdopdpercentage +'</td></tr>';
+
+
+		opdTemplate+=  '<tr bgcolor="#f9e699" style="background:#f9e699!important;text-align:center"><td align="left" style="color:#5b5e60">'+ nairobi[0].branch +'</td><td>'+ nairobi[0].ftdopdrev +'</td><td>'+ nairobi[0].mtdopdrev +'</td><td>'+ nairobi[0].mtdopdrevlastyear +'</td><td>'+ nairobi[0].mtdopdpercentage +'</td></tr>';
+
+
+		opdTemplate+=  '<tr bgcolor="#f9e699" style="background:#f9e699!important;text-align:center"><td align="left" style="color:#5b5e60">'+ uganda[0].branch +'</td><td>'+ uganda[0].ftdopdrev +'</td><td>'+ uganda[0].mtdopdrev +'</td><td>'+ uganda[0].mtdopdrevlastyear +'</td><td>'+ uganda[0].mtdopdpercentage +'</td></tr>';
+
+
+		opdTemplate+='<tr bgcolor="#f9e699" style="background:#f9e699!important;text-align:center"><td align="left" style="color:#5b5e60">'+ tanzania[0].branch +'</td><td>'+ tanzania[0].ftdopdrev +'</td><td>'+ tanzania[0].mtdopdrev +'</td><td>'+ tanzania[0].mtdopdrevlastyear +'</td><td>'+ tanzania[0].mtdopdpercentage +'</td></tr>';
+
+
+
+	
+	opdTemplate+='</table><br><b>Note: This report is auto generated, please do not reply.</b> <br><p>For any corrections, please drop a mail to  <a href="mailto:helpdesk@dragarwal.com">helpdesk@dragarwal.com</a>. </p> <br><p>Regards,</p><p>Dr.Agarwal IT Team</p></body></html>';
+	return opdTemplate;	
+	
+	
+}
+
+function mtdGR(opd,opdlastyear){
+	let monthGD = 0;
+	monthGD = Math.round(((opd-opdlastyear)/ opdlastyear)*100);
+	
+	if(isNaN(monthGD)==true || monthGD=='Infinity' || monthGD=='-Infinity'){
+		return '-';
+	}else{
+		return monthGD;
+	}
+}

@@ -15,18 +15,18 @@ exports.ideamed = mysql.createPool({
     queueLimit: 0
 })
 
-// exports.local = mysql.createPool({
-//     host: creds.local.host,
-//     user: creds.local.user,
-//     password: creds.local.pass,
-//     database: creds.local.db,
-//     port: creds.local.port,
-//     dateStrings: true,
-//     multipleStatements: true,
-//     waitForConnections: true,
-//     connectionLimit: 10,
-//     queueLimit: 0
-// })
+exports.local = mysql.createPool({
+    host: creds.local.host,
+    user: creds.local.user,
+    password: creds.local.pass,
+    database: creds.local.db,
+    port: creds.local.port,
+    dateStrings: true,
+    multipleStatements: true,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+})
 
 exports.scm_root = mysql.createPool({
     host: creds.scm_root.host,

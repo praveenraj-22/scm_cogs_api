@@ -55,7 +55,7 @@ exports.cronErrEmail=function(argSubject,argMessage){
 	mailOptions.subject=argSubject;
     mailOptions.text=argMessage;
 	
-	console.log(mailOptions);
+	//console.log(mailOptions);
 	transporter.sendMail(mailOptions, function(error, info){
 	if (error) {
 		console.log(error);
@@ -66,10 +66,10 @@ exports.cronErrEmail=function(argSubject,argMessage){
 }
 
 
-exports.cronEmail=function(argTemplate,argEmailDetails,argDate,callback){
-	console.log("email sent");
-	console.log(argTemplate);
-	console.log(argEmailDetails[0].fromid);
+exports.cronEmail=function(argTemplate,argEmailDetails,argDate,argMailType,callback){
+	//console.log("email sent");
+	//console.log(argTemplate);
+	//console.log(argEmailDetails[0].fromid);
 	
 	let varSubject ='';
 	let dateArr = argDate.split("-");
@@ -102,10 +102,21 @@ exports.cronEmail=function(argTemplate,argEmailDetails,argDate,callback){
 	}else if(dateMonth==12){
 		monthName='Dec';
 	}
-	varSubject = 'AVA report - '+dateDay+' '+monthName+' '+dateYear;	
-	console.log(varSubject);
+	
+	if(argMailType==1){
+		varSubject = 'AVA report - '+dateDay+' '+monthName+' '+dateYear;
+	}else if(argMailType==3){
+		varSubject = 'AVA report overseas - '+dateDay+' '+monthName+' '+dateYear;
+	}else if(argMailType==2){
+		varSubject = 'Inactive User Report - '+dateDay+' '+monthName+' '+dateYear;
+	}else if(argMailType==4){
+		varSubject = 'New OPD for Chennai & Other branches till - '+dateDay+' '+monthName+' '+dateYear;
+	}else{
+		varSubject = 'Revenue vs Cogs Overseas  as on - '+dateDay+' '+monthName+' '+dateYear;
+	}	
+	//console.log(varSubject);
 
-    console.log(argEmailDetails);
+    //console.log(argEmailDetails);
 	//process.exit(1);
 
 
