@@ -8,50 +8,50 @@ var async = require("async");
 let sess = null;
 
 var regionMapping = {
-	'AEH':{
-		'Chennai' : ['CMH','ANN','ASN','AVD','NLR','PMB','PRR','TLR','TRC','VLC'],
-		'ROI' : ['JPR'],
-	    'ROTN': ['KNP','VLR','KBK','NVL','VPM','DHA','SLM','KSN','ERD','HSR','MDU']
-	},
-	'AHC':{
-		'AMN' 		: ['AMN'],
-		'AP' 		: ['VMH','NEL','GUN','TPT','RAJ'],
-	    'Chennai'	: ['TBM','ADY','EGM','MGP','NWP','AMB','TVT'],
-		'KA' 		: ['BMH','WFD','KML','CLR','INR','PNR','YLK','HUB',"DWD",'MCC','MYS','SVR','BSK','RRN','RJN'],
-		'Maharashtra' 	: ['VSH','PUN','HDP',"CMR", "KTD"],
-		"Madhya Pradesh": ["JWS","APR","ATA","KWA"],
-		'OD' 		: ['CTK','BHU'],
-	    'ROI'		: ['PDY','TVM','KTM','AHM',"JWS","APR","ATA","KWA"],
-		'ROTN'		: ['TVL','TCN','APM','TRI','TNJ','TPR','CMB'],
-		'TS'		: ['DNR','HMH','MDA','SNR','HIM','SBD','MPM','GCB'],
-		'WB'		: ['KOL','KAS'],
-		'Kerala'	: ['TVM','KTM']
-	},
-	'Chennai' :['CMH','ANN','ASN','AVD','NLR','PMB','PRR','TLR','TRC','VLC','TBM','ADY','EGM','MGP','NWP','AMB','TVT'],
-	'ROTN' :['KNP','VLR','KBK','NVL','VPM','DHA','SLM','KSN','ERD','HSR','MDU','TVL','TCN','APM','TRI','TNJ','TPR','CMB'],
-	'ROI' :['JPR','PDY','TVM','KTM','AHM',"JWS","APR","ATA","KWA"],
-	'KA' :['BMH','WFD','KML','CLR','INR','PNR','YLK','HUB',"DWD",'MCC','MYS','SVR','BSK','RRN','RJN'],
-	'TS' :['DNR','HMH','MDA','SNR','HIM','SBD','MPM','GCB'],
-	'AMN' :['AMN'],
-	'AP' :['VMH','NEL','GUN','TPT','RAJ'],
-	'WB' :['KOL','KAS'],
-	'OD' :['CTK','BHU'],
-	'Maharashtra' 	: ['VSH','PUN','HDP',"CMR", "KTD"],
-	"Madhya Pradesh": ["JWS","APR","ATA","KWA"],
-	'Kerala'	: ['TVM','KTM']
+  'AEH': {
+    'Chennai': ['CMH', 'ANN', 'ASN', 'AVD', 'NLR', 'PMB', 'PRR', 'TLR', 'TRC', 'VLC'],
+    'ROI': ['JPR'],
+    'ROTN': ['KNP', 'VLR', 'KBK', 'NVL', 'VPM', 'DHA', 'SLM', 'KSN', 'ERD', 'HSR', 'MDU']
+  },
+  'AHC': {
+    'AMN': ['AMN'],
+    'AP': ['VMH', 'NEL', 'GUN', 'TPT', 'RAJ'],
+    'Chennai': ['TBM', 'ADY', 'EGM', 'MGP', 'NWP', 'AMB', 'TVT'],
+    'KA': ['BMH', 'WFD', 'KML', 'CLR', 'INR', 'PNR', 'YLK', 'HUB', "DWD", 'MCC', 'MYS', 'SVR', 'BSK', 'RRN', 'RJN'],
+    'Maharashtra': ['VSH', 'PUN', 'HDP', "CMR", "KTD"],
+    "Madhya Pradesh": ["JWS", "APR", "ATA", "KWA"],
+    'OD': ['CTK', 'BHU'],
+    'ROI': ['PDY', 'TVM', 'KTM', 'AHM', "JWS", "APR", "ATA", "KWA"],
+    'ROTN': ['TVL', 'TCN', 'APM', 'TRI', 'TNJ', 'TPR', 'CMB'],
+    'TS': ['DNR', 'HMH', 'MDA', 'SNR', 'HIM', 'SBD', 'MPM', 'GCB'],
+    'WB': ['KOL', 'KAS'],
+    'Kerala': ['TVM', 'KTM']
+  },
+  'Chennai': ['CMH', 'ANN', 'ASN', 'AVD', 'NLR', 'PMB', 'PRR', 'TLR', 'TRC', 'VLC', 'TBM', 'ADY', 'EGM', 'MGP', 'NWP', 'AMB', 'TVT'],
+  'ROTN': ['KNP', 'VLR', 'KBK', 'NVL', 'VPM', 'DHA', 'SLM', 'KSN', 'ERD', 'HSR', 'MDU', 'TVL', 'TCN', 'APM', 'TRI', 'TNJ', 'TPR', 'CMB'],
+  'ROI': ['JPR', 'PDY', 'TVM', 'KTM', 'AHM', "JWS", "APR", "ATA", "KWA"],
+  'KA': ['BMH', 'WFD', 'KML', 'CLR', 'INR', 'PNR', 'YLK', 'HUB', "DWD", 'MCC', 'MYS', 'SVR', 'BSK', 'RRN', 'RJN'],
+  'TS': ['DNR', 'HMH', 'MDA', 'SNR', 'HIM', 'SBD', 'MPM', 'GCB'],
+  'AMN': ['AMN'],
+  'AP': ['VMH', 'NEL', 'GUN', 'TPT', 'RAJ'],
+  'WB': ['KOL', 'KAS'],
+  'OD': ['CTK', 'BHU'],
+  'Maharashtra': ['VSH', 'PUN', 'HDP', "CMR", "KTD"],
+  "Madhya Pradesh": ["JWS", "APR", "ATA", "KWA"],
+  'Kerala': ['TVM', 'KTM']
 
 };
 
 
 var entityMapping = {
-	'AEH' : ['CMH','ANN','ASN','AVD','NLR','PMB','PRR','TLR','TRC','VLC','JPR','KNP','VLR','KBK','NVL','VPM','DHA','SLM','KSN','ERD','HSR','MDU'],
-	'AHC' : ['AMN','VMH','NEL','GUN','TPT','RAJ','TBM','ADY','EGM','MGP','NWP','AMB','TVT','BMH','JGN','WFD','KML','CLR','INR','PNR','YLK','HUB',"DWD",'MCC','MYS','SVR','BSK','RRN','RJN','VSH','PUN','HDP',"IND","JWS","APR","ATA","KWA",'CTK','BHU','PDY','TVL','TCN','APM','TRI','TNJ','TPR','CMB','DNR','HMH','MDA','SNR','HIM','SBD','MPM','GCB','KOL','KAS','TVM','KTM'],
-	'ALL' : ['CMH','ANN','ASN','AVD','NLR','PMB','PRR','TLR','TRC','VLC','JPR','KNP','VLR','KBK','NVL','VPM','DHA','SLM','KSN','ERD','HSR','MDU','AMN','VMH','NEL','GUN','TPT','RAJ','TBM','ADY','EGM','MGP','NWP','AMB','TVT','BMH','JGN','WFD','KML','CLR','INR','PNR','YLK','HUB',"DWD",'MCC','MYS','SVR','BSK','RRN','RJN','VSH','PUN','HDP',"IND","JWS","APR","ATA","KWA",'CTK','BHU','PDY','TVL','TCN','APM','TRI','TNJ','TPR','CMB','DNR','HMH','MDA','SNR','HIM','SBD','MPM','GCB','KOL','KAS','TVM','KTM']
+  'AEH': ['CMH', 'ANN', 'ASN', 'AVD', 'NLR', 'PMB', 'PRR', 'TLR', 'TRC', 'VLC', 'JPR', 'KNP', 'VLR', 'KBK', 'NVL', 'VPM', 'DHA', 'SLM', 'KSN', 'ERD', 'HSR', 'MDU'],
+  'AHC': ['AMN', 'VMH', 'NEL', 'GUN', 'TPT', 'RAJ', 'TBM', 'ADY', 'EGM', 'MGP', 'NWP', 'AMB', 'TVT', 'BMH', 'JGN', 'WFD', 'KML', 'CLR', 'INR', 'PNR', 'YLK', 'HUB', "DWD", 'MCC', 'MYS', 'SVR', 'BSK', 'RRN', 'RJN', 'VSH', 'PUN', 'HDP', "IND", "JWS", "APR", "ATA", "KWA", 'CTK', 'BHU', 'PDY', 'TVL', 'TCN', 'APM', 'TRI', 'TNJ', 'TPR', 'CMB', 'DNR', 'HMH', 'MDA', 'SNR', 'HIM', 'SBD', 'MPM', 'GCB', 'KOL', 'KAS', 'TVM', 'KTM'],
+  'ALL': ['CMH', 'ANN', 'ASN', 'AVD', 'NLR', 'PMB', 'PRR', 'TLR', 'TRC', 'VLC', 'JPR', 'KNP', 'VLR', 'KBK', 'NVL', 'VPM', 'DHA', 'SLM', 'KSN', 'ERD', 'HSR', 'MDU', 'AMN', 'VMH', 'NEL', 'GUN', 'TPT', 'RAJ', 'TBM', 'ADY', 'EGM', 'MGP', 'NWP', 'AMB', 'TVT', 'BMH', 'JGN', 'WFD', 'KML', 'CLR', 'INR', 'PNR', 'YLK', 'HUB', "DWD", 'MCC', 'MYS', 'SVR', 'BSK', 'RRN', 'RJN', 'VSH', 'PUN', 'HDP', "IND", "JWS", "APR", "ATA", "KWA", 'CTK', 'BHU', 'PDY', 'TVL', 'TCN', 'APM', 'TRI', 'TNJ', 'TPR', 'CMB', 'DNR', 'HMH', 'MDA', 'SNR', 'HIM', 'SBD', 'MPM', 'GCB', 'KOL', 'KAS', 'TVM', 'KTM']
 }
 
 
 exports.main_route = (req, res) => {
-//  console.log('main_route');
+  //  console.log('main_route');
   // if (sess.superUser === undefined) {
   //   res.json({ msg: "Not Authorised" });
   // } else {
@@ -82,39 +82,39 @@ exports.main_route = (req, res) => {
               [mtddate, ftddate],
               (voberr, vobres) => {
                 if (voberr) console.error(voberr);
-                connections.scm_public.query(files.currency_det_last_mth,  (currency_last_err, currency_last_res) => {
-                if (currency_last_err) console.error(currency_last_err)
-                 connections.scm_public.query(files.currency_details, [mtddate, ftddate], (currencyerr, currencyres) => {
-                 if (currencyerr) console.error(currencyerr)
-                connections.scm_public.query(
-                  files.breakupSuper,
-                  [ftddate, ftddate],
-                  (breakuperr, breakupres) => {
-                    if (breakuperr) console.error(breakuperr);
+                connections.scm_public.query(files.currency_det_last_mth, (currency_last_err, currency_last_res) => {
+                  if (currency_last_err) console.error(currency_last_err)
+                  connections.scm_public.query(files.currency_details, [mtddate, ftddate], (currencyerr, currencyres) => {
+                    if (currencyerr) console.error(currencyerr)
                     connections.scm_public.query(
-                      files.breakupmtdSuper,
-                      [mtddate, ftddate],
-                      (breakupmtderr, breakupmtdres) => {
-                        if (breakupmtderr) console.error(breakupmtderr);
-                        mods.functions
-                          .adminMain(
-                            cogsresults,
-                            revresults,
-                            branchres,
-                            ftddate,
-                            vobres,
-                            currencyres,
-                            currency_last_res,
-                            breakupres,
-                            breakupmtdres
-                          )
-                          .then(final => res.json(final));
+                      files.breakupSuper,
+                      [ftddate, ftddate],
+                      (breakuperr, breakupres) => {
+                        if (breakuperr) console.error(breakuperr);
+                        connections.scm_public.query(
+                          files.breakupmtdSuper,
+                          [mtddate, ftddate],
+                          (breakupmtderr, breakupmtdres) => {
+                            if (breakupmtderr) console.error(breakupmtderr);
+                            mods.functions
+                              .adminMain(
+                                cogsresults,
+                                revresults,
+                                branchres,
+                                ftddate,
+                                vobres,
+                                currencyres,
+                                currency_last_res,
+                                breakupres,
+                                breakupmtdres
+                              )
+                              .then(final => res.json(final));
+                          }
+                        );
                       }
                     );
-                  }
-                );
+                  })
                 })
-                 })
               }
             );
           }
@@ -129,7 +129,7 @@ exports.main_route_revenue = (req, res) => {
   // if (sess.superUser === undefined) {
   //   res.json({ msg: "Not Authorised" });
   // } else {
-//  console.log('main_route_revenue');
+  //  console.log('main_route_revenue');
   let ftddate = req.params.date;
   let temp = new Date(ftddate);
   let mtddate =
@@ -178,9 +178,9 @@ exports.main_route_revenue = (req, res) => {
 };
 
 exports.choose_route = (req, res) => {
-//  console.log('choose_route');
+  //  console.log('choose_route');
   if (sess.role === "super_user") {
-  //  console.log(sess.role);
+    //  console.log(sess.role);
     this.main_route(req, res);
   } else {
     //    console.log(sess.role);
@@ -189,67 +189,81 @@ exports.choose_route = (req, res) => {
 };
 
 exports.health = (req, res) => {
-  res.json({ msg: "Am ALIVE!!!." });
+  res.json({
+    msg: "Am ALIVE!!!."
+  });
 };
 
 exports.logout = (req, res) => {
   // mods.sessionStore.close()
   this.sess = null;
-  res.json({ isAuthenticated: false });
+  res.json({
+    isAuthenticated: false
+  });
 };
 
 // Local test code
 
 exports.testLogin = (req, res) => {
-//  console.log('testLogin');
+  //  console.log('testLogin');
   let user = req.body.user.trim();
-//  console.log('roye.js user ',user);
+  //  console.log('roye.js user ',user);
   let pass = req.body.pass.trim();
-//  console.log(' route.js pass ', pass);
-    connections.scm_public.query(
-      "select * from users where emp_id = ? and password = ? and is_active=1",
-      [user,pass],
-      (err, result) => {
-        if (err) console.error(err);
-        if (result.length === 0) {
-          res.json({ isAuthenticated: false });
-        } else {
-			connections.scm_public.query("update  users set last_login=now() where emp_id ='"+user+"' ",(err1, result) => {
-				if (err) console.error(err1);
-			  });
-          res.json({ isAuthenticated: true, role: result[0].role ,userName : result[0].name });
-          // mods.session.user = JSON.stringify(user)
-          // mods.session.role = JSON.stringify(result[0].role)
-          sess = req.session;
-          sess.role = result[0].role;
-          if (sess.role === "normal_user") {
-            sess.normalUser = user;
-          }
-          if (sess.role === "super_user") {
-            sess.superUser = user;
-          }
+  //  console.log(' route.js pass ', pass);
+  connections.scm_public.query(
+    "select * from users where emp_id = ? and password = ? and is_active=1",
+    [user, pass],
+    (err, result) => {
+      if (err) console.error(err);
+      if (result.length === 0) {
+        res.json({
+          isAuthenticated: false
+        });
+      } else {
+        connections.scm_public.query("update  users set last_login=now() where emp_id ='" + user + "' ", (err1, result) => {
+          if (err) console.error(err1);
+        });
+        res.json({
+          isAuthenticated: true,
+          role: result[0].role,
+          userName: result[0].name
+        });
+        // mods.session.user = JSON.stringify(user)
+        // mods.session.role = JSON.stringify(result[0].role)
+        sess = req.session;
+        sess.role = result[0].role;
+        if (sess.role === "normal_user") {
+          sess.normalUser = user;
+        }
+        if (sess.role === "super_user") {
+          sess.superUser = user;
         }
       }
-    );
+    }
+  );
 
 };
 
 
 
 exports.changePassword = (req, res) => {
-//  console.log('testLogin');
-   let user = req.body.user.trim();
+  //  console.log('testLogin');
+  let user = req.body.user.trim();
   let pass = req.body.confirmpassword.trim();
 
-  console.log("update  users set password='"+pass+"' where emp_id ='"+user+"' ");
-	connections.scm_public.query("update  users set password='"+pass+"' where emp_id ='"+user+"'",(err1, result) => {
-		if (err1){
-				res.json({ isAuthenticated: false});
-		}else{
-			res.json({ isAuthenticated: true});
-		}
+  console.log("update  users set password='" + pass + "' where emp_id ='" + user + "' ");
+  connections.scm_public.query("update  users set password='" + pass + "' where emp_id ='" + user + "'", (err1, result) => {
+    if (err1) {
+      res.json({
+        isAuthenticated: false
+      });
+    } else {
+      res.json({
+        isAuthenticated: true
+      });
+    }
 
-	  });
+  });
 };
 
 exports.test_route = (req, res) => {
@@ -353,7 +367,7 @@ exports.test_route = (req, res) => {
 };
 
 exports.test_route_revenue = (req, res) => {
-//  console.log('test_route_revenue');
+  //  console.log('test_route_revenue');
   let ftddate = req.params.date;
   let temp = new Date(ftddate);
   let individualBranches = [];
@@ -467,16 +481,16 @@ exports.branches = (req, res) => {
   // if (sess.superUser === undefined) {
   //   res.json({ msg: "Not Authorised" });
   // } else {
-//  console.log('main_route_revenue');
+  //  console.log('main_route_revenue');
   let entity = req.params.entity;
   let region = req.params.region;
-  console.log('SELECT branch as text,code as shortCode FROM branches WHERE entity = "'+entity+'" and region="'+region+'" AND is_active=1');
+  console.log('SELECT branch as text,code as shortCode FROM branches WHERE entity = "' + entity + '" and region="' + region + '" AND is_active=1');
   connections.scm_public.query(
     files.branchlist,
-    [entity,region],
+    [entity, region],
     (error, branchresults) => {
       if (error) console.error(error);
-          res.json(branchresults);
+      res.json(branchresults);
     }
   );
   // }
@@ -486,7 +500,7 @@ exports.region = (req, res) => {
   // if (sess.superUser === undefined) {
   //   res.json({ msg: "Not Authorised" });
   // } else {
-//  console.log('main_route_revenue');
+  //  console.log('main_route_revenue');
   let entity = req.params.entity;
 
   connections.scm_public.query(
@@ -494,7 +508,7 @@ exports.region = (req, res) => {
     [entity],
     (error, regionresults) => {
       if (error) console.error(error);
-          res.json(regionresults);
+      res.json(regionresults);
     }
   );
   // }
@@ -528,25 +542,25 @@ function getColumn(year, month) {
 }
 
 
-function whereConditionBuild(argEntity,argRegion){
+function whereConditionBuild(argEntity, argRegion) {
 
-	if(argEntity!='undefined' && argRegion!='undefined'){
-		var branchesarr = regionMapping[argEntity][argRegion];
-	}else if(argEntity=='undefined' && argRegion!='undefined'){
-		var branchesarr = regionMapping[argRegion];
-	}
+  if (argEntity != 'undefined' && argRegion != 'undefined') {
+    var branchesarr = regionMapping[argEntity][argRegion];
+  } else if (argEntity == 'undefined' && argRegion != 'undefined') {
+    var branchesarr = regionMapping[argRegion];
+  }
 
-	var branchIN = '';
-	var branchlist = '';
-	for (let key in branchesarr) {
-	branchIN+="'"+branchesarr[key]+"',";
-	}
-	var branchlist = branchIN.substr(0, branchIN.length-1);
-	if(branchlist){
-		return ' and branch in ('+branchlist+') ';
-	}else{
-		return '';
-	}
+  var branchIN = '';
+  var branchlist = '';
+  for (let key in branchesarr) {
+    branchIN += "'" + branchesarr[key] + "',";
+  }
+  var branchlist = branchIN.substr(0, branchIN.length - 1);
+  if (branchlist) {
+    return ' and branch in (' + branchlist + ') ';
+  } else {
+    return '';
+  }
 
 
 
@@ -554,311 +568,308 @@ function whereConditionBuild(argEntity,argRegion){
 
 exports.monthlyData = (req, res) => {
 
-//exports.monthlyData(req, res) {
-         return new Promise((resolve, reject) => {
-            async.parallel({
-                montlyrevenue: (callback) => {
+  //exports.monthlyData(req, res) {
+  return new Promise((resolve, reject) => {
+    async.parallel({
+      montlyrevenue: (callback) => {
 
-                    this.monthRevenue(req, res, (_err, _res) => {
-                        callback(_err, _res);
-                    });
-
-                },
-                monthlycogs: (callback) => {
-
-                    this.monthCogs(req, res, (_err, _res) => {
-                        callback(_err, _res);
-                    });
-
-                }
-            }, (err, results) => {
-                if (err) {
-                   // reject(err);
-				   res.json(err);
-
-                } else {
-					res.json(results);
-                    //resolve(results);
-                }
-
-            });
-
+        this.monthRevenue(req, res, (_err, _res) => {
+          callback(_err, _res);
         });
 
+      },
+      monthlycogs: (callback) => {
+
+        this.monthCogs(req, res, (_err, _res) => {
+          callback(_err, _res);
+        });
+
+      }
+    }, (err, results) => {
+      if (err) {
+        // reject(err);
+        res.json(err);
+
+      } else {
+        res.json(results);
+        //resolve(results);
+      }
+
+    });
+
+  });
+
+}
+
+exports.monthRevenue = (req, res, callback) => {
+  try {
+    let ftddate = req.params.date;
+    let start = ftddate + '-01';
+    let end = ftddate + '-31';
+    let entity = req.params.entity;
+    let region = req.params.region;
+    let branch = req.params.branch;
+
+    if (ftddate != 'undefined' && entity != 'undefined' && region != 'undefined' && branch != 'undefined') {
+
+      var sqlquery = 'select  sum(pharmacy) as pharmacy,sum(opticals) as opticals,sum(laboratory) as laboratory,sum(surgery) as surgery,sum(consultation) as consultation,sum(others) as others,sum(ftd) as ftd from  	revenue_report where entity="' + entity + '"  and branch="' + branch + '" and trans_date between "' + start + '" and "' + end + '"';
+    } else if (ftddate != 'undefined' && entity != 'undefined' && region != 'undefined' && branch == 'undefined') {
+      var whereCondition = whereConditionBuild(entity, region);
+
+      var sqlquery = 'select branch,sum(ftd) as ftd from 	revenue_report   where entity="' + entity + '"' + whereCondition + '  and trans_date between "' + start + '" and "' + end + '" group by branch';
+    } else if (ftddate != 'undefined' && entity != 'undefined' && region == 'undefined' && branch == 'undefined') {
+      var sqlquery = 'select branch,sum(ftd) as ftd from 	revenue_report   where entity="' + entity + '"  and trans_date between "' + start + '" and "' + end + '" group by branch';
+    } else if (ftddate != 'undefined' && entity == 'undefined' && region != 'undefined' && branch == 'undefined') {
+      var whereCondition = whereConditionBuild(entity, region);
+      var sqlquery = 'select branch,sum(ftd) as ftd from 	revenue_report   where entity!="' + entity + '"' + whereCondition + '  and trans_date between "' + start + '" and "' + end + '" group by branch';
+    } else {
+      var sqlquery = 'select branch,sum(ftd) as ftd from 	revenue_report   where entity in ("AEH","AHC") and  trans_date between "' + start + '" and "' + end + '" group by branch';
     }
+    connections.scm_public.query(sqlquery, (err, cogsres, fields) => {
+      if (err) {
+        callback(err, null);
+      } else {
+        callback(null, cogsres);
+      }
+    });
 
-exports.monthRevenue = (req, res,callback) => {
-	  try {
-		 let ftddate = req.params.date;
-		 let start = ftddate+'-01';
-	     let end = ftddate+'-31';
-		 let entity = req.params.entity;
-		 let region = req.params.region;
-		 let branch = req.params.branch;
-
-		 if(ftddate!='undefined' && entity!='undefined' && region!='undefined' &&  branch!='undefined'){
-
-			 var sqlquery = 'select  sum(pharmacy) as pharmacy,sum(opticals) as opticals,sum(laboratory) as laboratory,sum(surgery) as surgery,sum(consultation) as consultation,sum(others) as others,sum(ftd) as ftd from  	revenue_report where entity="'+entity+'"  and branch="'+branch+'" and trans_date between "'+start+'" and "'+end+'"';
-		 }else if(ftddate!='undefined' && entity!='undefined' && region!='undefined' &&  branch=='undefined'){
-			  var whereCondition = whereConditionBuild(entity,region);
-
-			var sqlquery = 'select branch,sum(ftd) as ftd from 	revenue_report   where entity="'+entity+'"'+whereCondition+'  and trans_date between "'+start+'" and "'+end+'" group by branch';
-		 }else if(ftddate!='undefined' && entity!='undefined' && region=='undefined' &&  branch=='undefined'){
-			 var sqlquery = 'select branch,sum(ftd) as ftd from 	revenue_report   where entity="'+entity+'"  and trans_date between "'+start+'" and "'+end+'" group by branch';
-		 }else if(ftddate!='undefined' && entity=='undefined' && region!='undefined' &&  branch=='undefined'){
-			 var whereCondition = whereConditionBuild(entity,region);
-			 var sqlquery = 'select branch,sum(ftd) as ftd from 	revenue_report   where entity!="'+entity+'"'+whereCondition+'  and trans_date between "'+start+'" and "'+end+'" group by branch';
-		 }else{
-			 var sqlquery = 'select branch,sum(ftd) as ftd from 	revenue_report   where entity in ("AEH","AHC") and  trans_date between "'+start+'" and "'+end+'" group by branch';
-		 }
-		connections.scm_public.query(sqlquery,(err, cogsres,fields) => {
-			if (err) {
-				 callback(err, null);
-			}else{
-				 callback(null, cogsres);
-			}
-		});
-
-	 }catch (error) {
-            callback(error, null);
-     }
+  } catch (error) {
+    callback(error, null);
+  }
 
 };
 
-exports.monthCogs = (req, res,callback) => {
-	 try {
-		 let ftddate = req.params.date;
-		 let start = ftddate+'-01';
-	     let end = ftddate+'-31';
-		 let entity = req.params.entity;
-		 let region = req.params.region;
-		 let branch = req.params.branch;
-		 if(ftddate!='undefined' && entity!='undefined' && region!='undefined' &&  branch!='undefined'){
-			 var sqlquery = 'select  sum(pharmacy) as pharmacy,sum(opticals) as opticals,sum(laboratory) as laboratory,sum(operation_theatre) as operation_theatre,sum(ftd) as ftd from  cogs_report where entity="'+entity+'"  and branch="'+branch+'" and trans_date between "'+start+'" and "'+end+'"';
-		 }else if(ftddate!='undefined' && entity!='undefined' && region!='undefined' &&  branch=='undefined'){
-			 var whereCondition = whereConditionBuild(entity,region);
-			 var sqlquery = 'select branch,sum(ftd) as ftd from cogs_report   where entity="'+entity+'"'+whereCondition+'  and trans_date between "'+start+'" and "'+end+'" group by branch';
-		 }else if(ftddate!='undefined' && entity!='undefined' && region=='undefined' &&  branch=='undefined'){
-			 var sqlquery = 'select branch,sum(ftd) as ftd from cogs_report   where entity="'+entity+'"  and trans_date between "'+start+'" and "'+end+'" group by branch';
-		 }else if(ftddate!='undefined' && entity=='undefined' && region!='undefined' &&  branch=='undefined'){
+exports.monthCogs = (req, res, callback) => {
+  try {
+    let ftddate = req.params.date;
+    let start = ftddate + '-01';
+    let end = ftddate + '-31';
+    let entity = req.params.entity;
+    let region = req.params.region;
+    let branch = req.params.branch;
+    if (ftddate != 'undefined' && entity != 'undefined' && region != 'undefined' && branch != 'undefined') {
+      var sqlquery = 'select  sum(pharmacy) as pharmacy,sum(opticals) as opticals,sum(laboratory) as laboratory,sum(operation_theatre) as operation_theatre,sum(ftd) as ftd from  cogs_report where entity="' + entity + '"  and branch="' + branch + '" and trans_date between "' + start + '" and "' + end + '"';
+    } else if (ftddate != 'undefined' && entity != 'undefined' && region != 'undefined' && branch == 'undefined') {
+      var whereCondition = whereConditionBuild(entity, region);
+      var sqlquery = 'select branch,sum(ftd) as ftd from cogs_report   where entity="' + entity + '"' + whereCondition + '  and trans_date between "' + start + '" and "' + end + '" group by branch';
+    } else if (ftddate != 'undefined' && entity != 'undefined' && region == 'undefined' && branch == 'undefined') {
+      var sqlquery = 'select branch,sum(ftd) as ftd from cogs_report   where entity="' + entity + '"  and trans_date between "' + start + '" and "' + end + '" group by branch';
+    } else if (ftddate != 'undefined' && entity == 'undefined' && region != 'undefined' && branch == 'undefined') {
 
-			  var whereCondition = whereConditionBuild(entity,region);
-			var sqlquery = 'select branch,sum(ftd) as ftd from cogs_report   where entity!="'+entity+'"'+whereCondition+'  and trans_date between "'+start+'" and "'+end+'" group by branch';
-		 }else{
-			 var sqlquery = 'select branch,sum(ftd) as ftd from cogs_report   where entity in ("AEH","AHC","AHI") and trans_date between "'+start+'" and "'+end+'" group by branch';
-		 }
-		connections.scm_public.query(sqlquery,(err, cogsres,fields) => {
-			if (err) {
-				 callback(err, null);
-			}else{
-				 callback(null, cogsres);
-			}
+      var whereCondition = whereConditionBuild(entity, region);
+      var sqlquery = 'select branch,sum(ftd) as ftd from cogs_report   where entity!="' + entity + '"' + whereCondition + '  and trans_date between "' + start + '" and "' + end + '" group by branch';
+    } else {
+      var sqlquery = 'select branch,sum(ftd) as ftd from cogs_report   where entity in ("AEH","AHC","AHI") and trans_date between "' + start + '" and "' + end + '" group by branch';
+    }
+    connections.scm_public.query(sqlquery, (err, cogsres, fields) => {
+      if (err) {
+        callback(err, null);
+      } else {
+        callback(null, cogsres);
+      }
 
-		});
+    });
 
-	 }catch (error) {
-            callback(error, null);
-     }
+  } catch (error) {
+    callback(error, null);
+  }
 
 };
 
 
 exports.main_ot = (req, res) => {
   return new Promise((resolve, reject) => {
-            async.parallel({
-				montlyOT: (callback) => {
+    async.parallel({
+      montlyOT: (callback) => {
 
-                    this.monthlyOTRevenue(req, res, (_err, _res) => {
-                        callback(_err, _res);
-                    });
+        this.monthlyOTRevenue(req, res, (_err, _res) => {
+          callback(_err, _res);
+        });
 
-                },
-				branches: (callback) => {
+      },
+      branches: (callback) => {
 
-                    this.branchesDetails(req, res, (_err, _res) => {
-                        callback(_err, _res);
-                    });
+        this.branchesDetails(req, res, (_err, _res) => {
+          callback(_err, _res);
+        });
 
-                }
-				,
-                montlyCattractCogs: (callback) => {
+      },
+      montlyCattractCogs: (callback) => {
 
-                    this.cattractCogs(req, res, (_err, _res) => {
-                        callback(_err, _res);
-                    });
+        this.cattractCogs(req, res, (_err, _res) => {
+          callback(_err, _res);
+        });
 
-                }
-				,
-				montlyRefractiveCogs: (callback) => {
+      },
+      montlyRefractiveCogs: (callback) => {
 
-                    this.refractiveCogs(req, res, (_err, _res) => {
-                        callback(_err, _res);
-                    });
+        this.refractiveCogs(req, res, (_err, _res) => {
+          callback(_err, _res);
+        });
 
-                }
-				,
-				montlyVitreoRetinalCogs: (callback) => {
+      },
+      montlyVitreoRetinalCogs: (callback) => {
 
-                    this.vitreoRetinalCogs(req, res, (_err, _res) => {
-                        callback(_err, _res);
-                    });
+        this.vitreoRetinalCogs(req, res, (_err, _res) => {
+          callback(_err, _res);
+        });
 
-                }
+      }
 
-            }, (err, results) => {
-                if (err) {
-                   // reject(err);
-				   res.json(err);
+    }, (err, results) => {
+      if (err) {
+        // reject(err);
+        res.json(err);
 
-                } else {
+      } else {
 
-					res.json(mods.nativeFunctions.formation(results,req.params.date));
-                    //resolve(results);
-                }
-
-            });
+        res.json(mods.nativeFunctions.formation(results, req.params.date));
+        //resolve(results);
+      }
 
     });
+
+  });
 };
 
-exports.monthlyOTRevenue = (req, res,callback) => {
+exports.monthlyOTRevenue = (req, res, callback) => {
 
-	  try {
-		 let ftddate = req.params.date;
-		 let temp = new Date(ftddate);
-		 let mtddate =
-			temp.getFullYear() +
-			"-" +
-			("0" + (temp.getMonth() + 1)).slice(-2) +
-			"-" +
-			"01";
+  try {
+    let ftddate = req.params.date;
+    let temp = new Date(ftddate);
+    let mtddate =
+      temp.getFullYear() +
+      "-" +
+      ("0" + (temp.getMonth() + 1)).slice(-2) +
+      "-" +
+      "01";
 
-		 //SELECT count(item_code) FROM `cogs_details` WHERE trans_date between '2019-07-01' and '2019-07-31' and item_name in (select name from mapping where type='CATARACT')
+    //SELECT count(item_code) FROM `cogs_details` WHERE trans_date between '2019-07-01' and '2019-07-31' and item_name in (select name from mapping where type='CATARACT')
 
-		 // SELECT COUNT(item_code),branch FROM `cogs_details` WHERE trans_date BETWEEN '2019-07-01' AND '2019-07-31' AND item_name IN (SELECT NAME FROM cogs_item_mapping WHERE TYPE='CATARACT') GROUP BY branch
-
-
+    // SELECT COUNT(item_code),branch FROM `cogs_details` WHERE trans_date BETWEEN '2019-07-01' AND '2019-07-31' AND item_name IN (SELECT NAME FROM cogs_item_mapping WHERE TYPE='CATARACT') GROUP BY branch
 
 
-		//SELECT entity,TRANSACTION_DATE AS trans_date,BILLED AS branch,`group` FROM revenue_details WHERE `group` IN ("CATARACT","REFRACTIVE","VITREO RETINAL") AND  TRANSACTION_DATE BETWEEN "2019-07-01" AND "2019-07-31" GROUP BY BILLED
-		 var sqlquery = 'select entity,TRANSACTION_DATE as trans_date,BILLED as branch,`group` from revenue_details_native where `group` in ("CATARACT","REFRACTIVE","VITREO RETINAL") and UNIT="SURGERY" and  TRANSACTION_DATE between "'+mtddate+'" and "'+ftddate+'"';
-		connections.scm_public.query(sqlquery,(err, otRevenueResults) => {
-			if (err) {
-				 callback(err, null);
-			}else{
 
 
-				 callback(null, otRevenueResults);
-			}
-		});
-
-	 }catch (error) {
-            callback(error, null);
-     }
-
-};
+    //SELECT entity,TRANSACTION_DATE AS trans_date,BILLED AS branch,`group` FROM revenue_details WHERE `group` IN ("CATARACT","REFRACTIVE","VITREO RETINAL") AND  TRANSACTION_DATE BETWEEN "2019-07-01" AND "2019-07-31" GROUP BY BILLED
+    var sqlquery = 'select entity,TRANSACTION_DATE as trans_date,BILLED as branch,`group` from revenue_details_native where `group` in ("CATARACT","REFRACTIVE","VITREO RETINAL") and UNIT="SURGERY" and  TRANSACTION_DATE between "' + mtddate + '" and "' + ftddate + '"';
+    connections.scm_public.query(sqlquery, (err, otRevenueResults) => {
+      if (err) {
+        callback(err, null);
+      } else {
 
 
-exports.branchesDetails = (req, res,callback) => {
-	  try {
-		 var sqlquery = 'select * from branches where is_active=1';
-		connections.scm_public.query(sqlquery,(err, brancheresults) => {
-			if (err) {
-				 callback(err, null);
-			}else{
-				 callback(null, brancheresults);
-			}
-		});
+        callback(null, otRevenueResults);
+      }
+    });
 
-	 }catch (error) {
-            callback(error, null);
-     }
+  } catch (error) {
+    callback(error, null);
+  }
 
 };
-exports.cattractCogs = (req, res,callback) => {
-	  try {
-		 let ftddate = req.params.date;
-		 let temp = new Date(ftddate);
-		 let mtddate =
-			temp.getFullYear() +
-			"-" +
-			("0" + (temp.getMonth() + 1)).slice(-2) +
-			"-" +
-			"01";
-		 //var sqlquery = "SELECT item_code,branch,trans_date FROM `cogs_details` WHERE trans_date BETWEEN '"+mtddate+"' AND '"+ftddate+"' AND item_name IN (SELECT NAME FROM cogs_item_mapping WHERE TYPE='CATARACT')";
-		 var sqlquery = "SELECT A.item_code AS item_code,A.branch AS branch,A.trans_date AS trans_date FROM cogs_details AS A,cogs_item_mapping AS B WHERE  A.trans_date BETWEEN '"+mtddate+"' AND '"+ftddate+"' AND A.item_code=B.code AND B.TYPE='CATARACT'";
-		connections.scm_public.query(sqlquery,(err, cattrachCogsRes) => {
-			if (err) {
-				 callback(err, null);
-			}else{
 
-				 callback(null, cattrachCogsRes);
-			}
-		});
 
-	 }catch (error) {
-            callback(error, null);
-     }
+exports.branchesDetails = (req, res, callback) => {
+  try {
+    var sqlquery = 'select * from branches where is_active=1';
+    connections.scm_public.query(sqlquery, (err, brancheresults) => {
+      if (err) {
+        callback(err, null);
+      } else {
+        callback(null, brancheresults);
+      }
+    });
+
+  } catch (error) {
+    callback(error, null);
+  }
 
 };
-exports.refractiveCogs = (req, res,callback) => {
+exports.cattractCogs = (req, res, callback) => {
+  try {
+    let ftddate = req.params.date;
+    let temp = new Date(ftddate);
+    let mtddate =
+      temp.getFullYear() +
+      "-" +
+      ("0" + (temp.getMonth() + 1)).slice(-2) +
+      "-" +
+      "01";
+    //var sqlquery = "SELECT item_code,branch,trans_date FROM `cogs_details` WHERE trans_date BETWEEN '"+mtddate+"' AND '"+ftddate+"' AND item_name IN (SELECT NAME FROM cogs_item_mapping WHERE TYPE='CATARACT')";
+    var sqlquery = "SELECT A.item_code AS item_code,A.branch AS branch,A.trans_date AS trans_date FROM cogs_details AS A,cogs_item_mapping AS B WHERE  A.trans_date BETWEEN '" + mtddate + "' AND '" + ftddate + "' AND A.item_code=B.code AND B.TYPE='CATARACT'";
+    connections.scm_public.query(sqlquery, (err, cattrachCogsRes) => {
+      if (err) {
+        callback(err, null);
+      } else {
 
-	  try {
-		 let ftddate = req.params.date;
-		 let temp = new Date(ftddate);
-		 let mtddate =
-			temp.getFullYear() +
-			"-" +
-			("0" + (temp.getMonth() + 1)).slice(-2) +
-			"-" +
-			"01";
-		 //var sqlquery = "SELECT item_code,branch,trans_date FROM `cogs_details` WHERE trans_date BETWEEN '"+mtddate+"' AND '"+ftddate+"' AND item_name IN (SELECT NAME FROM cogs_item_mapping WHERE TYPE='Refractive')";
+        callback(null, cattrachCogsRes);
+      }
+    });
 
-		  var sqlquery = "SELECT A.item_code AS item_code,A.branch AS branch,A.trans_date AS trans_date FROM cogs_details AS A,cogs_item_mapping AS B WHERE  A.trans_date BETWEEN '"+mtddate+"' AND '"+ftddate+"' AND A.item_code=B.code AND B.TYPE='Refractive'";
-
-
-		connections.scm_public.query(sqlquery,(err, refractiveCogsRes) => {
-			if (err) {
-				 callback(err, null);
-			}else{
-
-
-				 callback(null, refractiveCogsRes);
-			}
-		});
-
-	 }catch (error) {
-            callback(error, null);
-     }
+  } catch (error) {
+    callback(error, null);
+  }
 
 };
-exports.vitreoRetinalCogs = (req, res,callback) => {
+exports.refractiveCogs = (req, res, callback) => {
 
-	  try {
-		 let ftddate = req.params.date;
-		 let temp = new Date(ftddate);
-		 let mtddate =
-			temp.getFullYear() +
-			"-" +
-			("0" + (temp.getMonth() + 1)).slice(-2) +
-			"-" +
-			"01";
-		 //var sqlquery = "SELECT item_code,branch,trans_date FROM `cogs_details` WHERE trans_date BETWEEN '"+mtddate+"' AND '"+ftddate+"' AND item_name IN (SELECT NAME FROM cogs_item_mapping WHERE TYPE='Vitreo Retinal')";
+  try {
+    let ftddate = req.params.date;
+    let temp = new Date(ftddate);
+    let mtddate =
+      temp.getFullYear() +
+      "-" +
+      ("0" + (temp.getMonth() + 1)).slice(-2) +
+      "-" +
+      "01";
+    //var sqlquery = "SELECT item_code,branch,trans_date FROM `cogs_details` WHERE trans_date BETWEEN '"+mtddate+"' AND '"+ftddate+"' AND item_name IN (SELECT NAME FROM cogs_item_mapping WHERE TYPE='Refractive')";
 
-var sqlquery = "SELECT A.item_code AS item_code,A.branch AS branch,A.trans_date AS trans_date FROM cogs_details AS A,cogs_item_mapping AS B WHERE  A.trans_date BETWEEN '"+mtddate+"' AND '"+ftddate+"' AND A.item_code=B.code AND B.TYPE='Vitreo Retinal'";
-		connections.scm_public.query(sqlquery,(err, vitreoRetinalCogsRes) => {
-			if (err) {
-				 callback(err, null);
-			}else{
+    var sqlquery = "SELECT A.item_code AS item_code,A.branch AS branch,A.trans_date AS trans_date FROM cogs_details AS A,cogs_item_mapping AS B WHERE  A.trans_date BETWEEN '" + mtddate + "' AND '" + ftddate + "' AND A.item_code=B.code AND B.TYPE='Refractive'";
 
 
-				 callback(null, vitreoRetinalCogsRes);
-			}
-		});
+    connections.scm_public.query(sqlquery, (err, refractiveCogsRes) => {
+      if (err) {
+        callback(err, null);
+      } else {
 
-	 }catch (error) {
-            callback(error, null);
-     }
+
+        callback(null, refractiveCogsRes);
+      }
+    });
+
+  } catch (error) {
+    callback(error, null);
+  }
+
+};
+exports.vitreoRetinalCogs = (req, res, callback) => {
+
+  try {
+    let ftddate = req.params.date;
+    let temp = new Date(ftddate);
+    let mtddate =
+      temp.getFullYear() +
+      "-" +
+      ("0" + (temp.getMonth() + 1)).slice(-2) +
+      "-" +
+      "01";
+    //var sqlquery = "SELECT item_code,branch,trans_date FROM `cogs_details` WHERE trans_date BETWEEN '"+mtddate+"' AND '"+ftddate+"' AND item_name IN (SELECT NAME FROM cogs_item_mapping WHERE TYPE='Vitreo Retinal')";
+
+    var sqlquery = "SELECT A.item_code AS item_code,A.branch AS branch,A.trans_date AS trans_date FROM cogs_details AS A,cogs_item_mapping AS B WHERE  A.trans_date BETWEEN '" + mtddate + "' AND '" + ftddate + "' AND A.item_code=B.code AND B.TYPE='Vitreo Retinal'";
+    connections.scm_public.query(sqlquery, (err, vitreoRetinalCogsRes) => {
+      if (err) {
+        callback(err, null);
+      } else {
+
+
+        callback(null, vitreoRetinalCogsRes);
+      }
+    });
+
+  } catch (error) {
+    callback(error, null);
+  }
 
 };
 
@@ -867,7 +878,7 @@ exports.main_route_newopd = (req, res) => {
   // if (sess.superUser === undefined) {
   //   res.json({ msg: "Not Authorised" });
   // } else {
-//  console.log('main_route_revenue');
+  //  console.log('main_route_revenue');
   let ftddate = req.params.date;
   let temp = new Date(ftddate);
   let mtddate =
@@ -877,8 +888,8 @@ exports.main_route_newopd = (req, res) => {
     "-" +
     "01";
 
-	let ftddatelastyear = (temp.getFullYear()-1)+'-'+ ("0" + (temp.getMonth()+1)).slice(-2)+'-'+("0" + (temp.getDate())).slice(-2);
-	let mtddatelastyear = (temp.getFullYear()-1)+'-'+ ("0" + (temp.getMonth()+1)).slice(-2)+'-01';
+  let ftddatelastyear = (temp.getFullYear() - 1) + '-' + ("0" + (temp.getMonth() + 1)).slice(-2) + '-' + ("0" + (temp.getDate())).slice(-2);
+  let mtddatelastyear = (temp.getFullYear() - 1) + '-' + ("0" + (temp.getMonth() + 1)).slice(-2) + '-01';
 
 
   connections.scm_public.query(
@@ -886,35 +897,35 @@ exports.main_route_newopd = (req, res) => {
     [mtddate, ftddate],
     (error, resnewopd) => {
       if (error) console.error(error);
-	  connections.scm_public.query(
-		files.new_opd_super,
-		[mtddatelastyear, ftddatelastyear],
-		(error, reslastyearopd) => {
-		if (error) console.error(error);
-		  connections.scm_public.query(
-			"select * from branches",
-			(err, branchres) => {
-			  if (err) console.error(err);
-					  mods.nativeFunctions
-						.newopdNative(
-						  resnewopd,
-						  branchres,
-						  ftddate,
-						  reslastyearopd,
+      connections.scm_public.query(
+        files.new_opd_super,
+        [mtddatelastyear, ftddatelastyear],
+        (error, reslastyearopd) => {
+          if (error) console.error(error);
+          connections.scm_public.query(
+            "select * from branches",
+            (err, branchres) => {
+              if (err) console.error(err);
+              mods.nativeFunctions
+                .newopdNative(
+                  resnewopd,
+                  branchres,
+                  ftddate,
+                  reslastyearopd,
 
-						)
-						.then(final => res.json(final));
-					}
-				  );
-		}
-		);
-	}
-	);
+                )
+                .then(final => res.json(final));
+            }
+          );
+        }
+      );
+    }
+  );
   // }
 };
 
 exports.main_route_newopd_normal = (req, res) => {
-//  console.log('test_route_revenue');
+  //  console.log('test_route_revenue');
   let ftddate = req.params.date;
   let temp = new Date(ftddate);
   let individualBranches = [];
@@ -926,8 +937,8 @@ exports.main_route_newopd_normal = (req, res) => {
     "-" +
     "01";
   // let emp = JSON.parse(mods.session.user)
-  let ftddatelastyear = (temp.getFullYear()-1)+'-'+ ("0" + (temp.getMonth()+1)).slice(-2)+'-'+("0" + (temp.getDate())).slice(-2);
-  let mtddatelastyear = (temp.getFullYear()-1)+'-'+ ("0" + (temp.getMonth()+1)).slice(-2)+'-01';
+  let ftddatelastyear = (temp.getFullYear() - 1) + '-' + ("0" + (temp.getMonth() + 1)).slice(-2) + '-' + ("0" + (temp.getDate())).slice(-2);
+  let mtddatelastyear = (temp.getFullYear() - 1) + '-' + ("0" + (temp.getMonth() + 1)).slice(-2) + '-01';
   let emp = req.params.name;
   connections.scm_public.query(
     "select * from users where emp_id = ? and is_active=1 and role not in ('ch_user','sch_user','fin_user')",
@@ -951,73 +962,73 @@ exports.main_route_newopd_normal = (req, res) => {
         (error, resnewopd) => {
           if (error) console.error(error);
 
-		connections.scm_public.query(
-        files.new_opd_normal,
-        [mtddatelastyear, ftddatelastyear, individualBranches],
-        (error, resnewopdlastyear) => {
-          if (error) console.error(error);
           connections.scm_public.query(
-            "select * from branches",
-            (err, branchres) => {
-              if (err) console.error(err);
-                      mods.nativeFunctions
-                        .newopdnormal(
-                          resnewopd,
-						  resnewopdlastyear,
-                          individualBranches,
-                          branchGroups,
-                          branchres,
-                          ftddate
-                        )
-                        .then(final => res.json(final));
-                    }
-                  );
+            files.new_opd_normal,
+            [mtddatelastyear, ftddatelastyear, individualBranches],
+            (error, resnewopdlastyear) => {
+              if (error) console.error(error);
+              connections.scm_public.query(
+                "select * from branches",
+                (err, branchres) => {
+                  if (err) console.error(err);
+                  mods.nativeFunctions
+                    .newopdnormal(
+                      resnewopd,
+                      resnewopdlastyear,
+                      individualBranches,
+                      branchGroups,
+                      branchres,
+                      ftddate
+                    )
+                    .then(final => res.json(final));
                 }
               );
-             }
-			);
-		}
-		);
+            }
+          );
+        }
+      );
+    }
+  );
 };
 
 
 
 
-exports.opticals=(req,res)=>{
-	console.log("hit");
-	let ftddate = req.params.date;
+exports.opticals = (req, res) => {
+  console.log("hit");
+  let ftddate = req.params.date;
 
-	console.log(ftddate);
-	let temp = new Date(ftddate);
-let year = temp.getFullYear();
-let month=temp.getMonth()+1;
-console.log(year);
-console.log(month);
-	let mtddate =
+  console.log(ftddate);
+  let temp = new Date(ftddate);
+  let year = temp.getFullYear();
+  let month = temp.getMonth() + 1;
+  console.log(year);
+  console.log(month);
+  let mtddate =
     temp.getFullYear() +
     "-" +
     ("0" + (temp.getMonth() + 1)).slice(-2) +
     "-" +
     "01";
 
-// 		const monthNames = ["January", "February", "March", "April", "May", "June",
-//   "July", "August", "September", "October", "November", "December"
-// ];
-	// 	const d = new Date();
-	// 	console.log("d :"+d);
-	// //	console.log(d.getMonth());
-	// 	console.log("monthNames "+monthNames[d.getMonth()]);
-	// console.log(temp.getMonth());
-	// console.log((temp.getMonth() + 1));
-	let ftddatelastyear = (temp.getFullYear()-1)+'-'+ ("0" + (temp.getMonth()+1)).slice(-2)+'-'+("0" + (temp.getDate())).slice(-2);
-	let mtddatelastyear = (temp.getFullYear()-1)+'-'+ ("0" + (temp.getMonth()+1)).slice(-2)+'-01';
+  // 		const monthNames = ["January", "February", "March", "April", "May", "June",
+  //   "July", "August", "September", "October", "November", "December"
+  // ];
+  // 	const d = new Date();
+  // 	console.log("d :"+d);
+  // //	console.log(d.getMonth());
+  // 	console.log("monthNames "+monthNames[d.getMonth()]);
+  // console.log(temp.getMonth());
+  // console.log((temp.getMonth() + 1));
+  let ftddatelastyear = (temp.getFullYear() - 1) + '-' + ("0" + (temp.getMonth() + 1)).slice(-2) + '-' + ("0" + (temp.getDate())).slice(-2);
+  let mtddatelastyear = (temp.getFullYear() - 1) + '-' + ("0" + (temp.getMonth() + 1)).slice(-2) + '-01';
 
   // let mtdopticalquery = "SELECT branch,IF(ftd='',0,SUM(ftd)) AS ftd,entity,region,branchcode,branchname,SUM(targetamount) as targetamount FROM ( SELECT br.branch AS branch ,SUM(rd.NET_AMOUNT) AS ftd ,br.entity AS entity ,br.region AS region ,br.code AS branchcode ,br.branch AS branchname ,0 AS targetamount  FROM  `revenue_details` AS rd INNER JOIN  branches AS br ON CODE=rd.BILLED WHERE UNIT IN ('OPTICALS') AND DATE(TRANSACTION_DATE) BETWEEN '" + mtddate + "' AND '" + ftddate + "' GROUP BY BILLED  UNION ALL SELECT br.branch AS branch ,'' AS ftd ,br.entity AS entity ,br.region AS region ,br.code AS branchcode ,br.branch AS branchname ,IFNULL(tar.targetamount,0) AS targetamount FROM target_optical AS tar INNER JOIN  branches AS br ON br.id=tar.`entityid` WHERE tar.year = YEAR('" + mtddate + "') and tar.month =MONTH('" + mtddate + "')  ) AS A  GROUP BY branch"
   // let lymtdopticalquery = "SELECT branch,IF(ftd='',0,SUM(ftd)) AS ftd,entity,region,branchcode,branchname,SUM(targetamount) as targetamount FROM ( SELECT br.branch AS branch ,SUM(rd.NET_AMOUNT) AS ftd ,br.entity AS entity ,br.region AS region ,br.code AS branchcode ,br.branch AS branchname ,0 AS targetamount  FROM  `revenue_details` AS rd INNER JOIN  branches AS br ON CODE=rd.BILLED WHERE UNIT IN ('OPTICALS') AND DATE(TRANSACTION_DATE) BETWEEN '" + mtddatelastyear + "' AND '" + ftddatelastyear + "' GROUP BY BILLED  UNION ALL SELECT br.branch AS branch ,'' AS ftd ,br.entity AS entity ,br.region AS region ,br.code AS branchcode ,br.branch AS branchname ,IFNULL(tar.targetamount,0) AS targetamount FROM target_optical AS tar INNER JOIN  branches AS br ON br.id=tar.`entityid` WHERE tar.year = YEAR('" + ftddatelastyear + "') and tar.month =MONTH('" + ftddatelastyear + "')  ) AS A  GROUP BY branch"
   //
   // // console.log(mtdopticalquery);
   // console.log(lymtdopticalquery);
-  connections.scm_public.query(files.mtdopticals,[mtddate,ftddate,mtddate,mtddate], (error, resoptical) => {
+  connections.scm_public.query(files.mtdopticals, [mtddate, ftddate, mtddate, mtddate], (error, resoptical) => {
 
     // "SELECT branch,IF(ftd='',0,SUM(ftd)) AS ftd,entity,region,branchcode,branchname,SUM(targetamount) FROM ( SELECT br.branch AS branch ,SUM(rd.NET_AMOUNT) AS ftd ,br.entity AS entity ,br.region AS region ,br.code AS branchcode ,br.branch AS branchname ,0 AS targetamount  FROM  `revenue_details` AS rd INNER JOIN  branches AS br ON CODE=rd.BILLED WHERE UNIT IN ('OPTICALS') AND DATE(TRANSACTION_DATE) BETWEEN '"+mtddate+"' AND '"+ftddate+"' GROUP BY BILLED  UNION ALL SELECT br.branch AS branch ,'' AS ftd ,br.entity AS entity ,br.region AS region ,br.code AS branchcode ,br.branch AS branchname ,IFNULL(tar.targetamount,0) AS targetamount FROM target_optical AS tar INNER JOIN  branches AS br ON br.id=tar.`entityid` WHERE tar.year = YEAR('"+year+"') and tar.month ='"+month+"'  ) AS A  GROUP BY branch",(error,resoptical)=>{
     // //files.opticals_super,[mtddate,ftddate],(error,resoptical)=>{
@@ -1025,7 +1036,7 @@ console.log(month);
     console.log("ftd");
     // console.log(resoptical);
     connections.scm_public.query(
-      files.lymtdopticals,[mtddatelastyear,ftddatelastyear,ftddatelastyear,ftddatelastyear], (error, reslastyearoptical) => {
+      files.lymtdopticals, [mtddatelastyear, ftddatelastyear, ftddatelastyear, ftddatelastyear], (error, reslastyearoptical) => {
         if (error) console.log(error);
         console.log("LASTmtd");
         connections.scm_public.query(
@@ -1044,119 +1055,135 @@ console.log(month);
 
 //discount --praveenraj
 
-exports.discount=(req,res)=>{
-let department=[];
+exports.discount = (req, res) => {
+  let department = [];
 
-	let fromdate=req.params.frmdate;
-	let todate=req.params.todate;
+  let fromdate = req.params.frmdate;
+  let todate = req.params.todate;
 
-	if(req.params.department=='All'){
-//	department=["Pharmacy","Surgery","Opticals","LABORATORY"];
+  if (req.params.department == 'All') {
+    //	department=["Pharmacy","Surgery","Opticals","LABORATORY"];
 
-	console.log("from date : "+ req.params.frmdate);
-	console.log("To date : "+ req.params.todate);
-		console.log("department : "+ department);
-		connections.scm_public.query(files.discountall,[fromdate,todate,fromdate,todate,fromdate,todate,fromdate,todate],
+    console.log("from date : " + req.params.frmdate);
+    console.log("To date : " + req.params.todate);
+    console.log("department : " + department);
+    connections.scm_public.query(files.discountall, [fromdate, todate, fromdate, todate, fromdate, todate, fromdate, todate],
 
-		(error,resdiscountall)=>{
-console.log("discountall");
-		if (error) console.error(error);
+      (error, resdiscountall) => {
+        console.log("discountall");
+        if (error) console.error(error);
 
-			res.json({"result":{"Discount":resdiscountall}});
-		}
+        res.json({
+          "result": {
+            "Discount": resdiscountall
+          }
+        });
+      }
 
-		);
+    );
 
 
-}
-else if((req.params.department=='Pharmacy')||(req.params.department=='Surgery')||(req.params.department=='Opticals'))
-{
+  } else if ((req.params.department == 'Pharmacy') || (req.params.department == 'Surgery') || (req.params.department == 'Opticals')) {
 
 
-	department=req.params.department;
-	console.log(department);
+    department = req.params.department;
+    console.log(department);
 
-		console.log("from date : "+ req.params.frmdate);
-		console.log("To date : "+ req.params.todate);
-			console.log("department : "+ department);
-			connections.scm_public.query(files.discount,[fromdate,todate,department,fromdate,todate,department,fromdate,todate,department,fromdate,todate,department],
-			(error,resdiscount)=>{
-console.log("discount");
-			if (error) console.error(error);
+    console.log("from date : " + req.params.frmdate);
+    console.log("To date : " + req.params.todate);
+    console.log("department : " + department);
+    connections.scm_public.query(files.discount, [fromdate, todate, department, fromdate, todate, department, fromdate, todate, department, fromdate, todate, department],
+      (error, resdiscount) => {
+        console.log("discount");
+        if (error) console.error(error);
 
-				res.json({"result":{"Discount":resdiscount}});
-			}
+        res.json({
+          "result": {
+            "Discount": resdiscount
+          }
+        });
+      }
 
-			);
+    );
 
-//	console.log("done");
-}
-else if(req.params.department=='Laboratory'){
+    //	console.log("done");
+  } else if (req.params.department == 'Laboratory') {
 
-		department=["INVESTIGATION","TREATMENT","LABORATORY"];
-  console.log(department);
-		connections.scm_public.query(files.discountlab,[fromdate,todate,department,fromdate,todate,department,fromdate,todate,department,fromdate,todate,department],
-		(error,resdiscountlab)=>{
-console.log("discount lab");
+    department = ["INVESTIGATION", "TREATMENT", "LABORATORY"];
+    console.log(department);
+    connections.scm_public.query(files.discountlab, [fromdate, todate, department, fromdate, todate, department, fromdate, todate, department, fromdate, todate, department],
+      (error, resdiscountlab) => {
+        console.log("discount lab");
 
-		if (error) console.error(error);
+        if (error) console.error(error);
 
-			res.json({"result":{"Discount":resdiscountlab}});
-		}
+        res.json({
+          "result": {
+            "Discount": resdiscountlab
+          }
+        });
+      }
 
-		);
+    );
 
-}
-else if((req.params.department=='VRInjection')||(req.params.department=='VRSurgery')) {
-console.log(req.params.department);
-if(req.params.department=='VRInjection')
-{
-	department=["VR - INJECTION","VR INJECTION","VR INJECTIONS"]
+  } else if ((req.params.department == 'VRInjection') || (req.params.department == 'VRSurgery')) {
+    console.log(req.params.department);
+    if (req.params.department == 'VRInjection') {
+      department = ["VR - INJECTION", "VR INJECTION", "VR INJECTIONS"]
 
-}
-else {
-	department=["VR-SURGERY"]
-}
+    } else {
+      department = ["VR-SURGERY"]
+    }
 
-connections.scm_public.query(files.discountvr,[fromdate,todate,department,fromdate,todate,department,fromdate,todate,department,fromdate,todate,department],
-(error,resdiscountvr)=>{
+    connections.scm_public.query(files.discountvr, [fromdate, todate, department, fromdate, todate, department, fromdate, todate, department, fromdate, todate, department],
+      (error, resdiscountvr) => {
 
-if (error) console.error(error);
-	console.log("discountvr");
+        if (error) console.error(error);
+        console.log("discountvr");
 
-	res.json({"result":{"Discount":resdiscountvr}});
-}
+        res.json({
+          "result": {
+            "Discount": resdiscountvr
+          }
+        });
+      }
 
-);
+    );
 
-}
-else if ((req.params.department=='Cataract')||(req.params.department=='Refractive')||(req.params.department=='Cornea')) {
-department=req.params.department;
+  } else if ((req.params.department == 'Cataract') || (req.params.department == 'Refractive') || (req.params.department == 'Cornea')) {
+    department = req.params.department;
 
-	connections.scm_public.query(files.discountsplit,[fromdate,todate,department,fromdate,todate,department,fromdate,todate,department,fromdate,todate,department],
-	(error,resdiscountsplit)=>{
+    connections.scm_public.query(files.discountsplit, [fromdate, todate, department, fromdate, todate, department, fromdate, todate, department, fromdate, todate, department],
+      (error, resdiscountsplit) => {
 
-	if (error) console.error(error);
-		console.log(department);
+        if (error) console.error(error);
+        console.log(department);
 
-		res.json({"result":{"Discount":resdiscountsplit}});
-	}
+        res.json({
+          "result": {
+            "Discount": resdiscountsplit
+          }
+        });
+      }
 
-	);
+    );
 
-}
-else {
-	connections.scm_public.query(files.discountothers,[fromdate,todate,fromdate,todate,fromdate,todate,fromdate,todate],
-	(error,resdiscountothes)=>{
+  } else {
+    connections.scm_public.query(files.discountothers, [fromdate, todate, fromdate, todate, fromdate, todate, fromdate, todate],
+      (error, resdiscountothes) => {
 
-	if (error) console.error(error);
-	//	console.log(department);
+        if (error) console.error(error);
+        //	console.log(department);
 
-		res.json({"result":{"Discount":resdiscountothes}});
-	}
+        res.json({
+          "result": {
+            "Discount": resdiscountothes
+          }
+        });
+      }
 
-	);
-}
+    );
+  }
 
 };
 
@@ -1164,44 +1191,49 @@ else {
 
 
 // collection --praveenraj
-exports.collectiondetailim=(req,res)=>{
+exports.collectiondetailim = (req, res) => {
 
-	let frmdate=req.params.fromdate;
-	let todate=req.params.todate;
-	let entity=req.params.entity;
-	let branch=req.params.branch;
+  let frmdate = req.params.fromdate;
+  let todate = req.params.todate;
+  let entity = req.params.entity;
+  let branch = req.params.branch;
 
-if ((entity=="All")&&(branch=="All")) {
-	console.log("hit in all");
-	let collectionquery="Select * from collection_detail where DATE(PAYMENT_OR_REFUND_DATE) BETWEEN "+"'"+frmdate+"'" +" AND "+"'"+todate+"'";
-connections.scm_public.query(collectionquery,(err,rescollection)=>{
-	if(err)console.error(err);
-res.json({
-	"result":{"collection":rescollection}
-})
-})
+  if ((entity == "All") && (branch == "All")) {
+    console.log("hit in all");
+    let collectionquery = "Select * from collection_detail where DATE(PAYMENT_OR_REFUND_DATE) BETWEEN " + "'" + frmdate + "'" + " AND " + "'" + todate + "'";
+    connections.scm_public.query(collectionquery, (err, rescollection) => {
+      if (err) console.error(err);
+      res.json({
+        "result": {
+          "collection": rescollection
+        }
+      })
+    })
 
-}else if (branch=="All") {
+  } else if (branch == "All") {
 
-	let collectionquery="Select * from collection_detail where DATE(PAYMENT_OR_REFUND_DATE) BETWEEN "+"'"+frmdate+"'" +" AND "+"'"+todate+"' and PARENT_BRANCH='"+entity+"'";
-console.log(collectionquery);
-	connections.scm_public.query(collectionquery,(err,rescollection)=>{
-	if(err)console.error(err);
-	res.json({
-		"result":{"collection":rescollection}
-	})
-})
-}else
-{
-	let collectionquery="Select * from collection_detail where DATE(PAYMENT_OR_REFUND_DATE) BETWEEN "+"'"+frmdate+"'" +" AND "+"'"+todate+"' and PARENT_BRANCH='"+entity+"' and BRANCH='"+branch+"'";
-console.log(collectionquery);
-connections.scm_public.query(collectionquery,(err,rescollection)=>{
-	if(err)console.error(err);
-	res.json({
-		"result":{"collection":rescollection}
-	})
-})
-}
+    let collectionquery = "Select * from collection_detail where DATE(PAYMENT_OR_REFUND_DATE) BETWEEN " + "'" + frmdate + "'" + " AND " + "'" + todate + "' and PARENT_BRANCH='" + entity + "'";
+    console.log(collectionquery);
+    connections.scm_public.query(collectionquery, (err, rescollection) => {
+      if (err) console.error(err);
+      res.json({
+        "result": {
+          "collection": rescollection
+        }
+      })
+    })
+  } else {
+    let collectionquery = "Select * from collection_detail where DATE(PAYMENT_OR_REFUND_DATE) BETWEEN " + "'" + frmdate + "'" + " AND " + "'" + todate + "' and PARENT_BRANCH='" + entity + "' and BRANCH='" + branch + "'";
+    console.log(collectionquery);
+    connections.scm_public.query(collectionquery, (err, rescollection) => {
+      if (err) console.error(err);
+      res.json({
+        "result": {
+          "collection": rescollection
+        }
+      })
+    })
+  }
 
 };
 
@@ -1213,7 +1245,7 @@ exports.branch = (req, res) => {
     [entity],
     (error, branchesresults) => {
       if (error) console.error(error);
-          res.json(branchesresults);
+      res.json(branchesresults);
     }
   );
   // }
@@ -1224,7 +1256,7 @@ exports.main_route_usage_tracker = (req, res) => {
   // if (sess.superUser === undefined) {
   //   res.json({ msg: "Not Authorised" });
   // } else {
-//  console.log('main_route_revenue');
+  //  console.log('main_route_revenue');
   let ftddate = req.params.date;
   let temp = new Date(ftddate);
   let mtddate =
@@ -1234,56 +1266,55 @@ exports.main_route_usage_tracker = (req, res) => {
     "-" +
     "01";
 
-	let ftddatelastyear = (temp.getFullYear()-1)+'-'+ ("0" + (temp.getMonth()+1)).slice(-2)+'-'+("0" + (temp.getDate())).slice(-2);
-	let mtddatelastyear = (temp.getFullYear()-1)+'-'+ ("0" + (temp.getMonth()+1)).slice(-2)+'-01';
+  let ftddatelastyear = (temp.getFullYear() - 1) + '-' + ("0" + (temp.getMonth() + 1)).slice(-2) + '-' + ("0" + (temp.getDate())).slice(-2);
+  let mtddatelastyear = (temp.getFullYear() - 1) + '-' + ("0" + (temp.getMonth() + 1)).slice(-2) + '-01';
 
-	let tarArr = ftddate.split("-");
-	let tarMonth = tarArr[1];
-	let tarYear = tarArr[0];
+  let tarArr = ftddate.split("-");
+  let tarMonth = tarArr[1];
+  let tarYear = tarArr[0];
 
   connections.scm_public.query(
     files.new_opd_super,
     [mtddate, ftddate],
     (error, resnewopd) => {
       if (error) console.error(error);
-	  connections.scm_public.query(
-		files.device_history,
-		[mtddate, ftddate],
-		(error, resdevicehistory) => {
-		if (error) console.error(error);
-			connections.scm_public.query(
-			files.device_revenue,
-			[mtddate, ftddate],
-			(error, resdevicerevenue) => {
-			if (error) console.error(error);
-          connections.scm_public.query("select br.entity as entity,br.region as region,br.code as branch,br.branch as branchname,tr.total from branches as br  LEFT JOIN usage_track_target as tr ON br.id=tr.branch_id AND target_month='"+tarMonth+"' AND target_year='"+tarYear+"'",(err, targetres) => {
-				if (err)console.log(err);
-				  connections.scm_public.query(
-					"select * from branches",
-					(err, branchres) => {
-					  if (err) console.error(err);
-							  mods.nativeFunctions
-								.newUsageTrackerNative(
-								  resnewopd,
-								  branchres,
-								  ftddate,
-								  resdevicehistory,
-								  targetres,
-								  resdevicerevenue
-								)
-								.then(final => res.json(final));
-							}
-						  );
-		  }
-		  );
-		 }
-		 );
+      connections.scm_public.query(
+        files.device_history,
+        [mtddate, ftddate],
+        (error, resdevicehistory) => {
+          if (error) console.error(error);
+          connections.scm_public.query(
+            files.device_revenue,
+            [mtddate, ftddate],
+            (error, resdevicerevenue) => {
+              if (error) console.error(error);
+              connections.scm_public.query("select br.entity as entity,br.region as region,br.code as branch,br.branch as branchname,tr.total from branches as br  LEFT JOIN usage_track_target as tr ON br.id=tr.branch_id AND target_month='" + tarMonth + "' AND target_year='" + tarYear + "'", (err, targetres) => {
+                if (err) console.log(err);
+                connections.scm_public.query(
+                  "select * from branches",
+                  (err, branchres) => {
+                    if (err) console.error(err);
+                    mods.nativeFunctions
+                      .newUsageTrackerNative(
+                        resnewopd,
+                        branchres,
+                        ftddate,
+                        resdevicehistory,
+                        targetres,
+                        resdevicerevenue
+                      )
+                      .then(final => res.json(final));
+                  }
+                );
+              });
+            }
+          );
 
 
-		}
-		);
-	}
-	);
+        }
+      );
+    }
+  );
   // }
 };
 
@@ -1291,32 +1322,32 @@ exports.main_route_usage_tracker = (req, res) => {
 
 // consultation
 
-exports.consultation=(req,res)=>{
-	console.log("hit in consultation");
-	let ftddate =req.params.date;
-	let temp= new Date(ftddate);
-	let mtddate =
+exports.consultation = (req, res) => {
+  console.log("hit in consultation");
+  let ftddate = req.params.date;
+  let temp = new Date(ftddate);
+  let mtddate =
     temp.getFullYear() +
     "-" +
     ("0" + (temp.getMonth() + 1)).slice(-2) +
     "-" +
     "01";
 
-connections.scm_public.query(
-	files.new_consultation_super,
-	[mtddate, ftddate],
-	(error,resnewconsult)=>{
-	if(error)console.error(error);
-	//console.log(resnewconsult);
-	connections.scm_public.query(
-		"select * from branches",(err,branches)=>{
-			if(err)console.error(err);
-			mods.nativeFunctions.newconsultation(
-				resnewconsult,branches,ftddate
-			).then(final=>res.json(final));
-		}
-	);
-});
+  connections.scm_public.query(
+    files.new_consultation_super,
+    [mtddate, ftddate],
+    (error, resnewconsult) => {
+      if (error) console.error(error);
+      //console.log(resnewconsult);
+      connections.scm_public.query(
+        "select * from branches", (err, branches) => {
+          if (err) console.error(err);
+          mods.nativeFunctions.newconsultation(
+            resnewconsult, branches, ftddate
+          ).then(final => res.json(final));
+        }
+      );
+    });
 
 
 };
@@ -1327,7 +1358,7 @@ exports.main_route_usage_tracker_new = (req, res) => {
   // if (sess.superUser === undefined) {
   //   res.json({ msg: "Not Authorised" });
   // } else {
-//  console.log('main_route_revenue');
+  //  console.log('main_route_revenue');
   let ftddate = req.params.date;
   let temp = new Date(ftddate);
   let mtddate =
@@ -1337,66 +1368,63 @@ exports.main_route_usage_tracker_new = (req, res) => {
     "-" +
     "01";
 
-	let ftddatelastyear = (temp.getFullYear()-1)+'-'+ ("0" + (temp.getMonth()+1)).slice(-2)+'-'+("0" + (temp.getDate())).slice(-2);
-	let mtddatelastyear = (temp.getFullYear()-1)+'-'+ ("0" + (temp.getMonth()+1)).slice(-2)+'-01';
+  let ftddatelastyear = (temp.getFullYear() - 1) + '-' + ("0" + (temp.getMonth() + 1)).slice(-2) + '-' + ("0" + (temp.getDate())).slice(-2);
+  let mtddatelastyear = (temp.getFullYear() - 1) + '-' + ("0" + (temp.getMonth() + 1)).slice(-2) + '-01';
 
-	let tarArr = ftddate.split("-");
-	let tarMonth = tarArr[1];
-	let tarYear = tarArr[0];
+  let tarArr = ftddate.split("-");
+  let tarMonth = tarArr[1];
+  let tarYear = tarArr[0];
 
   connections.scm_public.query(
     files.new_opd_super,
     [mtddate, ftddate],
     (error, resnewopd) => {
       if (error) console.error(error);
-	  connections.scm_public.query(
-		files.device_history,
-		[mtddate, ftddate],
-		(error, resdevicehistory) => {
-		if (error) console.error(error);
-			connections.scm_public.query(
-			files.device_revenue,
-			[mtddate, ftddate],
-			(error, resdevicerevenue) => {
-			if (error) console.error(error);
-          connections.scm_public.query("select br.entity as entity,br.region as region,br.code as branch,br.branch as branchname,tr.total,tr.amount from branches as br  LEFT JOIN usage_track_target as tr ON br.id=tr.branch_id AND target_month='"+tarMonth+"' AND target_year='"+tarYear+"'",(err, targetres) => {
-				if (err)console.log(err);
-				  connections.scm_public.query(
-					"select * from branches",
-					(err, branchres) => {
-					  if (err) console.error(err);
-							connections.scm_public.query(files.currency_details, [mtddate, ftddate],(currerr, currres) => {
-							if (currerr)  console.error(currerr);
-								connections.scm_public.query(files.currency_det_last_mth, (curr_last_err, curr_last_res) => {
-									if (curr_last_err)  console.error(curr_last_err);
-							  mods.nativeFunctions
-								.newUsageTrackerNativeNew(
-								  resnewopd,
-								  branchres,
-								  ftddate,
-								  resdevicehistory,
-								  targetres,
-								  resdevicerevenue,
-								  currres,
-                                  curr_last_res
-								)
-								.then(final => res.json(final));
-							}
-						  );
-						  }
-						  );
-						  }
-						  );
-		  }
-		  );
-		 }
-		 );
+      connections.scm_public.query(
+        files.device_history,
+        [mtddate, ftddate],
+        (error, resdevicehistory) => {
+          if (error) console.error(error);
+          connections.scm_public.query(
+            files.device_revenue,
+            [mtddate, ftddate],
+            (error, resdevicerevenue) => {
+              if (error) console.error(error);
+              connections.scm_public.query("select br.entity as entity,br.region as region,br.code as branch,br.branch as branchname,tr.total,tr.amount from branches as br  LEFT JOIN usage_track_target as tr ON br.id=tr.branch_id AND target_month='" + tarMonth + "' AND target_year='" + tarYear + "'", (err, targetres) => {
+                if (err) console.log(err);
+                connections.scm_public.query(
+                  "select * from branches",
+                  (err, branchres) => {
+                    if (err) console.error(err);
+                    connections.scm_public.query(files.currency_details, [mtddate, ftddate], (currerr, currres) => {
+                      if (currerr) console.error(currerr);
+                      connections.scm_public.query(files.currency_det_last_mth, (curr_last_err, curr_last_res) => {
+                        if (curr_last_err) console.error(curr_last_err);
+                        mods.nativeFunctions
+                          .newUsageTrackerNativeNew(
+                            resnewopd,
+                            branchres,
+                            ftddate,
+                            resdevicehistory,
+                            targetres,
+                            resdevicerevenue,
+                            currres,
+                            curr_last_res
+                          )
+                          .then(final => res.json(final));
+                      });
+                    });
+                  }
+                );
+              });
+            }
+          );
 
 
-		}
-		);
-	}
-	);
+        }
+      );
+    }
+  );
   // }
 };
 
@@ -1925,149 +1953,143 @@ exports.finbills = (req, res) => {
         });
       })
     }
-  }
-else {
-  if ((status == "All") && (branch == "All")) {
-    console.log("hit in branch and visit all");
+  } else {
+    if ((status == "All") && (branch == "All")) {
+      console.log("hit in branch and visit all");
 
-    connections.scm_public.query("SELECT Mrn FROM `drt_bills` WHERE DATE_FORMAT(bill_date,'%Y-%m')= ? group by Mrn", [frmdate], (err, resmrn) => {
-      if (err) console.error(err);
-
-      resmrn.forEach(element => {
-        listmrn.push(element.Mrn);
-      })
-
-      connections.ideamed.query("SELECT RIP.PATIENTID as Mrn, RIP.PATIENTNAME, RDRT.REFERRALTYPENAME, RDRB.REFERREDBYNAME from RT_INDIVIDUAL_PATIENT RIP JOIN RT_DATA_REFERRAL_TYPE RDRT ON RDRT.ID=RIP.REFERRALTYPE JOIN RT_DATA_REFERRED_BY RDRB ON RDRB.ID=RIP.REFERREDBYCONSULTANT where RIP.PATIENTID IN (?)", [listmrn], (err, resultvalue) => {
+      connections.scm_public.query("SELECT Mrn FROM `drt_bills` WHERE DATE_FORMAT(bill_date,'%Y-%m')= ? group by Mrn", [frmdate], (err, resmrn) => {
         if (err) console.error(err);
 
-        connections.scm_public.query(files.finall, [frmdate, frmdate, frmdate, frmdate, frmdate], (err, resultfin) => {
+        resmrn.forEach(element => {
+          listmrn.push(element.Mrn);
+        })
+
+        connections.ideamed.query("SELECT RIP.PATIENTID as Mrn, RIP.PATIENTNAME, RDRT.REFERRALTYPENAME, RDRB.REFERREDBYNAME from RT_INDIVIDUAL_PATIENT RIP JOIN RT_DATA_REFERRAL_TYPE RDRT ON RDRT.ID=RIP.REFERRALTYPE JOIN RT_DATA_REFERRED_BY RDRB ON RDRB.ID=RIP.REFERREDBYCONSULTANT where RIP.PATIENTID IN (?)", [listmrn], (err, resultvalue) => {
           if (err) console.error(err);
 
+          connections.scm_public.query(files.finall, [frmdate, frmdate, frmdate, frmdate, frmdate], (err, resultfin) => {
+            if (err) console.error(err);
 
-          mergedList = _.map(resultfin, function(item) {
-            return _.extend(item, _.find(resultvalue, {
-              Mrn: item.Mrn
-            }));
+
+            mergedList = _.map(resultfin, function(item) {
+              return _.extend(item, _.find(resultvalue, {
+                Mrn: item.Mrn
+              }));
+            });
+
+            res.json({
+              "result": {
+                "bill": mergedList
+              }
+            });
+
           });
 
-          res.json({
-            "result": {
-              "bill": mergedList
-            }
-          });
-
-        });
-
-      })
-    })
-
-
-  }
-  else if ((status == "All") && (!(branch == 'All'))) {
-    console.log("hit in status all");
-
-    connections.scm_public.query("SELECT Mrn FROM `drt_bills` WHERE DATE_FORMAT(bill_date,'%Y-%m')= ? group by Mrn", [frmdate], (err, resmrn) => {
-      if (err) console.error(err);
-
-      resmrn.forEach(element => {
-        listmrn.push(element.Mrn);
+        })
       })
 
-      connections.ideamed.query("SELECT RIP.PATIENTID as Mrn, RIP.PATIENTNAME, RDRT.REFERRALTYPENAME, RDRB.REFERREDBYNAME from RT_INDIVIDUAL_PATIENT RIP JOIN RT_DATA_REFERRAL_TYPE RDRT ON RDRT.ID=RIP.REFERRALTYPE JOIN RT_DATA_REFERRED_BY RDRB ON RDRB.ID=RIP.REFERREDBYCONSULTANT where RIP.PATIENTID IN (?)", [listmrn], (err, resultvalue) => {
+
+    } else if ((status == "All") && (!(branch == 'All'))) {
+      console.log("hit in status all");
+
+      connections.scm_public.query("SELECT Mrn FROM `drt_bills` WHERE DATE_FORMAT(bill_date,'%Y-%m')= ? group by Mrn", [frmdate], (err, resmrn) => {
         if (err) console.error(err);
 
-        connections.scm_public.query(files.finstatusall, [frmdate, branch, frmdate, branch, frmdate, branch, frmdate, branch, frmdate, branch], (err, resultfin) => {
+        resmrn.forEach(element => {
+          listmrn.push(element.Mrn);
+        })
+
+        connections.ideamed.query("SELECT RIP.PATIENTID as Mrn, RIP.PATIENTNAME, RDRT.REFERRALTYPENAME, RDRB.REFERREDBYNAME from RT_INDIVIDUAL_PATIENT RIP JOIN RT_DATA_REFERRAL_TYPE RDRT ON RDRT.ID=RIP.REFERRALTYPE JOIN RT_DATA_REFERRED_BY RDRB ON RDRB.ID=RIP.REFERREDBYCONSULTANT where RIP.PATIENTID IN (?)", [listmrn], (err, resultvalue) => {
           if (err) console.error(err);
 
-          mergedList = _.map(resultfin, function(item) {
-            return _.extend(item, _.find(resultvalue, {
-              Mrn: item.Mrn
-            }));
-          });
+          connections.scm_public.query(files.finstatusall, [frmdate, branch, frmdate, branch, frmdate, branch, frmdate, branch, frmdate, branch], (err, resultfin) => {
+            if (err) console.error(err);
 
-          res.json({
-            "result": {
-              "bill": mergedList
-            }
-          });
+            mergedList = _.map(resultfin, function(item) {
+              return _.extend(item, _.find(resultvalue, {
+                Mrn: item.Mrn
+              }));
+            });
 
-        });
+            res.json({
+              "result": {
+                "bill": mergedList
+              }
+            });
 
-      });
-    });
-
-
-
-  }
-
-  else if (!(status == "All") && (branch == 'All')) {
-  //
-    connections.scm_public.query("SELECT Mrn FROM `drt_bills` WHERE DATE_FORMAT(bill_date,'%Y-%m')= ? group by Mrn", [frmdate], (err, resmrn) => {
-      if (err) console.error(err);
-
-      resmrn.forEach(element => {
-        listmrn.push(element.Mrn);
-      })
-
-      connections.ideamed.query("SELECT RIP.PATIENTID as Mrn, RIP.PATIENTNAME, RDRT.REFERRALTYPENAME, RDRB.REFERREDBYNAME from RT_INDIVIDUAL_PATIENT RIP JOIN RT_DATA_REFERRAL_TYPE RDRT ON RDRT.ID=RIP.REFERRALTYPE JOIN RT_DATA_REFERRED_BY RDRB ON RDRB.ID=RIP.REFERREDBYCONSULTANT where RIP.PATIENTID IN (?)", [listmrn], (err, resultvalue) => {
-        if (err) console.error(err);
-
-        connections.scm_public.query(files.finbranchall, [frmdate, status], (err, resultfin) => {
-          if (err) console.error(err);
-          mergedList = _.map(resultfin, function(item) {
-            return _.extend(item, _.find(resultvalue, {
-              Mrn: item.Mrn
-            }));
-          });
-
-          res.json({
-            "result": {
-              "bill": mergedList
-            }
           });
 
         });
       });
-    });
 
 
-  }
 
-  else {
-    console.log("hit in else");
-
-    connections.scm_public.query("SELECT Mrn FROM `drt_bills` WHERE DATE_FORMAT(bill_date,'%Y-%m')= ? group by Mrn", [frmdate], (err, resmrn) => {
-      if (err) console.error(err);
-
-      resmrn.forEach(element => {
-        listmrn.push(element.Mrn);
-      })
-
-      connections.ideamed.query("SELECT RIP.PATIENTID as Mrn, RIP.PATIENTNAME, RDRT.REFERRALTYPENAME, RDRB.REFERREDBYNAME from RT_INDIVIDUAL_PATIENT RIP JOIN RT_DATA_REFERRAL_TYPE RDRT ON RDRT.ID=RIP.REFERRALTYPE JOIN RT_DATA_REFERRED_BY RDRB ON RDRB.ID=RIP.REFERREDBYCONSULTANT where RIP.PATIENTID IN (?)", [listmrn], (err, resultvalue) => {
+    } else if (!(status == "All") && (branch == 'All')) {
+      //
+      connections.scm_public.query("SELECT Mrn FROM `drt_bills` WHERE DATE_FORMAT(bill_date,'%Y-%m')= ? group by Mrn", [frmdate], (err, resmrn) => {
         if (err) console.error(err);
 
-        connections.scm_public.query(files.finelse, [frmdate,status, branch], (err, resultfin) => {
+        resmrn.forEach(element => {
+          listmrn.push(element.Mrn);
+        })
+
+        connections.ideamed.query("SELECT RIP.PATIENTID as Mrn, RIP.PATIENTNAME, RDRT.REFERRALTYPENAME, RDRB.REFERREDBYNAME from RT_INDIVIDUAL_PATIENT RIP JOIN RT_DATA_REFERRAL_TYPE RDRT ON RDRT.ID=RIP.REFERRALTYPE JOIN RT_DATA_REFERRED_BY RDRB ON RDRB.ID=RIP.REFERREDBYCONSULTANT where RIP.PATIENTID IN (?)", [listmrn], (err, resultvalue) => {
           if (err) console.error(err);
 
-          mergedList = _.map(resultfin, function(item) {
-            return _.extend(item, _.find(resultvalue, {
-              Mrn: item.Mrn
-            }));
+          connections.scm_public.query(files.finbranchall, [frmdate, status], (err, resultfin) => {
+            if (err) console.error(err);
+            mergedList = _.map(resultfin, function(item) {
+              return _.extend(item, _.find(resultvalue, {
+                Mrn: item.Mrn
+              }));
+            });
+
+            res.json({
+              "result": {
+                "bill": mergedList
+              }
+            });
+
           });
-
-          res.json({
-            "result": {
-              "bill": mergedList
-            }
-          });
-
-
         });
       });
 
-    });
+
+    } else {
+      console.log("hit in else");
+
+      connections.scm_public.query("SELECT Mrn FROM `drt_bills` WHERE DATE_FORMAT(bill_date,'%Y-%m')= ? group by Mrn", [frmdate], (err, resmrn) => {
+        if (err) console.error(err);
+
+        resmrn.forEach(element => {
+          listmrn.push(element.Mrn);
+        })
+
+        connections.ideamed.query("SELECT RIP.PATIENTID as Mrn, RIP.PATIENTNAME, RDRT.REFERRALTYPENAME, RDRB.REFERREDBYNAME from RT_INDIVIDUAL_PATIENT RIP JOIN RT_DATA_REFERRAL_TYPE RDRT ON RDRT.ID=RIP.REFERRALTYPE JOIN RT_DATA_REFERRED_BY RDRB ON RDRB.ID=RIP.REFERREDBYCONSULTANT where RIP.PATIENTID IN (?)", [listmrn], (err, resultvalue) => {
+          if (err) console.error(err);
+
+          connections.scm_public.query(files.finelse, [frmdate, status, branch], (err, resultfin) => {
+            if (err) console.error(err);
+
+            mergedList = _.map(resultfin, function(item) {
+              return _.extend(item, _.find(resultvalue, {
+                Mrn: item.Mrn
+              }));
+            });
+
+            res.json({
+              "result": {
+                "bill": mergedList
+              }
+            });
+
+
+          });
+        });
+
+      });
+    }
   }
-}
   //
   // if ((status == "All") && (branch == "All")) {
   //   console.log("hit in branch and visit all");
@@ -2211,9 +2233,9 @@ else {
 exports.finbillinsert = (req, res) => {
   let schbillid = req.body.sch_bill_id;
   let schid = req.body.sch_id;
-  let expensedatefin=req.body.sch_expensedate;
+  let expensedatefin = req.body.sch_expensedate;
   console.log("schbillid :" + schbillid);
-  let findrtbillupdate = "update drt_bills set admin_Approved_by='" + schid + "' ,Approval_status=2,Admin_Approved_time=Now(),Expense_date='"+expensedatefin+"' where id=" + schbillid
+  let findrtbillupdate = "update drt_bills set admin_Approved_by='" + schid + "' ,Approval_status=2,Admin_Approved_time=Now(),Expense_date='" + expensedatefin + "' where id=" + schbillid
   console.log(findrtbillupdate);
 
   connections.scm_root.query(findrtbillupdate, (err, resilt) => {
@@ -2227,10 +2249,10 @@ exports.finbillinsert = (req, res) => {
 exports.finbillcancel = (req, res) => {
   let finbillid = req.body.sch_bill_id;
   let finid = req.body.sch_id;
-  let fincomments=req.body.sch_comments;
-let concat=fincomments.concat("-- by finance")
-  let findrtbillcancel = "update drt_bills set Approval_status=4,Cancelled_time=now(),Cancelled_by='" + finid + "',Comments='"+concat+"' where id=" + finbillid
-// let findrtbillcancel = "update drt_bills set Approval_status=4,Cancelled_time=now(),Cancelled_by='" + finid + "' where id=" + finbillid
+  let fincomments = req.body.sch_comments;
+  let concat = fincomments.concat("-- by finance")
+  let findrtbillcancel = "update drt_bills set Approval_status=4,Cancelled_time=now(),Cancelled_by='" + finid + "',Comments='" + concat + "' where id=" + finbillid
+  // let findrtbillcancel = "update drt_bills set Approval_status=4,Cancelled_time=now(),Cancelled_by='" + finid + "' where id=" + finbillid
 
   console.log(findrtbillcancel);
 
@@ -2253,11 +2275,11 @@ exports.approvalbills = (req, res) => {
 }
 
 
-exports.main_route_usage_tracker_new_email = (yesterday,callback) => {
+exports.main_route_usage_tracker_new_email = (yesterday, callback) => {
   // if (sess.superUser === undefined) {
   //   res.json({ msg: "Not Authorised" });
   // } else {
-//  console.log('main_route_revenue');
+  //  console.log('main_route_revenue');
   let ftddate = yesterday;
   let temp = new Date(ftddate);
   let mtddate =
@@ -2279,86 +2301,86 @@ exports.main_route_usage_tracker_new_email = (yesterday,callback) => {
     [mtddate, ftddate],
     (error, resnewopd) => {
 
-      if (error)  {
-		  callback("new opd select query error",null);
-	 }else{
-	  connections.scm_public.query(
-		files.device_history,
-		[mtddate, ftddate],
-		(error, resdevicehistory) => {
-		if(error){
-			callback("device_history select query error",null);
-		}else{
-			connections.scm_public.query(
-			files.device_revenue,
-			[mtddate, ftddate],
-			(error, resdevicerevenue) => {
-			if(error){
-				callback("device_revenue select query error",null);
-			}else{
-          connections.scm_public.query("select br.entity as entity,br.region as region,br.code as branch,br.branch as branchname,tr.total,tr.amount from branches as br  LEFT JOIN usage_track_target as tr ON br.id=tr.branch_id AND target_month='"+tarMonth+"' AND target_year='"+tarYear+"'",(err, targetres) => {
-				if(err){
-					callback("target join query  error",null);
-				}else{
-					connections.scm_public.query(files.currency_details, [mtddate, ftddate],(currerr, currres) => {
-					 if (currerr) {
-						console.log(currerr);
-					 }else{
-						 connections.scm_public.query(files.currency_det_last_mth, (curr_last_err, curr_last_res) => {
-						 if (curr_last_err) {
-							console.log(curr_last_err);
-						  }else{
+      if (error) {
+        callback("new opd select query error", null);
+      } else {
+        connections.scm_public.query(
+          files.device_history,
+          [mtddate, ftddate],
+          (error, resdevicehistory) => {
+            if (error) {
+              callback("device_history select query error", null);
+            } else {
+              connections.scm_public.query(
+                files.device_revenue,
+                [mtddate, ftddate],
+                (error, resdevicerevenue) => {
+                  if (error) {
+                    callback("device_revenue select query error", null);
+                  } else {
+                    connections.scm_public.query("select br.entity as entity,br.region as region,br.code as branch,br.branch as branchname,tr.total,tr.amount from branches as br  LEFT JOIN usage_track_target as tr ON br.id=tr.branch_id AND target_month='" + tarMonth + "' AND target_year='" + tarYear + "'", (err, targetres) => {
+                      if (err) {
+                        callback("target join query  error", null);
+                      } else {
+                        connections.scm_public.query(files.currency_details, [mtddate, ftddate], (currerr, currres) => {
+                          if (currerr) {
+                            console.log(currerr);
+                          } else {
+                            connections.scm_public.query(files.currency_det_last_mth, (curr_last_err, curr_last_res) => {
+                              if (curr_last_err) {
+                                console.log(curr_last_err);
+                              } else {
 
-							  connections.scm_public.query(
-								"select * from branches",
-								(err, branchres) => {
-								  if(err) {
-									  callback("branches query  error",null);
-								  }else{
-										  mods.nativeFunctions
-											.newUsageTrackerNativeNew(
-											  resnewopd,
-											  branchres,
-											  ftddate,
-											  resdevicehistory,
-											  targetres,
-											  resdevicerevenue,
-											  currres,
-											  curr_last_res
-											)
-											.then(final => callback(null,final));
-								 }
-										});
-						  }
-						  });
+                                connections.scm_public.query(
+                                  "select * from branches",
+                                  (err, branchres) => {
+                                    if (err) {
+                                      callback("branches query  error", null);
+                                    } else {
+                                      mods.nativeFunctions
+                                        .newUsageTrackerNativeNew(
+                                          resnewopd,
+                                          branchres,
+                                          ftddate,
+                                          resdevicehistory,
+                                          targetres,
+                                          resdevicerevenue,
+                                          currres,
+                                          curr_last_res
+                                        )
+                                        .then(final => callback(null, final));
+                                    }
+                                  });
+                              }
+                            });
 
-					}
-					});
-				}
-		  });
-		  }
-		 }
-		 );
-		 }
+                          }
+                        });
+                      }
+                    });
+                  }
+                }
+              );
+            }
 
-		}
-		);
-		}
-	}
-	);
+          }
+        );
+      }
+    }
+  );
   // }
 };
 
 
 
-exports.avaEmailList = (emailtemp,callback) =>{
-	connections.scm_public.query("select fromid,toid,bccid,ccid,passcode from email where scmtype='avaemail'",(error, domesticemailres) => {
-      if (error) {
-		  callback("select email query",null);
-	  }else{
-		  callback(null,domesticemailres);
-	  }
-	});
+exports.avaEmailList = (emailtemp, callback) => {
+  connections.scm_public.query("select fromid,toid,bccid,ccid,passcode from email where scmtype='avaemail'", (error, domesticemailres) => {
+    if (error) {
+      callback("select email query", null);
+    } else {
+      callback(null, domesticemailres);
+    }
+  });
 }
 
 
@@ -2489,7 +2511,7 @@ exports.upload_doctor = async (req, res) => {
       } else {
 
         let results = await errorresult(agreementfile, panfile, passbookfile)
-  //      console.log(results);
+        //      console.log(results);
         doc_agreement = 'Yes'
         if (results.result == "updated") {
           connections.scm_root.query("INSERT INTO `drt_customer` (Name,Address,Contact_no,Email,Pan_no,GSTIN,Percentage,STATUS,Branch,Account_no,Bank_ifsc,Bank_name,Agreement,Agreement_url,Pan_url,Passbook_url,uploaded_user,Payment_type,Infavour_of) VALUE (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -2928,7 +2950,7 @@ exports.download_file = (req, res) => {
   let filepath = req.params.download
   console.log(filepath);
   //var fileLocation = path.join('/var/www/andaman/drtfiles', filepath)
-  var fileLocation = '/var/www/andaman/drtfiles/'+filepath;
+  var fileLocation = '/var/www/andaman/drtfiles/' + filepath;
   console.log(fileLocation);
   res.download(fileLocation);
 }
@@ -2940,7 +2962,7 @@ exports.fin_doctorlist = (req, res) => {
   console.log(fin_status);
   console.log(fin_branch);
   if ((fin_branch == "All") && (fin_status == "All")) {
-    connections.scm_public.query(files.findocallall,(err, resfin) => {
+    connections.scm_public.query(files.findocallall, (err, resfin) => {
       //  console.log(resfin);
       if (err) console.error(err);
       res.json({
@@ -2983,13 +3005,13 @@ exports.fin_doctorlist = (req, res) => {
   }
 }
 
-exports.fin_doctorapprove=(req,res)=>{
+exports.fin_doctorapprove = (req, res) => {
   console.log(req.body);
-  let fin_id=req.body.fin_id;
+  let fin_id = req.body.fin_id;
   console.log(fin_id);
-  connections.scm_root.query("UPDATE drt_customer SET STATUS=1,Created_by=NOW() WHERE ID=? ",[fin_id],(err,resupdatedoc)=>{
+  connections.scm_root.query("UPDATE drt_customer SET STATUS=1,Created_by=NOW() WHERE ID=? ", [fin_id], (err, resupdatedoc) => {
     console.log(resupdatedoc);
-    if(err) console.error(err);
+    if (err) console.error(err);
     res.json({
       Dataupdated: "updated"
     })
@@ -2997,13 +3019,13 @@ exports.fin_doctorapprove=(req,res)=>{
 
 }
 
-exports.fin_doctorreject=(req,res)=>{
+exports.fin_doctorreject = (req, res) => {
   console.log(req.body);
-  let fin_id=req.body.fin_id;
+  let fin_id = req.body.fin_id;
   console.log(fin_id);
-  connections.scm_root.query("UPDATE drt_customer SET STATUS=-2,Cancelled_time=NOW() WHERE ID=? ",[fin_id],(err,resupdatedoc)=>{
+  connections.scm_root.query("UPDATE drt_customer SET STATUS=-2,Cancelled_time=NOW() WHERE ID=? ", [fin_id], (err, resupdatedoc) => {
     console.log(resupdatedoc);
-    if(err) console.error(err);
+    if (err) console.error(err);
     res.json({
       Dataupdated: "updated"
     })
@@ -3011,10 +3033,10 @@ exports.fin_doctorreject=(req,res)=>{
 
 }
 
-exports.fin_loaddoc=(req,res)=>{
+exports.fin_loaddoc = (req, res) => {
 
-  connections.scm_public.query("SELECT COUNT(*) as count FROM drt_customer WHERE STATUS=-1",(err,resloaddoc)=>{
-    if(err) console.error(err);
+  connections.scm_public.query("SELECT COUNT(*) as count FROM drt_customer WHERE STATUS=-1", (err, resloaddoc) => {
+    if (err) console.error(err);
     res.json(resloaddoc)
   })
 }
@@ -3114,169 +3136,170 @@ exports.ch_submittedbills = (req, res) => {
 
 
 
-exports.expense_date=(req,res)=>{
+exports.expense_date = (req, res) => {
   console.log(req.body);
-  let finbill_id=req.body.sch_bill_id;
-  let fin_expensedate=req.body.sch_expensedate;
-  let findrtbillexpenseupdate = "update drt_bills set Expense_date='"+fin_expensedate+"' where id=" + finbill_id
+  let finbill_id = req.body.sch_bill_id;
+  let fin_expensedate = req.body.sch_expensedate;
+  let findrtbillexpenseupdate = "update drt_bills set Expense_date='" + fin_expensedate + "' where id=" + finbill_id
   console.log(findrtbillexpenseupdate);
 
-    connections.scm_root.query(findrtbillexpenseupdate,(err,finexpense)=>{
-        if (err) console.error(err);
-        res.json({
-          Dataupdated: "updated"
-        })
+  connections.scm_root.query(findrtbillexpenseupdate, (err, finexpense) => {
+    if (err) console.error(err);
+    res.json({
+      Dataupdated: "updated"
     })
+  })
 
 }
 
 
 
 exports.revvscogs_services = (req, res) => {
-	     let ftddate = req.params.date;
-		 let mothYear = ftddate.split("-");
-		 let year = mothYear[0];
-		 let month = mothYear[1];
-		 if(month<04){
-			year =  year-1;
-		 }
+  let ftddate = req.params.date;
+  let mothYear = ftddate.split("-");
+  let year = mothYear[0];
+  let month = mothYear[1];
+  if (month < 04) {
+    year = year - 1;
+  }
 
-		 let start='',end='';
-		 if(req.params.type == 'Month'){
-			 start = ftddate+'-01';
-			 end = ftddate+'-31';
-		 }else{
-			 start = year+'-04-01';
-			 end = ftddate+'-31';
-		 }
-		 let entity = req.params.entity;
-		 let region = req.params.region;
-		 let branch = req.params.branch;
-		 var revenueqry = '',revReferalQry1='',revReferalQry2='';
-		 var cogsqry = '';
-		 if(entity=='AEH'){
-			 var entitycondition = " entity in ('AEH')";
-		 }else{
-			 var entitycondition = " entity in ('AHC','AHI')";
-		 }
-		 if(ftddate!='undefined' && entity!='undefined' && region!='undefined' &&  branch!='undefined'){
-
-
-
-			 revenueqry = 'select  * from  revenue_details where '+entitycondition+'  and BILLED="'+branch+'" and TRANSACTION_DATE between "'+start+'" and "'+end+'" and id!=""';
-			 cogsqry = 'select  * from  cogs_details where '+entitycondition+'  and branch="'+branch+'" and trans_date between "'+start+'" and "'+end+'" and  id!=""';
-
-			 revReferalQry1 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE="'+branch+'" and BILLED!="'+branch+'" and TRANSACTION_DATE between "'+start+'" and "'+end+'" and  id!=""';
-
-			 revReferalQry2 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE!="'+branch+'" and BILLED="'+branch+'" and TRANSACTION_DATE between "'+start+'" and "'+end+'" and  id!=""';
-
-
-		 }else if(ftddate!='undefined' && entity!='undefined' && region!='undefined' &&  branch=='undefined'){
-
-			 console.log(777777777);
-			// var whereCondition1 = whereConditionBuild1(entity,region);
-             //var whereCondition = whereConditionBuild(entity,region);
-             var branches = branchList(entity,region);
-			 revenueqry = 'select UNIT,`GROUP`,SUBGROUP,ITEMCODE,NET_AMOUNT from  revenue_details   where '+entitycondition+' and BILLED in '+branches+'   and TRANSACTION_DATE between "'+start+'" and "'+end+'" and  id!=""';
-
-
-			  cogsqry = 'select top,second,`group`,sub_group,item_code,actual_value from  cogs_details   where '+entitycondition+' and branch in '+branches+'  and trans_date between "'+start+'" and "'+end+'" and  id!=""';
-
-			 revReferalQry1 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE IN '+branches+' and BILLED NOT IN '+branches+' and TRANSACTION_DATE between "'+start+'" and "'+end+'" and  id!=""';
-
-			 revReferalQry2 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE NOT IN '+branches+' and BILLED IN '+branches+' and TRANSACTION_DATE between "'+start+'" and "'+end+'" and  id!=""';
-
-		 }else if(ftddate!='undefined' && entity!='undefined' && region=='undefined' &&  branch=='undefined'){
-			 console.log(8888888888888);
-			 var branches = branchList(entity,region);
-
-			 revenueqry = 'select UNIT,`GROUP`,SUBGROUP,ITEMCODE,NET_AMOUNT from  revenue_details   where '+entitycondition+'  and TRANSACTION_DATE between "'+start+'" and "'+end+'" and  id!=""';
-			 cogsqry = 'select top,second,`group`,sub_group,item_code,actual_value from  cogs_details   where '+entitycondition+'  and trans_date between "'+start+'" and "'+end+'" and  id!=""';
-
-			 revReferalQry1 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE IN '+branches+' and BILLED NOT IN '+branches+' and TRANSACTION_DATE between "'+start+'" and "'+end+'" and  id!=""';
-
-			 revReferalQry2 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE NOT IN '+branches+' and BILLED IN '+branches+' and TRANSACTION_DATE between "'+start+'" and "'+end+'" and  id!=""';
-
-
-		 }else if(ftddate!='undefined' && entity=='undefined' && region!='undefined' &&  branch=='undefined'){
-			console.log(99999999999999);
-			//var whereCondition1 = whereConditionBuild1(entity,region);
-			//var whereCondition = whereConditionBuild(entity,region);
-
-			 var branches = branchList(entity,region);
-			revenueqry = 'select * from  revenue_details   where entity in ("AEH","AHC","AHI") and BILLED in '+branches+'  and TRANSACTION_DATE between "'+start+'" and "'+end+'" and  id!=""';
-			cogsqry = 'select * from  cogs_details   where entity in ("AEH","AHC","AHI") and branch in '+branches+'   and trans_date between "'+start+'" and "'+end+'" and  id!=""';
-
-			revReferalQry1 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE IN '+branches+' and BILLED NOT IN '+branches+' and TRANSACTION_DATE between "'+start+'" and "'+end+'" and  id!=""';
-
-			 revReferalQry2 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE NOT IN '+branches+' and BILLED IN '+branches+' and TRANSACTION_DATE between "'+start+'" and "'+end+'" and  id!=""';
+  let start = '',
+    end = '';
+  if (req.params.type == 'Month') {
+    start = ftddate + '-01';
+    end = ftddate + '-31';
+  } else {
+    start = year + '-04-01';
+    end = ftddate + '-31';
+  }
+  let entity = req.params.entity;
+  let region = req.params.region;
+  let branch = req.params.branch;
+  var revenueqry = '',
+    revReferalQry1 = '',
+    revReferalQry2 = '';
+  var cogsqry = '';
+  if (entity == 'AEH') {
+    var entitycondition = " entity in ('AEH')";
+  } else {
+    var entitycondition = " entity in ('AHC','AHI')";
+  }
+  if (ftddate != 'undefined' && entity != 'undefined' && region != 'undefined' && branch != 'undefined') {
 
 
 
-		 }else{
-			 console.log(101010101010);
-			 var branches = branchList(entity,region);
-			 revenueqry = 'select * from  revenue_details   where entity in ("AEH","AHC","AHI") and TRANSACTION_DATE between "'+start+'" and "'+end+'"';
-			 cogsqry = 'select * from  cogs_details   where entity in ("AEH","AHC","AHI") and trans_date between "'+start+'" and "'+end+'" ';
+    revenueqry = 'select  * from  revenue_details where ' + entitycondition + '  and BILLED="' + branch + '" and TRANSACTION_DATE between "' + start + '" and "' + end + '" and id!=""';
+    cogsqry = 'select  * from  cogs_details where ' + entitycondition + '  and branch="' + branch + '" and trans_date between "' + start + '" and "' + end + '" and  id!=""';
+
+    revReferalQry1 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE="' + branch + '" and BILLED!="' + branch + '" and TRANSACTION_DATE between "' + start + '" and "' + end + '" and  id!=""';
+
+    revReferalQry2 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE!="' + branch + '" and BILLED="' + branch + '" and TRANSACTION_DATE between "' + start + '" and "' + end + '" and  id!=""';
 
 
-			revReferalQry1 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE IN '+branches+' and BILLED NOT IN '+branches+' and TRANSACTION_DATE between "'+start+'" and "'+end+'"';
+  } else if (ftddate != 'undefined' && entity != 'undefined' && region != 'undefined' && branch == 'undefined') {
 
-			 revReferalQry2 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE NOT IN '+branches+' and BILLED IN '+branches+' and TRANSACTION_DATE between "'+start+'" and "'+end+'"';
-
-
-
-
-		 }
-            async.parallel({
-				revenue: (callback) => {
-					  connections.scm_public.query(revenueqry,(error, revresults) => {
-						  callback(error, revresults);
-					  });
-
-                },
-				cogs: (callback) => {
-                    connections.scm_public.query(cogsqry,(error, cogsres) => {
-						  callback(error, cogsres);
-
-					  });
-
-                }
-				,
-                revenue1: (callback) => {
-                    connections.scm_public.query(revReferalQry1,(error, revreferres1) => {
-						  callback(error, revreferres1);
-					  });
-
-                }
-				,
-				revenue2: (callback) => {
-                    connections.scm_public.query(revReferalQry2,(error, revreferres2) => {
-						  callback(error, revreferres2);
-					  });
-
-                }
+    console.log(777777777);
+    // var whereCondition1 = whereConditionBuild1(entity,region);
+    //var whereCondition = whereConditionBuild(entity,region);
+    var branches = branchList(entity, region);
+    revenueqry = 'select UNIT,`GROUP`,SUBGROUP,ITEMCODE,NET_AMOUNT from  revenue_details   where ' + entitycondition + ' and BILLED in ' + branches + '   and TRANSACTION_DATE between "' + start + '" and "' + end + '" and  id!=""';
 
 
-            }, (err, results) => {
-                if (err) {
-				   res.json(err);
+    cogsqry = 'select top,second,`group`,sub_group,item_code,actual_value from  cogs_details   where ' + entitycondition + ' and branch in ' + branches + '  and trans_date between "' + start + '" and "' + end + '" and  id!=""';
 
-                } else {
-					mods.nativeFunctions
-									.revCogsServices(
-									  results.revenue,
-									  results.cogs,
-									  results.revenue1,
-									  results.revenue2,
-									)
-									.then(final => res.json(final));
+    revReferalQry1 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE IN ' + branches + ' and BILLED NOT IN ' + branches + ' and TRANSACTION_DATE between "' + start + '" and "' + end + '" and  id!=""';
+
+    revReferalQry2 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE NOT IN ' + branches + ' and BILLED IN ' + branches + ' and TRANSACTION_DATE between "' + start + '" and "' + end + '" and  id!=""';
+
+  } else if (ftddate != 'undefined' && entity != 'undefined' && region == 'undefined' && branch == 'undefined') {
+    console.log(8888888888888);
+    var branches = branchList(entity, region);
+
+    revenueqry = 'select UNIT,`GROUP`,SUBGROUP,ITEMCODE,NET_AMOUNT from  revenue_details   where ' + entitycondition + '  and TRANSACTION_DATE between "' + start + '" and "' + end + '" and  id!=""';
+    cogsqry = 'select top,second,`group`,sub_group,item_code,actual_value from  cogs_details   where ' + entitycondition + '  and trans_date between "' + start + '" and "' + end + '" and  id!=""';
+
+    revReferalQry1 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE IN ' + branches + ' and BILLED NOT IN ' + branches + ' and TRANSACTION_DATE between "' + start + '" and "' + end + '" and  id!=""';
+
+    revReferalQry2 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE NOT IN ' + branches + ' and BILLED IN ' + branches + ' and TRANSACTION_DATE between "' + start + '" and "' + end + '" and  id!=""';
 
 
-                    //resolve(results);
-                }
+  } else if (ftddate != 'undefined' && entity == 'undefined' && region != 'undefined' && branch == 'undefined') {
+    console.log(99999999999999);
+    //var whereCondition1 = whereConditionBuild1(entity,region);
+    //var whereCondition = whereConditionBuild(entity,region);
 
-            });
+    var branches = branchList(entity, region);
+    revenueqry = 'select * from  revenue_details   where entity in ("AEH","AHC","AHI") and BILLED in ' + branches + '  and TRANSACTION_DATE between "' + start + '" and "' + end + '" and  id!=""';
+    cogsqry = 'select * from  cogs_details   where entity in ("AEH","AHC","AHI") and branch in ' + branches + '   and trans_date between "' + start + '" and "' + end + '" and  id!=""';
+
+    revReferalQry1 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE IN ' + branches + ' and BILLED NOT IN ' + branches + ' and TRANSACTION_DATE between "' + start + '" and "' + end + '" and  id!=""';
+
+    revReferalQry2 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE NOT IN ' + branches + ' and BILLED IN ' + branches + ' and TRANSACTION_DATE between "' + start + '" and "' + end + '" and  id!=""';
+
+
+
+  } else {
+    console.log(101010101010);
+    var branches = branchList(entity, region);
+    revenueqry = 'select * from  revenue_details   where entity in ("AEH","AHC","AHI") and TRANSACTION_DATE between "' + start + '" and "' + end + '"';
+    cogsqry = 'select * from  cogs_details   where entity in ("AEH","AHC","AHI") and trans_date between "' + start + '" and "' + end + '" ';
+
+
+    revReferalQry1 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE IN ' + branches + ' and BILLED NOT IN ' + branches + ' and TRANSACTION_DATE between "' + start + '" and "' + end + '"';
+
+    revReferalQry2 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE NOT IN ' + branches + ' and BILLED IN ' + branches + ' and TRANSACTION_DATE between "' + start + '" and "' + end + '"';
+
+
+
+
+  }
+  async.parallel({
+    revenue: (callback) => {
+      connections.scm_public.query(revenueqry, (error, revresults) => {
+        callback(error, revresults);
+      });
+
+    },
+    cogs: (callback) => {
+      connections.scm_public.query(cogsqry, (error, cogsres) => {
+        callback(error, cogsres);
+
+      });
+
+    },
+    revenue1: (callback) => {
+      connections.scm_public.query(revReferalQry1, (error, revreferres1) => {
+        callback(error, revreferres1);
+      });
+
+    },
+    revenue2: (callback) => {
+      connections.scm_public.query(revReferalQry2, (error, revreferres2) => {
+        callback(error, revreferres2);
+      });
+
+    }
+
+
+  }, (err, results) => {
+    if (err) {
+      res.json(err);
+
+    } else {
+      mods.nativeFunctions
+        .revCogsServices(
+          results.revenue,
+          results.cogs,
+          results.revenue1,
+          results.revenue2,
+        )
+        .then(final => res.json(final));
+
+
+      //resolve(results);
+    }
+
+  });
 
 
 };
@@ -3307,29 +3330,29 @@ exports.revvscogs_services = (req, res) => {
 }*/
 
 
-function branchList(argEntity,argRegion){
+function branchList(argEntity, argRegion) {
 
-	if(argEntity!='undefined' && argRegion!='undefined'){
-		var branchesarr = regionMapping[argEntity][argRegion];
-	}else if(argEntity=='undefined' && argRegion!='undefined'){
-		var branchesarr = regionMapping[argRegion];
-	}else if(argEntity!='undefined' && argRegion=='undefined'){
-		var branchesarr = entityMapping[argEntity];
-	}else if(argEntity=='undefined' && argRegion=='undefined'){
-		var branchesarr = entityMapping['ALL'];
-	}
+  if (argEntity != 'undefined' && argRegion != 'undefined') {
+    var branchesarr = regionMapping[argEntity][argRegion];
+  } else if (argEntity == 'undefined' && argRegion != 'undefined') {
+    var branchesarr = regionMapping[argRegion];
+  } else if (argEntity != 'undefined' && argRegion == 'undefined') {
+    var branchesarr = entityMapping[argEntity];
+  } else if (argEntity == 'undefined' && argRegion == 'undefined') {
+    var branchesarr = entityMapping['ALL'];
+  }
 
-	var branchIN = '';
-	var branchlist = '';
-	for (let key in branchesarr) {
-	branchIN+="'"+branchesarr[key]+"',";
-	}
-	var branchlist = branchIN.substr(0, branchIN.length-1);
-	if(branchlist){
-		return '  ('+branchlist+') ';
-	}else{
-		return '';
-	}
+  var branchIN = '';
+  var branchlist = '';
+  for (let key in branchesarr) {
+    branchIN += "'" + branchesarr[key] + "',";
+  }
+  var branchlist = branchIN.substr(0, branchIN.length - 1);
+  if (branchlist) {
+    return '  (' + branchlist + ') ';
+  } else {
+    return '';
+  }
 
 
 
@@ -3338,23 +3361,22 @@ function branchList(argEntity,argRegion){
 
 
 exports.pettycash_category = (req, res) => {
-  connections.scm_public.query(files.pettycash_category,(error, branchresults) => {
-      if (error) console.error(error);
-          res.json(branchresults);
-    }
-  );
+  connections.scm_public.query(files.pettycash_category, (error, branchresults) => {
+    if (error) console.error(error);
+    res.json(branchresults);
+  });
   // }
 };
 
 
 exports.pettycash_allocated_amount = (req, res) => {
-   let branch = req.params.branch;
-   connections.scm_public.query(
+  let branch = req.params.branch;
+  connections.scm_public.query(
     files.pettycash_allocated_amount,
     [branch],
     (error, alocated_amount_res) => {
       if (error) console.error(error);
-          res.json(alocated_amount_res);
+      res.json(alocated_amount_res);
     }
   );
   // }
@@ -3362,331 +3384,390 @@ exports.pettycash_allocated_amount = (req, res) => {
 
 
 exports.bill_submit = async (req, res) => {
-	 console.log("1111");
-	 console.log(req);
-	 //process.exit(1);
+  console.log("1111");
+  console.log(req);
+  //process.exit(1);
 
-	let branch = req.body.branch;
-	let voucherno= req.body.voucherno;
-	let category = req.body.category;
-	let remarks = req.body.remarks;
-	let amount = req.body.amount;
-	let vendorname = req.body.vendorname;
-	let billno = req.body.billno;
-	let sumbissiondate = req.body.sumbissiondate;
-	let chid = req.body.chid;
-	let billdate = req.body.expensedate;
-	let branchamount = await  branchamountResult(branch);
+  let branch = req.body.branch;
+  let voucherno = req.body.voucherno;
+  let category = req.body.category;
+  let remarks = req.body.remarks;
+  let amount = req.body.amount;
+  let vendorname = req.body.vendorname;
+  let billno = req.body.billno;
+  let sumbissiondate = req.body.sumbissiondate;
+  let chid = req.body.chid;
+  let billdate = req.body.expensedate;
+  let branchamount = await branchamountResult(branch);
 
-	if(branchamount.result==null){
-		res.json({"ResponseCode":201,"ResponseMsg":"You can't rise bill for this branch:"+branch});
-	}else if(branchamount.result=='error'){
-		res.json({"ResponseCode":202,"ResponseMsg":"Technical error"});
-	}else{
-		   console.log(branchamount.result[0].debit);
-		   let balanceAmount=0;
-		   let creditAmount = branchamount.result[0].credit;
-		   let notificationAmount = branchamount.result[0].notify_amount;
-		   let debitamountCalculate = parseInt(branchamount.result[0].debit)+parseInt(amount);
-		   if(branchamount.result[0].balance==0){
-			    balanceAmount = parseInt(branchamount.result[0].credit)-parseInt(debitamountCalculate);
-		   }else{
-			  balanceAmount = parseInt(branchamount.result[0].balance)-parseInt(amount);
-		   }
-		   console.log("debit amount ")
-		   console.log(debitamountCalculate);
-		   //if(debitamountCalculate<=branchamount.result[0].credit){
-			   if(debitamountCalculate<=branchamount.result[0].credit){
-			   //if(amount<=branchamount.result[0].balance){
-			    console.log("not reached");
-				let voucherFileMoveStatus = await  moveVoucherFile(req);
-				let billFileMoveStatus = await  moveBillFile(req);
-				if(voucherFileMoveStatus.result==null &&  req.files.fileVoucher!=null){
-					res.json({"ResponseCode":204,"ResponseMsg":"Voucher not uploaed. Try Again"});
-				}else if(billFileMoveStatus.result==null && req.files.fileBill!=null){
-					res.json({"ResponseCode":205,"ResponseMsg":"Bill not uploaed. Try Again"});
-				}else{
-					let voucherName = voucherFileMoveStatus.result;
-					let billName = billFileMoveStatus.result;
-					if(billName==null){
-						billName='NA';
-					}
-					let inserBillDetails = await insertData(creditAmount,debitamountCalculate,balanceAmount,notificationAmount,branch,voucherno,category,remarks,amount,vendorname,billno,sumbissiondate,chid,billdate,voucherName,billName);
-					console.log("inserBillDetails");
-					console.log(inserBillDetails);
-
-
-					//process.exit(1);
-					if(inserBillDetails.result=='success'){
-						if(debitamountCalculate>=notificationAmount){
-							console.log("update pettycash set status=1 where status=0 and branch='"+branch+"' and ch_id='"+chid+"'");
-							connections.scm_public.query("update pettycash set status=1 where status=0 and branch='"+branch+"' and ch_id='"+chid+"'",(error, updateRes) => {
-							if (error) {
-                                console.log("##############");
-								res.json({"ResponseCode":206,"ResponseMsg":"Not submitted. Try Again"});
-							}else{
-								console.log("!!!!!!!!!!!!!!!");
-								res.json({"ResponseCode":200,"ResponseMsg":"Submitted"});
-							}
-							});
-						}else{
-
-							console.log("@@@@@@@@@@@@@@");
-							res.json({"ResponseCode":200,"ResponseMsg":"Submitted"});
-						}
-
-					}else{
-						res.json({"ResponseCode":207,"ResponseMsg":"Not submitted. Try Again"});
-					}
-
-				}
-
-		   }else{
-			    res.json({"ResponseCode":203,"ResponseMsg":"You reached credit limit :"+branch});
-		   }
-
-	}
-
-};
+  if (branchamount.result == null) {
+    res.json({
+      "ResponseCode": 201,
+      "ResponseMsg": "You can't rise bill for this branch:" + branch
+    });
+  } else if (branchamount.result == 'error') {
+    res.json({
+      "ResponseCode": 202,
+      "ResponseMsg": "Technical error"
+    });
+  } else {
+    console.log(branchamount.result[0].debit);
+    let balanceAmount = 0;
+    let creditAmount = branchamount.result[0].credit;
+    let notificationAmount = branchamount.result[0].notify_amount;
+    let debitamountCalculate = parseInt(branchamount.result[0].debit) + parseInt(amount);
+    if (branchamount.result[0].balance == 0) {
+      balanceAmount = parseInt(branchamount.result[0].credit) - parseInt(debitamountCalculate);
+    } else {
+      balanceAmount = parseInt(branchamount.result[0].balance) - parseInt(amount);
+    }
+    console.log("debit amount ")
+    console.log(debitamountCalculate);
+    //if(debitamountCalculate<=branchamount.result[0].credit){
+    if (debitamountCalculate <= branchamount.result[0].credit) {
+      //if(amount<=branchamount.result[0].balance){
+      console.log("not reached");
+      let voucherFileMoveStatus = await moveVoucherFile(req);
+      let billFileMoveStatus = await moveBillFile(req);
+      if (voucherFileMoveStatus.result == null && req.files.fileVoucher != null) {
+        res.json({
+          "ResponseCode": 204,
+          "ResponseMsg": "Voucher not uploaed. Try Again"
+        });
+      } else if (billFileMoveStatus.result == null && req.files.fileBill != null) {
+        res.json({
+          "ResponseCode": 205,
+          "ResponseMsg": "Bill not uploaed. Try Again"
+        });
+      } else {
+        let voucherName = voucherFileMoveStatus.result;
+        let billName = billFileMoveStatus.result;
+        if (billName == null) {
+          billName = 'NA';
+        }
+        let inserBillDetails = await insertData(creditAmount, debitamountCalculate, balanceAmount, notificationAmount, branch, voucherno, category, remarks, amount, vendorname, billno, sumbissiondate, chid, billdate, voucherName, billName);
+        console.log("inserBillDetails");
+        console.log(inserBillDetails);
 
 
+        //process.exit(1);
+        if (inserBillDetails.result == 'success') {
+          if (debitamountCalculate >= notificationAmount) {
+            console.log("update pettycash set status=1 where status=0 and branch='" + branch + "' and ch_id='" + chid + "'");
+            connections.scm_public.query("update pettycash set status=1 where status=0 and branch='" + branch + "' and ch_id='" + chid + "'", (error, updateRes) => {
+              if (error) {
+                console.log("##############");
+                res.json({
+                  "ResponseCode": 206,
+                  "ResponseMsg": "Not submitted. Try Again"
+                });
+              } else {
+                console.log("!!!!!!!!!!!!!!!");
+                res.json({
+                  "ResponseCode": 200,
+                  "ResponseMsg": "Submitted"
+                });
+              }
+            });
+          } else {
 
+            console.log("@@@@@@@@@@@@@@");
+            res.json({
+              "ResponseCode": 200,
+              "ResponseMsg": "Submitted"
+            });
+          }
 
-let  branchamountResult = async (branch) =>  {
-    console.log("2222222");
-	 console.log(branch);
+        } else {
+          res.json({
+            "ResponseCode": 207,
+            "ResponseMsg": "Not submitted. Try Again"
+          });
+        }
 
-		return  new Promise(resolve => {
-			connections.scm_public.query("select branch,credit,debit,balance,notify_amount from pettycash_allocate_amount where branch='"+branch+"' and status=1 ",(error, branchAmountRes) => {
-				if (error) {
-					console.log(error);
-					console.log("333333");
-					resolve({"result":"error"})
-				}else{
+      }
 
-					console.log(branchAmountRes);
-					if(branchAmountRes.length>0){
-					  console.log("44444");
-					  //console.log(branchAmountRes[0]);
-					  resolve({"result":branchAmountRes});
-					}else{
-					  console.log("555555");
-					  resolve({"result":null})
-					}
-				}
-			});
-		});
+    } else {
+      res.json({
+        "ResponseCode": 203,
+        "ResponseMsg": "You reached credit limit :" + branch
+      });
+    }
 
+  }
 
 };
 
-let moveVoucherFile = async (req) =>  {
 
-	upoload = req.files;
-    if(upoload!=null && upoload.fileVoucher!=null){
-		return  new Promise(resolve => {
-			  if (upoload.fileVoucher.mimetype == "image/jpeg" || upoload.fileVoucher.mimetype == "image/png" || upoload.fileVoucher.mimetype == "image/gif" || upoload.fileVoucher.mimetype == "application/pdf") {
-					time = new Date().getTime();
-					oldfilename = upoload.fileVoucher.name;
-					filext = oldfilename.split('.').pop();
-					newfilename = time+'_voucher'+'.'+filext;
-					//voucherFilePath = 'D:/git/cogs-api-new-final/voucher/' + newfilename;
-					voucherFilePath = '/var/www/andaman/voucher/' + newfilename;
-					console.log("uploadPath : " + voucherFilePath);
-					upoload.fileVoucher.mv(voucherFilePath, function(err) {
-					  if (err) {
-						resolve({"result":null})
-					  }else{
-						resolve({"result":newfilename})
-					  }
 
-					});
-			}
-		});
-	}else{
-		return {"result":null}
-	}
+
+let branchamountResult = async (branch) => {
+  console.log("2222222");
+  console.log(branch);
+
+  return new Promise(resolve => {
+    connections.scm_public.query("select branch,credit,debit,balance,notify_amount from pettycash_allocate_amount where branch='" + branch + "' and status=1 ", (error, branchAmountRes) => {
+      if (error) {
+        console.log(error);
+        console.log("333333");
+        resolve({
+          "result": "error"
+        })
+      } else {
+
+        console.log(branchAmountRes);
+        if (branchAmountRes.length > 0) {
+          console.log("44444");
+          //console.log(branchAmountRes[0]);
+          resolve({
+            "result": branchAmountRes
+          });
+        } else {
+          console.log("555555");
+          resolve({
+            "result": null
+          })
+        }
+      }
+    });
+  });
+
+
 };
 
-let moveBillFile = async (req) =>  {
-//new Date().getTime()
-   console.log("billfile");
-   //console.log(billFile);
-   upoload = req.files;
-    if(upoload!=null && upoload.fileBill!=null){
-		return  new Promise(resolve => {
-			  if (upoload.fileBill.mimetype == "image/jpeg" || upoload.fileBill.mimetype == "image/png" || upoload.fileBill.mimetype == "image/gif" || upoload.fileBill.mimetype == "application/pdf") {
-					time = new Date().getTime();
-					oldfilename = upoload.fileBill.name;
-					filext = oldfilename.split('.').pop();
-					newfilename = time+'_bill'+'.'+filext;
-					//billFilePath = 'D:/git/cogs-api-new-final/bill/' + newfilename;
-					billFilePath = '/var/www/andaman/bill/' + newfilename;
-					console.log("uploadPath : " + billFilePath);
-					upoload.fileBill.mv(billFilePath, function(err) {
-					  if (err) {
-						resolve({"result":null})
-					  }else{
-						resolve({"result":newfilename})
-					  }
+let moveVoucherFile = async (req) => {
 
-					});
-				}
-		});
-	}else{
-		return {"result":null}
-	}
+  upoload = req.files;
+  if (upoload != null && upoload.fileVoucher != null) {
+    return new Promise(resolve => {
+      if (upoload.fileVoucher.mimetype == "image/jpeg" || upoload.fileVoucher.mimetype == "image/png" || upoload.fileVoucher.mimetype == "image/gif" || upoload.fileVoucher.mimetype == "application/pdf") {
+        time = new Date().getTime();
+        oldfilename = upoload.fileVoucher.name;
+        filext = oldfilename.split('.').pop();
+        newfilename = time + '_voucher' + '.' + filext;
+        //voucherFilePath = 'D:/git/cogs-api-new-final/voucher/' + newfilename;
+        voucherFilePath = '/var/www/andaman/voucher/' + newfilename;
+        console.log("uploadPath : " + voucherFilePath);
+        upoload.fileVoucher.mv(voucherFilePath, function(err) {
+          if (err) {
+            resolve({
+              "result": null
+            })
+          } else {
+            resolve({
+              "result": newfilename
+            })
+          }
+
+        });
+      }
+    });
+  } else {
+    return {
+      "result": null
+    }
+  }
+};
+
+let moveBillFile = async (req) => {
+  //new Date().getTime()
+  console.log("billfile");
+  //console.log(billFile);
+  upoload = req.files;
+  if (upoload != null && upoload.fileBill != null) {
+    return new Promise(resolve => {
+      if (upoload.fileBill.mimetype == "image/jpeg" || upoload.fileBill.mimetype == "image/png" || upoload.fileBill.mimetype == "image/gif" || upoload.fileBill.mimetype == "application/pdf") {
+        time = new Date().getTime();
+        oldfilename = upoload.fileBill.name;
+        filext = oldfilename.split('.').pop();
+        newfilename = time + '_bill' + '.' + filext;
+        //billFilePath = 'D:/git/cogs-api-new-final/bill/' + newfilename;
+        billFilePath = '/var/www/andaman/bill/' + newfilename;
+        console.log("uploadPath : " + billFilePath);
+        upoload.fileBill.mv(billFilePath, function(err) {
+          if (err) {
+            resolve({
+              "result": null
+            })
+          } else {
+            resolve({
+              "result": newfilename
+            })
+          }
+
+        });
+      }
+    });
+  } else {
+    return {
+      "result": null
+    }
+  }
 };
 
 
-let insertData = async (creditAmount,debitamountCalculate,balanceAmount,notificationAmount,branch,voucherno,category,remarks,amount,vendorname,billno,sumbissiondate,chid,billdate,voucherName,billName) =>  {
+let insertData = async (creditAmount, debitamountCalculate, balanceAmount, notificationAmount, branch, voucherno, category, remarks, amount, vendorname, billno, sumbissiondate, chid, billdate, voucherName, billName) => {
 
-			/*return  new Promise(resolve => {
-				var stats = 0;
-				if(debitamountCalculate>=notificationAmount){
-					stats = 1;
-				}
-				connections.scm_public.getConnection((err, con) => {
-					if (err) {
-							resolve({"result":"inserterror"});
-				    }
-
-
-					con.beginTransaction(err => {
-						 if (err) {
-							resolve({"result":"inserterror"});
-						 }
-						 var insertQry = "insert into petty_cash set branch='"+branch+"',voucher_no='"+voucherno+"',categoty_id="+category+",vendorname='"+vendorname+"',bill_no='"+billno+"',bill_date='"+billdate+"',remarks='"+remarks+"',debit="+amount+",bill_submission='"+sumbissiondate+"',voucher_attach='"+voucherName+"',bill_attch='"+billName+"',status="+stats+",created_date=now(),ch_id='"+chid+"'";
-
-						connections.scm_public.query(insertQry,(insrtError, insrtRes) => {
-						if (insrtError) {
-							con.rollback((rollbackErr) => {
-								if (rollbackErr) {
-									resolve({"result":"rollbackerror"});
-								} else {
-									resolve({"result":"inserterror"});
-								}
-							});
-					    }else{
-							var updateQry = "update pettycash_allocated_amount set debit'"+debitamountCalculate+"',balance='"+balanceAmount+"' where branch='"+branch+"'";
-
-							console.log(updateQry);
-							connections.scm_public.query(updateQry,(updateError, updateRes) => {
-								if (updateError) {
-									console.log("update error");
-									console.log(updateError)
-									con.rollback((rollbackErr) => {
-										if (rollbackErr) {
-											resolve({"result":"rollbackerror"});
-										} else {
-											resolve({"result":"updateerror"});
-										}
-									});
-								}
-								con.commit((commitError) => {
-									if (commitError) {
-										resolve({"result":"commiterror"});
-									}
-									resolve({"result":"success"});
-
-								});
-
-							});
-						}
-					});
-					});
-				});
-
-			});*/
-		return  new Promise(resolve => {
-			var stats = 0;
+  /*return  new Promise(resolve => {
+  	var stats = 0;
+  	if(debitamountCalculate>=notificationAmount){
+  		stats = 1;
+  	}
+  	connections.scm_public.getConnection((err, con) => {
+  		if (err) {
+  				resolve({"result":"inserterror"});
+  	    }
 
 
-			console.log("inside insert data");
-			console.log(debitamountCalculate);
-			console.log(notificationAmount);
+  		con.beginTransaction(err => {
+  			 if (err) {
+  				resolve({"result":"inserterror"});
+  			 }
+  			 var insertQry = "insert into petty_cash set branch='"+branch+"',voucher_no='"+voucherno+"',categoty_id="+category+",vendorname='"+vendorname+"',bill_no='"+billno+"',bill_date='"+billdate+"',remarks='"+remarks+"',debit="+amount+",bill_submission='"+sumbissiondate+"',voucher_attach='"+voucherName+"',bill_attch='"+billName+"',status="+stats+",created_date=now(),ch_id='"+chid+"'";
+
+  			connections.scm_public.query(insertQry,(insrtError, insrtRes) => {
+  			if (insrtError) {
+  				con.rollback((rollbackErr) => {
+  					if (rollbackErr) {
+  						resolve({"result":"rollbackerror"});
+  					} else {
+  						resolve({"result":"inserterror"});
+  					}
+  				});
+  		    }else{
+  				var updateQry = "update pettycash_allocated_amount set debit'"+debitamountCalculate+"',balance='"+balanceAmount+"' where branch='"+branch+"'";
+
+  				console.log(updateQry);
+  				connections.scm_public.query(updateQry,(updateError, updateRes) => {
+  					if (updateError) {
+  						console.log("update error");
+  						console.log(updateError)
+  						con.rollback((rollbackErr) => {
+  							if (rollbackErr) {
+  								resolve({"result":"rollbackerror"});
+  							} else {
+  								resolve({"result":"updateerror"});
+  							}
+  						});
+  					}
+  					con.commit((commitError) => {
+  						if (commitError) {
+  							resolve({"result":"commiterror"});
+  						}
+  						resolve({"result":"success"});
+
+  					});
+
+  				});
+  			}
+  		});
+  		});
+  	});
+
+  });*/
+  return new Promise(resolve => {
+    var stats = 0;
 
 
-			if(debitamountCalculate>=notificationAmount){
-				stats = 1;
-			}
-  			var insertQry = "insert into pettycash set branch='"+branch+"',voucher_no='"+voucherno+"',category_id="+category+",vendorname='"+vendorname+"',bill_no='"+billno+"',bill_date='"+billdate+"',remarks='"+remarks+"',debit="+amount+",bill_submission='"+sumbissiondate+"',voucher_attach='"+voucherName+"',bill_attch='"+billName+"',status="+stats+",created_date=now(),ch_id='"+chid+"'";
+    console.log("inside insert data");
+    console.log(debitamountCalculate);
+    console.log(notificationAmount);
 
-			console.log(insertQry);
-			connections.scm_public.query(insertQry,(InsError, insrtRes) => {
-				if (InsError) {
-					console.log(error);
-					console.log("333333");
-					resolve({"result":"inserterror"});
-				}else{
-                    var updateQry = "update pettycash_allocate_amount set debit='"+debitamountCalculate+"',balance='"+balanceAmount+"' where branch='"+branch+"'";
-					connections.scm_public.query(updateQry,(updateErr, updateRes) => {
-						if(updateErr){
 
-							console.log("XXXXXXXXXX");
-							var last_id = insrtRes.insertId;
+    if (debitamountCalculate >= notificationAmount) {
+      stats = 1;
+    }
+    var insertQry = "insert into pettycash set branch='" + branch + "',voucher_no='" + voucherno + "',category_id=" + category + ",vendorname='" + vendorname + "',bill_no='" + billno + "',bill_date='" + billdate + "',remarks='" + remarks + "',debit=" + amount + ",bill_submission='" + sumbissiondate + "',voucher_attach='" + voucherName + "',bill_attch='" + billName + "',status=" + stats + ",created_date=now(),ch_id='" + chid + "'";
 
-							var delQry = "delete from pettycash where sno="+last_id+"";
-							console.log(delQry);
-							connections.scm_public.query(delQry,(delErr, updateRes) => {
-								if(delErr){
-									resolve({"result":"deleteerror"});
-								}else{
-									resolve({"result":"updateerror"});
-								}
-							});
+    console.log(insertQry);
+    connections.scm_public.query(insertQry, (InsError, insrtRes) => {
+      if (InsError) {
+        console.log(error);
+        console.log("333333");
+        resolve({
+          "result": "inserterror"
+        });
+      } else {
+        var updateQry = "update pettycash_allocate_amount set debit='" + debitamountCalculate + "',balance='" + balanceAmount + "' where branch='" + branch + "'";
+        connections.scm_public.query(updateQry, (updateErr, updateRes) => {
+          if (updateErr) {
 
-						}else{
-							resolve({"result":"success"});
-						}
-					});
-				}
-			});
+            console.log("XXXXXXXXXX");
+            var last_id = insrtRes.insertId;
 
-		});
+            var delQry = "delete from pettycash where sno=" + last_id + "";
+            console.log(delQry);
+            connections.scm_public.query(delQry, (delErr, updateRes) => {
+              if (delErr) {
+                resolve({
+                  "result": "deleteerror"
+                });
+              } else {
+                resolve({
+                  "result": "updateerror"
+                });
+              }
+            });
+
+          } else {
+            resolve({
+              "result": "success"
+            });
+          }
+        });
+      }
+    });
+
+  });
 };
 
 exports.petty_cash_details = (req, res) => {
-	     let chid = req.params.user;
-		 let ftddate = req.params.date;
-		 let start = ftddate+'-01';
-	     let end = ftddate+'-31';
-		 let stats = req.params.status;
-		 let branch = req.params.branch;
-		 let where_con = '';
+  let chid = req.params.user;
+  let ftddate = req.params.date;
+  let start = ftddate + '-01';
+  let end = ftddate + '-31';
+  let stats = req.params.status;
+  let branch = req.params.branch;
+  let where_con = '';
 
-		 if(branch!='undefined'){
-			 where_con+=' and A.branch IN ("'+branch+'")';
-		 }
-		 if(stats=='SCHPending'){
-			 where_con+= ' AND A.status IN(0,1)';
-		 }else if(stats=='SCHApproved'){
-			 where_con+= ' AND A.status IN(2)';
-		 }else if(stats=='SCHReject'){
-			 where_con+= ' AND A.status IN(3)';
-		 }else if(stats=='FinancePending'){
-			  where_con+= ' AND A.status IN(2)';
-		 }else if(stats=='FinanceApproved'){
-			 where_con+= ' AND A.status IN(4)';
-		 }else if(stats=='FinanceReject'){
-			 where_con+= ' AND A.status IN(5)';
-		 }
-		 let sqlQry = "SELECT A.*,B.category_name FROM pettycash AS A INNER JOIN  pettycash_category AS B ON A.category_id=B.sno AND A.bill_submission BETWEEN '"+start+"' AND '"+end+"' AND A.ch_id='"+chid+"' "+where_con+" order by A.sno desc";
-		 console.log(sqlQry);
+  if (branch != 'undefined') {
+    where_con += ' and A.branch IN ("' + branch + '")';
+  }
+  if (stats == 'SCHPending') {
+    where_con += ' AND A.status IN(0,1)';
+  } else if (stats == 'SCHApproved') {
+    where_con += ' AND A.status IN(2)';
+  } else if (stats == 'SCHReject') {
+    where_con += ' AND A.status IN(3)';
+  } else if (stats == 'FinancePending') {
+    where_con += ' AND A.status IN(2)';
+  } else if (stats == 'FinanceApproved') {
+    where_con += ' AND A.status IN(4)';
+  } else if (stats == 'FinanceReject') {
+    where_con += ' AND A.status IN(5)';
+  }
+  let sqlQry = "SELECT A.*,B.category_name FROM pettycash AS A INNER JOIN  pettycash_category AS B ON A.category_id=B.sno AND A.bill_submission BETWEEN '" + start + "' AND '" + end + "' AND A.ch_id='" + chid + "' " + where_con + " order by A.sno desc";
+  console.log(sqlQry);
 
-		 connections.scm_public.query(sqlQry,(error, selRes) => {
-				if (error) {
-					res.json({"ResponseCode":400,"ResponseMsg":"error"});
-				}else{
-                    res.json({"ResponseCode":200,"ResponseMsg":selRes});
-				}
-			});
+  connections.scm_public.query(sqlQry, (error, selRes) => {
+    if (error) {
+      res.json({
+        "ResponseCode": 400,
+        "ResponseMsg": "error"
+      });
+    } else {
+      res.json({
+        "ResponseCode": 200,
+        "ResponseMsg": selRes
+      });
+    }
+  });
 }
 
 exports.download_voucher = (req, res) => {
   let filename = req.params.download
   //console.log(filepath);
-  var fileLocation = '/var/www/andaman/voucher/'+filename;
+  var fileLocation = '/var/www/andaman/voucher/' + filename;
   //var fileLocation = 'D:/git/cogs-api-new-final/voucher/'+filename;
 
   console.log(fileLocation);
@@ -3697,7 +3778,7 @@ exports.download_bill = (req, res) => {
   let filename = req.params.download
   //console.log(filepath);
 
-  var fileLocation = '/var/www/andaman/bill/'+filename;
+  var fileLocation = '/var/www/andaman/bill/' + filename;
   //var fileLocation = 'D:/git/cogs-api-new-final/bill/'+filename;
 
   res.download(fileLocation);
@@ -3760,7 +3841,8 @@ exports.strchpc = (req, res) => {
                 "pcbill": err
               }
             })
-          } else {``
+          } else {
+            ``
             resbranch.forEach(branches => {
               splitbranches = branches.branches.split('+')
             })
@@ -4028,7 +4110,7 @@ exports.strchbranchgroupbills = (req, res) => {
   let branch = req.params.branch;
   let status = req.params.statusno;
   console.log(req.params);
-  //console.log(fromdate +" "+todate+" "+branch+" "+name);
+
   try {
     connections.scm_public.query(files.strbranchgroupbillz, [branch, date, date, date, date, date, date], (err, resgroupdata) => {
       if (err) console.error(err);
@@ -4132,7 +4214,7 @@ exports.strch_billgroupdecline = (req, res) => {
       let grpcat = "select * from pettycash_category where category_name='" + strch_groupcategory + "'";
       console.log(grpcat);
 
-      conn.query(grpcat, (err, resgrpcat) => {
+      connections.scm_root.query(grpcat, (err, resgrpcat) => {
         console.log(resgrpcat);
         if (err) {
           conn.rollback(function() {
@@ -4147,7 +4229,7 @@ exports.strch_billgroupdecline = (req, res) => {
           });
           let updatequery = "update pettycash set status=3,cancel_by='" + strch_id + "',Cancel_date=now(),remarks='" + comments + "' where branch='" + strch_branch + "' and category_id=" + datta + " and created_date='" + strch_date + "' and bill_no='" + strch_billno + "' and vendorname='" + strch_vouchername + "' and voucher_no='" + strch_voucherno + "'";
           console.log(updatequery);
-          conn.query(updatequery, (err, resupdate) => {
+          connections.scm_root.query(updatequery, (err, resupdate) => {
             if (err) {
               conn.rollback(function() {
                 res.json({
@@ -4159,7 +4241,7 @@ exports.strch_billgroupdecline = (req, res) => {
               console.log(resupdate);
               let insertquery = "INSERT INTO pettycash (branch,voucher_no,category_id,vendorname,bill_no,remarks,Credit,voucher_attach,bill_attch,created_date,Cancel_by,Cancel_date,STATUS) values ('" + strch_branch + "','" + strch_voucherno + "','" + datta + "','" + strch_vouchername + "','" + strch_billno + "','" + comments + "','" + amount + "','" + voucher_attach + "','" + bill_attach + "','" + strch_date + "','" + strch_id + "',now(),3)";
               console.log(insertquery);
-              conn.query(insertquery, (err, resinsert) => {
+              connections.scm_root.query(insertquery, (err, resinsert) => {
                 if (err) {
                   conn.rollback(function() {
 
@@ -4172,7 +4254,7 @@ exports.strch_billgroupdecline = (req, res) => {
                   console.log(resinsert);
                   let updateamount = "update pettycash_allocate_amount set cancel_amount='" + amount + "',balance=(SELECT * FROM (SELECT SUM(balance)+" + amount + " FROM pettycash_allocate_amount AS b WHERE branch='" + strch_branch + "' ) AS bb),modified_date=now() where branch='" + strch_branch + "'";
                   console.log(updateamount);
-                  conn.query(updateamount, (err, resupdateamt) => {
+                  connections.scm_root.query(updateamount, (err, resupdateamt) => {
                     if (err) {
                       conn.rollback(function() {
                         res.json({
@@ -4192,6 +4274,7 @@ exports.strch_billgroupdecline = (req, res) => {
                           });
 
                         } else {
+                          conn.release();
                           res.json({
                             dataupdated: true
                           })
@@ -4392,7 +4475,7 @@ exports.finptycsh = (req, res) => {
   //   })
   // } else {
   //   console.log("HIT IN else");
-	//
+  //
   //   connections.scm_public.query(files.finptycshbrst, [fromdate, todate, fromdate, todate, branch, status], (err, resdata) => {
   //     if (err) console.error(err);
   //     res.json({
@@ -4411,7 +4494,7 @@ exports.finpcbranchgroupbills = (req, res) => {
   let branch = req.params.branch;
   let status = req.params.status;
 
-  connections.scm_public.query(files.finpccshbranchgroupz, [date,date,date,date, branch], (err, resgroupdatadetail) => {
+  connections.scm_public.query(files.finpccshbranchgroupz, [date, date, date, date, branch], (err, resgroupdatadetail) => {
     if (err) console.error(err);
     res.json(resgroupdatadetail);
   })
@@ -4426,7 +4509,7 @@ exports.finpcbranchgroupbilldetail = (req, res) => {
   //let status=req.params.status;
   let categoryname = req.params.categoryname;
 
-  connections.scm_public.query(files.finptycshbranchgroupbilldetailz, [date,date,date,date, branch, categoryname], (err, resgroupdatadetail) => {
+  connections.scm_public.query(files.finptycshbranchgroupbilldetailz, [date, date, date, date, branch, categoryname], (err, resgroupdatadetail) => {
     if (err) console.error(err);
     res.json(resgroupdatadetail);
   })
@@ -4458,7 +4541,7 @@ exports.fin_billgroupdecline = (req, res) => {
       } else {
         let grpcat = "select * from pettycash_category where category_name='" + strch_groupcategory + "'";
         console.log(grpcat);
-        conn.query(grpcat, (err, resgrpcat) => {
+        connections.scm_root.query(grpcat, (err, resgrpcat) => {
           console.log(resgrpcat);
           if (err) {
             conn.rollback(function() {
@@ -4473,7 +4556,7 @@ exports.fin_billgroupdecline = (req, res) => {
             });
             let updatequery = "update pettycash set status=5,cancel_by='" + strch_id + "',Cancel_date=now(),remarks='" + comments + "-- by finance' where branch='" + strch_branch + "' and category_id=" + datta + " and created_date='" + strch_date + "' and bill_no='" + strch_billno + "' and vendorname='" + strch_vouchername + "' and voucher_no='" + strch_voucherno + "'";
             console.log(updatequery);
-            conn.query(updatequery, (err, resupdate) => {
+            connections.scm_root.query(updatequery, (err, resupdate) => {
               if (err) {
                 conn.rollback(function() {
                   res.json({
@@ -4485,7 +4568,7 @@ exports.fin_billgroupdecline = (req, res) => {
                 console.log(resupdate);
                 let insertquery = "INSERT INTO pettycash (branch,voucher_no,category_id,vendorname,bill_no,remarks,Credit,voucher_attach,bill_attch,created_date,Cancel_by,Cancel_date,status) values ('" + strch_branch + "','" + strch_voucherno + "','" + datta + "','" + strch_vouchername + "','" + strch_billno + "','" + comments + "-- by finance','" + amount + "','" + voucher_attach + "','" + bill_attach + "','" + strch_date + "','" + strch_id + "',now(),5)";
                 console.log(insertquery);
-                conn.query(insertquery, (err, resinsert) => {
+                connections.scm_root.query(insertquery, (err, resinsert) => {
                   if (err) {
                     conn.rollback(function() {
 
@@ -4498,7 +4581,7 @@ exports.fin_billgroupdecline = (req, res) => {
                     console.log(resinsert);
                     let updateamount = "update pettycash_allocate_amount set cancel_amount=(SELECT * FROM (SELECT SUM(cancel_amount)+" + amount + " FROM pettycash_allocate_amount AS a WHERE branch='" + strch_branch + "' ) AS aa),balance=(SELECT * FROM (SELECT SUM(balance)+" + amount + " FROM pettycash_allocate_amount AS b WHERE branch='" + strch_branch + "' ) AS bb),modified_date=now() where branch='" + strch_branch + "'";
                     console.log(updateamount);
-                    conn.query(updateamount, (err, resupdateamt) => {
+                    connections.scm_root.query(updateamount, (err, resupdateamt) => {
                       if (err) {
                         conn.rollback(function() {
                           res.json({
@@ -4518,6 +4601,7 @@ exports.fin_billgroupdecline = (req, res) => {
                             });
 
                           } else {
+                            conn.release();
                             res.json({
                               dataupdated: true
                             })
@@ -4585,7 +4669,7 @@ exports.finptycsh_billgroupapproveall = (req, res) => {
       } else {
         let updatequery = "update pettycash SET STATUS=4,fin_id='" + username + "',fin_approved_date=now() WHERE STATUS=2 AND branch='" + branch + "' and date(created_date) between concat(year('" + date + "'),'-',month('" + date + "'),'-','01') and concat(year('" + date + "'),'-',month('" + date + "'),'-','31') ";
         console.log(updatequery);
-        conn.query(updatequery, (err, resupdate) => {
+        connections.scm_root.query(updatequery, (err, resupdate) => {
           if (err) {
             conn.rollback(function() {
               res.json({
@@ -4596,7 +4680,7 @@ exports.finptycsh_billgroupapproveall = (req, res) => {
           } else {
             let insertvalue = "INSERT INTO pettycash (branch,Credit,STATUS,Refilled_date,fin_id) VALUEs ('" + branch + "'," + refillamount + ",6,now(),'" + username + "')";
             console.log(insertvalue);
-            conn.query(insertvalue, (err, resinsert) => {
+            connections.scm_root.query(insertvalue, (err, resinsert) => {
               if (err) {
                 conn.rollback(function() {
                   res.json({
@@ -4608,7 +4692,7 @@ exports.finptycsh_billgroupapproveall = (req, res) => {
                 console.log(resinsert);
                 let updateamount = "update pettycash_allocate_amount set balance=(SELECT * FROM (SELECT SUM(balance)+" + refillamount + " FROM pettycash_allocate_amount AS b WHERE branch='" + branch + "' ) AS bb),modified_date=now(),debit=0,cancel_amount=0 where branch='" + branch + "'";
                 console.log(updateamount);
-                conn.query(updateamount, (err, resupdate1) => {
+                connections.scm_root.query(updateamount, (err, resupdate1) => {
                   if (err) {
                     conn.rollback(function() {
                       res.json({
@@ -4628,6 +4712,8 @@ exports.finptycsh_billgroupapproveall = (req, res) => {
                         });
 
                       } else {
+                        conn.release();
+                        console.log("updated");
                         res.json({
                           dataupdated: true
                         })
@@ -4660,76 +4746,74 @@ exports.finptycsh_billgroupapproveall = (req, res) => {
 
 
 }
-exports.decline_amount=(req,res)=>{
+exports.decline_amount = (req, res) => {
   console.log(req.params);
-let branch=req.params.branch;
-let fromdate=req.params.fromdate;
-let todate=req.params.todate;
+  let branch = req.params.branch;
+  let fromdate = req.params.fromdate;
+  let todate = req.params.todate;
 
-  let declineamount="SELECT branch,SUM(credit) as 'cancelledamount' FROM pettycash WHERE STATUS=5 AND branch='"+branch+"' and  DATE(Created_date) BETWEEN '"+fromdate+"' and '"+todate+"'";
+  let declineamount = "SELECT branch,SUM(credit) as 'cancelledamount' FROM pettycash WHERE STATUS=5 AND branch='" + branch + "' and  DATE(Created_date) BETWEEN '" + fromdate + "' and '" + todate + "'";
   console.log(declineamount);
-connections.scm_public.query(declineamount,(err,resdata)=>{
-  console.log(resdata);
-  if(err) console.error(err);
-res.json( resdata);
+  connections.scm_public.query(declineamount, (err, resdata) => {
+    console.log(resdata);
+    if (err) console.error(err);
+    res.json(resdata);
 
-})
+  })
 
 }
 
 
 
-exports.main_route_inactive_user = (day,callback) => {
-  connections.scm_public.query("select qry from inactive_query where sno=1",(error, inactiveres) => {
-      if (error)  {
-		  callback("inactive_query  error",null);
-	  }else{
-	  connections.ideamed.query(inactiveres[0].qry,(error, inactUsers) => {
-		if(error){
-			callback("ideamed inactive query error",null);
-		}else{
+exports.main_route_inactive_user = (day, callback) => {
+  connections.scm_public.query("select qry from inactive_query where sno=1", (error, inactiveres) => {
+    if (error) {
+      callback("inactive_query  error", null);
+    } else {
+      connections.ideamed.query(inactiveres[0].qry, (error, inactUsers) => {
+        if (error) {
+          callback("ideamed inactive query error", null);
+        } else {
 
-			   if(inactUsers.length>0){
-					mods.nativeFunctions.inactiveEmail(inactUsers).then(final => callback(null,final));
-			   }else{
-				   callback(null,"No inactive users");
-			   }
-		}
+          if (inactUsers.length > 0) {
+            mods.nativeFunctions.inactiveEmail(inactUsers).then(final => callback(null, final));
+          } else {
+            callback(null, "No inactive users");
+          }
+        }
 
-		}
-		);
-		}
-	}
-	);
+      });
+    }
+  });
   // }
 };
 
-exports.inactiveEmailList = (emailtemp,callback) =>{
-	connections.scm_public.query("select fromid,toid,bccid,ccid,passcode from email where scmtype='inactiveemail'",(error, inactivemailres) => {
-      if (error) {
-		  callback("select email query",null);
-	  }else{
-		  callback(null,inactivemailres);
-	  }
-	});
+exports.inactiveEmailList = (emailtemp, callback) => {
+  connections.scm_public.query("select fromid,toid,bccid,ccid,passcode from email where scmtype='inactiveemail'", (error, inactivemailres) => {
+    if (error) {
+      callback("select email query", null);
+    } else {
+      callback(null, inactivemailres);
+    }
+  });
 }
 
 
 
-exports.avaOverseasEmailList = (emailtemp,callback) =>{
-	connections.scm_public.query("select fromid,toid,bccid,ccid,passcode from email where scmtype='avaoverseasemail'",(error, domesticemailres) => {
-      if (error) {
-		  callback("select email query",null);
-	  }else{
-		  callback(null,domesticemailres);
-	  }
-	});
+exports.avaOverseasEmailList = (emailtemp, callback) => {
+  connections.scm_public.query("select fromid,toid,bccid,ccid,passcode from email where scmtype='avaoverseasemail'", (error, domesticemailres) => {
+    if (error) {
+      callback("select email query", null);
+    } else {
+      callback(null, domesticemailres);
+    }
+  });
 }
-exports.main_route_newopd_mail = (yesterday,callback) => {
+exports.main_route_newopd_mail = (yesterday, callback) => {
   // if (sess.superUser === undefined) {
   //   res.json({ msg: "Not Authorised" });
   // } else {
-//  console.log('main_route_revenue');
+  //  console.log('main_route_revenue');
   let ftddate = yesterday;
   let temp = new Date(ftddate);
   let mtddate =
@@ -4739,55 +4823,53 @@ exports.main_route_newopd_mail = (yesterday,callback) => {
     "-" +
     "01";
 
-	let ftddatelastyear = (temp.getFullYear()-1)+'-'+ ("0" + (temp.getMonth()+1)).slice(-2)+'-'+("0" + (temp.getDate())).slice(-2);
-	let mtddatelastyear = (temp.getFullYear()-1)+'-'+ ("0" + (temp.getMonth()+1)).slice(-2)+'-01';
+  let ftddatelastyear = (temp.getFullYear() - 1) + '-' + ("0" + (temp.getMonth() + 1)).slice(-2) + '-' + ("0" + (temp.getDate())).slice(-2);
+  let mtddatelastyear = (temp.getFullYear() - 1) + '-' + ("0" + (temp.getMonth() + 1)).slice(-2) + '-01';
 
 
-  connections.scm_public.query(files.new_opd_super,[mtddate, ftddate],(error, resnewopd) => {
-      if (error) {
-		  callback("select new opd query error",null);
-	 }else{
-		  connections.scm_public.query(files.new_opd_super,[mtddatelastyear, ftddatelastyear],(error, reslastyearopd) => {
-			if (error) {
-				callback("select new opd last yar query error",null);
-			}else{
-			  connections.scm_public.query(
-				"select * from branches",
-				(err, branchres) => {
-				  if (err){
-					callback("select branch query error",null);
-				  }else{
-						  mods.nativeFunctions
-							.newopdNative(
-							  resnewopd,
-							  branchres,
-							  ftddate,
-							  reslastyearopd,
+  connections.scm_public.query(files.new_opd_super, [mtddate, ftddate], (error, resnewopd) => {
+    if (error) {
+      callback("select new opd query error", null);
+    } else {
+      connections.scm_public.query(files.new_opd_super, [mtddatelastyear, ftddatelastyear], (error, reslastyearopd) => {
+        if (error) {
+          callback("select new opd last yar query error", null);
+        } else {
+          connections.scm_public.query(
+            "select * from branches",
+            (err, branchres) => {
+              if (err) {
+                callback("select branch query error", null);
+              } else {
+                mods.nativeFunctions
+                  .newopdNative(
+                    resnewopd,
+                    branchres,
+                    ftddate,
+                    reslastyearopd,
 
-							)
-							.then(final => callback(null,final));
-				  }
-						}
-					  );
-				}
-			}
-			);
-		}
-	}
-	);
+                  )
+                  .then(final => callback(null, final));
+              }
+            }
+          );
+        }
+      });
+    }
+  });
   // }
 };
 
 
 
-exports.opdEmailList = (emailtemp,callback) =>{
-	connections.scm_public.query("select fromid,toid,bccid,ccid,passcode from email where scmtype='newopd'",(error, domesticemailres) => {
-      if (error) {
-		  callback("select email query",null);
-	  }else{
-		  callback(null,domesticemailres);
-	  }
-	});
+exports.opdEmailList = (emailtemp, callback) => {
+  connections.scm_public.query("select fromid,toid,bccid,ccid,passcode from email where scmtype='newopd'", (error, domesticemailres) => {
+    if (error) {
+      callback("select email query", null);
+    } else {
+      callback(null, domesticemailres);
+    }
+  });
 }
 
 
@@ -4800,10 +4882,40 @@ exports.cogsdetails = (req, res) => {
   let start = fromdate + '-01';
   let end = fromdate + '-31';
 
-  if(entity=='OHC')
-  {
-    if((branch=='All')&&(depart=="All")){
-      let transquery="select * from cogs_details WHERE region='ORB' and trans_date between '" + start + "' and '" + end + "'";
+  if (entity == 'OHC') {
+    if ((branch == 'All') && (depart == "All")) {
+      let transquery = "select * from cogs_details WHERE region='ORB' and trans_date between '" + start + "' and '" + end + "'";
+      connections.scm_public.query(transquery, (err, rescogs) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "cogs": rescogs
+          }
+        })
+      })
+    } else if ((branch == 'All') && (depart != "All")) {
+      let transquery = "select * from cogs_details WHERE region='ORB' and trans_date between '" + start + "' and '" + end + "' and top='" + depart + "'";
+      connections.scm_public.query(transquery, (err, rescogs) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "cogs": rescogs
+          }
+        })
+      })
+
+    } else if ((branch != 'All') && (depart == "All")) {
+      let transquery = "select * from cogs_details WHERE region='ORB' and trans_date between '" + start + "' and '" + end + "' and  branch='" + branch + "'";
+      connections.scm_public.query(transquery, (err, rescogs) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "cogs": rescogs
+          }
+        })
+      })
+    } else {
+      let transquery = "select * from cogs_details WHERE region='ORB' and trans_date between '" + start + "' and '" + end + "'  and branch='" + branch + "' and top='" + depart + "'";
       connections.scm_public.query(transquery, (err, rescogs) => {
         if (err) console.error(err);
         res.json({
@@ -4813,20 +4925,12 @@ exports.cogsdetails = (req, res) => {
         })
       })
     }
-    else if((branch=='All')&&(depart !="All")){
-        let transquery="select * from cogs_details WHERE region='ORB' and trans_date between '" + start + "' and '" + end + "' and top='" + depart + "'";
-        connections.scm_public.query(transquery, (err, rescogs) => {
-          if (err) console.error(err);
-          res.json({
-            "result": {
-              "cogs": rescogs
-            }
-          })
-        })
 
-    }
-    else if((branch !='All')&&(depart =="All")){
-      let transquery="select * from cogs_details WHERE region='ORB' and trans_date between '" + start + "' and '" + end + "' and  branch='" + branch + "'";
+  } else {
+    if ((entity == 'All') && (branch == 'All') && (depart == 'All')) {
+      //  console.log("branch all entity all");
+      let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "'";
+      //console.log(transquery);
       connections.scm_public.query(transquery, (err, rescogs) => {
         if (err) console.error(err);
         res.json({
@@ -4835,9 +4939,11 @@ exports.cogsdetails = (req, res) => {
           }
         })
       })
-    }
-    else {
-      let transquery="select * from cogs_details WHERE region='ORB' and trans_date between '" + start + "' and '" + end + "'  and branch='" + branch + "' and top='" + depart + "'";
+
+    } else if ((entity == 'All') && (branch == 'All') && (depart != 'All')) {
+      //  console.log("branch all entity all");
+      let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "' and top='" + depart + "'";
+      console.log(transquery);
       connections.scm_public.query(transquery, (err, rescogs) => {
         if (err) console.error(err);
         res.json({
@@ -4846,84 +4952,55 @@ exports.cogsdetails = (req, res) => {
           }
         })
       })
+    } else if ((entity != 'All') && (branch == 'All') && (depart == 'All')) {
+      //  console.log("branch all entity not all");
+      let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "'  and entity='" + entity + "' ";
+      console.log(transquery);
+      connections.scm_public.query(transquery, (err, rescogs) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "cogs": rescogs
+          }
+        })
+      })
+    } else if ((entity != 'All') && (branch == 'All') && (depart != 'All')) {
+      //  console.log("branch all entity not all");
+      let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "'  and entity='" + entity + "' and top='" + depart + "'";
+      console.log(transquery);
+      connections.scm_public.query(transquery, (err, rescogs) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "cogs": rescogs
+          }
+        })
+      })
+    } else if ((entity != 'All') && (branch != 'All') && (depart == 'All')) {
+      //  console.log("else");
+      let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "' and entity='" + entity + "' and branch='" + branch + "'";
+      console.log(transquery);
+      connections.scm_public.query(transquery, (err, rescogs) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "cogs": rescogs
+          }
+        })
+      })
+    } else {
+      let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "' and entity='" + entity + "' and branch='" + branch + "' and top='" + depart + "'";
+      console.log(transquery);
+      connections.scm_public.query(transquery, (err, rescogs) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "cogs": rescogs
+          }
+        })
+      })
+
     }
-
-  }
-    else{
-      if ((entity == 'All') && (branch == 'All') && (depart == 'All')) {
-        //  console.log("branch all entity all");
-        let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "'";
-        //console.log(transquery);
-        connections.scm_public.query(transquery, (err, rescogs) => {
-          if (err) console.error(err);
-          res.json({
-            "result": {
-              "cogs": rescogs
-            }
-          })
-        })
-
-      } else if ((entity == 'All') && (branch == 'All') && (depart != 'All')) {
-        //  console.log("branch all entity all");
-        let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "' and top='" + depart + "'";
-        console.log(transquery);
-        connections.scm_public.query(transquery, (err, rescogs) => {
-          if (err) console.error(err);
-          res.json({
-            "result": {
-              "cogs": rescogs
-            }
-          })
-        })
-      } else if ((entity != 'All') && (branch == 'All') && (depart == 'All')) {
-        //  console.log("branch all entity not all");
-        let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "'  and entity='" + entity + "' ";
-        console.log(transquery);
-        connections.scm_public.query(transquery, (err, rescogs) => {
-          if (err) console.error(err);
-          res.json({
-            "result": {
-              "cogs": rescogs
-            }
-          })
-        })
-      } else if ((entity != 'All') && (branch == 'All') && (depart != 'All')) {
-        //  console.log("branch all entity not all");
-        let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "'  and entity='" + entity + "' and top='" + depart + "'";
-        console.log(transquery);
-        connections.scm_public.query(transquery, (err, rescogs) => {
-          if (err) console.error(err);
-          res.json({
-            "result": {
-              "cogs": rescogs
-            }
-          })
-        })
-      } else if ((entity != 'All') && (branch != 'All') && (depart == 'All')) {
-        //  console.log("else");
-        let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "' and entity='" + entity + "' and branch='" + branch + "'";
-        console.log(transquery);
-        connections.scm_public.query(transquery, (err, rescogs) => {
-          if (err) console.error(err);
-          res.json({
-            "result": {
-              "cogs": rescogs
-            }
-          })
-        })
-      } else {
-        let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "' and entity='" + entity + "' and branch='" + branch + "' and top='" + depart + "'";
-        console.log(transquery);
-        connections.scm_public.query(transquery, (err, rescogs) => {
-          if (err) console.error(err);
-          res.json({
-            "result": {
-              "cogs": rescogs
-            }
-          })
-        })
-
-      }
 
 
   }
@@ -4973,20 +5050,20 @@ exports.tpabill_submit = (req, res) => {
 
   console.log(tpa_billid + "  " + tpa_id + " " + id);
 
-	// connections.scm_root.query('UPDATE revenue_detail_tpa SET send_date=NOW(),sent_id=? WHERE bill_id=? AND id=?', [id, tpa_billid, tpa_id], (err, resdata) =>{
-	// 	if(err){
-	// 		console.error(err);
-	// 		res.json({
-	// 			dataupdated: false
-	// 		})
-	// 	}
-	// 	else {
-	// 		console.log("updated");
-	// 		res.json({
-	// 			dataupdated: false
-	// 		})
-	// 	}
-	// })
+  // connections.scm_root.query('UPDATE revenue_detail_tpa SET send_date=NOW(),sent_id=? WHERE bill_id=? AND id=?', [id, tpa_billid, tpa_id], (err, resdata) =>{
+  // 	if(err){
+  // 		console.error(err);
+  // 		res.json({
+  // 			dataupdated: false
+  // 		})
+  // 	}
+  // 	else {
+  // 		console.log("updated");
+  // 		res.json({
+  // 			dataupdated: false
+  // 		})
+  // 	}
+  // })
 
   connections.scm_root.getConnection((err, conn) => {
     conn.beginTransaction(function(err) {
@@ -4995,37 +5072,42 @@ exports.tpabill_submit = (req, res) => {
           dataupdated: false
         })
 
-      }
-      connections.scm_root.query('UPDATE revenue_detail_tpa SET send_date=NOW(),sent_id=? WHERE bill_id=? AND id=?', [id, tpa_billid, tpa_id], (err, resdata) => {
-        if (err) {
-          conn.rollback(function() {
-            res.json({
-              dataupdated: false
-            })
-
-          });
-        } else {
-          console.log(resdata);
-          conn.commit(function(err) {
-            if (err) {
-              conn.rollback(function() {
-                res.json({
-                  dataupdated: false
-                })
-                throw err;
-              });
-
-            } else {
-							console.log("updated");
+      } else {
+        connections.scm_root.query('UPDATE revenue_detail_tpa SET send_date=NOW(),sent_id=? WHERE bill_id=? AND id=?', [id, tpa_billid, tpa_id], (err, resdata) => {
+          if (err) {
+            conn.rollback(function() {
               res.json({
-                dataupdated: true
+                dataupdated: false
               })
 
-            }
+            });
+          } else {
+            console.log(resdata);
+            conn.commit(function(err) {
+              if (err) {
+                conn.rollback(function() {
+                  res.json({
+                    dataupdated: false
+                  })
+                  throw err;
+                });
 
-          })
-        }
-      })
+              } else {
+
+                console.log('Transaction Complete.');
+                conn.release();
+                  console.log("updated");
+                res.json({
+                  dataupdated: true
+                })
+
+              }
+
+            })
+          }
+        })
+
+      }
     })
   })
 
@@ -5240,8 +5322,7 @@ exports.tpabillsfinsub = (req, res) => {
       })
 
     })
-  }
-  else {
+  } else {
     connections.scm_public.query(files.tpabillfin_enbrsub, [start, end, start, end, entity, branch], (err, resdata) => {
       if (err) console.error(err);
       res.json({
@@ -5260,67 +5341,71 @@ exports.tpabill_ack = (req, res) => {
   let tpa_id = req.body.tpaid;
   let id = req.body.submitted_id;
 
-  console.log("hit in Acknowledge : "+"tpa_billid : "+tpa_billid+" tpa_id : "+tpa_id+" id : "+id );
+  console.log("hit in Acknowledge : " + "tpa_billid : " + tpa_billid + " tpa_id : " + tpa_id + " id : " + id);
 
-	// connections.scm_root.query('UPDATE revenue_detail_tpa SET acknowledge_date=NOW(),acknowledge_id=? WHERE bill_id=? AND id=?', [id, tpa_billid, tpa_id], (err, resdata) => {
-	// 	if(err){
-	// 		console.error(err);
-	// 		res.json({
-	// 			dataupdated: false
-	// 		})
-	// 	}
-	// 	else {
-	// 		console.log("updated");
-	// 		res.json({
-	// 			dataupdated: true
-	// 		})
-	// 	}
-	// })
-	//
+  // connections.scm_root.query('UPDATE revenue_detail_tpa SET acknowledge_date=NOW(),acknowledge_id=? WHERE bill_id=? AND id=?', [id, tpa_billid, tpa_id], (err, resdata) => {
+  // 	if(err){
+  // 		console.error(err);
+  // 		res.json({
+  // 			dataupdated: false
+  // 		})
+  // 	}
+  // 	else {
+  // 		console.log("updated");
+  // 		res.json({
+  // 			dataupdated: true
+  // 		})
+  // 	}
+  // })
+  //
 
   connections.scm_root.getConnection((err, conn) => {
+
+
     conn.beginTransaction(function(err) {
       if (err) {
         res.json({
           dataupdated: false
         })
 
+      } else {
+
+
+        connections.scm_root.query('UPDATE revenue_detail_tpa SET acknowledge_date=NOW(),acknowledge_id=? WHERE bill_id=? AND id=?', [id, tpa_billid, tpa_id], (err, resdata) => {
+          if (err) {
+            conn.rollback(function() {
+              res.json({
+                dataupdated: false
+              })
+
+            });
+          } else {
+            console.log(resdata);
+            conn.commit(function(err) {
+              if (err) {
+                return conn.rollback(function() {
+                  res.json({
+                    dataupdated: false
+                  })
+                  throw err;
+                });
+
+              } else {
+
+                console.log('Transaction Complete.');
+              conn.release();
+                  console.log("updated");
+                res.json({
+                  dataupdated: true
+                })
+
+              }
+
+            })
+          }
+        })
+
       }
-			else {
-
-
-				connections.scm_root.query('UPDATE revenue_detail_tpa SET acknowledge_date=NOW(),acknowledge_id=? WHERE bill_id=? AND id=?', [id, tpa_billid, tpa_id], (err, resdata) => {
-	        if (err) {
-	          conn.rollback(function() {
-	            res.json({
-	              dataupdated: false
-	            })
-
-	          });
-	        } else {
-	          console.log(resdata);
-	          conn.commit(function(err) {
-	            if (err) {
-	           return conn.rollback(function() {
-	                res.json({
-	                  dataupdated: false
-	                })
-	                throw err;
-	              });
-
-	            } else {
-								console.log("updated");
-	              res.json({
-	                dataupdated: true
-	              })
-
-	            }
-
-	          })
-	        }
-	      })
-
-			}
     })
   })
 
@@ -5333,64 +5418,73 @@ exports.tpabill_sub = (req, res) => {
   let tpa_id = req.body.tpaid;
   let id = req.body.submitted_id;
 
-  console.log("hit in Submitted  : "+"tpa_billid : "+tpa_billid+" tpa_id : "+tpa_id+" id : "+id );
+  console.log("hit in Submitted  : " + "tpa_billid : " + tpa_billid + " tpa_id : " + tpa_id + " id : " + id);
 
-	// connections.scm_root.query('UPDATE revenue_detail_tpa SET submitted_date=NOW(),submitted_id=? WHERE bill_id=? AND id=?', [id, tpa_billid, tpa_id], (err, resdata) => {
-	// 	if(err){
-	// 		console.error(err);
-	// 		res.json({
-	// 			dataupdated: false
-	// 		})
-	//
-	// 	}
-	// 	else{
-	// 		console.log("updated");
-	// 		res.json({
-	// 			dataupdated: true
-	// 		})
-	// 	}
-	// })
-
+  // connections.scm_root.query('UPDATE revenue_detail_tpa SET submitted_date=NOW(),submitted_id=? WHERE bill_id=? AND id=?', [id, tpa_billid, tpa_id], (err, resdata) => {
+  // 	if(err){
+  // 		console.error(err);
+  // 		res.json({
+  // 			dataupdated: false
+  // 		})
+  //
+  // 	}
+  // 	else{
+  // 		console.log("updated");
+  // 		res.json({
+  // 			dataupdated: true
+  // 		})
+  // 	}
+  // })
   connections.scm_root.getConnection((err, conn) => {
+		console.log("hit in getconn");
+
     conn.beginTransaction(function(err) {
       if (err) {
         res.json({
           dataupdated: false
         })
 
-      }
-      connections.scm_root.query('UPDATE revenue_detail_tpa SET submitted_date=NOW(),submitted_id=? WHERE bill_id=? AND id=?', [id, tpa_billid, tpa_id], (err, resdata) => {
-				console.log("hit in sub ");
-        if (err) {
-          conn.rollback(function() {
-            res.json({
-              dataupdated: false
-            })
-
-          });
-        } else {
-          console.log(resdata);
-          conn.commit(function(err) {
-            if (err) {
-              conn.rollback(function() {
-                res.json({
-                  dataupdated: false
-                })
-                throw err;
-              });
-
-            } else {
-
-							console.log("updated");
+      } else {
+				console.log("begin transaction");
+        connections.scm_root.query('UPDATE revenue_detail_tpa SET submitted_date=NOW(),submitted_id=? WHERE bill_id=? AND id=?', [id, tpa_billid, tpa_id], (err, resdata) => {
+          console.log("hit in sub ");
+          if (err) {
+						console.log("error");
+            conn.rollback(function() {
               res.json({
-                dataupdated: true
+                dataupdated: false
               })
 
-            }
+            });
+          } else {
+            console.log(resdata);
+            conn.commit(function(err) {
+              if (err) {
+                conn.rollback(function() {
+                  res.json({
+                    dataupdated: false
+                  })
+                  throw err;
+                });
 
-          })
-        }
-      })
+              } else {
+
+
+                console.log('Transaction Complete.');
+            conn.release();
+                  console.log("updated");
+                res.json({
+                  dataupdated: true
+                })
+
+
+              }
+
+            })
+          }
+        })
+
+      }
     })
   })
 
@@ -5399,9 +5493,9 @@ exports.tpabill_sub = (req, res) => {
 
 
 
-exports.materialcogs_email = (yesterday,callback) => {
+exports.materialcogs_email = (yesterday, callback) => {
 
-//  console.log('main_route');
+  //  console.log('main_route');
   // if (sess.superUser === undefined) {
   //   res.json({ msg: "Not Authorised" });
   // } else {
@@ -5413,58 +5507,58 @@ exports.materialcogs_email = (yesterday,callback) => {
     ("0" + (temp.getMonth() + 1)).slice(-2) +
     "-" +
     "01";
-  connections.scm_public.query(files.cogsSuper, [mtddate, ftddate],(error, cogsresults) =>  {
-    if (error){
-		callback("select cogs query error",null);
-	}else{
-		connections.scm_public.query(files.revenueSuper,[mtddate, ftddate],(error, revresults) => {
-			if (error) {
-				callback("select revenue_report query error",null);
-			}else{
-				connections.scm_public.query("select * from branches",(err, branchres) => {
-					if (err) {
-						callback("select branches query error",null);
-					}else{
-						connections.scm_public.query(files.currency_det_last_mth,  (currency_last_err, currency_last_res) => {
-						if (currency_last_err) {
-							callback("select currenct latest query error",null);
-						}else{
-							connections.scm_public.query(files.currency_details, [mtddate, ftddate], (currencyerr, currencyres) => {
-							 if (currencyerr){
-								callback("select currenct query query error",null);
-							 }else{
+  connections.scm_public.query(files.cogsSuper, [mtddate, ftddate], (error, cogsresults) => {
+    if (error) {
+      callback("select cogs query error", null);
+    } else {
+      connections.scm_public.query(files.revenueSuper, [mtddate, ftddate], (error, revresults) => {
+        if (error) {
+          callback("select revenue_report query error", null);
+        } else {
+          connections.scm_public.query("select * from branches", (err, branchres) => {
+            if (err) {
+              callback("select branches query error", null);
+            } else {
+              connections.scm_public.query(files.currency_det_last_mth, (currency_last_err, currency_last_res) => {
+                if (currency_last_err) {
+                  callback("select currenct latest query error", null);
+                } else {
+                  connections.scm_public.query(files.currency_details, [mtddate, ftddate], (currencyerr, currencyres) => {
+                    if (currencyerr) {
+                      callback("select currenct query query error", null);
+                    } else {
 
-									mods.functions
-									  .materialcogs(
-										cogsresults,
-										revresults,
-										branchres,
-										ftddate,
-										currencyres,
-										currency_last_res
-									  )
-									  .then(final => callback(null,final));
-							 }
-							});
+                      mods.functions
+                        .materialcogs(
+                          cogsresults,
+                          revresults,
+                          branchres,
+                          ftddate,
+                          currencyres,
+                          currency_last_res
+                        )
+                        .then(final => callback(null, final));
+                    }
+                  });
 
-						}
-						});
-					}
-				  });
-			}
-		  });
-	}
+                }
+              });
+            }
+          });
+        }
+      });
+    }
   });
   // }
 
 };
 
-exports.materialCogsOverseasEmailList = (emailtemp,callback) =>{
-	connections.scm_public.query("select fromid,toid,bccid,ccid,passcode from email where scmtype='scm_materialcost_overseas'",(error, domesticemailres) => {
-      if (error) {
-		  callback("select email query",null);
-	  }else{
-		  callback(null,domesticemailres);
-	  }
-	});
+exports.materialCogsOverseasEmailList = (emailtemp, callback) => {
+  connections.scm_public.query("select fromid,toid,bccid,ccid,passcode from email where scmtype='scm_materialcost_overseas'", (error, domesticemailres) => {
+    if (error) {
+      callback("select email query", null);
+    } else {
+      callback(null, domesticemailres);
+    }
+  });
 }

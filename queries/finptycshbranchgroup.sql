@@ -14,4 +14,4 @@ WHERE
 AND  CONCAT(YEAR(?),'-',MONTH(?),'-','31')
 
  AND pet.branch=?
-GROUP BY branch,category_id
+GROUP BY branch,category_id,status1

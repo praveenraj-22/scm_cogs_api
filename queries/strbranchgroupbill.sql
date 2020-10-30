@@ -9,8 +9,8 @@ WHEN pet.status=5 THEN 'Cancelled by Finance'
  FROM pettycash AS pet
 INNER JOIN pettycash_category AS PCC ON PCC.sno=pet.category_id
 WHERE   pet.branch=?  AND DATE(pet.created_date) BETWEEN CONCAT(YEAR(?),'-',MONTH(?),'-','01')
-AND  CONCAT(YEAR(?),'-',MONTH(?),'-','31') 
-GROUP BY branch,category_id
+AND  CONCAT(YEAR(?),'-',MONTH(?),'-','31')
+GROUP BY branch,category_id,status1
 
 
 -- SELECT branch,CASE WHEN pet.status=1 THEN 'Pending'
