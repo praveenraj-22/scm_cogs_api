@@ -122,20 +122,34 @@ exports.finptycshbranchgroupbilldetailz=read("./queries/finptycshbranchgroupbill
 exports.orbit_cogs_backup=read("./queries/orbit_cogs_backup.sql");
 exports.claimamountvalid=read("./queries/claimamountvalidate.sql");
 exports.tpabillsch=read("./queries/tpabillch.sql");
+
 exports.tpabillfin_all=read("./queries/tpabillfinall.sql");
 exports.tpabillfinallbr=read("./queries/tpabillfin_all_br.sql");
 exports.tpabillfinenall=read("./queries/tpabillfin_en_all.sql");
 exports.tpabillfinenbr=read("./queries/tpabillfin_en_br.sql");
+
+exports.tpabillfin_allNE=read("./queries/tpabillfinallne.sql");
+exports.tpabillfinenbrNE=read("./queries/tpabillfin_en_br_NE.sql");
+
 
 exports.tpabillfin_allpen=read("./queries/tpabillfinall_pen.sql");
 exports.tpabillfin_allbrpen=read("./queries/tpabillfinallbr_pen.sql");
 exports.tpabillfin_enallpen=read("./queries/tpabillfinenall_pen.sql");
 exports.tpabillfin_enbrpen=read("./queries/tpabillfinenbr_pen.sql");
 
+exports.tpabillfin_allpenNE=read("./queries/tpabillfinall_penNE.sql");
+exports.tpabillfin_enbrpenNE=read("./queries/tpabillfinenbr_peNE.sql");
+
 exports.tpabillfin_allack=read("./queries/tpabillfinall_ack.sql");
 exports.tpabillfin_enallack=read("./queries/tpabillfinenall_ack.sql");
 exports.tpabillfin_enbrack=read("./queries/tpabillfinenbr_ack.sql");
 
+exports.tpabillfin_allackNE=read("./queries/tpabillfinall_ackNE.sql");
+exports.tpabillfin_enbrackNE=read("./queries/tpabillfinenbr_ackNE.sql");
+
 exports.tpabillfin_allsub=read("./queries/tpabillfinall_sub.sql");
 exports.tpabillfin_enallsub=read("./queries/tpabillfinenall_sub.sql");
 exports.tpabillfin_enbrsub=read("./queries/tpabillfinenbr_sub.sql");
+
+exports.tpabillfin_allsubNE=read("./queries/tpabillfinall_subNE.sql");
+exports.tpabillfin_enbrsubNE=read("./queries/tpabillfinenbr_subNE.sql");

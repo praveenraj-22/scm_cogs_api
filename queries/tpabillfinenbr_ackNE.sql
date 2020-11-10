@@ -8,10 +8,10 @@ rdt.*
 INNER JOIN revenue_detail_tpa AS rdt ON rdt.bill_id=rd.EXTERNAL_ID
  INNER JOIN branches AS br ON rd.BILLED=br.code
  WHERE TRANSACTION_DATE BETWEEN ? AND ?
- and DATE(rdt.acknowledge_date) IS NOT NULL
+ AND DATE(rdt.acknowledge_date) IS NOT NULL
  AND  DATE(submitted_date) IS NULL
   AND br.entity <>'ohc'
-AND br.entity=? and BILLED=?
+ AND BILLED=?
 
 AND AGENCY_NAME NOT LIKE 'SELF PAYING'
 GROUP BY

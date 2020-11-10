@@ -849,7 +849,7 @@ exports.schedule = cron.schedule('30 09 * * *', () => {
 
 
 
-    connections.scm_public.query("SELECT PARENT_BRANCH,BRANCH,PAYMENT_OR_REFUND_DATE,(SUM(CASH_AMOUNT)+SUM(REFUND_CASH_AMOUNT)) AS cashamount,(SUM(CARD_AMOUNT)+SUM(REFUND_CARD_AMOUNT)) AS cardamount,(SUM(CHEQUE_AMOUNT)+SUM(REFUND_CHEQUE_AMOUNT)) AS chequeamount,SUM(DD_AMOUNT) AS ddamount,SUM(FUND_TRANSFER_AMOUNT) AS fund_trns_amt,SUM(PAYTM_AMOUNT) AS paym_amt,SUM(CREDIT_CHEQUE_AMOUNT) AS cred_che_amt,SUM(CREDIT_CASH_AMOUNT) AS cred_cash_amt,SUM(PAYTM_CASH_AMOUNT) AS paytm_cach_amt,SUM(PAYTM_FUND_AMOUNT) AS paytm_fund_amt,sum(ONLINE_AMOUNT) as  ONLINE_AMOUNT  FROM collection_detail WHERE PAYMENT_OR_REFUND_DATE=DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND PARENT_BRANCH IN ('AEH','AHC','AHI') GROUP BY branch", function(errs, result, fields) {
+    connections.scm_public.query("SELECT PARENT_BRANCH,'TOTAL' AS BRANCH,PAYMENT_OR_REFUND_DATE,(SUM(CASH_AMOUNT)+SUM(REFUND_CASH_AMOUNT)) AS cashamount, (SUM(CARD_AMOUNT)+SUM(REFUND_CARD_AMOUNT)) AS cardamount,(SUM(CHEQUE_AMOUNT)+SUM(REFUND_CHEQUE_AMOUNT)) AS chequeamount, SUM(DD_AMOUNT) AS ddamount,SUM(FUND_TRANSFER_AMOUNT) AS fund_trns_amt,SUM(PAYTM_AMOUNT) AS paym_amt, SUM(CREDIT_CHEQUE_AMOUNT) AS cred_che_amt,SUM(CREDIT_CASH_AMOUNT) AS cred_cash_amt, SUM(PAYTM_CASH_AMOUNT) AS paytm_cach_amt,SUM(PAYTM_FUND_AMOUNT) AS paytm_fund_amt,SUM(ONLINE_AMOUNT) AS  ONLINE_AMOUNT   FROM collection_detail WHERE PAYMENT_OR_REFUND_DATE=DATE_SUB(CURDATE(), INTERVAL 1 DAY)  AND PARENT_BRANCH IN ('AEH','AHC','AHI') GROUP BY PARENT_BRANCH  UNION  SELECT PARENT_BRANCH,BRANCH,PAYMENT_OR_REFUND_DATE,(SUM(CASH_AMOUNT)+SUM(REFUND_CASH_AMOUNT)) AS cashamount,(SUM(CARD_AMOUNT)+SUM(REFUND_CARD_AMOUNT)) AS cardamount,(SUM(CHEQUE_AMOUNT)+SUM(REFUND_CHEQUE_AMOUNT)) AS chequeamount,SUM(DD_AMOUNT) AS ddamount,SUM(FUND_TRANSFER_AMOUNT) AS fund_trns_amt,SUM(PAYTM_AMOUNT) AS paym_amt,SUM(CREDIT_CHEQUE_AMOUNT) AS cred_che_amt,SUM(CREDIT_CASH_AMOUNT) AS cred_cash_amt,SUM(PAYTM_CASH_AMOUNT) AS paytm_cach_amt,SUM(PAYTM_FUND_AMOUNT) AS paytm_fund_amt,sum(ONLINE_AMOUNT) as  ONLINE_AMOUNT  FROM collection_detail WHERE PAYMENT_OR_REFUND_DATE=DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND PARENT_BRANCH IN ('AEH','AHC','AHI') GROUP BY branch", function(errs, result, fields) {
       if (errs) throw err;
       console.log('executed');
 
@@ -1236,7 +1236,7 @@ exports.schedule = cron.schedule('45 10 * * *', () => {
 
 
 
-exports.schedule = cron.schedule('15 08 * * *', () => {
+exports.schedule = cron.schedule('52 13 * * *', () => {
 //exports.schedule = cron.schedule('05 14 * * *', () => {
 	var today = new Date();
 	var yesterday = new Date(today);

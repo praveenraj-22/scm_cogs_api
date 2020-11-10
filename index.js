@@ -13,7 +13,7 @@ app.use(modules.session({ name: 'session_ID', secret: 'Bi$$DS@@J&a&i&*', resave:
 
 app.use(modules.upload())
 
-modules.cron_job.schedule;
+//modules.cron_job.schedule;
 
 app.get('/api-super/:date', modules.routes.main_route)
 app.get('/api-normal/:date/:name', modules.routes.test_route)
@@ -91,12 +91,16 @@ app.get('/api-stockledger/:date/:entity/:branch/:department',modules.routes.stoc
 //praveenraj
 app.get('/api-tpabill/:branch/:date',modules.routes.tpabills)
 app.post('/api-tpabillsubmit',modules.routes.tpabill_submit)
-app.get('/api-tpabillfin/:entity/:branch/:date/:status',modules.routes.tpabillsfin)
-app.get('/api-tpabillfinpend/:entity/:branch/:date/:status',modules.routes.tpabillsfinpen)
-app.get('/api-tpabillfinack/:entity/:branch/:date/:status',modules.routes.tpabillsfinack)
-app.get('/api-tpabillfinsub/:entity/:branch/:date/:status',modules.routes.tpabillsfinsub)
+app.get('/api-tpabillfin/:entity/:branch/:date/:status/:name',modules.routes.tpabillsfin)
+app.get('/api-tpabillfinpend/:entity/:branch/:date/:status/:name',modules.routes.tpabillsfinpen)
+app.get('/api-tpabillfinack/:entity/:branch/:date/:status/:name',modules.routes.tpabillsfinack)
+app.get('/api-tpabillfinsub/:entity/:branch/:date/:status/:name',modules.routes.tpabillsfinsub)
 
 
 app.post('/api-tpabillack',modules.routes.tpabill_ack)
 app.post('/api-tpabillsub',modules.routes.tpabill_sub)
+
+app.get('/api-fintpabranch/:user',modules.routes.fintpabranchs)
+app.get('/api-finbranchregion/:user',modules.routes.finbranchregions)
+
 app.listen(8888, () => console.log(`App listening on port 8888`))
