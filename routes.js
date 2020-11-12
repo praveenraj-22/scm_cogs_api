@@ -4981,7 +4981,7 @@ exports.tpabill_submit = (req, res) => {
 
                 console.log('Transaction Complete.');
                 conn.release();
-                  console.log("updated");
+                console.log("updated");
                 res.json({
                   dataupdated: true
                 })
@@ -5003,37 +5003,36 @@ exports.tpabillsfin = (req, res) => {
   let branch = req.params.branch;
   let fromdate = req.params.date;
   let status = req.params.status;
-  let username=req.params.name;
+  let username = req.params.name;
   let start = fromdate + '-01';
   let end = fromdate + '-31';
   let branchsplitresult = [],
     brsplt = [],
     resultbranch = {},
     branchOBJ = [];
-console.log(username);
-  if(entity=='Noentity'){
-    if(branch=='All'){
+  console.log(username);
+  if (entity == 'Noentity') {
+    if (branch == 'All') {
       connections.scm_public.query("select branches AS TEXT,branches AS shortCode from users where emp_id=? and role in ('tpa_user')",
-      [username],(err,resbr)=>{
-        if(err) console.error(err);
-        resbr.forEach(element=>{
-          branchsplitresult=element.TEXT.split('+');
-        });
-         connections.scm_public.query(files.tpabillfin_allNE,[start,end,branchsplitresult],(err,resdata)=>{
+        [username], (err, resbr) => {
           if (err) console.error(err);
-          res.json({
-            "result": {
-              "tpabillfin": resdata
-            }
+          resbr.forEach(element => {
+            branchsplitresult = element.TEXT.split('+');
           });
-        });
+          connections.scm_public.query(files.tpabillfin_allNE, [start, end, branchsplitresult], (err, resdata) => {
+            if (err) console.error(err);
+            res.json({
+              "result": {
+                "tpabillfin": resdata
+              }
+            });
+          });
 
-      });
-    }
-    else {
+        });
+    } else {
       console.log("hit in else");
-      connections.scm_public.query(files.tpabillfinenbrNE,[start,end,branch],(err,resdata)=>{
-      //  console.log(resdata);
+      connections.scm_public.query(files.tpabillfinenbrNE, [start, end, branch], (err, resdata) => {
+        //  console.log(resdata);
         if (err) console.error(err);
         res.json({
           "result": {
@@ -5043,56 +5042,55 @@ console.log(username);
       });
     }
 
-  }
-  else{
+  } else {
 
-      if ((entity == 'All') && (branch == 'All')) {
-        connections.scm_public.query(files.tpabillfin_all, [start, end], (err, resdata) => {
-          if (err) console.error(err);
-          res.json({
-            "result": {
-              "tpabillfin": resdata
-            }
-          })
-
-
-        })
-      } else if ((entity == 'All') && (branch != 'All')) {
-        connections.scm_public.query(files.tpabillfinallbr, [start, end, branch], (err, resdata) => {
-          if (err) console.error(err);
-          res.json({
-            "result": {
-              "tpabillfin": resdata
-            }
-          })
-
-
+    if ((entity == 'All') && (branch == 'All')) {
+      connections.scm_public.query(files.tpabillfin_all, [start, end], (err, resdata) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "tpabillfin": resdata
+          }
         })
 
 
-      } else if ((entity != 'All') && (branch == 'All')) {
-
-        connections.scm_public.query(files.tpabillfinenall, [start, end, entity], (err, resdata) => {
-          if (err) console.error(err);
-          res.json({
-            "result": {
-              "tpabillfin": resdata
-            }
-          })
-
+      })
+    } else if ((entity == 'All') && (branch != 'All')) {
+      connections.scm_public.query(files.tpabillfinallbr, [start, end, branch], (err, resdata) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "tpabillfin": resdata
+          }
         })
-      } else {
-        connections.scm_public.query(files.tpabillfinenbr, [start, end, entity, branch], (err, resdata) => {
-          if (err) console.error(err);
-          res.json({
-            "result": {
-              "tpabillfin": resdata
-            }
-          })
 
 
+      })
+
+
+    } else if ((entity != 'All') && (branch == 'All')) {
+
+      connections.scm_public.query(files.tpabillfinenall, [start, end, entity], (err, resdata) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "tpabillfin": resdata
+          }
         })
-      }
+
+      })
+    } else {
+      connections.scm_public.query(files.tpabillfinenbr, [start, end, entity, branch], (err, resdata) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "tpabillfin": resdata
+          }
+        })
+
+
+      })
+    }
 
   }
 
@@ -5110,93 +5108,91 @@ exports.tpabillsfinpen = (req, res) => {
     brsplt = [],
     resultbranch = {},
     branchOBJ = [];
-let username=req.params.name;
+  let username = req.params.name;
 
-if(entity=='Noentity'){
-  if(branch=='All'){
-  connections.scm_public.query("select branches AS TEXT,branches AS shortCode from users where emp_id=? and role in ('tpa_user')",
-[username],(err,resbr)=>{
-  if(err) console.error(err);
-  resbr.forEach(element=>{
-    branchsplitresult=element.TEXT.split('+');
-  });
-  console.log(branchsplitresult);
-connections.scm_public.query(files.tpabillfin_allpenNE,[start,end,branchsplitresult],(err,resdata)=>{
-//console.log(resdata);
-    if (err) console.error(err);
-  //  console.log(resdata);
-  res.json({
-    "result": {
-      "tpabillfin": resdata
+  if (entity == 'Noentity') {
+    if (branch == 'All') {
+      connections.scm_public.query("select branches AS TEXT,branches AS shortCode from users where emp_id=? and role in ('tpa_user')",
+        [username], (err, resbr) => {
+          if (err) console.error(err);
+          resbr.forEach(element => {
+            branchsplitresult = element.TEXT.split('+');
+          });
+          console.log(branchsplitresult);
+          connections.scm_public.query(files.tpabillfin_allpenNE, [start, end, branchsplitresult], (err, resdata) => {
+            //console.log(resdata);
+            if (err) console.error(err);
+            //  console.log(resdata);
+            res.json({
+              "result": {
+                "tpabillfin": resdata
+              }
+            })
+          })
+        });
+    } else {
+      connections.scm_public.query(files.tpabillfin_enbrpenNE, [start, end, branch], (err, resdata) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "tpabillfin": resdata
+          }
+        })
+      })
+
     }
-  })
-})
-});
-  }
-  else{
-    connections.scm_public.query(files.tpabillfin_enbrpenNE,[start,end,branch],(err,resdata)=>{
-      if (err) console.error(err);
-      res.json({
-        "result": {
-          "tpabillfin": resdata
-        }
-      })
-    })
-
-  }
-}
-else {
-  if ((entity == 'All') && (branch == 'All') && (status == 0)) {
-    console.log("hit in pending");
-    connections.scm_public.query(files.tpabillfin_allpen, [start, end], (err, resdata) => {
-      if (err) console.error(err);
-      //  console.log(resdata);
-      res.json({
-        "result": {
-          "tpabillfin": resdata
-        }
-      })
-
-
-    })
-  } else if ((entity == 'All') && (branch != 'All') && (status == 0)) {
-    connections.scm_public.query(files.tpabillfin_allbrpen, [start, end, start, end, branch], (err, resdata) => {
-      if (err) console.error(err);
-      res.json({
-        "result": {
-          "tpabillfin": resdata
-        }
-      })
-
-
-    })
-
-
-  } else if ((entity != 'All') && (branch == 'All') && (status == 0)) {
-    console.log("hit in pendinf branch all");
-    connections.scm_public.query(files.tpabillfin_enallpen, [start, end, entity], (err, resdata) => {
-      if (err) console.error(err);
-      res.json({
-        "result": {
-          "tpabillfin": resdata
-        }
-      })
-
-    })
   } else {
-    connections.scm_public.query(files.tpabillfin_enbrpen, [start, end, entity, branch], (err, resdata) => {
-      if (err) console.error(err);
-      res.json({
-        "result": {
-          "tpabillfin": resdata
-        }
+    if ((entity == 'All') && (branch == 'All') && (status == 0)) {
+      console.log("hit in pending");
+      connections.scm_public.query(files.tpabillfin_allpen, [start, end], (err, resdata) => {
+        if (err) console.error(err);
+        //  console.log(resdata);
+        res.json({
+          "result": {
+            "tpabillfin": resdata
+          }
+        })
+
+
+      })
+    } else if ((entity == 'All') && (branch != 'All') && (status == 0)) {
+      connections.scm_public.query(files.tpabillfin_allbrpen, [start, end, start, end, branch], (err, resdata) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "tpabillfin": resdata
+          }
+        })
+
+
       })
 
 
-    })
-  }
+    } else if ((entity != 'All') && (branch == 'All') && (status == 0)) {
+      console.log("hit in pendinf branch all");
+      connections.scm_public.query(files.tpabillfin_enallpen, [start, end, entity], (err, resdata) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "tpabillfin": resdata
+          }
+        })
 
-}
+      })
+    } else {
+      connections.scm_public.query(files.tpabillfin_enbrpen, [start, end, entity, branch], (err, resdata) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "tpabillfin": resdata
+          }
+        })
+
+
+      })
+    }
+
+  }
 
 
 }
@@ -5213,43 +5209,41 @@ exports.tpabillsfinack = (req, res) => {
     resultbranch = {},
     branchOBJ = [];
 
-    let username=req.params.name;
+  let username = req.params.name;
 
 
-  if(entity=='Noentity'){
-    if(branch=='All'){
-connections.scm_public.query("select branches AS TEXT,branches AS shortCode from users where emp_id=? and role in ('tpa_user')",
-[username],(err,resbr)=>{
-  if(err)console.error(err);
-  resbr.forEach(element=>{
-    branchsplitresult=element.TEXT.split('+');
-  });
-  console.log(branchsplitresult);
+  if (entity == 'Noentity') {
+    if (branch == 'All') {
+      connections.scm_public.query("select branches AS TEXT,branches AS shortCode from users where emp_id=? and role in ('tpa_user')",
+        [username], (err, resbr) => {
+          if (err) console.error(err);
+          resbr.forEach(element => {
+            branchsplitresult = element.TEXT.split('+');
+          });
+          console.log(branchsplitresult);
 
-  connections.scm_public.query(files.tpabillfin_allackNE,[start,end,branchsplitresult],(err,resdata)=>{
-    if (err) console.error(err);
-    //  console.log(resdata);
-    res.json({
-      "result": {
-        "tpabillfin": resdata
-      }
-    })
-  })
-});
+          connections.scm_public.query(files.tpabillfin_allackNE, [start, end, branchsplitresult], (err, resdata) => {
+            if (err) console.error(err);
+            //  console.log(resdata);
+            res.json({
+              "result": {
+                "tpabillfin": resdata
+              }
+            })
+          })
+        });
+    } else {
+      connections.scm_public.query(files.tpabillfin_enbrackNE, [start, end, branch], (err, resdata) => {
+        if (err) console.error(err);
+        //  console.log(resdata);
+        res.json({
+          "result": {
+            "tpabillfin": resdata
+          }
+        })
+      })
     }
-    else {
-connections.scm_public.query(files.tpabillfin_enbrackNE,[start,end,branch],(err,resdata)=>{
-  if (err) console.error(err);
-  //  console.log(resdata);
-  res.json({
-    "result": {
-      "tpabillfin": resdata
-    }
-  })
-})
-    }
-  }
-  else{
+  } else {
     if ((entity == 'All') && (branch == 'All') && (status == 1)) {
       console.log("hit in pending");
       connections.scm_public.query(files.tpabillfin_allack, [start, end], (err, resdata) => {
@@ -5316,78 +5310,77 @@ exports.tpabillsfinsub = (req, res) => {
     brsplt = [],
     resultbranch = {},
     branchOBJ = [];
-let username=req.params.name;
+  let username = req.params.name;
 
-if(entity=='Noentity'){
-  if(branch=='All'){
-  connections.scm_public.query("select branches AS TEXT,branches AS shortCode from users where emp_id=? and role in ('tpa_user')",
-  [username],(err,resbr)=>{
-    if(err) console.error(err);
-    resbr.forEach(element=>{
-      branchsplitresult=element.TEXT.split('+');
-    });
-    console.log(branchsplitresult);
+  if (entity == 'Noentity') {
+    if (branch == 'All') {
+      connections.scm_public.query("select branches AS TEXT,branches AS shortCode from users where emp_id=? and role in ('tpa_user')",
+        [username], (err, resbr) => {
+          if (err) console.error(err);
+          resbr.forEach(element => {
+            branchsplitresult = element.TEXT.split('+');
+          });
+          console.log(branchsplitresult);
 
-    connections.scm_public.query(files.tpabillfin_allsubNE,[start,end,branchsplitresult],(err,resdata)=>{
-      if (err) console.error(err);
-      res.json({
-      "result": {
-        "tpabillfin": resdata
-      }
-    })
+          connections.scm_public.query(files.tpabillfin_allsubNE, [start, end, branchsplitresult], (err, resdata) => {
+            if (err) console.error(err);
+            res.json({
+              "result": {
+                "tpabillfin": resdata
+              }
+            })
 
-    })
-  }
-)}
-  else {
-connections.scm_public.query(files.tpabillfin_enbrsubNE,[start,end,branch],(err,resdata)=>{
-  if (err) console.error(err);
-  res.json({
-    "result": {
-      "tpabillfin": resdata
+          })
+        }
+      )
+    } else {
+      connections.scm_public.query(files.tpabillfin_enbrsubNE, [start, end, branch], (err, resdata) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "tpabillfin": resdata
+          }
+        })
+      })
     }
-  })
-})
-  }
-}
-else {
-
-  if ((entity == 'All') && (branch == 'All') && (status == 2)) {
-    console.log("hit in pending");
-    connections.scm_public.query(files.tpabillfin_allsub, [start, end], (err, resdata) => {
-      if (err) console.error(err);
-      //  console.log(resdata);
-      res.json({
-        "result": {
-          "tpabillfin": resdata
-        }
-      })
-
-
-    })
-  } else if ((entity != 'All') && (branch == 'All') && (status == 2)) {
-    connections.scm_public.query(files.tpabillfin_enallsub, [start, end, entity], (err, resdata) => {
-      if (err) console.error(err);
-      res.json({
-        "result": {
-          "tpabillfin": resdata
-        }
-      })
-
-    })
   } else {
-    connections.scm_public.query(files.tpabillfin_enbrsub, [start, end, entity, branch], (err, resdata) => {
-      if (err) console.error(err);
-      res.json({
-        "result": {
-          "tpabillfin": resdata
-        }
+
+    if ((entity == 'All') && (branch == 'All') && (status == 2)) {
+      console.log("hit in pending");
+      connections.scm_public.query(files.tpabillfin_allsub, [start, end], (err, resdata) => {
+        if (err) console.error(err);
+        //  console.log(resdata);
+        res.json({
+          "result": {
+            "tpabillfin": resdata
+          }
+        })
+
+
       })
+    } else if ((entity != 'All') && (branch == 'All') && (status == 2)) {
+      connections.scm_public.query(files.tpabillfin_enallsub, [start, end, entity], (err, resdata) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "tpabillfin": resdata
+          }
+        })
+
+      })
+    } else {
+      connections.scm_public.query(files.tpabillfin_enbrsub, [start, end, entity, branch], (err, resdata) => {
+        if (err) console.error(err);
+        res.json({
+          "result": {
+            "tpabillfin": resdata
+          }
+        })
 
 
-    })
+      })
+    }
   }
-}
 
 
 }
@@ -5433,8 +5426,8 @@ exports.tpabill_ack = (req, res) => {
               } else {
 
                 console.log('Transaction Complete.');
-              conn.release();
-                  console.log("updated");
+                conn.release();
+                console.log("updated");
                 res.json({
                   dataupdated: true
                 })
@@ -5456,11 +5449,11 @@ exports.tpabill_sub = (req, res) => {
   let tpa_billid = req.body.tpabillid;
   let tpa_id = req.body.tpaid;
   let id = req.body.submitted_id;
-  let date=req.body.submitted_date;
-  console.log("hit in Submitted  : " + "tpa_billid : " + tpa_billid + " tpa_id : " + tpa_id + " id : " + id +" date : "+date);
+  let date = req.body.submitted_date;
+  console.log("hit in Submitted  : " + "tpa_billid : " + tpa_billid + " tpa_id : " + tpa_id + " id : " + id + " date : " + date);
 
   connections.scm_root.getConnection((err, conn) => {
-		console.log("hit in getconn");
+    console.log("hit in getconn");
 
     conn.beginTransaction(function(err) {
       if (err) {
@@ -5469,11 +5462,11 @@ exports.tpabill_sub = (req, res) => {
         })
 
       } else {
-				console.log("begin transaction");
-        connections.scm_root.query('UPDATE revenue_detail_tpa SET submitted_date=?,submitted_id=? WHERE bill_id=? AND id=?', [date,id, tpa_billid, tpa_id], (err, resdata) => {
+        console.log("begin transaction");
+        connections.scm_root.query('UPDATE revenue_detail_tpa SET submitted_date=?,submitted_id=? WHERE bill_id=? AND id=?', [date, id, tpa_billid, tpa_id], (err, resdata) => {
           console.log("hit in sub ");
           if (err) {
-						console.log("error");
+            console.log("error");
             conn.rollback(function() {
               res.json({
                 dataupdated: false
@@ -5495,8 +5488,8 @@ exports.tpabill_sub = (req, res) => {
 
 
                 console.log('Transaction Complete.');
-            conn.release();
-                  console.log("updated");
+                conn.release();
+                console.log("updated");
                 res.json({
                   dataupdated: true
                 })
@@ -5585,35 +5578,35 @@ exports.materialCogsOverseasEmailList = (emailtemp, callback) => {
   });
 }
 
-exports.finbranchregions=(req,res)=>{
-  let username=req.params.user;
+exports.finbranchregions = (req, res) => {
+  let username = req.params.user;
 
   connections.scm_public.query("select branches AS TEXT,branches AS shortCode from users where emp_id=? and role in ('tpa_user')",
-  [username],
-  (err,ress)=>{
-    if(err) console.error(err);
-console.log(ress);
-  res.json(ress)
-  })
+    [username],
+    (err, ress) => {
+      if (err) console.error(err);
+      console.log(ress);
+      res.json(ress)
+    })
 
 }
 
-exports.fintpabranchs=(req,res)=>{
-  let username =req.params.user;
+exports.fintpabranchs = (req, res) => {
+  let username = req.params.user;
   let branchsplitresult = [],
     brsplt = [],
     resultbranch = {},
     branchOBJ = [];
 
 
-    connections.scm_public.query("select branches AS TEXT,branches AS shortCode from users where emp_id=? and role in ('tpa_user')",
-    [username],(err,resdata)=>{
-      if(err)console.error(err);
-    //  console.log(resdata);
-      resdata.forEach(element=>{
-      branchsplitresult=element.TEXT.split('+');
-    });
-      branchsplitresult.forEach(resele=>{
+  connections.scm_public.query("select branches AS TEXT,branches AS shortCode from users where emp_id=? and role in ('tpa_user')",
+    [username], (err, resdata) => {
+      if (err) console.error(err);
+      //  console.log(resdata);
+      resdata.forEach(element => {
+        branchsplitresult = element.TEXT.split('+');
+      });
+      branchsplitresult.forEach(resele => {
         branchOBJ.push({
           TEXT: resele,
           shortCode: resele
@@ -5622,4 +5615,73 @@ exports.fintpabranchs=(req,res)=>{
       res.json(branchOBJ);
     });
 
+}
+
+
+exports.fixdates = (req, res) => {
+  let no = req.params.no;
+  //
+  // let d = new Date();
+  // let dt = d.setDate(d.getDate() - no);
+  // let dat = d.toLocaleDateString();
+  //
+  // let new_dat = new Date(dat);
+  //
+  // let dd = new_dat.getDate();
+  // let mm = new_dat.getMonth() + 1;
+  // let yyyy = new_dat.getFullYear()
+  // if (dd < 10) {
+  //   dd = '0' + dd;
+  // } else {
+  //   dd
+  // }
+  // if (mm < 10 && mm >= 0) {
+  //   mm = '0' + mm;
+  // } else {
+  //   mm
+  // }
+  // let fin_fixdate = yyyy + '-' + mm + '-' + dd;
+  // console.log(yyyy + '-' + mm + '-' + dd);
+
+
+connections.scm_root.query("update drt_date set fix_date=? where sno=1",[no],(err,resdata)=>{
+  if(err){
+
+    console.error(err);
+    res.json({
+      datefix:false
+    })
+  }
+  else {
+    res.json({
+      datefix:true,
+      rest:no
+    })
+
+  }
+
+
+
+})
+
+
+}
+
+exports.getfixeddate=(req,res)=>{
+
+  connections.scm_public.query("select fix_date from drt_date where sno=1",(err,resdata)=>{
+    if(err){
+
+      console.error(err);
+      res.json({
+fixeddate:resdata
+      })
+    }
+    else {
+      res.json({
+        fixeddate:resdata
+      })
+    }
+
+  })
 }
