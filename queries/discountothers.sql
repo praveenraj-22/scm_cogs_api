@@ -22,7 +22,7 @@ FROM
                             'CONTACTLENS') THEN 'CONTACTLENS'
               ELSE UNIT
           END AS UNIT
-   FROM revenue_details_native
+   FROM revenue_details
    WHERE TOTAL_AMOUNT > 0
      AND DATE(TRANSACTION_DATE) BETWEEN ? AND ?
      AND PAYORTYPE ='SELF'
@@ -46,7 +46,7 @@ AND SUBGROUP NOT IN("VR - INJECTION","VR INJECTION",
                                       'CONTACTLENS') THEN 'CONTACTLENS'
                         ELSE UNIT
                     END AS UNIT
-   FROM revenue_details_native
+   FROM revenue_details
    WHERE TOTAL_AMOUNT > 0
      AND `PAYORTYPE` LIKE 'SELF%'
      AND DATE(TRANSACTION_DATE) BETWEEN ? AND ?
@@ -70,7 +70,7 @@ AND SUBGROUP NOT IN("VR - INJECTION","VR INJECTION",
                                       'CONTACTLENS') THEN 'CONTACTLENS'
                         ELSE UNIT
                     END AS UNIT
-   FROM revenue_details_native
+   FROM revenue_details
    WHERE TOTAL_AMOUNT > 0
      AND DISCOUNT_AMOUNt > 0
      AND `PAYORTYPE` LIKE 'SELF%'
@@ -95,7 +95,7 @@ AND SUBGROUP NOT IN("VR - INJECTION","VR INJECTION",
               ELSE UNIT
           END AS UNIT
    FROM
-   revenue_details_native
+   revenue_details
    WHERE TOTAL_AMOUNT > 0
    AND DISCOUNT_AMOUNT > 0
      AND DATE(TRANSACTION_DATE) BETWEEN ? AND ?

@@ -1,4 +1,5 @@
 SELECT CASE
+WHEN pc.status=0 THEN 'bill_raised'
 WHEN pc.status=1 THEN 'pending'
 WHEN pc.status=2 THEN 'Approved'
 WHEN pc.status=3 THEN 'Cancelled'

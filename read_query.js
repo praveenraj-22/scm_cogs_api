@@ -114,19 +114,20 @@ exports.finpcdeclibrst=read("./queries/finpc_decl_br_st.sql");
 exports.finpcpendbrst=read("./queries/finpc_pend_st_br.sql");
 exports.finpcappstbr=read("./queries/finpc_app_st_br.sql");
 
-exports.finptycshallst=read("./queries/finpc_all_st.sql");
-exports.finptycshbrall=read("./queries/finpty_br_all.sql");
-exports.finptycshbrst=read("./queries/finptycsh_br_st.sql");
+// exports.finptycshallst=read("./queries/finpc_all_st.sql");
+// exports.finptycshbrall=read("./queries/finpty_br_all.sql");
+// exports.finptycshbrst=read("./queries/finptycsh_br_st.sql");
+
 exports.finpccshbranchgroupz=read("./queries/finptycshbranchgroup.sql");
 exports.finptycshbranchgroupbilldetailz=read("./queries/finptycshbranchgroupbilldetail.sql");
 exports.orbit_cogs_backup=read("./queries/orbit_cogs_backup.sql");
 exports.claimamountvalid=read("./queries/claimamountvalidate.sql");
 exports.tpabillsch=read("./queries/tpabillch.sql");
-
 exports.tpabillfin_all=read("./queries/tpabillfinall.sql");
 exports.tpabillfinallbr=read("./queries/tpabillfin_all_br.sql");
 exports.tpabillfinenall=read("./queries/tpabillfin_en_all.sql");
 exports.tpabillfinenbr=read("./queries/tpabillfin_en_br.sql");
+exports.pettycashreportallall=read("./queries/getpettycashallall.sql");
 
 exports.tpabillfin_allNE=read("./queries/tpabillfinallne.sql");
 exports.tpabillfinenbrNE=read("./queries/tpabillfin_en_br_NE.sql");
@@ -153,3 +154,12 @@ exports.tpabillfin_enbrsub=read("./queries/tpabillfinenbr_sub.sql");
 
 exports.tpabillfin_allsubNE=read("./queries/tpabillfinall_subNE.sql");
 exports.tpabillfin_enbrsubNE=read("./queries/tpabillfinenbr_subNE.sql");
+
+
+exports.stock_ledger_domestic_IM=read("./queries/stock_ledger_domestic.sql");
+exports.stock_ledger_overseas_IM=read("./queries/stock_ledger_overseas.sql");
+
+exports.pcreports_allallall=read("./queries/pcreportallallall.sql");
+exports.pcreport_brall=read("./queries/pcreportbrall.sql");
+exports.pcreport_allcat=read("./queries/pcreportallcat.sql");
+exports.pcreport_brcat=read('./queries/pcreportbrcat.sql');

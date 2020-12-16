@@ -2,7 +2,7 @@ exports.ideamed = {
     host: 'bi.carehis.com',
     port: 33306,
     user: 'biagarwal',
-    pass: 'Pass@@##$$123',
+    pass: '@G@rw@l@1##$$',
     db: 'RDPV_IDEAMED'
 }
 

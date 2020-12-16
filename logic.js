@@ -693,7 +693,7 @@ TZA*/
 let filterEntity = async (dbres, dbres2, ftddate,overseasCurrency) => {
     let tempObj = {}, pha = 0, opt = 0, lab = 0, ot = 0, total = 0, rev = 0, aeharr = [], aehrevarr = [], ahcrevarr = [], ahcarr = [], 
 	ogharr = [], omaarr = [], omdarr = [], omzarr = [], orbarr = [], orwarr =[], otaarr = [], ougarr = [], ozaarr = [],
-	oghrevarr = [], omarevarr = [], omdrevarr = [], omzrevarr = [], orbrevarr = [], orwrevarr =[], otarevarr = [], ougrevarr = [], ozarevarr = []
+	oghrevarr = [], omarevarr = [], omdrevarr = [], omzrevarr = [], orbrevarr = [], orwrevarr =[], otarevarr = [], ougrevarr = [], ozarevarr = [],oniarr = [],onirevarr = [],
 	
 	alin = {},group = {}
 	
@@ -726,7 +726,11 @@ let filterEntity = async (dbres, dbres2, ftddate,overseasCurrency) => {
     })
     tempObj.AEH.mtdpha = pha, tempObj.AEH.mtdopt = opt, tempObj.AEH.mtdlab = lab, tempObj.AEH.mtdot = ot, tempObj.AEH.mtd = total, tempObj.AEH.mtdrev = rev, tempObj.AEH.mtd_cogs_percent = cogsPercent(total, rev)
     pha = 0, opt = 0, lab = 0, ot = 0, total = 0, rev = 0
-    ahcarr = _.filter(dbres, { entity: 'AHC' })
+	
+	ahcarr = _.filter(dbres, (v) => _.includes(['AHC','AHI'], v.entity));
+
+	//console.log(ahcarr);
+    //ahcarr = _.filter(dbres, { entity: 'AHC' })
     _.filter(ahcarr, { trans_date: ftddate }).forEach(element => {
         pha += element.pharmacy;
         opt += element.opticals;
@@ -734,7 +738,8 @@ let filterEntity = async (dbres, dbres2, ftddate,overseasCurrency) => {
         ot += element.operation_theatre;
         total += element.ftd
     })
-    ahcrevarr = _.filter(dbres2, { entity: 'AHC' })
+	ahcrevarr = _.filter(dbres2, (v) => _.includes(['AHC','AHI'], v.entity));	
+    //ahcrevarr = _.filter(dbres2, { entity: 'AHC' })
     _.filter(ahcrevarr, { trans_date: ftddate }).forEach(element => {
         rev += element.ftd
     })
@@ -812,6 +817,36 @@ let filterEntity = async (dbres, dbres2, ftddate,overseasCurrency) => {
     })
     tempObj.OMA.mtdpha = pha, tempObj.OMA.mtdopt = opt, tempObj.OMA.mtdlab = lab, tempObj.OMA.mtdot = ot, tempObj.OMA.mtd = total, tempObj.OMA.mtdrev = rev, tempObj.OMA.mtd_cogs_percent = cogsPercent(total, rev)
 	
+	
+	
+	
+	
+	pha = 0, opt = 0, lab = 0, ot = 0, total = 0, rev = 0	
+	oniarr = _.filter(dbres, { entity: 'ONI' })
+    _.filter(oniarr, { trans_date: ftddate }).forEach(element => {
+        pha += element.pharmacy;
+        opt += element.opticals;
+        lab += element.laboratory;
+        ot += element.operation_theatre;
+        total += element.ftd
+    })
+    onirevarr = _.filter(dbres2, { entity: 'ONI' })
+    _.filter(onirevarr, { trans_date: ftddate }).forEach(element => {
+        rev += element.ftd
+    })
+    tempObj.ONI = { branch: 'ONI', ftdpha: pha, ftdopt: opt, ftdlab: lab, ftdot: ot, ftd: total, ftdrev: rev, ftd_cogs_percent: cogsPercent(total, rev) }
+    pha = 0, opt = 0, lab = 0, ot = 0, total = 0, rev = 0
+    oniarr.forEach(element => {
+        pha += element.pharmacy;
+        opt += element.opticals;
+        lab += element.laboratory;
+        ot += element.operation_theatre;
+        total += element.ftd
+    })
+    onirevarr.forEach(element => {
+        rev += element.ftd
+    })
+    tempObj.ONI.mtdpha = pha, tempObj.ONI.mtdopt = opt, tempObj.ONI.mtdlab = lab, tempObj.ONI.mtdot = ot, tempObj.ONI.mtd = total, tempObj.ONI.mtdrev = rev, tempObj.ONI.mtd_cogs_percent = cogsPercent(total, rev)
 	
 	
 	
@@ -1065,7 +1100,7 @@ let filterEntity = async (dbres, dbres2, ftddate,overseasCurrency) => {
 	
 	
 	
-	ohcftdpha = tempObj.OGH['ftdpha'] + tempObj.OMA['ftdpha'] + tempObj.OMD['ftdpha'] + tempObj.OMZ['ftdpha'] + tempObj.ORB['ftdpha'] + tempObj.ONA['ftdpha'] + tempObj.ORW['ftdpha'] +  tempObj.OTA['ftdpha'] + tempObj.OUG['ftdpha'] + tempObj.OZA['ftdpha']; 
+	ohcftdpha = tempObj.OGH['ftdpha'] + tempObj.OMA['ftdpha'] + tempObj.OMD['ftdpha'] + tempObj.OMZ['ftdpha'] + tempObj.ORB['ftdpha'] + tempObj.ONA['ftdpha'] + tempObj.ORW['ftdpha'] +  tempObj.OTA['ftdpha'] + tempObj.OUG['ftdpha'] + tempObj.OZA['ftdpha'] + tempObj.ONI['ftdpha']; 
 	
 	
 	if((Object.keys(overseasCurrency).length) > 0){
@@ -1078,10 +1113,11 @@ let filterEntity = async (dbres, dbres2, ftddate,overseasCurrency) => {
 		(tempObj.ORW['ftdpha']*overseasCurrency.RWD.ftd) +  
 		(tempObj.OTA['ftdpha']*overseasCurrency.TZA.ftd) + 
 		(tempObj.OUG['ftdpha']*overseasCurrency.UGD.ftd) + 
+		(tempObj.ONI['ftdpha']*overseasCurrency.NGA.ftd) +
 		(tempObj.OZA['ftdpha']*overseasCurrency.ZMB.ftd);
 	}
 	
-	ohcftdopt = tempObj.OGH['ftdopt'] + tempObj.OMA['ftdopt'] + tempObj.OMD['ftdopt'] + tempObj.OMZ['ftdopt'] + tempObj.ORB['ftdopt'] + tempObj.ONA['ftdopt'] + tempObj.ORW['ftdopt'] +  tempObj.OTA['ftdopt'] +  tempObj.OUG['ftdopt'] + tempObj.OZA['ftdopt'];
+	ohcftdopt = tempObj.OGH['ftdopt'] + tempObj.OMA['ftdopt'] + tempObj.OMD['ftdopt'] + tempObj.OMZ['ftdopt'] + tempObj.ORB['ftdopt'] + tempObj.ONA['ftdopt'] + tempObj.ORW['ftdopt'] +  tempObj.OTA['ftdopt'] +  tempObj.OUG['ftdopt'] + tempObj.OZA['ftdopt']+ tempObj.ONI['ftdopt'];
 	
 	if((Object.keys(overseasCurrency).length) > 0){
 		ohcftdopt = (tempObj.OGH['ftdopt']*overseasCurrency.GHA.ftd) + 
@@ -1093,10 +1129,11 @@ let filterEntity = async (dbres, dbres2, ftddate,overseasCurrency) => {
 		(tempObj.ORW['ftdopt']*overseasCurrency.RWD.ftd) +  
 		(tempObj.OTA['ftdopt']*overseasCurrency.TZA.ftd) +  
 		(tempObj.OUG['ftdopt']*overseasCurrency.UGD.ftd) + 
+		(tempObj.ONI['ftdopt']*overseasCurrency.NGA.ftd) + 
 		(tempObj.OZA['ftdopt']*overseasCurrency.ZMB.ftd);
 	}
 	
-	 ohcftdlab = tempObj.OGH['ftdlab'] + tempObj.OMA['ftdlab'] + tempObj.OMD['ftdlab'] + tempObj.OMZ['ftdlab'] + tempObj.ORB['ftdlab'] + tempObj.ONA['ftdlab'] + tempObj.ORW['ftdlab'] +  tempObj.OTA['ftdlab'] +  tempObj.OUG['ftdlab'] + tempObj.OZA['ftdlab'];
+	 ohcftdlab = tempObj.OGH['ftdlab'] + tempObj.OMA['ftdlab'] + tempObj.OMD['ftdlab'] + tempObj.OMZ['ftdlab'] + tempObj.ORB['ftdlab'] + tempObj.ONA['ftdlab'] + tempObj.ORW['ftdlab'] +  tempObj.OTA['ftdlab'] +  tempObj.OUG['ftdlab'] + tempObj.OZA['ftdlab']+ tempObj.ONI['ftdlab'];
 	 
 	 if((Object.keys(overseasCurrency).length) > 0){
 		 ohcftdlab = (tempObj.OGH['ftdlab']*overseasCurrency.GHA.ftd) + 
@@ -1108,10 +1145,11 @@ let filterEntity = async (dbres, dbres2, ftddate,overseasCurrency) => {
 		 (tempObj.ORW['ftdlab']*overseasCurrency.RWD.ftd) +  
 		 (tempObj.OTA['ftdlab']*overseasCurrency.TZA.ftd) +  
 		 (tempObj.OUG['ftdlab']*overseasCurrency.UGD.ftd) + 
+		 (tempObj.ONI['ftdlab']*overseasCurrency.NGA.ftd) + 
 		 (tempObj.OZA['ftdlab']*overseasCurrency.ZMB.ftd);
 	 }
 	
-	ohcftdot = tempObj.OGH['ftdot'] + tempObj.OMA['ftdot'] + tempObj.OMD['ftdot'] + tempObj.OMZ['ftdot'] + tempObj.ORB['ftdot'] + tempObj.ONA['ftdot'] + tempObj.ORW['ftdot'] +  tempObj.OTA['ftdot'] +  tempObj.OUG['ftdot'] + tempObj.OZA['ftdot']; 
+	ohcftdot = tempObj.OGH['ftdot'] + tempObj.OMA['ftdot'] + tempObj.OMD['ftdot'] + tempObj.OMZ['ftdot'] + tempObj.ORB['ftdot'] + tempObj.ONA['ftdot'] + tempObj.ORW['ftdot'] +  tempObj.OTA['ftdot'] +  tempObj.OUG['ftdot'] + tempObj.OZA['ftdot']+ tempObj.ONI['ftdot']; 
 	
 	 if((Object.keys(overseasCurrency).length) > 0){
 		 ohcftdot = (tempObj.OGH['ftdot']*overseasCurrency.GHA.ftd) + 
@@ -1123,11 +1161,12 @@ let filterEntity = async (dbres, dbres2, ftddate,overseasCurrency) => {
 		 (tempObj.ORW['ftdot']*overseasCurrency.RWD.ftd) +  
 		 (tempObj.OTA['ftdot']*overseasCurrency.TZA.ftd) +  
 		 (tempObj.OUG['ftdot']*overseasCurrency.UGD.ftd) + 
+		 (tempObj.ONI['ftdot']*overseasCurrency.NGA.ftd) + 
 		 (tempObj.OZA['ftdot']*overseasCurrency.ZMB.ftd); 
 		 
 	 }
 	
-	ohcftdtotal = tempObj.OGH['ftd'] + tempObj.OMA['ftd'] + tempObj.OMD['ftd'] + tempObj.OMZ['ftd'] + tempObj.ORB['ftd'] + tempObj.ONA['ftd'] + tempObj.ORW['ftd'] +  tempObj.OTA['ftd'] +  tempObj.OUG['ftd'] + tempObj.OZA['ftd'];
+	ohcftdtotal = tempObj.OGH['ftd'] + tempObj.OMA['ftd'] + tempObj.OMD['ftd'] + tempObj.OMZ['ftd'] + tempObj.ORB['ftd'] + tempObj.ONA['ftd'] + tempObj.ORW['ftd'] +  tempObj.OTA['ftd'] +  tempObj.OUG['ftd'] + tempObj.OZA['ftd']+ tempObj.ONI['ftd'];
 	
 	if((Object.keys(overseasCurrency).length) > 0){
 		ohcftdtotal = (tempObj.OGH['ftd']*overseasCurrency.GHA.ftd) + 
@@ -1139,10 +1178,11 @@ let filterEntity = async (dbres, dbres2, ftddate,overseasCurrency) => {
 		(tempObj.ORW['ftd']*overseasCurrency.RWD.ftd) +  
 		(tempObj.OTA['ftd']*overseasCurrency.TZA.ftd) +  
 		(tempObj.OUG['ftd']*overseasCurrency.UGD.ftd) + 
+		(tempObj.ONI['ftd']*overseasCurrency.NGA.ftd) +
 		(tempObj.OZA['ftd']*overseasCurrency.ZMB.ftd);
 	}
 	
-	ohcftdrev = tempObj.OGH['ftdrev'] + tempObj.OMA['ftdrev'] + tempObj.OMD['ftdrev'] + tempObj.OMZ['ftdrev'] + tempObj.ORB['ftdrev'] +  tempObj.ONA['ftdrev'] + tempObj.ORW['ftdrev'] +  tempObj.OTA['ftdrev'] +  tempObj.OUG['ftdrev'] + tempObj.OZA['ftdrev'];
+	ohcftdrev = tempObj.OGH['ftdrev'] + tempObj.OMA['ftdrev'] + tempObj.OMD['ftdrev'] + tempObj.OMZ['ftdrev'] + tempObj.ORB['ftdrev'] +  tempObj.ONA['ftdrev'] + tempObj.ORW['ftdrev'] +  tempObj.OTA['ftdrev'] +  tempObj.OUG['ftdrev'] + tempObj.OZA['ftdrev']+ tempObj.ONI['ftdrev'];
 	
 	if((Object.keys(overseasCurrency).length) > 0){
 		ohcftdrev = (tempObj.OGH['ftdrev']*overseasCurrency.GHA.ftd) + 
@@ -1154,6 +1194,7 @@ let filterEntity = async (dbres, dbres2, ftddate,overseasCurrency) => {
 		(tempObj.ORW['ftdrev']*overseasCurrency.RWD.ftd) +  
 		(tempObj.OTA['ftdrev']*overseasCurrency.TZA.ftd) +  
 		(tempObj.OUG['ftdrev']*overseasCurrency.UGD.ftd) + 
+		(tempObj.ONI['ftdrev']*overseasCurrency.NGA.ftd) + 
 		(tempObj.OZA['ftdrev']*overseasCurrency.ZMB.ftd);
 	}
 	
@@ -1161,7 +1202,7 @@ let filterEntity = async (dbres, dbres2, ftddate,overseasCurrency) => {
 	
 	
 	
-	tempObj.OHC.mtdpha = tempObj.OGH['mtdpha'] + tempObj.OMA['mtdpha'] + tempObj.OMD['mtdpha'] + tempObj.OMZ['mtdpha'] + tempObj.ORB['mtdpha'] + tempObj.ONA['mtdpha'] + tempObj.ORW['mtdpha'] +  tempObj.OTA['mtdpha'] +  tempObj.OUG['mtdpha'] + tempObj.OZA['mtdpha']; 
+	tempObj.OHC.mtdpha = tempObj.OGH['mtdpha'] + tempObj.OMA['mtdpha'] + tempObj.OMD['mtdpha'] + tempObj.OMZ['mtdpha'] + tempObj.ORB['mtdpha'] + tempObj.ONA['mtdpha'] + tempObj.ORW['mtdpha'] +  tempObj.OTA['mtdpha'] +  tempObj.OUG['mtdpha'] + tempObj.OZA['mtdpha']+ tempObj.ONI['mtdpha']; 
 	
 	if((Object.keys(overseasCurrency).length) > 0){
 		
@@ -1173,11 +1214,12 @@ let filterEntity = async (dbres, dbres2, ftddate,overseasCurrency) => {
 		(tempObj.ONA['mtdpha']*overseasCurrency.NAB.mtd) + 
 		(tempObj.ORW['mtdpha']*overseasCurrency.RWD.mtd) +  
 		(tempObj.OTA['mtdpha']*overseasCurrency.TZA.mtd) +  
-		(tempObj.OUG['mtdpha']*overseasCurrency.UGD.mtd) + 
+		(tempObj.OUG['mtdpha']*overseasCurrency.UGD.mtd) +
+		(tempObj.ONI['mtdpha']*overseasCurrency.NGA.mtd) +
 		(tempObj.OZA['mtdpha']*overseasCurrency.ZMB.mtd) ; 
 	}
 	
-	tempObj.OHC.mtdopt = tempObj.OGH['mtdopt'] + tempObj.OMA['mtdopt'] + tempObj.OMD['mtdopt'] + tempObj.OMZ['mtdopt'] + tempObj.ORB['mtdopt'] + tempObj.ONA['mtdopt'] + tempObj.ORW['mtdopt'] +  tempObj.OTA['mtdopt'] +  tempObj.OUG['mtdopt'] + tempObj.OZA['mtdopt'];
+	tempObj.OHC.mtdopt = tempObj.OGH['mtdopt'] + tempObj.OMA['mtdopt'] + tempObj.OMD['mtdopt'] + tempObj.OMZ['mtdopt'] + tempObj.ORB['mtdopt'] + tempObj.ONA['mtdopt'] + tempObj.ORW['mtdopt'] +  tempObj.OTA['mtdopt'] +  tempObj.OUG['mtdopt'] + tempObj.OZA['mtdopt']+ tempObj.ONI['mtdopt'];
 	
 	if((Object.keys(overseasCurrency).length) > 0){
 		
@@ -1190,12 +1232,13 @@ let filterEntity = async (dbres, dbres2, ftddate,overseasCurrency) => {
 		(tempObj.ORW['mtdopt']*overseasCurrency.RWD.mtd) +  
 		(tempObj.OTA['mtdopt']*overseasCurrency.TZA.mtd) +  
 		(tempObj.OUG['mtdopt']*overseasCurrency.UGD.mtd) + 
+		(tempObj.ONI['mtdopt']*overseasCurrency.NGA.mtd) + 
 		(tempObj.OZA['mtdopt']*overseasCurrency.ZMB.mtd);
 		
 	}
 	
 	
-	tempObj.OHC.mtdlab = tempObj.OGH['mtdlab'] + tempObj.OMA['mtdlab'] + tempObj.OMD['mtdlab'] + tempObj.OMZ['mtdlab'] + tempObj.ORB['mtdlab'] + tempObj.ONA['mtdlab'] + tempObj.ORW['mtdlab'] +  tempObj.OTA['mtdlab'] +  tempObj.OUG['mtdlab'] + tempObj.OZA['mtdlab'];
+	tempObj.OHC.mtdlab = tempObj.OGH['mtdlab'] + tempObj.OMA['mtdlab'] + tempObj.OMD['mtdlab'] + tempObj.OMZ['mtdlab'] + tempObj.ORB['mtdlab'] + tempObj.ONA['mtdlab'] + tempObj.ORW['mtdlab'] +  tempObj.OTA['mtdlab'] +  tempObj.OUG['mtdlab'] + tempObj.OZA['mtdlab']+ tempObj.ONI['mtdlab'];
 	
 	if((Object.keys(overseasCurrency).length) > 0){
 		tempObj.OHC.mtdlab = (tempObj.OGH['mtdlab']*overseasCurrency.GHA.mtd) +
@@ -1207,11 +1250,12 @@ let filterEntity = async (dbres, dbres2, ftddate,overseasCurrency) => {
 		(tempObj.ORW['mtdlab']*overseasCurrency.RWD.mtd) +  
 		(tempObj.OTA['mtdlab']*overseasCurrency.TZA.mtd) +  
 		(tempObj.OUG['mtdlab']*overseasCurrency.UGD.mtd) + 
+		(tempObj.ONI['mtdlab']*overseasCurrency.NGA.mtd) +
 		(tempObj.OZA['mtdlab']*overseasCurrency.ZMB.mtd);
 	}
 	
 	
-	tempObj.OHC.mtdot = tempObj.OGH['mtdot'] + tempObj.OMA['mtdot'] + tempObj.OMD['mtdot'] + tempObj.OMZ['mtdot'] + tempObj.ORB['mtdot'] + tempObj.ONA['mtdot'] + tempObj.ORW['mtdot'] +  tempObj.OTA['mtdot'] +  tempObj.OUG['mtdot'] + tempObj.OZA['mtdot']; 
+	tempObj.OHC.mtdot = tempObj.OGH['mtdot'] + tempObj.OMA['mtdot'] + tempObj.OMD['mtdot'] + tempObj.OMZ['mtdot'] + tempObj.ORB['mtdot'] + tempObj.ONA['mtdot'] + tempObj.ORW['mtdot'] +  tempObj.OTA['mtdot'] +  tempObj.OUG['mtdot'] + tempObj.OZA['mtdot']+ tempObj.ONI['mtdot']; 
 	
 	if((Object.keys(overseasCurrency).length) > 0){
 		tempObj.OHC.mtdot = (tempObj.OGH['mtdot']*overseasCurrency.GHA.mtd) + 
@@ -1223,11 +1267,12 @@ let filterEntity = async (dbres, dbres2, ftddate,overseasCurrency) => {
 		(tempObj.ORW['mtdot']*overseasCurrency.RWD.mtd) +  
 		(tempObj.OTA['mtdot']*overseasCurrency.TZA.mtd) +  
 		(tempObj.OUG['mtdot']*overseasCurrency.UGD.mtd) + 
+		(tempObj.ONI['mtdot']*overseasCurrency.NGA.mtd) +
 		(tempObj.OZA['mtdot']*overseasCurrency.ZMB.mtd); 
 	}
 	
 	
-	tempObj.OHC.mtd = tempObj.OGH['mtd'] + tempObj.OMA['mtd'] + tempObj.OMD['mtd'] + tempObj.OMZ['mtd'] + tempObj.ORB['mtd'] + tempObj.ONA['mtd'] + tempObj.ORW['mtd'] +  tempObj.OTA['mtd'] +  tempObj.OUG['mtd'] + tempObj.OZA['mtd']; 
+	tempObj.OHC.mtd = tempObj.OGH['mtd'] + tempObj.OMA['mtd'] + tempObj.OMD['mtd'] + tempObj.OMZ['mtd'] + tempObj.ORB['mtd'] + tempObj.ONA['mtd'] + tempObj.ORW['mtd'] +  tempObj.OTA['mtd'] +  tempObj.OUG['mtd'] + tempObj.OZA['mtd']+ tempObj.ONI['mtd']; 
 	
 	if((Object.keys(overseasCurrency).length) > 0){
 		
@@ -1240,10 +1285,11 @@ let filterEntity = async (dbres, dbres2, ftddate,overseasCurrency) => {
 		(tempObj.ORW['mtd']*overseasCurrency.RWD.mtd) +  
 		(tempObj.OTA['mtd']*overseasCurrency.TZA.mtd) +  
 		(tempObj.OUG['mtd']*overseasCurrency.UGD.mtd) + 
+		(tempObj.ONI['mtd']*overseasCurrency.NGA.mtd) +
 		(tempObj.OZA['mtd']*overseasCurrency.ZMB.mtd); 
 	}
 	
-	tempObj.OHC.mtdrev = tempObj.OGH['mtdrev'] + tempObj.OMA['mtdrev'] + tempObj.OMD['mtdrev'] + tempObj.OMZ['mtdrev'] + tempObj.ORB['mtdrev'] + tempObj.ONA['mtdrev'] + tempObj.ORW['mtdrev'] +  tempObj.OTA['mtdrev'] +  tempObj.OUG['mtdrev'] + tempObj.OZA['mtdrev'];
+	tempObj.OHC.mtdrev = tempObj.OGH['mtdrev'] + tempObj.OMA['mtdrev'] + tempObj.OMD['mtdrev'] + tempObj.OMZ['mtdrev'] + tempObj.ORB['mtdrev'] + tempObj.ONA['mtdrev'] + tempObj.ORW['mtdrev'] +  tempObj.OTA['mtdrev'] +  tempObj.OUG['mtdrev'] + tempObj.OZA['mtdrev']+ tempObj.ONI['mtdrev'];
 	
 	if((Object.keys(overseasCurrency).length) > 0){
 		tempObj.OHC.mtdrev = (tempObj.OGH['mtdrev']*overseasCurrency.GHA.mtd) + 
@@ -1255,25 +1301,11 @@ let filterEntity = async (dbres, dbres2, ftddate,overseasCurrency) => {
 		(tempObj.ORW['mtdrev']*overseasCurrency.RWD.mtd) +  
 		(tempObj.OTA['mtdrev']*overseasCurrency.TZA.mtd) +  
 		(tempObj.OUG['mtdrev']*overseasCurrency.UGD.mtd) + 
+		(tempObj.ONI['mtdrev']*overseasCurrency.NGA.mtd) + 
 		(tempObj.OZA['mtdrev']*overseasCurrency.ZMB.mtd);
 	}
 	
 	tempObj.OHC.mtd_cogs_percent = cogsPercent(tempObj.OHC['mtd'], tempObj.OHC['mtdrev']);
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	
@@ -1313,7 +1345,7 @@ let filterEntity = async (dbres, dbres2, ftddate,overseasCurrency) => {
    //ohcarr = _.filter(dbres, { entity: 'OGH',entity: 'OMA',entity: 'OMD',entity: 'OMZ',entity: 'ORB',entity: 'ORW',entity: 'OTA',entity: 'OUG',entity: 'OZA' })
    
   
-     let ohcallarr  = ohcarr.concat(ogharr,omaarr,omdarr,omzarr,orbarr,orwarr,otaarr,ougarr,ozaarr,onaarr);
+     let ohcallarr  = ohcarr.concat(ogharr,omaarr,omdarr,omzarr,orbarr,orwarr,otaarr,ougarr,ozaarr,onaarr,oniarr);
     return { 'group' : group,'alin': alin, 'aeharr': aeharr, 'ahcarr': ahcarr,'ohcarr': ohcallarr, 'aeh': tempObj.AEH, 'ahc': tempObj.AHC,'ohc': tempObj.OHC }
 }
 
@@ -1344,7 +1376,7 @@ let filterGroupwise = async (aeh, ahc,ohc, dbres2, branches, ftddate, vobres, br
         'Karnataka': ["BMH", "WFD", "KML", "CLR", "INR", "PNR", "YLK", "SVR","BSK","RRN","HUB","DWD", "MCC", "MYS","RJN"],
         'Banglore': ["BMH", "WFD", "KML", "CLR", "INR", "PNR", "YLK","SVR","BSK","RRN","RJN"],
         'Hubli + Mysore': ["HUB","DWD", "MCC", "MYS"],
-		'Maharashtra' :["VSH", "PUN", "HDP","CMR", "KTD"], 
+		'Maharashtra' :["VSH", "PUN", "HDP","CMR"], 
         'Telangana': ["DNR", "HMH", "MDA", "SNR", "HIM", "SBD","MPM","GCB"],
         'Hyderabad': ["DNR", "HMH", "MDA", "SNR", "HIM", "SBD","MPM","GCB"],
         'Andhra Pradesh': ["VMH", "NEL", "GUN", "TPT", "RAJ"],
@@ -2244,15 +2276,15 @@ let cogsEmailTemplateOverseas = async (finalResult,todatadate) => {
 	   sugCogsPer = branchlist[key].surcogsperc;
 	   optCogsPer = branchlist[key].optcogsperc;
 	   pharCogsPer = branchlist[key].phacogsperc;
-	   if(sugCogsPer <8 || sugCogsPer >15){
+	   if(sugCogsPer >10){
 			sugCogsPerColr = 'background-color:red'; 
 		}
 
-		if(pharCogsPer <55 || pharCogsPer >65){
+		if(pharCogsPer >50){
 			pharCogsPerColr = 'background-color:red'; 
 		}
 
-		if(optCogsPer <20 || optCogsPer >40){
+		if(optCogsPer >35){
 			optCogsPerColr = 'background-color:red'; 
 		}
 		cogsTemplateOverseas+= '<tr align="right"><td>'+ branchlist[key].entity  +'</td><td>'+ branchlist[key].code  +'</td><td>'+ branchlist[key].mtdsurgeryrev +'</td> <td>'+ branchlist[key].mtdoptrev +'</td> <td>'+ branchlist[key].mtdpharev +'</td> <td>'+ branchlist[key].mtdrev +'</td> <td style="background-color:#FFFF33">'+ branchlist[key].surrevperc +'%</td> <td style="background-color:#FFFF33"> '+ branchlist[key].optrevperc  +'%</td><td style="background-color:#FFFF33">'+ branchlist[key].pharevperc  +'%</td> <td>'+ branchlist[key].mtdsurgerycogs  +'</td> <td>'+ branchlist[key].mtdoptcogs +'</td><td>'+ branchlist[key].mtdphacogs +'</td><td>'+ branchlist[key].mtdcogs +'</td><td style="'+sugCogsPerColr+'">'+ branchlist[key].surcogsperc +'%</td><td style="'+optCogsPerColr+'">'+ branchlist[key].optcogsperc +'%</td><td style="'+pharCogsPerColr+'">'+ branchlist[key].phacogsperc +'%</td><td>'+ branchlist[key].mtd_cogs_percent +'%</td>  </tr>';    
@@ -2272,15 +2304,15 @@ let cogsEmailTemplateOverseas = async (finalResult,todatadate) => {
 	   optCogsPer = totalOhc.optcogsperc;
 	   pharCogsPer = totalOhc.phacogsperc;
 	   
-	   if(sugCogsPer <8 || sugCogsPer >15){
+	   if(sugCogsPer >10){
 			sugCogsPerColr = 'background-color:red'; 
 		}
 
-		if(pharCogsPer <55 || pharCogsPer >65){
+		if(pharCogsPer >50){
 			pharCogsPerColr = 'background-color:red'; 
 		}
 
-		if(optCogsPer <20 || optCogsPer >40){
+		if(optCogsPer >35){
 			optCogsPerColr = 'background-color:red'; 
 		}
 	

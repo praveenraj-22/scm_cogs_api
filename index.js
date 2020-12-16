@@ -13,7 +13,7 @@ app.use(modules.session({ name: 'session_ID', secret: 'Bi$$DS@@J&a&i&*', resave:
 
 app.use(modules.upload())
 
-//modules.cron_job.schedule;
+modules.cron_job.schedule;
 
 app.get('/api-super/:date', modules.routes.main_route)
 app.get('/api-normal/:date/:name', modules.routes.test_route)
@@ -72,6 +72,7 @@ app.post('/api-petty-cash-bill-submit',modules.routes.bill_submit)
 app.get('/api-petty-cash-details/:user/:branch/:status/:date',modules.routes.petty_cash_details)
 app.get('/api-voucher-download/:download',modules.routes.download_voucher)
 app.get('/api-bill-download/:download',modules.routes.download_bill)
+app.post('/api-chpettycashcancel',modules.routes.chpccancel)
 
 app.get('/api-schpc/:branch/:status/:name',modules.routes.strchpc)
 app.get('/api-strchbranchgroupbill/:branch/:statusno/:date',modules.routes.strchbranchgroupbills)
@@ -82,13 +83,15 @@ app.post('/api-strchbillgroupapproveall',modules.routes.strch_billgroupapproveal
 
 app.get('/api-finpc/:branch/:status/:name',modules.routes.finptycsh)
 app.get('/api-finpcbranchgroupbill/:branch/:status/:date',modules.routes.finpcbranchgroupbills)
-app.get('/api-finpcbranchgroupbilldetail/:branch/:categoryname/:date',modules.routes.finpcbranchgroupbilldetail)
+app.get('/api-finpcbranchgroupbilldetail/:branch/:categoryname/:date/:status',modules.routes.finpcbranchgroupbilldetail)
 app.post('/api-finpcbillgroupdecline',modules.routes.fin_billgroupdecline)
 app.post('/api-finptycshbillgroupapproveall',modules.routes.finptycsh_billgroupapproveall)
 app.get('/api-declineamount/:branch/:fromdate/:todate',modules.routes.decline_amount)
+app.post('/api-categoryupdate',modules.routes.category_update)
+
 
 app.get('/api-cogsdetail/:date/:entity/:branch/:department',modules.routes.cogsdetails)
-app.get('/api-stockledger/:date/:entity/:branch/:department',modules.routes.stockledgers)
+app.get('/api-stockledger/:date/:entity/:branch/:department',modules.routes.stockledger)
 
 //praveenraj
 app.get('/api-tpabill/:branch/:date',modules.routes.tpabills)
@@ -104,5 +107,8 @@ app.post('/api-tpabillsub',modules.routes.tpabill_sub)
 
 app.get('/api-fintpabranch/:user',modules.routes.fintpabranchs)
 app.get('/api-finbranchregion/:user',modules.routes.finbranchregions)
+
+app.get('/api-getpcreports/:branch/:category/:date',modules.routes.get_pcreports)
+app.post('/api-categoryupdate',modules.routes.category_update)
 
 app.listen(8888, () => console.log(`App listening on port 8888`))

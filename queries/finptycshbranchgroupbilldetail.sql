@@ -21,7 +21,7 @@ FROM `pettycash` AS pc
 INNER JOIN `pettycash_category` AS pcc ON pcc.sno=pc.category_id
 WHERE  DATE(created_date) BETWEEN CONCAT(YEAR(?),'-',MONTH(?),'-','01')
 AND CONCAT(YEAR(?),'-',MONTH(?),'-','31') AND  pc.branch=? AND pc.status NOT IN (6) AND pc.credit IS NULL
-  AND pc.category_id=?
+  AND pc.category_id=? and pc.status=?
 GROUP BY
 pcc.category_name,
 pc.Bill_date,

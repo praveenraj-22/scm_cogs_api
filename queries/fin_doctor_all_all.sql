@@ -18,6 +18,7 @@ SELECT CASE
              WHEN Passbook_url IS NULL THEN 'NA'
             ELSE Passbook_url
         END AS Passbook_d,
+         CONCAT("'",`Account_no`) AS Accnt_no,
        cus.*
 FROM drt_customer AS cus
 ORDER BY

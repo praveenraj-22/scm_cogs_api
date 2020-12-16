@@ -1,4 +1,6 @@
-SELECT branch,CASE WHEN pet.status=1 THEN 'Pending'
+SELECT branch,CASE
+when pet.status=0 then 'Bill_raised'
+ WHEN pet.status=1 THEN 'Pending'
 WHEN pet.status=2 THEN 'Approved'
 WHEN pet.status=3 THEN 'Cancelled'
 WHEN pet.status=4 THEN 'Approved by Finance'
@@ -9,7 +11,7 @@ WHEN pet.status=5 THEN 'Cancelled by Finance'
  FROM pettycash AS pet
 INNER JOIN pettycash_category AS PCC ON PCC.sno=pet.category_id
 WHERE   pet.branch=?  AND DATE(pet.created_date) BETWEEN CONCAT(YEAR(?),'-',MONTH(?),'-','01')
-AND  CONCAT(YEAR(?),'-',MONTH(?),'-','31')
+AND  CONCAT(YEAR(?),'-',MONTH(?),'-','31')  AND pet.status IN (?)
 GROUP BY branch,category_id,status1
 
 

@@ -1648,7 +1648,7 @@ exports.drtbills = (req, res) => {
   connections.scm_public.query(billcheckquery, (err, resbill) => {
 
     if (resbill == '') {
-      let drtbillsquery = "INSERT INTO drt_bills (Bill_id,Net_amount,Drt_percentage_value,Drt_amount,Created_by,Drt_id,Category,Comments,Aggreed_percentage_value,Billed_branch,Bill_no,bill_date,Mrn,Name,Reference) VALUE (" + billid + "," + netamount + "," + commission + "," + drtamount + "," + userid + ",'" + drtid + "','" + category + "','" + comments + "'," + aggcommission + ",'" + billedbranch + "', '" + billno + "','" + billdate + "','" + mrn + "','" + name + "','" + ref + "' );"
+      let drtbillsquery = "INSERT INTO drt_bills (Bill_id,Net_amount,Drt_percentage_value,Drt_amount,Created_by,Drt_id,Category,Comments,Aggreed_percentage_value,Billed_branch,Bill_no,bill_date,Mrn,Name,Reference) VALUE (" + billid + "," + netamount + "," + commission + "," + drtamount + ",'" + userid + "','" + drtid + "','" + category + "','" + comments + "'," + aggcommission + ",'" + billedbranch + "', '" + billno + "','" + billdate + "','" + mrn + "','" + name + "','" + ref + "' );"
       console.log(drtbillsquery);
       connections.scm_root.query(drtbillsquery, (err, result) => {
         if (err) {
@@ -1955,18 +1955,18 @@ exports.finbills = (req, res) => {
     }
   } else {
     if ((status == "All") && (branch == "All")) {
-      console.log("hit in branch and visit al1l");
+      console.log("hit in branch and visit all");
 
       connections.scm_public.query("SELECT Mrn FROM `drt_bills` WHERE DATE_FORMAT(bill_date,'%Y-%m')= ? group by Mrn", [frmdate], (err, resmrn) => {
         if (err) console.error(err);
-        console.log(resmrn);
+
         resmrn.forEach(element => {
           listmrn.push(element.Mrn);
         })
 
         connections.ideamed.query("SELECT RIP.PATIENTID as Mrn, RIP.PATIENTNAME, RDRT.REFERRALTYPENAME, RDRB.REFERREDBYNAME from RT_INDIVIDUAL_PATIENT RIP JOIN RT_DATA_REFERRAL_TYPE RDRT ON RDRT.ID=RIP.REFERRALTYPE JOIN RT_DATA_REFERRED_BY RDRB ON RDRB.ID=RIP.REFERREDBYCONSULTANT where RIP.PATIENTID IN (?)", [listmrn], (err, resultvalue) => {
           if (err) console.error(err);
-          console.log(resultvalue);
+
           connections.scm_public.query(files.finall, [frmdate, frmdate, frmdate, frmdate, frmdate], (err, resultfin) => {
             if (err) console.error(err);
 
@@ -2044,6 +2044,7 @@ exports.finbills = (req, res) => {
               }));
             });
 
+            console.log(mergedList);
             res.json({
               "result": {
                 "bill": mergedList
@@ -2442,9 +2443,10 @@ exports.upload_doctor = async (req, res) => {
   //  console.log('req.files >>>', upload); // eslint-disable-line
 
   if (upload == null) {
+    console.log("upload null");
     connections.scm_public.query("select Pan_no from drt_customer where Pan_no=? and status in (1,-1) group by Pan_no", [doctor_pan], (err, resultpan) => {
-      console.log(resultpan);
       if (err) console.error(err);
+      console.log(resultpan);
       if ((resultpan == '') || (resultpan[0].Pan_no == "NO PAN")) {
         connections.scm_root.query("INSERT INTO `drt_customer` (Name,Address,Contact_no,Email,Pan_no,GSTIN,Percentage,STATUS,Branch,Account_no,Bank_ifsc,Bank_name,Agreement,Agreement_url,Pan_url,Passbook_url,uploaded_user,Payment_type,Infavour_of) VALUE (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           [doctor_name, doctor_branch, doctor_contact, doctor_email, doctor_pan, doctor_gstin, doctor_agreed, isActive, doctor_branch, doctor_acc, doctor_IFSC, doctor_bankbranch, doc_agreement, aggname, panname, passname, user_name, paymenttype, doctor_infavour], (err, resdrtcustomer) => {
@@ -2576,7 +2578,9 @@ let pansearchfile = async (req) => {
   let passname = '';
 
   return new Promise(value => {
-    connections.scm_public.query("select Pan_no from drt_customer where Pan_no=? and status in (1,-1) group by Pan_no", [doctor_pan], (err, resultpan) => {
+    console.log("hit in upload full");
+    connections.scm_public.query("select Pan_no from drt_customer where Pan_no=? and status in (1,-1) AND Name=? and Infavour_of=? and Branch=? group by Pan_no", [doctor_pan, doctor_name, doctor_infavour, doctor_branch], (err, resultpan) => {
+      console.log(resultpan);
       if (err) {
         value({
           "result": null
@@ -2905,6 +2909,7 @@ exports.ch_doctorlist = (req, res) => {
   if (statustype == 'All') {
 
     let chbranch_query = "select branches from users where emp_id ='" + name + "' and role ='ch_user'";
+    console.log(chbranch_query);
     connections.scm_public.query(chbranch_query, (err, resbranch) => {
       if (err) console.error(err);
       resbranch.forEach(branch => {
@@ -3372,14 +3377,22 @@ exports.pettycash_category = (req, res) => {
 
 exports.pettycash_allocated_amount = (req, res) => {
   let branch = req.params.branch;
-  connections.scm_public.query(
-    files.pettycash_allocated_amount,
-    [branch],
-    (error, alocated_amount_res) => {
-      if (error) console.error(error);
-      res.json(alocated_amount_res);
-    }
-  );
+  console.log(branch);
+  // connections.scm_public.query(
+  //   files.pettycash_allocated_amount,
+  //   [branch],
+  //   (error, alocated_amount_res) => {
+  //
+  // 		console.log(alocated_amount_res);
+  //     if (error) console.error(error);
+  //     res.json(alocated_amount_res);
+  //   }
+  // );
+
+  connections.scm_public.query(files.pettycash_allocated_amount, [branch], (err, alocated_amount_res) => {
+    if (err) console.error(err);
+    res.json(alocated_amount_res)
+  })
   // }
 };
 
@@ -3489,10 +3502,43 @@ exports.bill_submit = async (req, res) => {
       }
 
     } else {
-      res.json({
-        "ResponseCode": 203,
-        "ResponseMsg": "You reached credit limit :" + branch
-      });
+
+
+      if (branchamount.result[0].balance > 0 && (balanceAmount > 0) && (balanceAmount <= branchamount.result[0].balance)) {
+
+        console.log("balance part");
+        let voucherFileMoveStatus = await moveVoucherFile(req);
+        let billFileMoveStatus = await moveBillFile(req);
+        if (voucherFileMoveStatus.result == null && req.files.fileVoucher != null) {
+          res.json({
+            "ResponseCode": 204,
+            "ResponseMsg": "Voucher not uploaed. Try Again"
+          });
+        } else if (billFileMoveStatus.result == null && req.files.fileBill != null) {
+          res.json({
+            "ResponseCode": 205,
+            "ResponseMsg": "Bill not uploaed. Try Again"
+          });
+        } else {
+          let voucherName = voucherFileMoveStatus.result;
+          let billName = billFileMoveStatus.result;
+          if (billName == null) {
+            billName = 'NA';
+          }
+          let inserBillDetails = await insertData(creditAmount, debitamountCalculate, balanceAmount, notificationAmount, branch, voucherno, category, remarks, amount, vendorname, billno, sumbissiondate, chid, billdate, voucherName, billName);
+          console.log("inserBillDetails");
+          console.log(inserBillDetails);
+          res.json({
+            "ResponseCode": 200,
+            "ResponseMsg": "Submitted"
+          });
+        }
+      } else {
+        res.json({
+          "ResponseCode": 203,
+          "ResponseMsg": "You reached limit :" + branch
+        });
+      }
     }
 
   }
@@ -3547,7 +3593,7 @@ let moveVoucherFile = async (req) => {
         filext = oldfilename.split('.').pop();
         newfilename = time + '_voucher' + '.' + filext;
         //voucherFilePath = 'D:/git/cogs-api-new-final/voucher/' + newfilename;
-        voucherFilePath = '/var/www/andaman/voucher/' + newfilename;
+        voucherFilePath = 'D:/scm/cogs/voucher/' + newfilename;
         console.log("uploadPath : " + voucherFilePath);
         upoload.fileVoucher.mv(voucherFilePath, function(err) {
           if (err) {
@@ -3583,7 +3629,7 @@ let moveBillFile = async (req) => {
         filext = oldfilename.split('.').pop();
         newfilename = time + '_bill' + '.' + filext;
         //billFilePath = 'D:/git/cogs-api-new-final/bill/' + newfilename;
-        billFilePath = '/var/www/andaman/bill/' + newfilename;
+        billFilePath = 'D:/scm/cogs/voucher/' + newfilename;
         console.log("uploadPath : " + billFilePath);
         upoload.fileBill.mv(billFilePath, function(err) {
           if (err) {
@@ -3608,64 +3654,6 @@ let moveBillFile = async (req) => {
 
 
 let insertData = async (creditAmount, debitamountCalculate, balanceAmount, notificationAmount, branch, voucherno, category, remarks, amount, vendorname, billno, sumbissiondate, chid, billdate, voucherName, billName) => {
-
-  /*return  new Promise(resolve => {
-  	var stats = 0;
-  	if(debitamountCalculate>=notificationAmount){
-  		stats = 1;
-  	}
-  	connections.scm_public.getConnection((err, con) => {
-  		if (err) {
-  				resolve({"result":"inserterror"});
-  	    }
-
-
-  		con.beginTransaction(err => {
-  			 if (err) {
-  				resolve({"result":"inserterror"});
-  			 }
-  			 var insertQry = "insert into petty_cash set branch='"+branch+"',voucher_no='"+voucherno+"',categoty_id="+category+",vendorname='"+vendorname+"',bill_no='"+billno+"',bill_date='"+billdate+"',remarks='"+remarks+"',debit="+amount+",bill_submission='"+sumbissiondate+"',voucher_attach='"+voucherName+"',bill_attch='"+billName+"',status="+stats+",created_date=now(),ch_id='"+chid+"'";
-
-  			connections.scm_public.query(insertQry,(insrtError, insrtRes) => {
-  			if (insrtError) {
-  				con.rollback((rollbackErr) => {
-  					if (rollbackErr) {
-  						resolve({"result":"rollbackerror"});
-  					} else {
-  						resolve({"result":"inserterror"});
-  					}
-  				});
-  		    }else{
-  				var updateQry = "update pettycash_allocated_amount set debit'"+debitamountCalculate+"',balance='"+balanceAmount+"' where branch='"+branch+"'";
-
-  				console.log(updateQry);
-  				connections.scm_public.query(updateQry,(updateError, updateRes) => {
-  					if (updateError) {
-  						console.log("update error");
-  						console.log(updateError)
-  						con.rollback((rollbackErr) => {
-  							if (rollbackErr) {
-  								resolve({"result":"rollbackerror"});
-  							} else {
-  								resolve({"result":"updateerror"});
-  							}
-  						});
-  					}
-  					con.commit((commitError) => {
-  						if (commitError) {
-  							resolve({"result":"commiterror"});
-  						}
-  						resolve({"result":"success"});
-
-  					});
-
-  				});
-  			}
-  		});
-  		});
-  	});
-
-  });*/
   return new Promise(resolve => {
     var stats = 0;
 
@@ -3681,6 +3669,11 @@ let insertData = async (creditAmount, debitamountCalculate, balanceAmount, notif
     var insertQry = "insert into pettycash set branch='" + branch + "',voucher_no='" + voucherno + "',category_id=" + category + ",vendorname='" + vendorname + "',bill_no='" + billno + "',bill_date='" + billdate + "',remarks='" + remarks + "',debit=" + amount + ",bill_submission='" + sumbissiondate + "',voucher_attach='" + voucherName + "',bill_attch='" + billName + "',status=" + stats + ",created_date=now(),ch_id='" + chid + "'";
 
     console.log(insertQry);
+    var js = voucherno.slice(11);
+    var cutjs = js.slice(0, -5);
+
+    console.log("cut js : " + cutjs);
+
     connections.scm_public.query(insertQry, (InsError, insrtRes) => {
       if (InsError) {
         console.log(error);
@@ -3689,6 +3682,9 @@ let insertData = async (creditAmount, debitamountCalculate, balanceAmount, notif
           "result": "inserterror"
         });
       } else {
+
+
+
         var updateQry = "update pettycash_allocate_amount set debit='" + debitamountCalculate + "',balance='" + balanceAmount + "' where branch='" + branch + "'";
         connections.scm_public.query(updateQry, (updateErr, updateRes) => {
           if (updateErr) {
@@ -3711,9 +3707,16 @@ let insertData = async (creditAmount, debitamountCalculate, balanceAmount, notif
             });
 
           } else {
-            resolve({
-              "result": "success"
-            });
+
+
+            connections.scm_root.query("update pettycash_voucher set sequence_no=? where branch=?", [cutjs, branch], (err, resvoucher) => {
+              if (err) console.error(err);
+              resolve({
+                "result": "success"
+              });
+            })
+
+
           }
         });
       }
@@ -3731,9 +3734,34 @@ exports.petty_cash_details = (req, res) => {
   let branch = req.params.branch;
   let where_con = '';
 
-  if (branch != 'undefined') {
-    where_con += ' and A.branch IN ("' + branch + '")';
+
+  let sqlQry = '';
+
+
+  if(chid=='itteamch'){
+
+    if (branch != 'undefined') {
+      where_con += ' and A.branch IN ("' + branch + '")';
+      sqlQry = "SELECT A.*,B.category_name,CASE WHEN A.status=0 THEN 'Bill created' WHEN A.status=-1 THEN 'Bill cancelled' WHEN A.status=1 THEN 'SchPending' WHEN A.status=2 THEN 'SchApproved / FinPending' WHEN A.status=3 THEN 'SchReject' WHEN A.status=4 THEN 'Finance Approved' WHEN A.status=5 THEN 'Finance Reject'  END AS sat FROM pettycash AS A INNER JOIN  pettycash_category AS B ON A.category_id=B.sno AND A.bill_submission BETWEEN '" + start + "' AND '" + end + "' " + where_con + " order by A.sno desc";
+  //    console.log(sqlQry);
+    } else {
+      //  where_con += '-- and A.branch IN ("' + branch + '")';
+      sqlQry = "SELECT A.*,B.category_name,CASE WHEN A.status=0 THEN 'Bill created' WHEN A.status=-1 THEN 'Bill cancelled' WHEN A.status=1 THEN 'SchPending' WHEN A.status=2 THEN 'SchApproved / FinPending' WHEN A.status=3 THEN 'SchReject' WHEN A.status=4 THEN 'Finance Approved' WHEN A.status=5 THEN 'Finance Reject'  END AS sat FROM pettycash AS A INNER JOIN  pettycash_category AS B ON A.category_id=B.sno AND A.bill_submission BETWEEN '" + start + "' AND '" + end + "' order by A.sno desc";
+    //  console.log(sqlQry);
+    }
   }
+  else {
+    if (branch != 'undefined') {
+      where_con += ' and A.branch IN ("' + branch + '")';
+      sqlQry = "SELECT A.*,B.category_name,CASE WHEN A.status=0 THEN 'Bill created' WHEN A.status=-1 THEN 'Bill cancelled' WHEN A.status=1 THEN 'SchPending' WHEN A.status=2 THEN 'SchApproved / FinPending' WHEN A.status=3 THEN 'SchReject' WHEN A.status=4 THEN 'Finance Approved' WHEN A.status=5 THEN 'Finance Reject'  END AS sat FROM pettycash AS A INNER JOIN  pettycash_category AS B ON A.category_id=B.sno AND A.bill_submission BETWEEN '" + start + "' AND '" + end + "' AND A.ch_id='" + chid + "' " + where_con + " order by A.sno desc";
+  //    console.log(sqlQry);
+    } else {
+      //  where_con += '-- and A.branch IN ("' + branch + '")';
+      sqlQry = "SELECT A.*,B.category_name,CASE WHEN A.status=0 THEN 'Bill created' WHEN A.status=-1 THEN 'Bill cancelled' WHEN A.status=1 THEN 'SchPending' WHEN A.status=2 THEN 'SchApproved / FinPending' WHEN A.status=3 THEN 'SchReject' WHEN A.status=4 THEN 'Finance Approved' WHEN A.status=5 THEN 'Finance Reject'  END AS sat FROM pettycash AS A INNER JOIN  pettycash_category AS B ON A.category_id=B.sno AND A.bill_submission BETWEEN '" + start + "' AND '" + end + "' AND A.ch_id='" + chid + "' order by A.sno desc";
+  //    console.log(sqlQry);
+    }
+  }
+
   if (stats == 'SCHPending') {
     where_con += ' AND A.status IN(0,1)';
   } else if (stats == 'SCHApproved') {
@@ -3747,8 +3775,8 @@ exports.petty_cash_details = (req, res) => {
   } else if (stats == 'FinanceReject') {
     where_con += ' AND A.status IN(5)';
   }
-  let sqlQry = "SELECT A.*,B.category_name FROM pettycash AS A INNER JOIN  pettycash_category AS B ON A.category_id=B.sno AND A.bill_submission BETWEEN '" + start + "' AND '" + end + "' AND A.ch_id='" + chid + "' " + where_con + " order by A.sno desc";
-  console.log(sqlQry);
+  // let sqlQry = "SELECT A.*,B.category_name FROM pettycash AS A INNER JOIN  pettycash_category AS B ON A.category_id=B.sno AND A.bill_submission BETWEEN '" + start + "' AND '" + end + "' AND A.ch_id='" + chid + "' " + where_con + " order by A.sno desc";
+  // console.log(sqlQry);
 
   connections.scm_public.query(sqlQry, (error, selRes) => {
     if (error) {
@@ -3768,7 +3796,7 @@ exports.petty_cash_details = (req, res) => {
 exports.download_voucher = (req, res) => {
   let filename = req.params.download
   //console.log(filepath);
-  var fileLocation = '/var/www/andaman/voucher/' + filename;
+  var fileLocation = 'D:/scm/cogs/voucher/' + filename;
   //var fileLocation = 'D:/git/cogs-api-new-final/voucher/'+filename;
 
   console.log(fileLocation);
@@ -3779,7 +3807,7 @@ exports.download_bill = (req, res) => {
   let filename = req.params.download
   //console.log(filepath);
 
-  var fileLocation = '/var/www/andaman/bill/' + filename;
+  var fileLocation = 'D:/scm/cogs/voucher/' + filename;
   //var fileLocation = 'D:/git/cogs-api-new-final/bill/'+filename;
 
   res.download(fileLocation);
@@ -3811,7 +3839,7 @@ exports.strchpc = (req, res) => {
             resbranch.forEach(branches => {
               splitbranches = branches.branches.split('+')
             })
-            //  console.log(splitbranches);
+
             connections.scm_public.query(files.schpcschfinapp, [splitbranches, status], (err, resdata) => {
               console.log(resdata);
               if (err) console.error(err);
@@ -3843,11 +3871,9 @@ exports.strchpc = (req, res) => {
               }
             })
           } else {
-            ``
             resbranch.forEach(branches => {
               splitbranches = branches.branches.split('+')
             })
-            //  console.log(splitbranches);
             connections.scm_public.query(files.schpcschfindec, [splitbranches, status], (err, resdata) => {
               console.log(resdata);
               if (err) console.error(err);
@@ -3870,6 +3896,7 @@ exports.strchpc = (req, res) => {
       }
     } else {
       try {
+
         console.log("hit in branch all pending");
         connections.scm_public.query("select branches from users where emp_id=? and role='sch_user' AND is_active=1", [username], (err, resbranch) => {
           if (err) {
@@ -3912,7 +3939,8 @@ exports.strchpc = (req, res) => {
       resbranch.forEach(branches => {
         splitbranches = branches.branches.split('+')
       })
-      connections.scm_public.query(files.schpcallall, [splitbranches, splitbranches, splitbranches], (err, resdata) => {
+      connections.scm_public.query(files.schpcallall, [splitbranches, splitbranches, splitbranches, splitbranches, splitbranches], (err, resdata) => {
+
         if (err) console.error(err);
         res.json({
           "result": {
@@ -3925,7 +3953,7 @@ exports.strchpc = (req, res) => {
   } else if ((branch != 'All') && (status == 'All')) {
     console.log("hit in status all");
 
-    connections.scm_public.query(files.schpcallall, [branch, branch, branch], (err, resdata) => {
+    connections.scm_public.query(files.schpcallall, [branch, branch, branch, branch, branch], (err, resdata) => {
       if (err) console.error(err);
       res.json({
         "result": {
@@ -4004,17 +4032,18 @@ exports.strchpc = (req, res) => {
     }
   }
 }
+
 exports.strchbranchgroupbills = (req, res) => {
 
   let date = req.params.date;
   let branch = req.params.branch;
   let status = req.params.statusno;
-  console.log(req.params);
 
   try {
-    connections.scm_public.query(files.strbranchgroupbillz, [branch, date, date, date, date, date, date], (err, resgroupdata) => {
+    connections.scm_public.query(files.strbranchgroupbillz, [branch, date, date, date, date, status], (err, resgroupdata) => {
+
       if (err) console.error(err);
-      //  console.log(resgroupdata);
+
       res.json(resgroupdata);
     })
   } catch (e) {
@@ -4031,7 +4060,6 @@ exports.strchbranchgroupbilldetail = (req, res) => {
   let categoryname = req.params.categoryname;
   let branch = req.params.branch;
   let status = req.params.status;
-
   try {
     connections.scm_public.query(files.strbranchgroupbilldetailz, [date, date, date, date, branch, categoryname, status], (err, resgroupdatadetail) => {
       if (err) console.error(err);
@@ -4240,14 +4268,14 @@ exports.strch_billgroupapproveall = (req, res) => {
 
 exports.finptycsh = (req, res) => {
 
-  console.log(req.params);
+  //  console.log(req.params);
 
 
   let branch = req.params.branch;
   let status = req.params.status;
 
   if ((branch == 'All') && (status != 'All')) {
-    console.log("hit in branch all ");
+    console.log("hit in branch all.. ");
     if ((status == 2) || (status == 1)) {
       console.log("pending");
       connections.scm_public.query(files.finpcpend, [status], (err, resdata) => {
@@ -4283,7 +4311,7 @@ exports.finptycsh = (req, res) => {
 
   } else if ((branch != 'All') && (status == 'All')) {
     console.log("hit in status alll");
-    connections.scm_public.query(files.finptycshallall, [branch, branch, branch], (err, resdata) => {
+    connections.scm_public.query(files.finptycshallall, [branch, branch, branch, branch, branch], (err, resdata) => {
       if (err) console.error(err);
       res.json({
         "result": {
@@ -4302,6 +4330,7 @@ exports.finptycsh = (req, res) => {
       })
     })
   } else {
+    console.log("hit in branch and status.");
     if ((status == 4)) {
       connections.scm_public.query(files.finpcappstbr, [status, branch], (err, resdata) => {
         if (err) console.error(err);
@@ -4393,8 +4422,8 @@ exports.finpcbranchgroupbills = (req, res) => {
   let date = req.params.date;
   let branch = req.params.branch;
   let status = req.params.status;
-
-  connections.scm_public.query(files.finpccshbranchgroupz, [date, date, date, date, branch], (err, resgroupdatadetail) => {
+  console.log("-");
+  connections.scm_public.query(files.finpccshbranchgroupz, [date, date, date, date, branch, status], (err, resgroupdatadetail) => {
     if (err) console.error(err);
     res.json(resgroupdatadetail);
   })
@@ -4404,12 +4433,12 @@ exports.finpcbranchgroupbills = (req, res) => {
 exports.finpcbranchgroupbilldetail = (req, res) => {
   console.log(req.params);
   let date = req.params.date;
-
+  let status = req.params.status
   let branch = req.params.branch;
   //let status=req.params.status;
   let categoryname = req.params.categoryname;
 
-  connections.scm_public.query(files.finptycshbranchgroupbilldetailz, [date, date, date, date, branch, categoryname], (err, resgroupdatadetail) => {
+  connections.scm_public.query(files.finptycshbranchgroupbilldetailz, [date, date, date, date, branch, categoryname, status], (err, resgroupdatadetail) => {
     if (err) console.error(err);
     res.json(resgroupdatadetail);
   })
@@ -4417,7 +4446,7 @@ exports.finpcbranchgroupbilldetail = (req, res) => {
 }
 
 exports.fin_billgroupdecline = (req, res) => {
-  console.log(req.body);
+
   let strch_id = req.body.strch_id;
   let strch_groupcategory = req.body.strch_groupcategory;
   let strch_branch = req.body.strch_branch;
@@ -4552,13 +4581,13 @@ exports.fin_billgroupdecline = (req, res) => {
 }
 
 exports.finptycsh_billgroupapproveall = (req, res) => {
-  console.log(req.body);
+
   let date = req.body.strch_date;
   let status = req.body.status;
   let branch = req.body.strch_branch;
   let username = req.body.strch_id;
   let refillamount = req.body.finrefilledamount;
-
+  let comments = req.body.comments;
   connections.scm_public.getConnection((err, conn) => {
     conn.beginTransaction(function(err) {
       if (err) {
@@ -4567,7 +4596,7 @@ exports.finptycsh_billgroupapproveall = (req, res) => {
         })
         //      throw err;
       } else {
-        let updatequery = "update pettycash SET STATUS=4,fin_id='" + username + "',fin_approved_date=now() WHERE STATUS=2 AND branch='" + branch + "' and date(created_date) between concat(year('" + date + "'),'-',month('" + date + "'),'-','01') and concat(year('" + date + "'),'-',month('" + date + "'),'-','31') ";
+        let updatequery = "update pettycash SET STATUS=4,fin_id='" + username + "',fin_approved_date=now(),remarks='" + comments + "' WHERE STATUS=2 AND branch='" + branch + "'";
         console.log(updatequery);
         connections.scm_root.query(updatequery, (err, resupdate) => {
           if (err) {
@@ -4590,7 +4619,7 @@ exports.finptycsh_billgroupapproveall = (req, res) => {
                 });
               } else {
                 console.log(resinsert);
-                let updateamount = "update pettycash_allocate_amount set balance=(SELECT * FROM (SELECT SUM(balance)+" + refillamount + " FROM pettycash_allocate_amount AS b WHERE branch='" + branch + "' ) AS bb),modified_date=now(),debit=0,cancel_amount=0 where branch='" + branch + "'";
+                let updateamount = "update pettycash_allocate_amount set balance=(SELECT * FROM (SELECT SUM(balance)+" + refillamount + " FROM pettycash_allocate_amount AS b WHERE branch='" + branch + "' ) AS bb),modified_date=now(),debit=0,cancel_amount=0,notify_amount=(SELECT * FROM (SELECT (SUM(balance)+" + refillamount + ")-sum(3000) FROM pettycash_allocate_amount AS c WHERE branch='" + branch + "' ) AS cc) where branch='" + branch + "'";
                 console.log(updateamount);
                 connections.scm_root.query(updateamount, (err, resupdate1) => {
                   if (err) {
@@ -4647,7 +4676,7 @@ exports.finptycsh_billgroupapproveall = (req, res) => {
 
 }
 exports.decline_amount = (req, res) => {
-  console.log(req.params);
+//  console.log(req.params);
   let branch = req.params.branch;
   let fromdate = req.params.fromdate;
   let todate = req.params.todate;
@@ -4663,6 +4692,29 @@ exports.decline_amount = (req, res) => {
 
 }
 
+exports.category_update = (req, res) => {
+//  console.log(req.body);
+
+  let catid = req.body.categoryid;
+  let userid = req.body.userid
+  let ptyid = req.body.itemid;
+  let branch = req.body.branch
+  connections.scm_root.query("update pettycash set category_id=? where sno=? and branch=? ", [catid, ptyid, branch], (err, resdata) => {
+    console.log(resdata);
+
+    if (err) {
+      res.json({
+        dataupdated: false
+      })
+    } else {
+      res.json({
+        dataupdated: true
+      })
+    }
+
+  })
+
+}
 
 
 exports.main_route_inactive_user = (day, callback) => {
@@ -4908,18 +4960,6 @@ exports.cogsdetails = (req, res) => {
 
 
 }
-exports.stockledgers = (req, res) => {
-  console.log(req.params);
-  let fromdate = req.params.date;
-  let entity = req.params.entity;
-  let branch = req.params.branch;
-  let depart = req.params.department;
-  let start = fromdate + '-01';
-  let end = fromdate + '-31';
-
-
-
-}
 
 exports.tpabills = (req, res) => {
   let fromdate = req.params.date;
@@ -4949,6 +4989,21 @@ exports.tpabill_submit = (req, res) => {
   let id = req.body.submitted_id;
 
   console.log(tpa_billid + "  " + tpa_id + " " + id);
+
+  // connections.scm_root.query('UPDATE revenue_detail_tpa SET send_date=NOW(),sent_id=? WHERE bill_id=? AND id=?', [id, tpa_billid, tpa_id], (err, resdata) =>{
+  // 	if(err){
+  // 		console.error(err);
+  // 		res.json({
+  // 			dataupdated: false
+  // 		})
+  // 	}
+  // 	else {
+  // 		console.log("updated");
+  // 		res.json({
+  // 			dataupdated: false
+  // 		})
+  // 	}
+  // })
 
   connections.scm_root.getConnection((err, conn) => {
     conn.beginTransaction(function(err) {
@@ -5392,6 +5447,22 @@ exports.tpabill_ack = (req, res) => {
 
   console.log("hit in Acknowledge : " + "tpa_billid : " + tpa_billid + " tpa_id : " + tpa_id + " id : " + id);
 
+  // connections.scm_root.query('UPDATE revenue_detail_tpa SET acknowledge_date=NOW(),acknowledge_id=? WHERE bill_id=? AND id=?', [id, tpa_billid, tpa_id], (err, resdata) => {
+  // 	if(err){
+  // 		console.error(err);
+  // 		res.json({
+  // 			dataupdated: false
+  // 		})
+  // 	}
+  // 	else {
+  // 		console.log("updated");
+  // 		res.json({
+  // 			dataupdated: true
+  // 		})
+  // 	}
+  // })
+  //
+
   connections.scm_root.getConnection((err, conn) => {
 
 
@@ -5444,6 +5515,7 @@ exports.tpabill_ack = (req, res) => {
 
 
 }
+
 
 exports.tpabill_sub = (req, res) => {
   let tpa_billid = req.body.tpabillid;
@@ -5507,6 +5579,9 @@ exports.tpabill_sub = (req, res) => {
 
 
 }
+
+
+
 
 exports.materialcogs_email = (yesterday, callback) => {
 
@@ -5578,6 +5653,7 @@ exports.materialCogsOverseasEmailList = (emailtemp, callback) => {
   });
 }
 
+
 exports.finbranchregions = (req, res) => {
   let username = req.params.user;
 
@@ -5620,68 +5696,314 @@ exports.fintpabranchs = (req, res) => {
 
 exports.fixdates = (req, res) => {
   let no = req.params.no;
-  //
-  // let d = new Date();
-  // let dt = d.setDate(d.getDate() - no);
-  // let dat = d.toLocaleDateString();
-  //
-  // let new_dat = new Date(dat);
-  //
-  // let dd = new_dat.getDate();
-  // let mm = new_dat.getMonth() + 1;
-  // let yyyy = new_dat.getFullYear()
-  // if (dd < 10) {
-  //   dd = '0' + dd;
-  // } else {
-  //   dd
-  // }
-  // if (mm < 10 && mm >= 0) {
-  //   mm = '0' + mm;
-  // } else {
-  //   mm
-  // }
-  // let fin_fixdate = yyyy + '-' + mm + '-' + dd;
-  // console.log(yyyy + '-' + mm + '-' + dd);
 
+  connections.scm_root.query("update drt_date set fix_date=? where sno=1", [no], (err, resdata) => {
+    if (err) {
 
-connections.scm_root.query("update drt_date set fix_date=? where sno=1",[no],(err,resdata)=>{
-  if(err){
+      console.error(err);
+      res.json({
+        datefix: false
+      })
+    } else {
+      res.json({
+        datefix: true,
+        rest: no
+      })
 
-    console.error(err);
-    res.json({
-      datefix:false
-    })
-  }
-  else {
-    res.json({
-      datefix:true,
-      rest:no
-    })
-
-  }
+    }
 
 
 
-})
+  })
 
 
 }
 
-exports.getfixeddate=(req,res)=>{
+exports.getfixeddate = (req, res) => {
 
-  connections.scm_public.query("select fix_date from drt_date where sno=1",(err,resdata)=>{
-    if(err){
+  connections.scm_public.query("select fix_date from drt_date where sno=1", (err, resdata) => {
+    if (err) {
 
       console.error(err);
       res.json({
-fixeddate:resdata
+        fixeddate: resdata
       })
-    }
-    else {
+    } else {
       res.json({
-        fixeddate:resdata
+        fixeddate: resdata
       })
     }
 
   })
+}
+
+
+exports.deleteStockLedger = (currentmonth, yesterdaymonth, yesterday, callback) => {
+  //currentmonth = 11;
+  //yesterdaymonth =10;
+
+  var today = new Date();
+  var twodaysbefore = new Date(today);
+  twodaysbefore.setDate(today.getDate() - 2);
+  var dd1 = twodaysbefore.getDate();
+  var mm1 = twodaysbefore.getMonth() + 1; //January is 0!
+  var yyyy1 = twodaysbefore.getFullYear();
+
+
+  var monthlastdate = new Date(yyyy1, mm1, 0).getDate();
+  console.log("monthlastdate");
+  console.log(monthlastdate);
+
+
+  if (dd1 < 10) {
+    dd1 = '0' + dd1
+  }
+  if (mm1 < 10) {
+    mm1 = '0' + mm1
+  }
+  twodaysbefore = yyyy1 + '-' + mm1 + '-' + dd1;
+
+  console.log("twodaysbefore");
+  console.log(twodaysbefore);
+  //process.exit(1);
+
+  if (dd1 != monthlastdate) {
+    console.log("delete from stock_ledger where PREVDATE='" + twodaysbefore + "' and DESCRIPTION IN ('AEH','AHC','AHI','OHC')");
+    connections.scm_public.query("delete from stock_ledger where PREVDATE='" + twodaysbefore + "' and DESCRIPTION IN ('AEH','AHC','AHI','OHC')", (error, res) => {
+      if (error) {
+        callback("delete query error", null);
+      } else {
+        callback(null, res);
+      }
+    });
+
+  } else {
+
+    callback(null, 'success');
+  }
+
+
+}
+
+
+
+
+
+
+exports.deleteStockLedgerOverseas = (currentmonth, yesterdaymonth, yesterday, callback) => {
+
+  var today = new Date();
+  var twodaysbefore = new Date(today);
+  twodaysbefore.setDate(today.getDate() - 2);
+  var dd1 = twodaysbefore.getDate();
+  var mm1 = twodaysbefore.getMonth() + 1; //January is 0!
+  var yyyy1 = twodaysbefore.getFullYear();
+
+  var monthlastdate = new Date(yyyy1, mm1, 0).getDate();
+  console.log("monthlastdate");
+  console.log(monthlastdate);
+
+  if (dd1 < 10) {
+    dd1 = '0' + dd1
+  }
+  if (mm1 < 10) {
+    mm1 = '0' + mm1
+  }
+  twodaysbefore = yyyy1 + '-' + mm1 + '-' + dd1;
+
+  console.log("twodaysbefore");
+  console.log(twodaysbefore);
+  //process.exit(1);
+
+  if (dd1 != monthlastdate) {
+    console.log("delete from stock_ledger where PREVDATE='" + twodaysbefore + "' and DESCRIPTION NOT IN ('AEH','AHC','AHI','OHC')");
+    connections.scm_public.query("delete from stock_ledger where PREVDATE='" + twodaysbefore + "' and DESCRIPTION NOT IN ('AEH','AHC','AHI','OHC')", (error, res) => {
+      if (error) {
+        callback("delete query error", null);
+      } else {
+        callback(null, res);
+      }
+    });
+
+  } else {
+
+    callback(null, 'success');
+  }
+
+
+}
+
+
+exports.stockledger = (req, res) => {
+  console.log(req.params);
+  let fromdate = req.params.date;
+  let entity = req.params.entity;
+  let branch = req.params.branch;
+  let depart = req.params.department;
+  let start = fromdate + '-01';
+  let end = fromdate + '-31';
+
+
+  let whereCondition = '';
+  if (entity == 'AEH' || entity == 'AHC') {
+    whereCondition += " DESCRIPTION='" + entity + "' and ";
+  }
+  if (entity == 'OHC') {
+    whereCondition += " DESCRIPTION NOT IN ('AEH','AHC','AHI','OHC') and ";
+  }
+  if (branch != 'All') {
+    whereCondition += " ORGANIZATIONNAME='" + branch + "' and ";
+  }
+  let transquery = "select * from stock_ledger WHERE " + whereCondition + " PREVDATE between '" + start + "' and '" + end + "'";
+
+  console.log(transquery);
+  connections.scm_public.query(transquery, (err, resstockledger) => {
+    if (err) console.error(err);
+    res.json({
+      "result": {
+        "stockledger": resstockledger
+      }
+    })
+  })
+
+}
+
+
+exports.chpccancel = (req, res) => {
+//  console.log(req.body);
+
+  let ch_id = req.body.ch_id;
+  let bill_no = req.body.billno;
+  let cmmt = req.body.comment;
+  let voc = req.body.voucher;
+  let branch = req.body.branch;
+  let amount = req.body.debit;
+  let cat = req.body.cat;
+  let billnum = req.body.bill_num;
+  let vendor_name = req.body.vendor_name;
+  let voucher_attach = req.body.voucher_attach;
+  let bill_attach = req.body.bill_attach;
+
+
+  connections.scm_root.getConnection((err, conn) => {
+    console.log("connection established");
+
+    conn.beginTransaction(function(err) {
+      if (err) {
+        res.json({
+          dataupdated: false
+        })
+      } else {
+        console.log("begin transaction");
+
+        connections.scm_root.query('UPDATE pettycash SET STATUS=-1, cancel_by=?,cancel_date=NOW(),remarks=? WHERE sno=? AND branch=?', [ch_id, cmmt, bill_no, branch], (err, resdata) => {
+          if (err) {
+            conn.rollback(function() {
+              res.json({
+                dataupdated: false
+              })
+            })
+
+          } else {
+            let insertptycash = "insert into pettycash (branch,voucher_no,category_id,vendorname,bill_no,remarks,credit,voucher_attach,bill_attch,status,cancel_by,cancel_date) value(?,?,?,?,?,?,?,?,?,-1,?,NOW())"
+            connections.scm_root.query(insertptycash, [branch, voc, cat, vendor_name, billnum, cmmt, amount, voucher_attach, bill_attach, ch_id], (err, resdata) => {
+              if (err) {
+                conn.rollback(function() {
+                  res.json({
+                    dataupdated: false
+                  })
+                })
+              } else {
+                let updateptycashalloc = "UPDATE pettycash_allocate_amount SET balance=(SELECT * FROM (SELECT SUM(balance)+? FROM pettycash_allocate_amount AS b WHERE branch=? ) AS bb),debit=(SELECT * FROM (SELECT SUM(debit)-? FROM pettycash_allocate_amount AS b WHERE branch=? ) AS cc),modified_date=NOW() WHERE branch=?"
+                connections.scm_root.query(updateptycashalloc, [amount, branch, amount, branch, branch], (err, resdata) => {
+                  if (err) {
+                    conn.rollback(function() {
+                      res.json({
+                        dataupdated: false
+                      })
+                    })
+                  } else {
+                    console.log("all done");
+                    conn.commit(function(err) {
+                      if (err) {
+                        conn.rollback(function() {
+                          res.json({
+                            dataupdated: false
+                          })
+                          //      throw err;
+                        });
+                      } else {
+                        conn.release();
+                        console.log("updated");
+                        res.json({
+                          dataupdated: true
+                        })
+
+                      }
+                    })
+                  }
+                })
+              }
+            })
+
+          }
+        })
+
+      }
+    })
+
+
+  })
+}
+
+
+exports.get_pcreports = (req, res) => {
+  let branch = req.params.branch;
+  let category = req.params.category;
+  let fromdate = req.params.date;
+  console.log(fromdate);
+
+  let from_date = fromdate.concat('-01');
+  let to_date = fromdate.concat('-31');
+
+  if ((branch == 'All') && (category == 'All')) {
+    connections.scm_public.query(files.pcreports_allallall, [from_date, to_date], (err, resdata) => {
+      if (err) console.error(err);
+      res.json({
+        "result": {
+          "pc": resdata
+        }
+      })
+    })
+  } else if ((branch != 'All') && (category == 'All')) {
+    console.log("hit");
+    connections.scm_public.query(files.pcreport_brall, [from_date, to_date, branch], (err, resdata) => {
+      if (err) console.error(err);
+      res.json({
+        "result": {
+          "pc": resdata
+        }
+      })
+    })
+  } else if ((branch == 'All') && (category != 'All')) {
+    connections.scm_public.query(files.pcreport_allcat, [from_date, to_date, category], (err, resdata) => {
+      if (err) console.error(err);
+      res.json({
+        "result": {
+          "pc": resdata
+        }
+      })
+    })
+  } else {
+    connections.scm_public.query(files.pcreport_brcat, [from_date, to_date, branch, category], (err, resdata) => {
+      if (err) console.error(err);
+      res.json({
+        "result": {
+          "pc": resdata
+        }
+      })
+
+    })
+  }
+
 }
