@@ -101,7 +101,7 @@ exports.schpcschfindec=read("./queries/schpc_decline.sql");
 exports.schpcpend=read("./queries/schpc_pend.sql");
 
 exports.schpcallall=read("./queries/schpcallall.sql");
-exports.schpcbrst=read("./queries/schpc_br_st.sql");
+
 exports.strbranchgroupbillz=read("./queries/strbranchgroupbill.sql");
 exports.strbranchgroupbilldetailz=read("./queries/strbranchgroupbilldetail.sql");
 

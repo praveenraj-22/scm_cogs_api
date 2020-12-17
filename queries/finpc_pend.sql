@@ -89,6 +89,7 @@ GROUP BY
 branch,
 bill_submission,
 cancel_date
+ ,a.status
 ORDER BY
 SUM(pending) DESC,
 STATUS ASC

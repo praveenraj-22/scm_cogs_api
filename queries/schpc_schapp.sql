@@ -86,7 +86,9 @@ LEFT JOIN `pettycash_allocate_amount` AS pcc ON pcc.branch=a.branch
 GROUP BY
 branch,
 bill_submission,
-cancel_date
+cancel_date,
+a.status
+
 ORDER BY
 SUM(pending) DESC,
 STATUS ASC

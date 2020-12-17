@@ -3399,7 +3399,7 @@ exports.pettycash_allocated_amount = (req, res) => {
 
 exports.bill_submit = async (req, res) => {
   console.log("1111");
-  console.log(req);
+//  console.log(req);
   //process.exit(1);
 
   let branch = req.body.branch;
@@ -3436,7 +3436,8 @@ exports.bill_submit = async (req, res) => {
       balanceAmount = parseInt(branchamount.result[0].balance) - parseInt(amount);
     }
     console.log("debit amount ")
-    console.log(debitamountCalculate);
+    console.log("debitamountCalculate : "+debitamountCalculate);
+    console.log("branchamount.result[0].credit : "+branchamount.result[0].credit);
     //if(debitamountCalculate<=branchamount.result[0].credit){
     if (debitamountCalculate <= branchamount.result[0].credit) {
       //if(amount<=branchamount.result[0].balance){
@@ -3479,7 +3480,7 @@ exports.bill_submit = async (req, res) => {
                 console.log("!!!!!!!!!!!!!!!");
                 res.json({
                   "ResponseCode": 200,
-                  "ResponseMsg": "Submitted"
+                  "ResponseMsg": "Submitted and amount sent for sch aprroval"
                 });
               }
             });
@@ -3505,7 +3506,8 @@ exports.bill_submit = async (req, res) => {
 
 
       if (branchamount.result[0].balance > 0 && (balanceAmount > 0) && (balanceAmount <= branchamount.result[0].balance)) {
-
+        console.log("branchamount.result[0].balance :"+branchamount.result[0].balance);
+        console.log("balanceAmount : "+balanceAmount);
         console.log("balance part");
         let voucherFileMoveStatus = await moveVoucherFile(req);
         let billFileMoveStatus = await moveBillFile(req);
@@ -3841,7 +3843,7 @@ exports.strchpc = (req, res) => {
             })
 
             connections.scm_public.query(files.schpcschfinapp, [splitbranches, status], (err, resdata) => {
-              console.log(resdata);
+        //      console.log(resdata);
               if (err) console.error(err);
               res.json({
                 "result": {
@@ -3875,7 +3877,7 @@ exports.strchpc = (req, res) => {
               splitbranches = branches.branches.split('+')
             })
             connections.scm_public.query(files.schpcschfindec, [splitbranches, status], (err, resdata) => {
-              console.log(resdata);
+            //  console.log(resdata);
               if (err) console.error(err);
               res.json({
                 "result": {
@@ -3911,7 +3913,7 @@ exports.strchpc = (req, res) => {
             })
             //  console.log(splitbranches);
             connections.scm_public.query(files.schpcpend, [splitbranches, status], (err, resdata) => {
-              console.log(resdata);
+        //      console.log(resdata);
               if (err) console.error(err);
               res.json({
                 "result": {
@@ -3970,7 +3972,7 @@ exports.strchpc = (req, res) => {
         console.log("hit in branch all appr");
 
         connections.scm_public.query(files.schpcschfinapp, [branch, status], (err, resdata) => {
-          console.log(resdata);
+        //  console.log(resdata);
           if (err) console.error(err);
           res.json({
             "result": {
@@ -3991,7 +3993,7 @@ exports.strchpc = (req, res) => {
         console.log("hit in branch all cancel");
 
         connections.scm_public.query(files.schpcschfindec, [branch, status], (err, resdata) => {
-          console.log(resdata);
+      //    console.log(resdata);
           if (err) console.error(err);
           res.json({
             "result": {
@@ -4012,7 +4014,7 @@ exports.strchpc = (req, res) => {
         console.log("hit in branch all pending");
 
         connections.scm_public.query(files.schpcpend, [branch, status], (err, resdata) => {
-          console.log(resdata);
+      //    console.log(resdata);
           if (err) console.error(err);
           res.json({
             "result": {
@@ -4246,7 +4248,7 @@ exports.strch_billgroupapproveall = (req, res) => {
   let strch_date = req.body.strch_date;
 
 
-  let update = "UPDATE pettycash SET STATUS=2,sch_id='" + strch_id + "',sch_approved_date=NOW() WHERE branch='" + strch_branch + "' AND STATUS NOT IN (3,6,5,4,2) AND date(created_date) between concat(year('" + strch_date + "'),'-',month('" + strch_date + "'),'-','01') and concat(year('" + strch_date + "'),'-',month('" + strch_date + "'),'-','31') ";
+  let update = "UPDATE pettycash SET STATUS=2,sch_id='" + strch_id + "',sch_approved_date=NOW() WHERE branch='" + strch_branch + "' AND STATUS in (1)";
 
   console.log(update);
 
@@ -4269,7 +4271,7 @@ exports.strch_billgroupapproveall = (req, res) => {
 exports.finptycsh = (req, res) => {
 
   //  console.log(req.params);
-
+  console.log("hit in finptycsh");
 
   let branch = req.params.branch;
   let status = req.params.status;
