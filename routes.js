@@ -5970,6 +5970,7 @@ exports.get_pcreports = (req, res) => {
 
   if ((branch == 'All') && (category == 'All')) {
     connections.scm_public.query(files.pcreports_allallall, [from_date, to_date], (err, resdata) => {
+      console.log(resdata);
       if (err) console.error(err);
       res.json({
         "result": {
