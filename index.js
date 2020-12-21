@@ -110,5 +110,7 @@ app.get('/api-finbranchregion/:user',modules.routes.finbranchregions)
 
 app.get('/api-getpcreports/:branch/:category/:date',modules.routes.get_pcreports)
 app.post('/api-categoryupdate',modules.routes.category_update)
+app.get('/api-payment-download/:download',modules.routes.download_payment)
+
 
 app.listen(8888, () => console.log(`App listening on port 8888`))

@@ -17,11 +17,11 @@ END AS STATUS,
  branch,Opening_Balance,credit,approved,cancelled,SUM(pending) as pending,
 ((credit)-((approved)-(can)+sum(pending))) AS balance
 
-,refilled_amount,refill,sum(can) as can,Submitted_date,created_by,cancel_date,STATUS AS 'statusno',bill_submission, CONCAT(branch,approved,cancelled,pending,bill_submission) AS 'test' FROM
+,refilled_amount,refill,sum(can) as can,Submitted_date,created_by,cancel_date,STATUS AS 'statusno',bill_submission, CONCAT(branch,approved,cancelled,pending,bill_submission) AS 'test',IF(Payment_receipt IS NULL,'NA',Payment_receipt) AS Payment_receipt FROM
 (
 --
 SELECT a.branch,pcc.credit AS 'Opening_Balance',IF(refill IS NULL,pcc.credit,refill) AS 'credit',SUM(approved) AS'approved',SUM(cancelled)AS 'cancelled',SUM(pending) AS 'pending',
-pcc.balance,refilled_amount,IF(refill IS NULL,0,refill) AS refill,IF(can IS NULL,0,can) AS can,DATE(Submitted_date) AS'Submitted_date',created_by,bill_submission,cancel_date,a.status
+pcc.balance,refilled_amount,IF(refill IS NULL,0,refill) AS refill,IF(can IS NULL,0,can) AS can,DATE(Submitted_date) AS'Submitted_date',created_by,bill_submission,cancel_date,a.status,Payment_receipt
  FROM(
 SELECT * FROM (
 SELECT * FROM
@@ -36,7 +36,7 @@ SELECT * FROM
 -- UNION ALL
 
 SELECT branch,SUM(debit) AS 'approved',0 AS 'cancelled',0 AS 'pending',0 AS refilled_amount,created_date AS 'Submitted_date',
-ch_id AS 'created_by',STATUS,bill_submission,cancel_date
+ch_id AS 'created_by',STATUS,bill_submission,cancel_date,Payment_receipt
  FROM `pettycash` WHERE  STATUS IN (?)
 GROUP BY
 branch,
