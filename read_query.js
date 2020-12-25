@@ -163,3 +163,6 @@ exports.pcreports_allallall=read("./queries/pcreportallallall.sql");
 exports.pcreport_brall=read("./queries/pcreportbrall.sql");
 exports.pcreport_allcat=read("./queries/pcreportallcat.sql");
 exports.pcreport_brcat=read('./queries/pcreportbrcat.sql');
+
+//praveenraj
+exports.revenuedetailstpa=read("./queries/revenue_tpadetails.sql");

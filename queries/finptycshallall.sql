@@ -67,7 +67,8 @@ fin_id AS 'created_by',STATUS,refilled_date,cancel_date,Payment_receipt
 FROM `pettycash` WHERE branch IN (?) and  STATUS IN (6)
 GROUP BY
 branch,
-MONTH(refilled_date)
+MONTH(refilled_date),
+Payment_receipt
 )  AS a
 LEFT JOIN (
 SELECT branch AS br ,SUM(credit) AS refill,DATE(created_date) AS crtdate FROM pettycash WHERE STATUS IN(6)
