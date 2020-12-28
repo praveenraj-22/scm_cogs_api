@@ -166,3 +166,6 @@ exports.pcreport_brcat=read('./queries/pcreportbrcat.sql');
 
 //praveenraj
 exports.revenuedetailstpa=read("./queries/revenue_tpadetails.sql");
+
+//STN
+exports.stns=read("./queries/stn.sql");
