@@ -63,6 +63,7 @@ STATUS ASC
 GROUP BY
 branch,
 approval_status
+,statusno
  ,CASE WHEN statusno =6 THEN bill_submission
  ELSE 0
  END

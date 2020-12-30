@@ -381,37 +381,6 @@ exports.schedule = cron.schedule('00 06 * * *', () => {
   })
 
 
-  // connections.ideamed.getConnection((err, con) => {
-  //   if (err) console.log("connections err");
-  //   let queryres = "SELECT  BPB.ID as 'bill_id',BPB.BILL_NO as 'bill_no',BPB.TPA_CLAIM_ID as 'tpa_claim' FROM BILL_PATIENT_BILL AS BPB WHERE DATE(REVENUE_DATE)=DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND CLAIM_AMOUNT >0";
-  //   con.query(queryres, (err, res) => {
-  //     if (err) console.error(err);
-  //     console.log("connected to ideamed");
-  //     console.log("inserting record for tpa bill.. please wait");
-  //     con.beginTransaction(err => {
-  //       if (err) console.error(err);
-  //       res.forEach(record => {
-  //         connections.scm_root.query("insert into revenue_detail_tpa set ?", record, (error) => {
-  //           if (error) {
-  //             return con.rollback(function() {
-  //               console.error(error);
-  //             })
-  //           }
-  //           con.commit(function(err) {
-  //             if (error) {
-  //               return con.rollback(function() {
-  //                 console.error(error);
-  //               })
-  //             }
-  //
-  //           })
-  //
-  //         });
-  //       });
-  //     });
-  //   });
-  // })
-
   console.log('completed');
 })
 
@@ -1292,7 +1261,7 @@ exports.schedule = cron.schedule('00 04 * * *', () => {
   console.log('completed');
 })
 
-exports.schedule = cron.schedule('11 13 * * *', () => {
+exports.schedule = cron.schedule('59 10 * * *', () => {
   connections.ideamed.getConnection((err, con) => {
     if (err) console.log("connections err");
     //  let queryres = "SELECT  BPB.ID as 'bill_id',BPB.BILL_NO as 'bill_no',BPB.TPA_CLAIM_ID as 'tpa_claim' FROM BILL_PATIENT_BILL AS BPB WHERE DATE(REVENUE_DATE)=DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND CLAIM_AMOUNT >0";
@@ -1310,13 +1279,13 @@ exports.schedule = cron.schedule('11 13 * * *', () => {
                 console.error(error);
               })
             } else {
-              console.log("completed");
+
               con.commit(function(err) {
                 if (error) {
                   return con.rollback(function() {
                     console.error(error);
                   })
-                }
+                }``
 
               })
             }
@@ -1335,14 +1304,14 @@ exports.schedule = cron.schedule('11 13 * * *', () => {
 
 //stns
 
-exports.schedule = cron.schedule('00 23 * * *', () => {
+exports.schedule = cron.schedule('48 10 * * *', () => {
 
   var today = new Date();
   var dd = String(today.getDate()).padStart(2, '0');
   var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
   var yyyy = today.getFullYear();
 
-  today = yyyy + '/' + dd + '/' + mm;
+  today = yyyy + '/' + mm + '/' + dd;
 
 
 

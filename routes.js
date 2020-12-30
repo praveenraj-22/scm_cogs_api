@@ -3435,6 +3435,8 @@ exports.bill_submit = async (req, res) => {
 
         //process.exit(1);
         if (inserBillDetails.result == 'success') {
+          console.log("debitamountCalculate :"+debitamountCalculate);
+          console.log("notificationAmount : "+notificationAmount);
           if (debitamountCalculate >= notificationAmount) {
 
             console.log("update pettycash set status=1 where status=0 and branch='" + branch + "' and ch_id='" + chid + "'");
@@ -4282,7 +4284,7 @@ exports.finptycsh = (req, res) => {
 
   } else if ((branch != 'All') && (status == 'All')) {
     console.log("hit in status alll");
-    connections.scm_public.query(files.finptycshallall, [branch, branch, branch, branch, branch], (err, resdata) => {
+    connections.scm_public.query(files.finptycshallall, [branch, branch, branch, branch, branch,branch], (err, resdata) => {
       if (err) console.error(err);
       res.json({
         "result": {

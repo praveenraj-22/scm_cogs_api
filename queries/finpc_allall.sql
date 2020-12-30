@@ -47,10 +47,19 @@ UNION ALL
 
 SELECT branch,0 AS 'approved',0 AS 'cancelled',SUM(debit) AS 'pending',0 AS refilled_amount,created_date AS 'Submitted_date',
 ch_id AS 'created_by',STATUS,bill_submission,cancel_date,'' AS Payment_receipt
- FROM `pettycash` WHERE  STATUS IN (2,1)
+ FROM `pettycash` WHERE  STATUS IN (1)
 GROUP BY
 branch,
 MONTH(bill_submission)
+
+UNION ALL
+SELECT branch,0 AS 'approved',0 AS 'cancelled',SUM(debit) AS 'pending',0 AS refilled_amount,created_date AS 'Submitted_date',
+ch_id AS 'created_by',STATUS,bill_submission,cancel_date,'' AS Payment_receipt
+ FROM `pettycash` WHERE  STATUS IN (2)
+GROUP BY
+branch,
+MONTH(bill_submission)
+
 
 
 UNION ALL
@@ -101,6 +110,7 @@ STATUS ASC
 GROUP BY
 branch,
 approval_status
+,statusno
  ,CASE WHEN statusno =6 THEN bill_submission
  ELSE 0
  END
