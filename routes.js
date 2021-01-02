@@ -3367,8 +3367,6 @@ exports.pettycash_allocated_amount = (req, res) => {
 
 exports.bill_submit = async (req, res) => {
   console.log("1111");
-  //  console.log(req);
-  //process.exit(1);
 
   let branch = req.body.branch;
   let voucherno = req.body.voucherno;
@@ -3392,23 +3390,37 @@ exports.bill_submit = async (req, res) => {
       "ResponseCode": 202,
       "ResponseMsg": "Technical error"
     });
-  } else {
-    console.log(branchamount.result[0].debit);
+  }  else {
+    console.log("hit in bill_submit");
+
+
     let balanceAmount = 0;
     let creditAmount = branchamount.result[0].credit;
+    console.log("creditAmount : "+creditAmount);
+
+
     let notificationAmount = branchamount.result[0].notify_amount;
+    console.log("notificationAmount : "+notificationAmount);
+
+    console.log("amount : "+amount);
+
     let debitamountCalculate = parseInt(branchamount.result[0].debit) + parseInt(amount);
+    console.log("debitamountCalculate : "+debitamountCalculate);
+
     if (branchamount.result[0].balance == 0) {
       balanceAmount = parseInt(branchamount.result[0].credit) - parseInt(debitamountCalculate);
+      console.log("balanceAmount : "+balanceAmount);
     } else {
       balanceAmount = parseInt(branchamount.result[0].balance) - parseInt(amount);
+      console.log("balanceAmount : "+balanceAmount);
     }
     console.log("debit amount ")
     console.log("debitamountCalculate : " + debitamountCalculate);
-    console.log("branchamount.result[0].credit : " + branchamount.result[0].credit);
-    //if(debitamountCalculate<=branchamount.result[0].credit){
-    if (debitamountCalculate <= branchamount.result[0].credit) {
-      //if(amount<=branchamount.result[0].balance){
+
+
+  //  process.exit(1);
+
+    if (debitamountCalculate <= notificationAmount) {
       console.log("not reached");
       let voucherFileMoveStatus = await moveVoucherFile(req);
       let billFileMoveStatus = await moveBillFile(req);
@@ -3429,14 +3441,16 @@ exports.bill_submit = async (req, res) => {
           billName = 'NA';
         }
         let inserBillDetails = await insertData(creditAmount, debitamountCalculate, balanceAmount, notificationAmount, branch, voucherno, category, remarks, amount, vendorname, billno, sumbissiondate, chid, billdate, voucherName, billName);
-        console.log("inserBillDetails");
+        console.log("inserBillDetails---------");
         console.log(inserBillDetails);
 
 
         //process.exit(1);
         if (inserBillDetails.result == 'success') {
-          console.log("debitamountCalculate :"+debitamountCalculate);
-          console.log("notificationAmount : "+notificationAmount);
+          console.log("hit");
+          console.log("debitamountCalculate :" + debitamountCalculate);
+          console.log("notificationAmount : " + notificationAmount);
+
           if (debitamountCalculate >= notificationAmount) {
 
             console.log("update pettycash set status=1 where status=0 and branch='" + branch + "' and ch_id='" + chid + "'");
@@ -3475,8 +3489,13 @@ exports.bill_submit = async (req, res) => {
 
     } else {
 
+      console.log("hit in else");
+      console.log("branchamount.result[0].balance : "+branchamount.result[0].balance);
+      console.log("balanceAmount : "+balanceAmount);
 
-      if (branchamount.result[0].balance > 0 && (balanceAmount > 0) && (balanceAmount <= branchamount.result[0].balance)) {
+      if ((branchamount.result[0].balance > 0 && (balanceAmount > 0) && (balanceAmount <= branchamount.result[0].balance))
+      ||((branchamount.result[0].balance==0) &&(branchamount.result[0].debit==0)))
+       {
         console.log("branchamount.result[0].balance :" + branchamount.result[0].balance);
         console.log("balanceAmount : " + balanceAmount);
         console.log("balance part");
@@ -3499,14 +3518,47 @@ exports.bill_submit = async (req, res) => {
             billName = 'NA';
           }
           let inserBillDetails = await insertData(creditAmount, debitamountCalculate, balanceAmount, notificationAmount, branch, voucherno, category, remarks, amount, vendorname, billno, sumbissiondate, chid, billdate, voucherName, billName);
-          console.log("inserBillDetails");
+          console.log("inserBillDetailsssssssssss");
           console.log(inserBillDetails);
-          res.json({
-            "ResponseCode": 200,
-            "ResponseMsg": "Submitted"
-          });
+          if (inserBillDetails.result == 'success') {
+              if (debitamountCalculate >= notificationAmount) {
+
+                            console.log("update pettycash set status=1 where status=0 and branch='" + branch + "' and ch_id='" + chid + "'");
+                            connections.scm_public.query("update pettycash set status=1 where status=0 and branch='" + branch + "' and ch_id='" + chid + "'", (error, updateRes) => {
+                              if (error) {
+                                console.log("##############");
+                                res.json({
+                                  "ResponseCode": 206,
+                                  "ResponseMsg": "Not submitted. Try Again"
+                                });
+                              } else {
+                                console.log("!!!!!!!!!!!!!!!");
+                                res.json({
+                                  "ResponseCode": 200,
+                                  "ResponseMsg": "Submitted and amount sent for sch aprroval"
+                                });
+                              }
+                            });
+              }
+              else {
+                res.json({
+                  "ResponseCode": 200,
+                  "ResponseMsg": "Submitted"
+                });
+              }
+          }
+          else {
+            res.json({
+              "ResponseCode": 207,
+              "ResponseMsg": "Not submitted. Try Again"
+            });
+          }
+
+
         }
-      } else {
+      }
+
+      else {
         res.json({
           "ResponseCode": 203,
           "ResponseMsg": "You reached limit :" + branch
@@ -3526,7 +3578,7 @@ let branchamountResult = async (branch) => {
   console.log(branch);
 
   return new Promise(resolve => {
-    connections.scm_public.query("select branch,credit,debit,balance,notify_amount from pettycash_allocate_amount where branch='" + branch + "' and status=1 ", (error, branchAmountRes) => {
+    connections.scm_public.query("SELECT branch,credit, debit,balance,notify_amount FROM pettycash_allocate_amount where branch='" + branch + "' and status=1 ", (error, branchAmountRes) => {
       if (error) {
         console.log(error);
         console.log("333333");
@@ -4087,8 +4139,7 @@ exports.strch_billgroupapprove = (req, res) => {
 }
 
 exports.strch_billgroupdecline = (req, res) => {
-  console.log(req.body);
-  console.log("hit");
+
   let strch_id = req.body.strch_id;
   let strch_groupcategory = req.body.strch_groupcategory;
   let strch_branch = req.body.strch_branch;
@@ -4116,7 +4167,6 @@ exports.strch_billgroupdecline = (req, res) => {
       console.log(grpcat);
 
       connections.scm_root.query(grpcat, (err, resgrpcat) => {
-        console.log(resgrpcat);
         if (err) {
           conn.rollback(function() {
             res.json({
@@ -4128,8 +4178,7 @@ exports.strch_billgroupdecline = (req, res) => {
           resgrpcat.forEach(data => {
             datta = data.sno
           });
-          let updatequery = "update pettycash set status=3,cancel_by='" + strch_id + "',Cancel_date=now(),remarks='" + comments + "' where branch='" + strch_branch + "' and category_id=" + datta + " and created_date='" + strch_date + "' and bill_no='" + strch_billno + "' and vendorname='" + strch_vouchername + "' and voucher_no='" + strch_voucherno + "'";
-          console.log(updatequery);
+          let updatequery = "update pettycash set status=3,cancel_date=now() where branch='" + strch_branch + "' and category_id=" + datta + " and created_date='" + strch_date + "' and bill_no='" + strch_billno + "' and vendorname='" + strch_vouchername + "' and voucher_no='" + strch_voucherno + "'";
           connections.scm_root.query(updatequery, (err, resupdate) => {
             if (err) {
               conn.rollback(function() {
@@ -4140,9 +4189,8 @@ exports.strch_billgroupdecline = (req, res) => {
               });
             } else {
               console.log(resupdate);
-              let insertquery = "INSERT INTO pettycash (branch,voucher_no,category_id,vendorname,bill_no,remarks,Credit,voucher_attach,bill_attch,created_date,Cancel_by,Cancel_date,STATUS) values ('" + strch_branch + "','" + strch_voucherno + "','" + datta + "','" + strch_vouchername + "','" + strch_billno + "','" + comments + "','" + amount + "','" + voucher_attach + "','" + bill_attach + "','" + strch_date + "','" + strch_id + "',now(),3)";
-              console.log(insertquery);
-              connections.scm_root.query(insertquery, (err, resinsert) => {
+              let insertquery = "INSERT INTO pettycash (branch,voucher_no,category_id,vendorname,bill_no,remarks,Credit,voucher_attach,bill_attch,Cancel_by,Cancel_date,status) values (?,?,?,?,?,?,?,?,?,?,now(),3)"
+              connections.scm_root.query(insertquery, [strch_branch, strch_voucherno, datta, strch_vouchername, strch_billno, comments + '-- by sch', amount, voucher_attach, bill_attach, strch_id], (err, resinsert) => {
                 if (err) {
                   conn.rollback(function() {
 
@@ -4153,8 +4201,7 @@ exports.strch_billgroupdecline = (req, res) => {
                   });
                 } else {
                   console.log(resinsert);
-                  let updateamount = "update pettycash_allocate_amount set cancel_amount='" + amount + "',balance=(SELECT * FROM (SELECT SUM(balance)+" + amount + " FROM pettycash_allocate_amount AS b WHERE branch='" + strch_branch + "' ) AS bb),modified_date=now() where branch='" + strch_branch + "'";
-                  console.log(updateamount);
+                  let updateamount = "update pettycash_allocate_amount set cancel_amount='" + amount + "',balance=(SELECT * FROM (SELECT SUM(balance)+" + amount + " FROM pettycash_allocate_amount AS b WHERE branch='" + strch_branch + "' ) AS bb),modified_date=now(),debit=(SELECT * FROM (SELECT SUM(debit)-" + amount + " FROM pettycash_allocate_amount AS c WHERE branch='" + strch_branch + "' ) AS cc) where branch='" + strch_branch + "'";
                   connections.scm_root.query(updateamount, (err, resupdateamt) => {
                     if (err) {
                       conn.rollback(function() {
@@ -4284,7 +4331,7 @@ exports.finptycsh = (req, res) => {
 
   } else if ((branch != 'All') && (status == 'All')) {
     console.log("hit in status alll");
-    connections.scm_public.query(files.finptycshallall, [branch, branch, branch, branch, branch,branch], (err, resdata) => {
+    connections.scm_public.query(files.finptycshallall, [branch, branch, branch, branch, branch, branch], (err, resdata) => {
       if (err) console.error(err);
       res.json({
         "result": {
@@ -4337,12 +4384,14 @@ exports.finptycsh = (req, res) => {
 }
 
 exports.finpcbranchgroupbills = (req, res) => {
-  console.log(req.params);
-  let date = req.params.date;
+//  console.log(req.params);
+  console.log("hit in group");
+
   let branch = req.params.branch;
   let status = req.params.status;
   console.log("-");
-  connections.scm_public.query(files.finpccshbranchgroupz, [date, date, date, date, branch, status], (err, resgroupdatadetail) => {
+  connections.scm_public.query(files.finpccshbranchgroupz, [branch, status], (err, resgroupdatadetail) => {
+
     if (err) console.error(err);
     res.json(resgroupdatadetail);
   })
@@ -4350,14 +4399,17 @@ exports.finpcbranchgroupbills = (req, res) => {
 }
 
 exports.finpcbranchgroupbilldetail = (req, res) => {
-  console.log(req.params);
-  let date = req.params.date;
+//  console.log(req.params);
+console.log("hit in detail");
   let status = req.params.status
   let branch = req.params.branch;
   //let status=req.params.status;
   let categoryname = req.params.categoryname;
 
-  connections.scm_public.query(files.finptycshbranchgroupbilldetailz, [date, date, date, date, branch, categoryname, status], (err, resgroupdatadetail) => {
+
+
+  connections.scm_public.query(files.finptycshbranchgroupbilldetailz, [branch, categoryname, status], (err, resgroupdatadetail) => {
+  //  console.log(resgroupdatadetail);
     if (err) console.error(err);
     res.json(resgroupdatadetail);
   })
@@ -4402,7 +4454,7 @@ exports.fin_billgroupdecline = (req, res) => {
             resgrpcat.forEach(data => {
               datta = data.sno
             });
-            let updatequery = "update pettycash set status=5,cancel_by='" + strch_id + "',Cancel_date=now(),remarks='" + comments + "-- by finance' where branch='" + strch_branch + "' and category_id=" + datta + " and created_date='" + strch_date + "' and bill_no='" + strch_billno + "' and vendorname='" + strch_vouchername + "' and voucher_no='" + strch_voucherno + "'";
+            let updatequery = "update pettycash set status=5,Cancel_date=now() where branch='" + strch_branch + "' and category_id=" + datta + " and created_date='" + strch_date + "' and bill_no='" + strch_billno + "' and vendorname='" + strch_vouchername + "' and voucher_no='" + strch_voucherno + "'";
             console.log(updatequery);
             connections.scm_root.query(updatequery, (err, resupdate) => {
               if (err) {
@@ -4414,9 +4466,8 @@ exports.fin_billgroupdecline = (req, res) => {
                 });
               } else {
                 console.log(resupdate);
-                let insertquery = "INSERT INTO pettycash (branch,voucher_no,category_id,vendorname,bill_no,remarks,Credit,voucher_attach,bill_attch,created_date,Cancel_by,Cancel_date,status) values ('" + strch_branch + "','" + strch_voucherno + "','" + datta + "','" + strch_vouchername + "','" + strch_billno + "','" + comments + "-- by finance','" + amount + "','" + voucher_attach + "','" + bill_attach + "','" + strch_date + "','" + strch_id + "',now(),5)";
-                console.log(insertquery);
-                connections.scm_root.query(insertquery, (err, resinsert) => {
+                let insertquery = "INSERT INTO pettycash (branch,voucher_no,category_id,vendorname,bill_no,remarks,Credit,voucher_attach,bill_attch,Cancel_by,Cancel_date,status) values (?,?,?,?,?,?,?,?,?,?,now(),5)";
+                connections.scm_root.query(insertquery, [strch_branch, strch_voucherno, datta, strch_vouchername, strch_billno, comments + "-- by finance", amount, voucher_attach, bill_attach, strch_id], (err, resinsert) => {
                   if (err) {
                     conn.rollback(function() {
 
@@ -4427,7 +4478,7 @@ exports.fin_billgroupdecline = (req, res) => {
                     });
                   } else {
                     console.log(resinsert);
-                    let updateamount = "update pettycash_allocate_amount set cancel_amount=(SELECT * FROM (SELECT SUM(cancel_amount)+" + amount + " FROM pettycash_allocate_amount AS a WHERE branch='" + strch_branch + "' ) AS aa),balance=(SELECT * FROM (SELECT SUM(balance)+" + amount + " FROM pettycash_allocate_amount AS b WHERE branch='" + strch_branch + "' ) AS bb),modified_date=now() where branch='" + strch_branch + "'";
+                    let updateamount = "update pettycash_allocate_amount set cancel_amount=(SELECT * FROM (SELECT SUM(cancel_amount)+" + amount + " FROM pettycash_allocate_amount AS a WHERE branch='" + strch_branch + "' ) AS aa),balance=(SELECT * FROM (SELECT SUM(balance)+" + amount + " FROM pettycash_allocate_amount AS b WHERE branch='" + strch_branch + "' ) AS bb),modified_date=now(),debit=(SELECT * FROM (SELECT SUM(debit)-" + amount + " FROM pettycash_allocate_amount AS c WHERE branch='" + strch_branch + "' ) AS cc) where branch='" + strch_branch + "'";
                     console.log(updateamount);
                     connections.scm_root.query(updateamount, (err, resupdateamt) => {
                       if (err) {
@@ -4544,7 +4595,7 @@ exports.finptycsh_billgroupapproveall = async (req, res) => {
                 });
               } else {
                 console.log(resinsert);
-                let updateamount = "update pettycash_allocate_amount set balance=(SELECT * FROM (SELECT SUM(balance)+" + refillamount + " FROM pettycash_allocate_amount AS b WHERE branch='" + branch + "' ) AS bb),modified_date=now(),debit=(SELECT * FROM (SELECT SUM(debit)-" + refillamount + " FROM pettycash_allocate_amount AS d WHERE branch='" + branch + "' ) AS dd),cancel_amount=0,notify_amount=(SELECT * FROM (SELECT (SUM(balance)+" + refillamount + ")-sum(3000) FROM pettycash_allocate_amount AS c WHERE branch='" + branch + "' ) AS cc) where branch='" + branch + "'";
+                let updateamount = "update pettycash_allocate_amount set balance=(SELECT * FROM (SELECT SUM(balance)+" + refillamount + " FROM pettycash_allocate_amount AS b WHERE branch='" + branch + "' ) AS bb),modified_date=now(),debit=0,cancel_amount=0,notify_amount=(SELECT * FROM (SELECT (SUM(balance)+" + refillamount + ")-sum(3000) FROM pettycash_allocate_amount AS c WHERE branch='" + branch + "' ) AS cc) where branch='" + branch + "'";
                 console.log(updateamount);
                 connections.scm_root.query(updateamount, (err, resupdate1) => {
                   if (err) {
@@ -4789,7 +4840,7 @@ exports.opdEmailList = (emailtemp, callback) => {
 }
 
 exports.cogsdetails = (req, res) => {
-  console.log(req.params);
+//  console.log(req.params);
   let fromdate = req.params.date;
   let entity = req.params.entity;
   let branch = req.params.branch;

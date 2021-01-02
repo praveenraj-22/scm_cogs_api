@@ -82,8 +82,9 @@ app.post('/api-strchbillgroupdecline',modules.routes.strch_billgroupdecline)
 app.post('/api-strchbillgroupapproveall',modules.routes.strch_billgroupapproveall)
 
 app.get('/api-finpc/:branch/:status/:name',modules.routes.finptycsh)
-app.get('/api-finpcbranchgroupbill/:branch/:status/:date',modules.routes.finpcbranchgroupbills)
-app.get('/api-finpcbranchgroupbilldetail/:branch/:categoryname/:date/:status',modules.routes.finpcbranchgroupbilldetail)
+app.get('/api-finpcbranchgroupbill/:branch/:status',modules.routes.finpcbranchgroupbills)
+app.get('/api-finpcbranchgroupbilldetail/:branch/:categoryname/:status',modules.routes.finpcbranchgroupbilldetail)
+
 app.post('/api-finpcbillgroupdecline',modules.routes.fin_billgroupdecline)
 app.post('/api-finptycshbillgroupapproveall',modules.routes.finptycsh_billgroupapproveall)
 app.get('/api-declineamount/:branch/:fromdate/:todate',modules.routes.decline_amount)

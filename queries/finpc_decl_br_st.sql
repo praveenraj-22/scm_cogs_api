@@ -45,7 +45,7 @@ LEFT JOIN (
 SELECT branch AS br1 ,SUM(credit) AS can,DATE(created_date) AS crtdate1 FROM pettycash WHERE STATUS IN(3,5)
 GROUP BY
 branch,
-MONTH(created_date)
+MONTH(cancel_date)
 )AS c1 ON c.branch=c1.br1 AND MONTH(c.bill_submission)=MONTH(c1.crtdate1)
 
 )  AS a

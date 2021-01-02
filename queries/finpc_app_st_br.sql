@@ -41,33 +41,7 @@ ch_id AS 'created_by',STATUS,bill_submission,cancel_date, Payment_receipt
 GROUP BY
 branch,
 MONTH(bill_submission)
---
--- UNION ALL
---
--- SELECT branch,0 AS 'approved',0 AS 'cancelled',SUM(debit) AS 'pending',0 AS refilled_amount,created_date AS 'Submitted_date',
--- ch_id AS 'created_by',STATUS,bill_submission,cancel_date
---  FROM `pettycash` WHERE  STATUS IN (2,1)
--- GROUP BY
--- branch,
--- MONTH(bill_submission)
---
---
--- UNION ALL
--- SELECT branch,0 AS 'approved',SUM(debit) AS 'cancelled',0 AS 'pending',0 AS refilled_amount,created_date AS 'Submitted_date',
--- ch_id AS 'created_by',STATUS,bill_submission,cancel_date
---  FROM `pettycash` WHERE STATUS IN (3,5)
--- GROUP BY
--- branch,
--- MONTH(cancel_date)
---
--- UNION ALL
---
--- SELECT branch,0 AS 'approved',0 AS 'cancelled',0 AS 'pending',SUM(credit) AS refilled_amount,refilled_date AS 'Submitted_date',
--- fin_id AS 'created_by',STATUS,refilled_date,cancel_date
--- FROM `pettycash` WHERE  STATUS IN (6)
--- GROUP BY
--- branch,
--- MONTH(refilled_date)
+
 )  AS a
 LEFT JOIN (
 SELECT branch AS br ,SUM(credit) AS refill,DATE(created_date) AS crtdate FROM pettycash WHERE STATUS IN(6)
@@ -80,7 +54,7 @@ LEFT JOIN (
 SELECT branch AS br1 ,SUM(credit) AS can,DATE(created_date) AS crtdate1 FROM pettycash WHERE STATUS IN(3,5)
 GROUP BY
 branch,
-MONTH(created_date)
+MONTH(cancel_date)
 )AS c1 ON c.branch=c1.br1 AND MONTH(c.bill_submission)=MONTH(c1.crtdate1)
 
 )  AS a

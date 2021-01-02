@@ -11,7 +11,5 @@ WHEN pet.status=5 THEN 'Cancelled'
  FROM pettycash AS pet
 INNER JOIN pettycash_category AS PCC ON PCC.sno=pet.category_id
 WHERE
---  DATE(pet.created_date) BETWEEN CONCAT(YEAR(?),'-',MONTH(?),'-','01')
--- AND  CONCAT(YEAR(?),'-',MONTH(?),'-','31') AND
  pet.branch=? and pet.status IN (?)
 GROUP BY branch,category_id,status1
