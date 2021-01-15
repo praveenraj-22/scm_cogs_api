@@ -644,7 +644,7 @@ exports.schedule = cron.schedule('30 08 * * *', () => {
   })
 })
 
-exports.schedule = cron.schedule('30 09 * * *', () => {
+exports.schedule = cron.schedule('59 13 * * *', () => {
   //exports.schedule=cron.schedule('39 16 * * *',()=>{
   var today = new Date();
   var yesterday = new Date(today);
@@ -661,13 +661,11 @@ exports.schedule = cron.schedule('30 09 * * *', () => {
   }
   yesterday = yyyy + '-' + mm + '-' + dd;
   connections.scm_public.query(files.aehcollection_email, function(errs, result1, fields) {
+    console.log(result1);
     if (errs) throw err;
     console.log('connected');
 
-
-
-
-    connections.scm_public.query("SELECT PARENT_BRANCH,'TOTAL' AS BRANCH,PAYMENT_OR_REFUND_DATE,(SUM(CASH_AMOUNT)+SUM(REFUND_CASH_AMOUNT)) AS cashamount, (SUM(CARD_AMOUNT)+SUM(REFUND_CARD_AMOUNT)) AS cardamount,(SUM(CHEQUE_AMOUNT)+SUM(REFUND_CHEQUE_AMOUNT)) AS chequeamount, SUM(DD_AMOUNT) AS ddamount,SUM(FUND_TRANSFER_AMOUNT) AS fund_trns_amt,SUM(PAYTM_AMOUNT) AS paym_amt, SUM(CREDIT_CHEQUE_AMOUNT) AS cred_che_amt,SUM(CREDIT_CASH_AMOUNT) AS cred_cash_amt, SUM(PAYTM_CASH_AMOUNT) AS paytm_cach_amt,SUM(PAYTM_FUND_AMOUNT) AS paytm_fund_amt,SUM(ONLINE_AMOUNT) AS  ONLINE_AMOUNT   FROM collection_detail WHERE PAYMENT_OR_REFUND_DATE=DATE_SUB(CURDATE(), INTERVAL 1 DAY)  AND PARENT_BRANCH IN ('AEH','AHC','AHI') GROUP BY PARENT_BRANCH  UNION  SELECT PARENT_BRANCH,BRANCH,PAYMENT_OR_REFUND_DATE,(SUM(CASH_AMOUNT)+SUM(REFUND_CASH_AMOUNT)) AS cashamount,(SUM(CARD_AMOUNT)+SUM(REFUND_CARD_AMOUNT)) AS cardamount,(SUM(CHEQUE_AMOUNT)+SUM(REFUND_CHEQUE_AMOUNT)) AS chequeamount,SUM(DD_AMOUNT) AS ddamount,SUM(FUND_TRANSFER_AMOUNT) AS fund_trns_amt,SUM(PAYTM_AMOUNT) AS paym_amt,SUM(CREDIT_CHEQUE_AMOUNT) AS cred_che_amt,SUM(CREDIT_CASH_AMOUNT) AS cred_cash_amt,SUM(PAYTM_CASH_AMOUNT) AS paytm_cach_amt,SUM(PAYTM_FUND_AMOUNT) AS paytm_fund_amt,sum(ONLINE_AMOUNT) as  ONLINE_AMOUNT  FROM collection_detail WHERE PAYMENT_OR_REFUND_DATE=DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND PARENT_BRANCH IN ('AEH','AHC','AHI') GROUP BY branch", function(errs, result, fields) {
+    connections.scm_public.query(files.collections, function(errs, result, fields) {
       if (errs) throw err;
       console.log('executed');
 
@@ -697,20 +695,17 @@ exports.schedule = cron.schedule('30 09 * * *', () => {
       });
 
       var table = '';
-      console.log(result);
-      console.log(result.length);
+
       if (result.length > 0) {
 
 
         for (i = 0; i < result.length; i++) {
-          table += '<tr> <td >' + result[i].PAYMENT_OR_REFUND_DATE + '</td> <td>' + result[i].BRANCH + '</td><td>' + result[i].PARENT_BRANCH + '</td> <td>' + result[i].cashamount + '</td> <td>' + result[i].cardamount + '</td> <td>' + result[i].chequeamount + '</td> <td>' + result[i].paym_amt + '</td> <td>' + result[i].ddamount + '</td> <td>' + result[i].fund_trns_amt + '</td><td>' + result[i].ONLINE_AMOUNT + '</td> </tr>';
+          table += '<tr> <td >' + result[i].DATE + '</td> <td>' + result[i].BILLED + '</td><td>' + result[i].entity + '</td><td>'+ result[i].REVENUE+'</td> <td>' + result[i].cashamount + '</td> <td>' + result[i].cardamount + '</td> <td>' + result[i].chequeamount + '</td> <td>' + result[i].paym_amt + '</td> <td>' + result[i].ddamount + '</td> <td>' + result[i].fund_trns_amt + '</td><td>' + result[i].ONLINE_AMOUNT + '</td> <td>'+result[i].FTDTotal+' </td><td> </td> <td>'+ result[i].REVENUEMTD+'</td> <td>' + result[i].cashamountMTD + '</td> <td>' + result[i].cardamountMTD + '</td> <td>' + result[i].chequeamountMTD + '</td> <td>' + result[i].paym_amtMTD + '</td> <td>' + result[i].ddamountMTD + '</td> <td>' + result[i].fund_trns_amtMTD + '</td><td>' + result[i].ONLINE_AMOUNTMTD + '</td> <td>'+result[i].MTDTotal+'</td> </tr>';
         }
-        table = '<html><body> <table border="1" cellspacing="0"><tr><th colspan="17">Branches Collection Report On ' + yesterday + ' </th></tr><tr><th>DATE</th><th>BRANCH</th><th>ENTITY</th><th>CASH</th><th>CARD</th><th>CHEQUE</th> <th>PAYTM</th><th>DD</th> <th>FUND TRANSFER</th><th>ONLINE AMOUNT</th></tr>' + table + ' </table> <br><b>Note: This report is auto generated, please do not reply.</b> <br><p>For any corrections, please drop a mail to  <a href="mailto:helpdesk@dragarwal.com">helpdesk@dragarwal.com</a>. </p> <br><p>Regards,</p><p>Dr.Agarwal IT Team</p> </body> </html> ';
+        table = '<html><body> <table border="1" cellspacing="0"><tr><th colspan="22">Branches Collection Report On ' + yesterday + ' </th></tr> <tr><th  colspan="12">FTD </th><th  colspan="10">MTD </th></tr><tr><th>DATE</th><th>BRANCH</th><th>ENTITY</th><th>Revenue</th><th>CASH</th><th>CARD</th><th>CHEQUE</th> <th>PAYTM</th><th>DD</th> <th>FUND TRANSFER</th><th>ONLINE AMOUNT</th> <th>Total FTD</th><th></th><th>Revenue</th><th>CASH</th><th>CARD</th><th>CHEQUE</th> <th>PAYTM</th><th>DD</th> <th>FUND TRANSFER</th><th>ONLINE AMOUNT</th><th>Total MTD</th></tr>' + table + ' </table> <br><b>Note: This report is auto generated, please do not reply.</b> <br><p>For any corrections, please drop a mail to  <a href="mailto:helpdesk@dragarwal.com">helpdesk@dragarwal.com</a>. </p> <br><p>Regards,</p><p>Dr.Agarwal IT Team</p> </body> </html> ';
       } else {
         table = "No Collections in Branches ";
       }
-
-      console.log(table);
 
       let mailOptions = {
         from: frmid,
@@ -731,6 +726,7 @@ exports.schedule = cron.schedule('30 09 * * *', () => {
 
 
     })
+
   })
 
 })
@@ -1260,8 +1256,9 @@ exports.schedule = cron.schedule('00 04 * * *', () => {
 
   console.log('completed');
 })
-
-exports.schedule = cron.schedule('59 10 * * *', () => {
+// revenue_detail_tpa
+exports.schedule = cron.schedule('01 14 * * *', () => {
+  console.log("hit in revenue tpa");
   connections.ideamed.getConnection((err, con) => {
     if (err) console.log("connections err");
     //  let queryres = "SELECT  BPB.ID as 'bill_id',BPB.BILL_NO as 'bill_no',BPB.TPA_CLAIM_ID as 'tpa_claim' FROM BILL_PATIENT_BILL AS BPB WHERE DATE(REVENUE_DATE)=DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND CLAIM_AMOUNT >0";
@@ -1285,7 +1282,8 @@ exports.schedule = cron.schedule('59 10 * * *', () => {
                   return con.rollback(function() {
                     console.error(error);
                   })
-                }``
+                }
+
 
               })
             }

@@ -205,45 +205,66 @@ exports.logout = (req, res) => {
 // Local test code
 
 exports.testLogin = (req, res) => {
-  //  console.log('testLogin');
+  console.log(req);
+
   let user = req.body.user.trim();
-  //  console.log('roye.js user ',user);
   let pass = req.body.pass.trim();
-  //  console.log(' route.js pass ', pass);
-  connections.scm_public.query(
-    "select * from users where emp_id = ? and password = ? and is_active=1",
+  console.log(user+" "+pass);
+  connections.mis_public.query(
+    "select * from users where emp_id = ? and password = ? and is_active=1 GROUP BY role,NAME",
     [user, pass],
     (err, result) => {
       if (err) console.error(err);
+
       if (result.length === 0) {
+        console.log("error");
         res.json({
           isAuthenticated: false
         });
+
+      } else if (result.length === 2) {
+
+        if (((result[0].role === 'ch_user') && (result[1].role == 'normal_user')) || ((result[0].role == 'fin_user') && (result[1].role === 'normal_user'))) {
+          connections.mis_public.query("update  users set last_login=now() where emp_id ='" + user + "' ", (err1, result) => {
+            if (err) console.error(err1);
+          });
+          res.json({
+            isAuthenticated: true,
+            role: result[0].role,
+            role1: result[1].role,
+            userName: result[0].name
+          });
+
+        } else {
+          connections.mis_public.query("update  users set last_login=now() where emp_id ='" + user + "' ", (err1, result) => {
+            if (err) console.error(err1);
+          });
+          res.json({
+            isAuthenticated: true,
+            role: result[1].role,
+            role1: result[0].role,
+            userName: result[1].name
+          });
+
+
+
+        }
       } else {
-        connections.scm_public.query("update  users set last_login=now() where emp_id ='" + user + "' ", (err1, result) => {
+
+        connections.mis_public.query("update  users set last_login=now() where emp_id ='" + user + "' ", (err1, result) => {
           if (err) console.error(err1);
+
         });
         res.json({
           isAuthenticated: true,
           role: result[0].role,
           userName: result[0].name
         });
-        // mods.session.user = JSON.stringify(user)
-        // mods.session.role = JSON.stringify(result[0].role)
-        sess = req.session;
-        sess.role = result[0].role;
-        if (sess.role === "normal_user") {
-          sess.normalUser = user;
-        }
-        if (sess.role === "super_user") {
-          sess.superUser = user;
-        }
+
       }
     }
   );
-
 };
-
 
 
 exports.changePassword = (req, res) => {

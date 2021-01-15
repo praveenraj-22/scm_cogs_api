@@ -169,3 +169,6 @@ exports.revenuedetailstpa=read("./queries/revenue_tpadetails.sql");
 
 //STN
 exports.stns=read("./queries/stn.sql");
+
+//collection query by praveenraj
+exports.collections=read("./queries/collectionquery.sql");
