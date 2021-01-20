@@ -1,10 +1,10 @@
-SELECT rd.TRANSACTION_DATE AS 'BILLEDDATE',rd.BILLED,rd.NATIVE,rd.AGENCY_NAME,rd.UNIT,rd.GROUP,rd.MRN,
-rd.PATIENT_NAME,rd.VISIT_TYPE,rd.BILLNO
-,SUM(TOTAL_AMOUNT) AS 'totalamount',SUM(DISCOUNT_AMOUNT) AS 'discount',SUM(NET_AMOUNT) AS 'netamount'
-,SUM(PATIENT_AMOUNT) AS 'patamount',SUM(PAYOR_AMOUNT) AS 'tpaamount',DATE(rdt.send_date) AS 'senddate',
-rdt.*
- FROM revenue_details AS rd
-INNER JOIN revenue_detail_tpa AS rdt ON rdt.bill_id=rd.EXTERNAL_ID
+SELECT
+rd.TRANSACTION_DATE AS 'BILLEDDATE',rd.BILLED,rd.AGENCY_NAME,rd.UNIT,rd.GROUP,rd.MRN,
+rd.PATIENT_NAME,rd.BILLNO
+,ROUND(SUM(TOTAL_AMOUNT),2) AS 'totalamount',ROUND(SUM(DISCOUNT_AMOUNT),2) AS 'discount',ROUND(SUM(NET_AMOUNT),2) AS 'netamount'
+,ROUND(SUM(PATIENT_AMOUNT),2) AS 'patamount',ROUND(SUM(PAYOR_AMOUNT),2) AS 'tpaamount',DATE(rd.send_date) AS 'senddate'
+,tpa_claim,rd.*
+FROM revenue_detail_tpa AS rd
  WHERE BILLED=? AND TRANSACTION_DATE BETWEEN ? AND ?
 AND AGENCY_NAME NOT LIKE 'SELF PAYING'
 GROUP BY
@@ -13,3 +13,19 @@ rd.BILLNO
 ORDER BY
 senddate ASC,
 TRANSACTION_DATE DESC
+
+-- SELECT rd.TRANSACTION_DATE AS 'BILLEDDATE',rd.BILLED,rd.NATIVE,rd.AGENCY_NAME,rd.UNIT,rd.GROUP,rd.MRN,
+-- rd.PATIENT_NAME,rd.VISIT_TYPE,rd.BILLNO
+-- ,SUM(TOTAL_AMOUNT) AS 'totalamount',SUM(DISCOUNT_AMOUNT) AS 'discount',SUM(NET_AMOUNT) AS 'netamount'
+-- ,SUM(PATIENT_AMOUNT) AS 'patamount',SUM(PAYOR_AMOUNT) AS 'tpaamount',DATE(rdt.send_date) AS 'senddate',
+-- rdt.*
+--  FROM revenue_details AS rd
+-- INNER JOIN revenue_detail_tpa AS rdt ON rdt.bill_id=rd.EXTERNAL_ID
+--  WHERE BILLED=? AND TRANSACTION_DATE BETWEEN ? AND ?
+-- AND AGENCY_NAME NOT LIKE 'SELF PAYING'
+-- GROUP BY
+-- rd.MRN,
+-- rd.BILLNO
+-- ORDER BY
+-- senddate ASC,
+-- TRANSACTION_DATE DESC

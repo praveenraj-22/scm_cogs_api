@@ -1,13 +1,13 @@
-SELECT br.entity,br.region,rd.TRANSACTION_DATE AS 'BILLEDDATE',rd.BILLED,rd.NATIVE,rd.AGENCY_NAME,rd.UNIT,rd.GROUP,rd.MRN,
-rd.PATIENT_NAME,rd.VISIT_TYPE,rd.BILLNO
+SELECT br.entity,br.region,rd.TRANSACTION_DATE AS 'BILLEDDATE',rd.BILLED,rd.AGENCY_NAME,rd.UNIT,rd.GROUP,rd.MRN,
+rd.PATIENT_NAME,rd.BILLNO AS bill_no
 ,SUM(TOTAL_AMOUNT) AS 'totalamount',SUM(DISCOUNT_AMOUNT) AS 'discount',SUM(NET_AMOUNT) AS 'netamount'
-,SUM(PATIENT_AMOUNT) AS 'patamount',SUM(PAYOR_AMOUNT) AS 'tpaamount',DATE(rdt.send_date) AS 'senddate',
- DATE(rdt.acknowledge_date) AS 'ackdate',DATE(rdt.submitted_date) AS 'subdate',
-rdt.*
- FROM revenue_details AS rd
-INNER JOIN revenue_detail_tpa AS rdt ON rdt.bill_id=rd.EXTERNAL_ID
+,SUM(PATIENT_AMOUNT) AS 'patamount',SUM(PAYOR_AMOUNT) AS 'tpaamount',DATE(rd.send_date) AS 'senddate',
+ DATE(rd.acknowledge_date) AS 'ackdate',DATE(rd.submitted_date) AS 'subdate',rd.TPA_CLAIM as tpa_claim,
+
+rd.*
+FROM  revenue_detail_tpa  AS rd
  INNER JOIN branches AS br ON rd.BILLED=br.code
- WHERE DATE(rdt.submitted_date) BETWEEN ? AND ?
+ WHERE DATE(rd.submitted_date) BETWEEN ? AND ?
  AND TRANSACTION_DATE BETWEEN ? AND ?
  AND br.entity <>'ohc'
 AND AGENCY_NAME NOT LIKE 'SELF PAYING'

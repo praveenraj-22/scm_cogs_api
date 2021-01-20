@@ -1256,8 +1256,9 @@ exports.schedule = cron.schedule('00 04 * * *', () => {
 
   console.log('completed');
 })
+
 // revenue_detail_tpa
-exports.schedule = cron.schedule('01 14 * * *', () => {
+exports.schedule = cron.schedule('45 06 * * *', () => {
   console.log("hit in revenue tpa");
   connections.ideamed.getConnection((err, con) => {
     if (err) console.log("connections err");
