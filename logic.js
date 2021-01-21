@@ -1408,7 +1408,7 @@ let filterGroupwise = async (aeh, ahc,ohc, dbres2, branches, ftddate, vobres, br
 	"Madagascar" :["MDR"],
     "Mozambique":["MZQ","BRA"],
     "Nigeria":["NGA"],
-    "Rwanda":["RWD"],
+    "Rwanda":["RWD","CGU"],
     "Mauritius":["EBN","FLQ","GDL"],    
 	"Zambia":["ZMB"],
     "Ghana":["GHA"],
@@ -1895,11 +1895,17 @@ let filterGroupwise = async (aeh, ahc,ohc, dbres2, branches, ftddate, vobres, br
 	
 	  
 		let mozftdcogs = 0, mozmtdcogs = 0, mauritiusftdcogs=0, mauritiusmtdcogs=0;
+		
+		let rawftdcogs =0,rawmtdcogs =0;
 
 		mozftdcogs = cogsPercent(ohcBranch['MZQ'].ftd+ohcBranch['BRA'].ftd,ohcBranch['MZQ'].ftdrev+ohcBranch['BRA'].ftdrev);
 		mozmtdcogs = cogsPercent(ohcBranch['MZQ'].mtd+ohcBranch['BRA'].mtd,ohcBranch['MZQ'].mtdrev+ohcBranch['BRA'].mtdrev);	
 		mauritiusftdcogs = cogsPercent(ohcBranch['EBN'].ftd+ohcBranch['FLQ'].ftd+ohcBranch['GDL'].ftd,ohcBranch['EBN'].ftdrev+ohcBranch['FLQ'].ftdrev+ohcBranch['GDL'].ftdrev);
 		mauritiusmtdcogs = cogsPercent(ohcBranch['EBN'].mtd+ohcBranch['FLQ'].mtd+ohcBranch['GDL'].mtd,ohcBranch['EBN'].mtdrev+ohcBranch['FLQ'].mtdrev+ohcBranch['GDL'].mtdrev);
+		
+		
+		rawftdcogs = cogsPercent(ohcBranch['RWD'].ftd+ohcBranch['CGU'].ftd,ohcBranch['RWD'].ftdrev+ohcBranch['CGU'].ftdrev);
+		rawmtdcogs = cogsPercent(ohcBranch['RWD'].mtd+ohcBranch['CGU'].mtd,ohcBranch['RWD'].mtdrev+ohcBranch['CGU'].mtdrev);
 		
 		ohctempObj['Mauritius'] =  { 'ftdpha': ohcBranch['EBN'].ftdpha+ohcBranch['FLQ'].ftdpha+ohcBranch['GDL'].ftdpha,
 									   'ftdopt': ohcBranch['EBN'].ftdopt+ohcBranch['FLQ'].ftdopt+ohcBranch['GDL'].ftdopt,
@@ -1935,7 +1941,21 @@ let filterGroupwise = async (aeh, ahc,ohc, dbres2, branches, ftddate, vobres, br
 										 
 										 
 		
-										 
+			ohctempObj['Rwanda'] =  { 'ftdpha': ohcBranch['RWD'].ftdpha+ohcBranch['CGU'].ftdpha,
+									   'ftdopt': ohcBranch['RWD'].ftdopt+ohcBranch['CGU'].ftdopt,
+										'ftdlab': ohcBranch['RWD'].ftdlab+ohcBranch['CGU'].ftdlab,
+										 'ftdot': ohcBranch['RWD'].ftdot+ohcBranch['CGU'].ftdot,
+										 'ftd': ohcBranch['RWD'].ftd+ohcBranch['CGU'].ftd,
+										 'mtdpha': ohcBranch['RWD'].mtdpha+ohcBranch['CGU'].mtdpha,
+										 'mtdopt': ohcBranch['RWD'].mtdopt+ohcBranch['CGU'].mtdopt,
+										 'mtdlab': ohcBranch['RWD'].mtdlab+ohcBranch['CGU'].mtdlab,
+										 'mtdot': ohcBranch['RWD'].mtdot+ohcBranch['CGU'].mtdot,
+										 'mtd': ohcBranch['RWD'].mtd+ohcBranch['CGU'].mtd,
+										 'ftdrev': ohcBranch['RWD'].ftdrev+ohcBranch['CGU'].ftdrev,
+										 'ftd_cogs_percent': rawftdcogs,
+										 'mtdrev': ohcBranch['RWD'].mtdrev+ohcBranch['CGU'].mtdrev,
+										 'mtd_cogs_percent': rawmtdcogs,
+										 'branch': 'Rwanda' }							 
 							 
 		
 	
@@ -1990,7 +2010,7 @@ let filterGroupwiseMaterialCogs = async (ohc, dbres2, branches, ftddate, oversea
 	"Madagascar" :["MDR"],
     "Mozambique":["MZQ","BRA"],
     "Nigeria":["NGA"],
-    "Rwanda":["RWD"],
+    "Rwanda":["RWD","CGU"],
     "Mauritius":["EBN","FLQ","GDL"],    
 	"Zambia":["ZMB"],
     "Ghana":["GHA"],
@@ -2048,20 +2068,13 @@ let filterGroupwiseMaterialCogs = async (ohc, dbres2, branches, ftddate, oversea
 			
 			if((Object.keys(overseasCurrency).length) > 0){
 				
-				if(branch!='CUG'){
+				
 					mtdphacogs = mtdphacogs*overseasCurrency[branch].mtd;
 					mtdoptcogs = mtdoptcogs*overseasCurrency[branch].mtd;
 					mtdlabcogs = mtdlabcogs*overseasCurrency[branch].mtd;
 					mtdotcogs = mtdotcogs*overseasCurrency[branch].mtd;				
 					mtdcogs = mtdcogs*overseasCurrency[branch].mtd;
-				}else{
-					
-					mtdphacogs = mtdphacogs*overseasCurrency['RWD'].mtd;
-					mtdoptcogs = mtdoptcogs*overseasCurrency['RWD'].mtd;
-					mtdlabcogs = mtdlabcogs*overseasCurrency['RWD'].mtd;
-					mtdotcogs = mtdotcogs*overseasCurrency['RWD'].mtd;				
-					mtdcogs = mtdcogs*overseasCurrency['RWD'].mtd;
-				}
+			
 				
                
 			}
@@ -2120,7 +2133,7 @@ let filterGroupwiseMaterialCogs = async (ohc, dbres2, branches, ftddate, oversea
 						
 			
 			if((Object.keys(overseasCurrency).length) > 0){	
-			    if(branch!='CUG'){
+			   
 					mtdpharev = mtdpharev*overseasCurrency[branch].mtd;
 					mtdoptrev = mtdoptrev*overseasCurrency[branch].mtd;
 					mtdlabrev = mtdlabrev*overseasCurrency[branch].mtd;
@@ -2128,15 +2141,7 @@ let filterGroupwiseMaterialCogs = async (ohc, dbres2, branches, ftddate, oversea
 					mtdconsurev = mtdconsurev*overseasCurrency[branch].mtd;
 					mtdothersrev = mtdothersrev*overseasCurrency[branch].mtd;
 					mtdrev = mtdrev*overseasCurrency[branch].mtd;
-				}else{
-					mtdpharev = mtdpharev*overseasCurrency['RWD'].mtd;
-					mtdoptrev = mtdoptrev*overseasCurrency['RWD'].mtd;
-					mtdlabrev = mtdlabrev*overseasCurrency['RWD'].mtd;
-					mtdotrev = mtdotrev*overseasCurrency['RWD'].mtd;				
-					mtdconsurev = mtdconsurev*overseasCurrency['RWD'].mtd;
-					mtdothersrev = mtdothersrev*overseasCurrency['RWD'].mtd;
-					mtdrev = mtdrev*overseasCurrency['RWD'].mtd;
-				}
+				
 			}
 			mtdsurgeryrev = parseFloat(mtdotrev)+parseFloat(mtdconsurev)+parseFloat(mtdlabrev)+parseFloat(mtdothersrev);
 			
@@ -2325,6 +2330,110 @@ let cogsEmailTemplateOverseas = async (finalResult,todatadate) => {
 }
 
 
+exports.tpaBillPrint = async (
+  rev_det_res,
+  rev_det_tpa_res,
+  branchres,
+  tpa_temp_res,									
+  ser_mapp_res
+  
+) => {
+	
+	let finalTemplate = await templateDetailsBuild(rev_det_res, rev_det_tpa_res,branchres,tpa_temp_res,ser_mapp_res);
+	return finalTemplate;
+};
+
+
+
+let templateDetailsBuild = async (rev_det_res, rev_det_tpa_res,branchres,tpa_temp_res,ser_mapp_res) => {
+	
+	/*console.log("-----rev deta---");
+	console.log(rev_det_res);
+	console.log("length");
+	console.log(Object.keys(rev_det_res).length);
+	console.log("-----rev deta---");
+	//process.exit(rev_det_res);	
+	console.log("-----service mapp---");
+	console.log(ser_mapp_res);
+	console.log("-----service mapp---");*/
+	
+	
+	
+	let reveTotalRecords = Object.keys(rev_det_res).length;	
+	let revTpaTotalRecords = Object.keys(rev_det_tpa_res).length;
+	let basicDetailsTemplate = '';
+	let itemTemplate = '';
+	let tpaTemplate = tpa_temp_res[0].tpa_template;
+	
+	//let tpaTemplate = '<html><body><table width="100%"><tr><td colspan="6" style="text-align:center;"></td></tr><br><br><br><br><br><br><br><br><br><br><br><tr><td colspan="6" style="text-align:center;">BILL</td></tr><tr><td width="15%"><b>GST NO</b></td><td width="2%">:</td><td width="20%">##GSTNO##</td><td width="15%"><b>PAN NO</b></td><td width="2%">:</td><td width="20%">##PANNO##</td></tr><tr><td width="15%"><b>Bill NO</b></td><td width="2%">:</td><td width="20%">##BILLNO##</td><td width="15%"><b>Bill Date</b></td><td width="2%">:</td><td width="20%">##BILLDATE##</td></tr><tr><td width="15%"><b>Patient Name</b></td><td width="2%">:</td><td width="20%">##PATIENTNAME##</td><td width="15%"><b>Patient MRN</b></td><td width="2%">:</td><td width="20%">##PATIENTMRN##</td></tr><tr><td width="15%"><b>Age/Gender</b></td><td width="2%">:</td><td width="20%">##AGE## / #GENDER#</td><td width="15%"></td><td width="2%"></td><td width="20%"></td></tr><tr><td width="15%"><b>Address</b></td><td width="2%">:</td><td width="20%"></td><td width="15%"><b>Proceduer</b></td><td width="2%">:</td><td width="20%">##BASICPROCEDUER##</td></tr><tr><td width="15%"><b>Payer</b></td><td width="2%">:</td><td width="20%">##PAYER##</td><td width="15%"><b>Apprival No</b></td><td width="2%">:</td><td width="20%">##APPRIVALNO##</td></tr><tr><td width="15%"><b>TPA Address</b></td><td width="2%">:</td><td width="20%"></td><td width="15%"></td><td width="2%">:</td><td width="20%"></td></tr><tr><td width="15%"><b>Admission Date</b></td><td width="2%">:</td><td width="20%">##ADMISSIONDATE##</td><td width="15%"><b>Discharge Date</b></td><td width="2%">:</td><td width="20%">##DISCHARGEDATE##</td></tr><tr><td colspan="6" ></td></tr><tr><td colspan="6" width="100%"><table width="100%"><tr><td width="100%" colspan="5">------------------------------------------------------------------------------------------------------------------------------</td></tr><tr><td width="20%"> SI NO</td><td width="20%"> Item Name</td><td width="20%"> Rate (Rs.)</td><td width="20%"> Discount (Rs.)</td><td width="20%"> Rate (Rs.)</td></tr><tr><td width="100%" colspan="5"> ------------------------------------------------------------------------------------------------------------------------------</td></tr>##ITEMS##<tr><td width="100%" colspan="5"> ----------------------------------------------------------------------------------------------------------------------------</td></tr><tr><td width="20%"></td><td width="20%"></td><td width="20%"></td><td width="20%"> Gross Amount(Rs.)</td><td width="20%"> ##GROSSAMOUNT##</td></tr><tr><td width="20%"> </td><td width="20%"> </td><td width="20%"> </td><td width="20%"> Net Total(Rs.)</td><td width="20%"> ##NETTOTALAMOUNT##</td></tr><tr><td width="20%"></td><td width="20%"></td><td width="20%"> </td><td width="20%"> Discount Amt(Rs.)</td><td width="20%"> ##DISCOUNTAMOUNT##</td></tr><tr><td width="20%"></td><td width="20%"></td><td width="20%"> </td><td width="20%"> Net Payer Amt(Rs.)</td><td width="20%"> ##PAYERAMOUNT##</td></tr></table></td><tr><td colspan="6" style="text-align:left;">##AMOUNTWORDS##</td></tr><tr><td colspan="6" style="text-align:right;"><b>for DR.Agarwal Eye Hospial<b></td></tr></tr></table></body></html>';
+	
+	
+		
+	let sno = 0;
+	let grossamount=0;
+	let discountamount = 0;
+	let payeramount = 0;
+	let patientamount = 0;
+	let netamount= 0;
+	let basicProcedure = '';
+	let eyeValue = '';
+	let genderValue = '';
+	basicProcedure = rev_det_res[0].ITEMNAME;
+	
+	if((revTpaTotalRecords>0) && (rev_det_tpa_res[0].eye)){		
+			eyeValue = rev_det_tpa_res[0].eye;
+	}if((revTpaTotalRecords>0) && (rev_det_tpa_res[0].gender)){		
+			genderValue = rev_det_tpa_res[0].gender;
+	}
+	
+	basicDetailsTemplate = tpaTemplate.replace("##GSTNO##", branchres[0].gst_no);
+	basicDetailsTemplate = basicDetailsTemplate.replace("##PANNO##", branchres[0].pan_no);
+	basicDetailsTemplate = basicDetailsTemplate.replace("##BILLNO##", rev_det_res[0].BILLNO);
+	basicDetailsTemplate = basicDetailsTemplate.replace("##BILLDATE##", rev_det_res[0].TRANSACTION_DATE);
+	basicDetailsTemplate = basicDetailsTemplate.replace("##PATIENTNAME##", rev_det_res[0].PATIENT_NAME);	
+	basicDetailsTemplate = basicDetailsTemplate.replace("##PATIENTMRN##", rev_det_res[0].MRN);
+	basicDetailsTemplate = basicDetailsTemplate.replace("##AGE##", rev_det_res[0].PATIENT_AGE);
+	basicDetailsTemplate = basicDetailsTemplate.replace(" #GENDER#", genderValue);	
+	basicDetailsTemplate = basicDetailsTemplate.replace("##PAYER##", rev_det_res[0].AGENCY_NAME);
+	
+	for (let key in rev_det_res) {
+		sno++;
+		let procedure_name = rev_det_res[key].ITEMNAME;
+		
+		
+		if(ser_mapp_res){		
+			_.filter(ser_mapp_res, { ideamed_name: rev_det_res[key].ITEMNAME }).forEach(element => {
+				procedure_name = element.mapping_name;			
+				procedure_name  = eyeValue+' '+ procedure_name;
+				basicProcedure = procedure_name;
+			});
+			
+		}		
+		itemTemplate+='<tr><td width="20%"> '+sno+'</td><td width="20%"> '+procedure_name+'</td><td width="20%"> '+rev_det_res[key].NET_AMOUNT+'</td><td width="20%"> 0</td><td width="20%"> '+rev_det_res[key].NET_AMOUNT+'</td></tr>';
+		
+		grossamount+=rev_det_res[key].TOTAL_AMOUNT;
+		netamount+=rev_det_res[key].NET_AMOUNT;
+		discountamount+=rev_det_res[key].DISCOUNT_AMOUNT;
+		payeramount+=rev_det_res[key].PAYOR_AMOUNT;
+		patientamount+=rev_det_res[key].PATIENT_AMOUNT;
+	}
+	basicDetailsTemplate = basicDetailsTemplate.replace("##BASICPROCEDUER##", basicProcedure);	
+	//basicDetailsTemplate = basicDetailsTemplate.replace("##APPRIVALNO##", rev_det_tpa_res[0].acknowledge_id);
+	basicDetailsTemplate = basicDetailsTemplate.replace("##APPRIVALNO##", "");
+	basicDetailsTemplate = basicDetailsTemplate.replace("##ADMISSIONDATE##", "");
+	basicDetailsTemplate = basicDetailsTemplate.replace("##DISCHARGEDATE##", "");	
+	basicDetailsTemplate = basicDetailsTemplate.replace("##ITEMS##", itemTemplate);	
+	let rupeeinwords = "Rupees "+inWords(payeramount)+' Only';	
+	basicDetailsTemplate = basicDetailsTemplate.replace("##AMOUNTWORDS##", rupeeinwords);	
+	basicDetailsTemplate = basicDetailsTemplate.replace("##GROSSAMOUNT##", grossamount);
+	basicDetailsTemplate = basicDetailsTemplate.replace("##NETTOTALAMOUNT##", netamount);
+	basicDetailsTemplate = basicDetailsTemplate.replace("##DISCOUNTAMOUNT##", discountamount);
+	basicDetailsTemplate = basicDetailsTemplate.replace("##PATIENTAMOUNT##", patientamount);	
+	basicDetailsTemplate = basicDetailsTemplate.replace("##PAYERAMOUNT##", payeramount);	
+	return {"ResponseCode": 200,"ResponseMsg": basicDetailsTemplate};
+};
+
+
 let cogsPercent = (cogs, revenue) => {
     if ((cogs !== 0 && revenue !== 0) || (cogs === 0 && revenue !== 0)) {
         return (cogs / revenue) * 100;
@@ -2344,3 +2453,24 @@ let lakshFormatRevenue = (num)  => {
 		return ftdmtdAmount;
 	}
 }
+
+
+
+
+function inWords (num) {
+	
+	var a = ['','One ','Two ','Three ','Four ', 'Five ','Six ','Seven ','Eight ','Nine ','Ten ','Eleven ','Twelve ','Thirteen ','Fourteen ','Fifteen ','Sixteen ','Seventeen ','Eighteen ','Nineteen '];
+    var b = ['', '', 'Twenty','Thirty','Forty','Fifty', 'Sixty','Seventy','Eighty','Ninety'];
+	
+	
+    if ((num = num.toString()).length > 9) return 'overflow';
+    n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
+    if (!n) return; var str = '';
+    str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'Crore ' : '';
+    str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'Lakh ' : '';
+    str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'Thousand ' : '';
+    str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'Hundred ' : '';
+    str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) + ' ' : '';
+    return str;
+}
+

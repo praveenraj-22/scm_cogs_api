@@ -164,11 +164,13 @@ exports.pcreport_brall=read("./queries/pcreportbrall.sql");
 exports.pcreport_allcat=read("./queries/pcreportallcat.sql");
 exports.pcreport_brcat=read('./queries/pcreportbrcat.sql');
 
-//praveenraj
-exports.revenuedetailstpa=read("./queries/revenue_tpadetails.sql");
+
+
+exports.device_history_ytd=read("./queries/device_history_YTD.sql");
+exports.device_revenue_ytd=read("./queries/device_revenue_YTD.sql");
 
 //STN
 exports.stns=read("./queries/stn.sql");
-
-//collection query by praveenraj
 exports.collections=read("./queries/collectionquery.sql");
+
+exports.revenuedetailstpa=read("./queries/revenue_tpadetails.sql");

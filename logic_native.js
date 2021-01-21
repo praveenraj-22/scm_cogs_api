@@ -2183,7 +2183,9 @@ exports.newUsageTrackerNative = async (
     ftddate,
     resdevicehistory,
     targetres,
-	resdevicerevenue
+	resdevicerevenue,
+	resdevicehistoryytd,
+	resdevicerevenueytd
 
 ) => {
     let entityWise = await filterEntityUsageTracker(dbres2, ftddate, resdevicehistory, targetres,resdevicerevenue);
@@ -2195,7 +2197,10 @@ exports.newUsageTrackerNative = async (
         ftddate,
         resdevicehistory,
         targetres,
-		resdevicerevenue
+		resdevicerevenue,
+		resdevicehistoryytd,
+		resdevicerevenueytd
+		
     );
 
     return {
@@ -2537,12 +2542,15 @@ let filterGroupwiseUsageTracker = async (
     ftddate,
     resdevicehistory,
     targetres,
-	resdevicerevenue
+	resdevicerevenue,
+	resdevicehistoryytd,
+	resdevicerevenueytd
 ) => {
     let ftdopd = 0,
         mtdopd = 0,
         ftddevicecount = 0,
         mtddevicecount = 0,
+		ytddevicecount = 0;
         aehtempObj = {},
         ahctempObj = {},
         ohctempObj = {},
@@ -2554,6 +2562,7 @@ let filterGroupwiseUsageTracker = async (
         target = 0,
 		ftddevicerevenueamount=0,
 		mtddevicerevenueamount=0,
+		ytddevicerevenueamount=0,
 		ftddevicerevenuecount=0,
 		mtddevicerevenuecount=0,
         code = null;
@@ -2689,6 +2698,14 @@ let filterGroupwiseUsageTracker = async (
             });
 			
 			
+			 _.filter(resdevicehistoryytd, {
+                branch: branch
+            }).forEach(element => {
+                ytddevicecount = element.YTDcount;
+
+            });
+			
+			
 			
 			
 			_.filter(resdevicerevenue, {
@@ -2700,12 +2717,27 @@ let filterGroupwiseUsageTracker = async (
 
                 }
             );
+			
+			
+			
+			
+			_.filter(resdevicerevenueytd, {
+                branch: branch
+            }).forEach(
+                element => {
+                    
+					ytddevicerevenueamount = element.AMOUNT;
+
+                }
+            );
 
             (aehtempObj[group].mtdopdrev = mtdopd),
-            (aehtempObj[group].devicemtd = mtddevicecount),           
+            (aehtempObj[group].devicemtd = mtddevicecount),
+            (aehtempObj[group].deviceytd = ytddevicecount),			
             (aehtempObj[group].entity = 'AEH'),          
             (aehtempObj[group].revenuemtdcount = mtddevicerevenuecount),           
             (aehtempObj[group].revenuemtdamount = mtddevicerevenueamount),
+			(aehtempObj[group].revenueytdamount = ytddevicerevenueamount),
 			(aehtempObj[group].revenuetargetachived = Math.round(((mtddevicecount/target)*100))),
             (aehtempObj[group].branch = group);
         });
@@ -2714,9 +2746,11 @@ let filterGroupwiseUsageTracker = async (
         (mtdopdrev = 0),
         (mtdopd = 0),
         (mtddevicecount = 0),
+		(ytddevicecount = 0),
         (ftddevicecount = 0),
 		(ftddevicerevenueamount=0),
 		(mtddevicerevenueamount=0),
+		(ytddevicerevenueamount=0),
 		(ftddevicerevenuecount=0),
 		(mtddevicerevenuecount=0),
         (target = 0);
@@ -2794,6 +2828,15 @@ let filterGroupwiseUsageTracker = async (
             });
 			
 			
+			_.filter(resdevicehistoryytd, {
+                branch: branch
+            }).forEach(element => {
+                ytddevicecount = element.YTDcount;
+
+            });
+			
+			
+			
 			
 			_.filter(resdevicerevenue, {
                 branch: branch
@@ -2805,6 +2848,16 @@ let filterGroupwiseUsageTracker = async (
             );
 			
 			
+			_.filter(resdevicerevenueytd, {
+                branch: branch
+            }).forEach(
+                element => {
+                    
+					ytddevicerevenueamount = element.AMOUNT;
+
+                }
+            );
+			
 			
             branchObj[key].push({
                 branch: branchName,
@@ -2814,11 +2867,13 @@ let filterGroupwiseUsageTracker = async (
                 deviceftd: ftddevicecount,
                 target: target,
                 entity: 'AEH',
-                devicemtd: mtddevicecount,              
+                devicemtd: mtddevicecount, 
+                deviceytd: ytddevicecount,				
                 revenueftdcount: ftddevicerevenuecount,
                 revenuemtdcount: mtddevicerevenuecount,                
                 revenueftdamount: ftddevicerevenueamount,
                 revenuemtdamount: mtddevicerevenueamount,
+				revenueytdamount: ytddevicerevenueamount,
 				revenuetargetachived : Math.round(((mtddevicecount/target)*100))
             });
             (ftdopd = 0),
@@ -2826,10 +2881,12 @@ let filterGroupwiseUsageTracker = async (
             (ftdopdrev = 0),
             (mtdopdrev = 0),
             (ftddevicecount = 0),
-            (mtddevicecount = 0),            
+            (mtddevicecount = 0),
+			(ytddevicecount = 0),            
             (target = 0),
 			(ftddevicerevenueamount=0),
 			(mtddevicerevenueamount=0),
+			(ytddevicerevenueamount=0),
 			(ftddevicerevenuecount=0),
 			(mtddevicerevenuecount=0),
             (code = null);
@@ -2906,6 +2963,14 @@ let filterGroupwiseUsageTracker = async (
             });
 			
 			
+			_.filter(resdevicehistoryytd, {
+                branch: branch
+            }).forEach(element => {
+                ytddevicecount = element.YTDcount;
+
+            });
+			
+			
 			
 			_.filter(resdevicerevenue, {
                 branch: branch
@@ -2915,7 +2980,18 @@ let filterGroupwiseUsageTracker = async (
 					mtddevicerevenueamount += element.AMOUNT;
 
                 }
-            );	 
+            );	
+
+			
+			_.filter(resdevicerevenueytd, {
+                branch: branch
+            }).forEach(
+                element => {
+                    
+					ytddevicerevenueamount = element.AMOUNT;
+
+                }
+            );
 
           
 
@@ -2927,11 +3003,13 @@ let filterGroupwiseUsageTracker = async (
                 deviceftd: ftddevicecount,
                 target: target,
                 entity: 'AHC',
-                devicemtd: mtddevicecount,               
+                devicemtd: mtddevicecount,
+				deviceytd: ytddevicecount,				
                 revenueftdcount: ftddevicerevenuecount,
                 revenuemtdcount: mtddevicerevenuecount,                
                 revenueftdamount: ftddevicerevenueamount,
                 revenuemtdamount: mtddevicerevenueamount,
+				revenueytdamount: ytddevicerevenueamount,
 				revenuetargetachived : Math.round(((mtddevicecount/target)*100))
 
             });
@@ -2942,10 +3020,12 @@ let filterGroupwiseUsageTracker = async (
             (mtdopdrev = 0),
             (mtdopd = 0),
             (mtddevicecount = 0),
+			(ytddevicecount = 0),
             (ftddevicecount = 0),
             (target = 0),
 			(ftddevicerevenueamount=0),
 			(mtddevicerevenueamount=0),
+			(ytddevicerevenueamount=0),
 			(ftddevicerevenuecount=0),
 			(mtddevicerevenuecount=0);
 
@@ -3020,6 +3100,13 @@ let filterGroupwiseUsageTracker = async (
 
             });
 			
+			_.filter(resdevicehistoryytd, {
+                branch: branch
+            }).forEach(element => {
+                ytddevicecount = element.YTDcount;
+
+            });
+			
 			
 			_.filter(resdevicerevenue, {
                 branch: branch
@@ -3029,14 +3116,26 @@ let filterGroupwiseUsageTracker = async (
 					mtddevicerevenueamount += element.AMOUNT;
 
                 }
-            );	 
+            );	
+
+            _.filter(resdevicerevenueytd, {
+                branch: branch
+            }).forEach(
+                element => {
+                    
+					ytddevicerevenueamount = element.AMOUNT;
+
+                }
+            );			
           
 
             (ahctempObj[group].mtdopdrev = mtdopd),            
             (ahctempObj[group].devicemtd = mtddevicecount),
+			(ahctempObj[group].deviceytd = ytddevicecount),
             (ahctempObj[group].entity = 'AHC'),        
             (ahctempObj[group].revenuemtdcount = mtddevicerevenuecount),
 			(ahctempObj[group].revenuemtdamount = mtddevicerevenueamount),
+			(ahctempObj[group].revenueytdamount = ytddevicerevenueamount),
 			(ahctempObj[group].revenuetargetachived = Math.round(((mtddevicecount/target)*100))),
             (ahctempObj[group].branch = group);
         });
@@ -3045,10 +3144,12 @@ let filterGroupwiseUsageTracker = async (
         (ftdopdrev = 0),
         (mtdopdrev = 0),
         (mtddevicecount = 0),
+		(ytddevicecount = 0),
         (target = 0),
         (ftddevicecount = 0),
 		(ftddevicerevenueamount=0),
 		(mtddevicerevenueamount=0),
+		(ytddevicerevenueamount=0),
 		(ftddevicerevenuecount=0),
 		(mtddevicerevenuecount=0);
     });
@@ -3107,13 +3208,23 @@ let filterGroupwiseUsageTracker = async (
                 }
             );
 
+			_.filter(resdevicerevenueytd, {
+                branch: branch
+            }).forEach(
+                element => {
+                    
+					ytddevicerevenueamount = element.AMOUNT;
 
+                }
+            );			
+          
 
             (ohctempObj[group].ftdopdrev = ftdopd);
 			(ohctempObj[group].deviceftd = ftddevicecount);
             (ohctempObj[group].target = target);
-			(ohctempObj[group].revenueftdcount = mtddevicerevenuecount);
-            (ohctempObj[group].revenueftdamount = mtddevicerevenueamount);
+			(ohctempObj[group].revenuemtdcount = mtddevicerevenuecount);
+            (ohctempObj[group].revenuemtdamount = mtddevicerevenueamount);
+			(ohctempObj[group].revenueytdamount = ytddevicerevenueamount);
 
             _.filter(dbres2, {
                 branch: branch
@@ -3129,6 +3240,13 @@ let filterGroupwiseUsageTracker = async (
                 mtddevicecount += element.device_daily_count;
 
             });
+			
+			_.filter(resdevicehistoryytd, {
+                branch: branch
+            }).forEach(element => {
+                ytddevicecount = element.YTDcount;
+
+            });
            
 
 
@@ -3136,6 +3254,7 @@ let filterGroupwiseUsageTracker = async (
             (ohctempObj[group].mtdopdrev = mtdopd),
             (ohctempObj[group].deviceftd = ftddevicecount),
             (ohctempObj[group].devicemtd = mtddevicecount),
+			(ohctempObj[group].deviceytd = ytddevicecount),
             (ohctempObj[group].entity = 'OHC'),         
             (ohctempObj[group].revenuemtdcount = 0),
             (ohctempObj[group].revenuemtdamount = 0),            
@@ -3147,9 +3266,11 @@ let filterGroupwiseUsageTracker = async (
         (mtdopdrev = 0),
         (mtdopd = 0),
         (mtddevicecount = 0),
+		(ytddevicecount = 0),
         (ftddevicecount = 0),
 		(ftddevicerevenueamount=0),
 		(mtddevicerevenueamount=0),
+		(ytddevicerevenueamount=0),
 		(ftddevicerevenuecount=0),
 		(mtddevicerevenuecount=0),
         (target = 0);
@@ -3214,7 +3335,25 @@ let filterGroupwiseUsageTracker = async (
             }).forEach(element => {
 
                 (mtddevicecount += element.device_daily_count);
-            });      
+            });
+
+
+			_.filter(resdevicehistoryytd, {
+                branch: branch
+            }).forEach(element => {
+                ytddevicecount = element.YTDcount;
+
+            });
+			
+			_.filter(resdevicerevenueytd, {
+                branch: branch
+            }).forEach(
+                element => {
+                    
+					ytddevicerevenueamount = element.AMOUNT;
+
+                }
+            );
 
 
             branchObj[key].push({
@@ -3225,11 +3364,13 @@ let filterGroupwiseUsageTracker = async (
                 deviceftd: ftddevicecount,
                 target: target,
                 entity: 'OHC',
-                devicemtd: mtddevicecount,                
+                devicemtd: mtddevicecount, 
+                deviceytd: ytddevicecount,  				
                 revenueftdcount: 0,
                 revenuemtdcount: 0,               
                 revenueftdamount: 0,
                 revenuemtdamount: 0,
+				revenueytdamount: ytddevicerevenueamount,
 				revenuetargetachived : Math.round(((mtddevicerevenuecount/target)*100))
             });
             (ftdopd = 0),
@@ -3237,10 +3378,12 @@ let filterGroupwiseUsageTracker = async (
             (ftdopdrev = 0),
             (mtdopdrev = 0),
             (mtddevicecount = 0),
+			(ytddevicecount = 0),
             (ftddevicecount = 0),
             (target = 0),
 			(ftddevicerevenueamount=0),
 			(mtddevicerevenueamount=0),
+			(ytddevicerevenueamount=0),
 			(ftddevicerevenuecount=0),
 			(mtddevicerevenuecount=0),
             (code = null);
@@ -4233,8 +4376,9 @@ let filterGroupwiseUsageTrackerNew = async (
         "chennai",
         "rotn"
     ];
-
-    let ohcGroups = [
+	
+	
+	/*let ohcGroups = [
         "Madagascar",
         "Mozambique",
         "Nigeria",
@@ -4245,6 +4389,16 @@ let filterGroupwiseUsageTrackerNew = async (
         "Nairobi",
         "Uganda",
         "Tanzania"
+    ];*/
+
+    let ohcGroups = [
+       
+        "Mozambique",        
+        "Rwanda",
+        "Mauritius",
+        "Zambia",
+        "Ghana"
+       
     ];
 
     let ahcGroups = [
@@ -4272,7 +4426,7 @@ let filterGroupwiseUsageTrackerNew = async (
     };
 
 
-    let ohcgroupedBranches = {
+    /*let ohcgroupedBranches = {
         "Madagascar": ["MDR"],
         "Mozambique": ["MZQ", "BRA"],
         "Nigeria": ["NGA"],
@@ -4283,7 +4437,20 @@ let filterGroupwiseUsageTrackerNew = async (
         "Nairobi": ["NAB"],
         "Uganda": ["UGD"],
         "Tanzania": ["TZA"]
+    };*/
+	
+	
+	let ohcgroupedBranches = {       
+	
+        "Mozambique": ["MZQ", "BRA"],       
+        "Rwanda": ["CGU"],
+        "Mauritius": [ "FLQ", "GDL"],
+        "Zambia": ["ZMB"],
+        "Ghana": ["GHA"]
     };
+	
+	
+	
 
 
     aehGroups.forEach(group => {

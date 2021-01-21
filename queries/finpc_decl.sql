@@ -1,5 +1,4 @@
-
- SELECT CASE WHEN (pending<>0)  AND (STATUS<>0) OR (cancelled <>0 AND approved<>0 AND pending<>0)  THEN 'pending'
+SELECT CASE WHEN (pending<>0)  AND (STATUS<>0) OR (cancelled <>0 AND approved<>0 AND pending<>0)  THEN 'pending'
 WHEN cancelled <>0 AND (approved=0 AND pending=0) THEN 'cancelled'
 WHEN approved <>0 AND pending=0 THEN 'approved'
 WHEN refilled_amount<>0 THEN 'Refilled_amount'

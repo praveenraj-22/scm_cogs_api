@@ -24,7 +24,7 @@ app.get('/api-region/:entity', modules.routes.region)
 app.get('/api-cogs-dashboard/:date/:entity/:region/:branch', modules.routes.monthlyData)
 app.get('/api-super-ot/:date', modules.routes.main_ot)
 app.get('/health', modules.routes.health)
-app.post('/mis-login', modules.routes.testLogin)
+app.post('/login', modules.routes.testLogin)
 app.get('/logout', modules.routes.logout)
 app.post('/api-changepassword', modules.routes.changePassword)
 app.get('/api-newpod-super/:date', modules.routes.main_route_newopd)
@@ -90,9 +90,8 @@ app.post('/api-finptycshbillgroupapproveall',modules.routes.finptycsh_billgroupa
 app.get('/api-declineamount/:branch/:fromdate/:todate',modules.routes.decline_amount)
 app.post('/api-categoryupdate',modules.routes.category_update)
 
-
 app.get('/api-cogsdetail/:date/:entity/:branch/:department',modules.routes.cogsdetails)
-app.get('/api-stockledger/:date/:entity/:branch/:department',modules.routes.stockledger)
+app.post('/api-stockledger',modules.routes.stockledger)
 
 //praveenraj
 app.get('/api-tpabill/:branch/:date',modules.routes.tpabills)
@@ -112,6 +111,9 @@ app.get('/api-finbranchregion/:user',modules.routes.finbranchregions)
 app.get('/api-getpcreports/:branch/:category/:date',modules.routes.get_pcreports)
 app.post('/api-categoryupdate',modules.routes.category_update)
 app.get('/api-payment-download/:download',modules.routes.download_payment)
+
+app.get('/api-tpabillprint/:externalid/:branch/:agencyname',modules.routes.tpabillprint)
+app.get('/api-iwsr/:fromdate/:todate/:entity',modules.routes.iwsr)
 
 
 app.listen(8888, () => console.log(`App listening on port 8888`))
