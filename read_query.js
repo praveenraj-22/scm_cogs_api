@@ -174,3 +174,5 @@ exports.stns=read("./queries/stn.sql");
 exports.collections=read("./queries/collectionquery.sql");
 
 exports.revenuedetailstpa=read("./queries/revenue_tpadetails.sql");
+
+exports.dob=read("./queries/dateofbirth.sql");

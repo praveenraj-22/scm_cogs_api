@@ -114,6 +114,6 @@ app.get('/api-payment-download/:download',modules.routes.download_payment)
 
 app.get('/api-tpabillprint/:externalid/:branch/:agencyname',modules.routes.tpabillprint)
 app.get('/api-iwsr/:fromdate/:todate/:entity',modules.routes.iwsr)
-
+app.get('/api-getdob/:date',modules.routes.dob)
 
 app.listen(8888, () => console.log(`App listening on port 8888`))

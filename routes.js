@@ -6248,3 +6248,16 @@ else {
 		})
 }
 }
+
+//praveenraj
+
+exports.dob=(req,res)=>{
+	let fdate=req.params.date;
+console.log(fdate);
+
+
+	connections.ideamed.query(files.dob,[fdate,fdate],(err,resdata)=>{
+if(err) console.error(err);
+	res.json(resdata)
+	})
+}
