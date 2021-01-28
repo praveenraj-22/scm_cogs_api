@@ -4909,17 +4909,18 @@ exports.opdEmailList = (emailtemp,callback) =>{
 
 exports.cogsdetails = (req, res) => {
   console.log(req.params);
-  let fromdate = req.params.date;
+  let fromdate = req.params.fdate;
   let entity = req.params.entity;
   let branch = req.params.branch;
   let depart = req.params.department;
-  let start = fromdate + '-01';
-  let end = fromdate + '-31';
+	let todate=req.params.tdate;
+
+
 
   if(entity=='OHC')
   {
     if((branch=='All')&&(depart=="All")){
-      let transquery="select * from cogs_details WHERE region='ORB' and trans_date between '" + start + "' and '" + end + "'";
+      let transquery="select * from cogs_details WHERE region='ORB' and trans_date between '" + fromdate + "' and '" + todate + "'";
       connections.scm_public.query(transquery, (err, rescogs) => {
         if (err) console.error(err);
         res.json({
@@ -4930,7 +4931,7 @@ exports.cogsdetails = (req, res) => {
       })
     }
     else if((branch=='All')&&(depart !="All")){
-        let transquery="select * from cogs_details WHERE region='ORB' and trans_date between '" + start + "' and '" + end + "' and top='" + depart + "'";
+        let transquery="select * from cogs_details WHERE region='ORB' and trans_date between '" + fromdate + "' and '" + todate + "' and top='" + depart + "'";
         connections.scm_public.query(transquery, (err, rescogs) => {
           if (err) console.error(err);
           res.json({
@@ -4942,7 +4943,7 @@ exports.cogsdetails = (req, res) => {
 
     }
     else if((branch !='All')&&(depart =="All")){
-      let transquery="select * from cogs_details WHERE region='ORB' and trans_date between '" + start + "' and '" + end + "' and  branch='" + branch + "'";
+      let transquery="select * from cogs_details WHERE region='ORB' and trans_date between '" + fromdate + "' and '" + todate + "' and  branch='" + branch + "'";
       connections.scm_public.query(transquery, (err, rescogs) => {
         if (err) console.error(err);
         res.json({
@@ -4953,7 +4954,7 @@ exports.cogsdetails = (req, res) => {
       })
     }
     else {
-      let transquery="select * from cogs_details WHERE region='ORB' and trans_date between '" + start + "' and '" + end + "'  and branch='" + branch + "' and top='" + depart + "'";
+      let transquery="select * from cogs_details WHERE region='ORB' and trans_date between '" + fromdate + "' and '" + todate + "'  and branch='" + branch + "' and top='" + depart + "'";
       connections.scm_public.query(transquery, (err, rescogs) => {
         if (err) console.error(err);
         res.json({
@@ -4968,7 +4969,7 @@ exports.cogsdetails = (req, res) => {
     else{
       if ((entity == 'All') && (branch == 'All') && (depart == 'All')) {
         //  console.log("branch all entity all");
-        let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "'";
+        let transquery = "select * from cogs_details where trans_date between '" + fromdate + "' and '" + todate + "'";
         //console.log(transquery);
         connections.scm_public.query(transquery, (err, rescogs) => {
           if (err) console.error(err);
@@ -4981,7 +4982,7 @@ exports.cogsdetails = (req, res) => {
 
       } else if ((entity == 'All') && (branch == 'All') && (depart != 'All')) {
         //  console.log("branch all entity all");
-        let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "' and top='" + depart + "'";
+        let transquery = "select * from cogs_details where trans_date between '" + fromdate + "' and '" + todate + "' and top='" + depart + "'";
         console.log(transquery);
         connections.scm_public.query(transquery, (err, rescogs) => {
           if (err) console.error(err);
@@ -4993,7 +4994,7 @@ exports.cogsdetails = (req, res) => {
         })
       } else if ((entity != 'All') && (branch == 'All') && (depart == 'All')) {
         //  console.log("branch all entity not all");
-        let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "'  and entity='" + entity + "' ";
+        let transquery = "select * from cogs_details where trans_date between '" + fromdate + "' and '" + todate + "'  and entity='" + entity + "' ";
         console.log(transquery);
         connections.scm_public.query(transquery, (err, rescogs) => {
           if (err) console.error(err);
@@ -5005,7 +5006,7 @@ exports.cogsdetails = (req, res) => {
         })
       } else if ((entity != 'All') && (branch == 'All') && (depart != 'All')) {
         //  console.log("branch all entity not all");
-        let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "'  and entity='" + entity + "' and top='" + depart + "'";
+        let transquery = "select * from cogs_details where trans_date between '" + fromdate + "' and '" + todate + "'  and entity='" + entity + "' and top='" + depart + "'";
         console.log(transquery);
         connections.scm_public.query(transquery, (err, rescogs) => {
           if (err) console.error(err);
@@ -5017,7 +5018,7 @@ exports.cogsdetails = (req, res) => {
         })
       } else if ((entity != 'All') && (branch != 'All') && (depart == 'All')) {
         //  console.log("else");
-        let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "' and entity='" + entity + "' and branch='" + branch + "'";
+        let transquery = "select * from cogs_details where trans_date between '" + fromdate + "' and '" + todate + "' and entity='" + entity + "' and branch='" + branch + "'";
         console.log(transquery);
         connections.scm_public.query(transquery, (err, rescogs) => {
           if (err) console.error(err);
@@ -5028,7 +5029,7 @@ exports.cogsdetails = (req, res) => {
           })
         })
       } else {
-        let transquery = "select * from cogs_details where trans_date between '" + start + "' and '" + end + "' and entity='" + entity + "' and branch='" + branch + "' and top='" + depart + "'";
+        let transquery = "select * from cogs_details where trans_date between '" + fromdate + "' and '" + todate + "' and entity='" + entity + "' and branch='" + branch + "' and top='" + depart + "'";
         console.log(transquery);
         connections.scm_public.query(transquery, (err, rescogs) => {
           if (err) console.error(err);
@@ -6159,11 +6160,8 @@ exports.tpabillprint = (req, res) => {
   let externalid = req.params.externalid;
   let branch = req.params.branch;
   let agencyname = req.params.agencyname;
-   connections.scm_public.query("select * from revenue_details where EXTERNAL_ID='" + externalid + "'",(rev_det_err, rev_det_res) =>  {
-    if ((rev_det_err) || (rev_det_res.length==0)){
-		res.json({"ResponseCode": 201,"ResponseMsg": "No data found"});
-	}else{
-		connections.scm_public.query("select * from revenue_detail_tpa where bill_id='" + externalid + "'",(rev_det_tpa_err, rev_det_tpa_res) => {
+
+		connections.scm_public.query("select * from revenue_detail_tpa where BILL_ID='" + externalid + "'",(rev_det_tpa_err, rev_det_tpa_res) => {
 			if ((rev_det_tpa_err) || (rev_det_tpa_res.length==0)) {
 			//if (rev_det_tpa_err) {
 				res.json({"ResponseCode": 202,"ResponseMsg": "No data found"});
@@ -6183,7 +6181,6 @@ exports.tpabillprint = (req, res) => {
 
 									mods.functions
 									  .tpaBillPrint(
-										rev_det_res,
 										rev_det_tpa_res,
 										branchres,
 										tpa_temp_res,
@@ -6199,8 +6196,7 @@ exports.tpabillprint = (req, res) => {
 				  });
 			}
 		  });
-	}
-  });
+
 
 
 
@@ -6248,8 +6244,6 @@ else {
 		})
 }
 }
-
-//praveenraj
 
 exports.dob=(req,res)=>{
 	let fdate=req.params.date;

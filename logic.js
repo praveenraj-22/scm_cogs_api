@@ -2330,8 +2330,7 @@ let cogsEmailTemplateOverseas = async (finalResult,todatadate) => {
 }
 
 
-exports.tpaBillPrint = async (
-  rev_det_res,
+exports.tpaBillPrint = async ( 
   rev_det_tpa_res,
   branchres,
   tpa_temp_res,									
@@ -2339,13 +2338,13 @@ exports.tpaBillPrint = async (
   
 ) => {
 	
-	let finalTemplate = await templateDetailsBuild(rev_det_res, rev_det_tpa_res,branchres,tpa_temp_res,ser_mapp_res);
+	let finalTemplate = await templateDetailsBuild( rev_det_tpa_res,branchres,tpa_temp_res,ser_mapp_res);
 	return finalTemplate;
 };
 
 
 
-let templateDetailsBuild = async (rev_det_res, rev_det_tpa_res,branchres,tpa_temp_res,ser_mapp_res) => {
+let templateDetailsBuild = async ( rev_det_tpa_res,branchres,tpa_temp_res,ser_mapp_res) => {
 	
 	/*console.log("-----rev deta---");
 	console.log(rev_det_res);
@@ -2359,13 +2358,13 @@ let templateDetailsBuild = async (rev_det_res, rev_det_tpa_res,branchres,tpa_tem
 	
 	
 	
-	let reveTotalRecords = Object.keys(rev_det_res).length;	
+	//let reveTotalRecords = Object.keys(rev_det_res).length;	
 	let revTpaTotalRecords = Object.keys(rev_det_tpa_res).length;
 	let basicDetailsTemplate = '';
 	let itemTemplate = '';
 	let tpaTemplate = tpa_temp_res[0].tpa_template;
 	
-	//let tpaTemplate = '<html><body><table width="100%"><tr><td colspan="6" style="text-align:center;"></td></tr><br><br><br><br><br><br><br><br><br><br><br><tr><td colspan="6" style="text-align:center;">BILL</td></tr><tr><td width="15%"><b>GST NO</b></td><td width="2%">:</td><td width="20%">##GSTNO##</td><td width="15%"><b>PAN NO</b></td><td width="2%">:</td><td width="20%">##PANNO##</td></tr><tr><td width="15%"><b>Bill NO</b></td><td width="2%">:</td><td width="20%">##BILLNO##</td><td width="15%"><b>Bill Date</b></td><td width="2%">:</td><td width="20%">##BILLDATE##</td></tr><tr><td width="15%"><b>Patient Name</b></td><td width="2%">:</td><td width="20%">##PATIENTNAME##</td><td width="15%"><b>Patient MRN</b></td><td width="2%">:</td><td width="20%">##PATIENTMRN##</td></tr><tr><td width="15%"><b>Age/Gender</b></td><td width="2%">:</td><td width="20%">##AGE## / #GENDER#</td><td width="15%"></td><td width="2%"></td><td width="20%"></td></tr><tr><td width="15%"><b>Address</b></td><td width="2%">:</td><td width="20%"></td><td width="15%"><b>Proceduer</b></td><td width="2%">:</td><td width="20%">##BASICPROCEDUER##</td></tr><tr><td width="15%"><b>Payer</b></td><td width="2%">:</td><td width="20%">##PAYER##</td><td width="15%"><b>Apprival No</b></td><td width="2%">:</td><td width="20%">##APPRIVALNO##</td></tr><tr><td width="15%"><b>TPA Address</b></td><td width="2%">:</td><td width="20%"></td><td width="15%"></td><td width="2%">:</td><td width="20%"></td></tr><tr><td width="15%"><b>Admission Date</b></td><td width="2%">:</td><td width="20%">##ADMISSIONDATE##</td><td width="15%"><b>Discharge Date</b></td><td width="2%">:</td><td width="20%">##DISCHARGEDATE##</td></tr><tr><td colspan="6" ></td></tr><tr><td colspan="6" width="100%"><table width="100%"><tr><td width="100%" colspan="5">------------------------------------------------------------------------------------------------------------------------------</td></tr><tr><td width="20%"> SI NO</td><td width="20%"> Item Name</td><td width="20%"> Rate (Rs.)</td><td width="20%"> Discount (Rs.)</td><td width="20%"> Rate (Rs.)</td></tr><tr><td width="100%" colspan="5"> ------------------------------------------------------------------------------------------------------------------------------</td></tr>##ITEMS##<tr><td width="100%" colspan="5"> ----------------------------------------------------------------------------------------------------------------------------</td></tr><tr><td width="20%"></td><td width="20%"></td><td width="20%"></td><td width="20%"> Gross Amount(Rs.)</td><td width="20%"> ##GROSSAMOUNT##</td></tr><tr><td width="20%"> </td><td width="20%"> </td><td width="20%"> </td><td width="20%"> Net Total(Rs.)</td><td width="20%"> ##NETTOTALAMOUNT##</td></tr><tr><td width="20%"></td><td width="20%"></td><td width="20%"> </td><td width="20%"> Discount Amt(Rs.)</td><td width="20%"> ##DISCOUNTAMOUNT##</td></tr><tr><td width="20%"></td><td width="20%"></td><td width="20%"> </td><td width="20%"> Net Payer Amt(Rs.)</td><td width="20%"> ##PAYERAMOUNT##</td></tr></table></td><tr><td colspan="6" style="text-align:left;">##AMOUNTWORDS##</td></tr><tr><td colspan="6" style="text-align:right;"><b>for DR.Agarwal Eye Hospial<b></td></tr></tr></table></body></html>';
+	//let tpaTemplate = '<html><body><table width="100%"><tr><td colspan="6" style="text-align:center;"></td></tr><br><br><br><br><br><br><br><br><br><br><br><tr><td colspan="6" style="text-align:center;">BILL</td></tr><tr><td width="15%"><b>GST NO</b></td><td width="2%">:</td><td width="20%">##GSTNO##</td><td width="15%"><b>PAN NO</b></td><td width="2%">:</td><td width="20%">##PANNO##</td></tr><tr><td width="15%"><b>Bill NO</b></td><td width="2%">:</td><td width="20%">##BILLNO##</td><td width="15%"><b>Bill Date</b></td><td width="2%">:</td><td width="20%">##BILLDATE##</td></tr><tr><td width="15%"><b>Patient Name</b></td><td width="2%">:</td><td width="20%">##PATIENTNAME##</td><td width="15%"><b>Patient MRN</b></td><td width="2%">:</td><td width="20%">##PATIENTMRN##</td></tr><tr><td width="15%"><b>Age/Gender</b></td><td width="2%">:</td><td width="20%">##AGE## / #GENDER#</td><td width="15%"></td><td width="2%"></td><td width="20%"></td></tr><tr><td width="15%"><b>Address</b></td><td width="2%">:</td><td width="20%">##PADDRESS##</td><td width="15%"><b>Procedure</b></td><td width="2%">:</td><td width="20%">##BASICPROCEDUER##</td></tr><tr><td width="15%"><b>Payer</b></td><td width="2%">:</td><td width="20%">##PAYER##</td><td width="15%"><b>Approval No</b></td><td width="2%">:</td><td width="20%">##APPRIVALNO##</td></tr><tr><td width="15%"><b>TPA Address</b></td><td width="2%">:</td><td width="20%"></td><td width="15%"></td><td width="2%">:</td><td width="20%"></td></tr><tr><td width="15%"><b>Admission Date</b></td><td width="2%">:</td><td width="20%">##ADMISSIONDATE##</td><td width="15%"><b>Discharge Date</b></td><td width="2%">:</td><td width="20%">##DISCHARGEDATE##</td></tr><tr><td colspan="6" ></td></tr><tr><td colspan="6" width="100%"><table width="100%"><tr><td width="100%" colspan="5">------------------------------------------------------------------------------------------------------------------------------</td></tr><tr><td width="20%"> SI NO</td><td width="20%"> Item Name</td><td width="20%"> Rate (Rs.)</td><td width="20%"> Discount (Rs.)</td><td width="20%"> Rate (Rs.)</td></tr><tr><td width="100%" colspan="5"> ------------------------------------------------------------------------------------------------------------------------------</td></tr><tr><td width="20%"> PROCEDURES</td><td width="20%"> </td><td width="20%"> </td><td width="20%"> </td><td width="20%"> </td></tr><tr>##ITEMS##<td width="100%" colspan="5"> ----------------------------------------------------------------------------------------------------------------------------</td></tr><tr><td width="20%"></td><td width="10%"></td><td width="40%" style="text-align:right;">Gross Amount(Rs.)</td><td width="10%" > </td><td width="20%" style="text-align:right;"> ##GROSSAMOUNT##</td></tr><tr><td width="20%"> </td><td width="10%"> </td><td width="40%" style="text-align:right;"> Net Total(Rs.)</td><td width="10%" > </td><td width="20%" style="text-align:right;"> ##NETTOTALAMOUNT##</td></tr><tr><td width="20%"></td><td width="10%"></td><td width="40%" style="text-align:right;"> Discount Amt(Rs.)</td><td width="10%" > </td><td width="20%" style="text-align:right;"> ##DISCOUNTAMOUNT##</td></tr><tr><td width="20%"></td><td width="10%"></td><td width="40%" style="text-align:right;">Net Patient Amt(Rs.) </td><td width="10%" > </td><td width="20%" style="text-align:right;"> ##PATIENTAMOUNT##</td></tr><tr><td width="20%"></td><td width="10%"></td><td width="40%" style="text-align:right;"> Net Payer Amt(Rs.)</td><td width="10%" > </td><td width="20%" style="text-align:right;"> ##PAYERAMOUNT##</td></tr></table></td><tr><td colspan="6" style="text-align:left;">##AMOUNTWORDS##</td></tr><tr><td colspan="6" style="text-align:right;"><b>##LABLE##<b></td></tr></tr></table></body></html>';
 	
 	
 		
@@ -2378,50 +2377,71 @@ let templateDetailsBuild = async (rev_det_res, rev_det_tpa_res,branchres,tpa_tem
 	let basicProcedure = '';
 	let eyeValue = '';
 	let genderValue = '';
-	basicProcedure = rev_det_res[0].ITEMNAME;
+	basicProcedure = rev_det_tpa_res[0].ITEMNAME;
 	
-	if((revTpaTotalRecords>0) && (rev_det_tpa_res[0].eye)){		
-			eyeValue = rev_det_tpa_res[0].eye;
-	}if((revTpaTotalRecords>0) && (rev_det_tpa_res[0].gender)){		
-			genderValue = rev_det_tpa_res[0].gender;
+	if((revTpaTotalRecords>0) && (rev_det_tpa_res[0].EYE)){		
+			eyeValue = rev_det_tpa_res[0].EYE;
+	}if((revTpaTotalRecords>0) && (rev_det_tpa_res[0].GENDER)){		
+			genderValue = rev_det_tpa_res[0].GENDER;
 	}
+	
+	
+	let disDat = '';
+	let AdmiDat = '';
+	disDat = rev_det_tpa_res[0].TRANSACTION_DATE
+	if(tpa_temp_res[0].discharge_days==0){		
+		AdmiDat = rev_det_tpa_res[0].TRANSACTION_DATE
+	}else{
+		
+		var brforedate = new Date(rev_det_tpa_res[0].TRANSACTION_DATE);
+		brforedate.setDate(brforedate.getDate() - 1);
+		var dd = brforedate.getDate();
+		var mm = brforedate.getMonth()+1; //January is 0!
+		var yyyy = brforedate.getFullYear();
+		if(dd<10){dd='0'+dd} if(mm<10){mm='0'+mm} 
+		brforedate = yyyy+'-'+mm+'-'+dd;
+		AdmiDat = brforedate;
+	}
+	
 	
 	basicDetailsTemplate = tpaTemplate.replace("##GSTNO##", branchres[0].gst_no);
 	basicDetailsTemplate = basicDetailsTemplate.replace("##PANNO##", branchres[0].pan_no);
-	basicDetailsTemplate = basicDetailsTemplate.replace("##BILLNO##", rev_det_res[0].BILLNO);
-	basicDetailsTemplate = basicDetailsTemplate.replace("##BILLDATE##", rev_det_res[0].TRANSACTION_DATE);
-	basicDetailsTemplate = basicDetailsTemplate.replace("##PATIENTNAME##", rev_det_res[0].PATIENT_NAME);	
-	basicDetailsTemplate = basicDetailsTemplate.replace("##PATIENTMRN##", rev_det_res[0].MRN);
-	basicDetailsTemplate = basicDetailsTemplate.replace("##AGE##", rev_det_res[0].PATIENT_AGE);
+	basicDetailsTemplate = basicDetailsTemplate.replace("##BILLNO##", rev_det_tpa_res[0].BILLNO);
+	basicDetailsTemplate = basicDetailsTemplate.replace("##BILLDATE##", rev_det_tpa_res[0].TRANSACTION_DATE);
+	basicDetailsTemplate = basicDetailsTemplate.replace("##PATIENTNAME##", rev_det_tpa_res[0].PATIENT_NAME);	
+	basicDetailsTemplate = basicDetailsTemplate.replace("##PATIENTMRN##", rev_det_tpa_res[0].MRN);
+	basicDetailsTemplate = basicDetailsTemplate.replace("##AGE##", rev_det_tpa_res[0].PATIENT_AGE);
 	basicDetailsTemplate = basicDetailsTemplate.replace(" #GENDER#", genderValue);	
-	basicDetailsTemplate = basicDetailsTemplate.replace("##PAYER##", rev_det_res[0].AGENCY_NAME);
+	basicDetailsTemplate = basicDetailsTemplate.replace("##PAYER##", rev_det_tpa_res[0].AGENCY_NAME);
+	basicDetailsTemplate = basicDetailsTemplate.replace("##PADDRESS##", rev_det_tpa_res[0].ADDRESS);
+	basicDetailsTemplate = basicDetailsTemplate.replace("##LABLE##", "For Dr.Agarwal's Eye Hospital");
 	
-	for (let key in rev_det_res) {
+	for (let key in rev_det_tpa_res) {
 		sno++;
-		let procedure_name = rev_det_res[key].ITEMNAME;
+		let procedure_name = rev_det_tpa_res[key].ITEMNAME;
 		
 		
 		if(ser_mapp_res){		
-			_.filter(ser_mapp_res, { ideamed_name: rev_det_res[key].ITEMNAME }).forEach(element => {
+			_.filter(ser_mapp_res, { ideamed_name: rev_det_tpa_res[key].ITEMNAME }).forEach(element => {
 				procedure_name = element.mapping_name;			
 				procedure_name  = eyeValue+' '+ procedure_name;
 				basicProcedure = procedure_name;
 			});
 			
 		}		
-		itemTemplate+='<tr><td width="20%"> '+sno+'</td><td width="20%"> '+procedure_name+'</td><td width="20%"> '+rev_det_res[key].NET_AMOUNT+'</td><td width="20%"> 0</td><td width="20%"> '+rev_det_res[key].NET_AMOUNT+'</td></tr>';
+		itemTemplate+='<tr><td width="10%"> '+sno+'</td><td width="30%"> '+procedure_name+'</td><td width="20%"> '+rev_det_tpa_res[key].NET_AMOUNT+'</td><td width="20%"> 0</td><td width="20%"> '+rev_det_tpa_res[key].NET_AMOUNT+'</td></tr>';
 		
-		grossamount+=rev_det_res[key].TOTAL_AMOUNT;
-		netamount+=rev_det_res[key].NET_AMOUNT;
-		discountamount+=rev_det_res[key].DISCOUNT_AMOUNT;
-		payeramount+=rev_det_res[key].PAYOR_AMOUNT;
-		patientamount+=rev_det_res[key].PATIENT_AMOUNT;
+		grossamount+=rev_det_tpa_res[key].TOTAL_AMOUNT;
+		netamount+=rev_det_tpa_res[key].NET_AMOUNT;
+		discountamount+=rev_det_tpa_res[key].DISCOUNT_AMOUNT;
+		payeramount+=rev_det_tpa_res[key].PAYOR_AMOUNT;
+		patientamount+=rev_det_tpa_res[key].PATIENT_AMOUNT;
 	}
 	basicDetailsTemplate = basicDetailsTemplate.replace("##BASICPROCEDUER##", basicProcedure);	
 	//basicDetailsTemplate = basicDetailsTemplate.replace("##APPRIVALNO##", rev_det_tpa_res[0].acknowledge_id);
-	basicDetailsTemplate = basicDetailsTemplate.replace("##APPRIVALNO##", "");
-	basicDetailsTemplate = basicDetailsTemplate.replace("##ADMISSIONDATE##", "");
-	basicDetailsTemplate = basicDetailsTemplate.replace("##DISCHARGEDATE##", "");	
+	basicDetailsTemplate = basicDetailsTemplate.replace("##APPRIVALNO##", rev_det_tpa_res[0].TPA_CLAIM);
+	basicDetailsTemplate = basicDetailsTemplate.replace("##ADMISSIONDATE##", AdmiDat);
+	basicDetailsTemplate = basicDetailsTemplate.replace("##DISCHARGEDATE##", disDat);	
 	basicDetailsTemplate = basicDetailsTemplate.replace("##ITEMS##", itemTemplate);	
 	let rupeeinwords = "Rupees "+inWords(payeramount)+' Only';	
 	basicDetailsTemplate = basicDetailsTemplate.replace("##AMOUNTWORDS##", rupeeinwords);	

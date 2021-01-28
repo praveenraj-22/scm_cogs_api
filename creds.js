@@ -32,29 +32,29 @@ exports.scm_root = {
 }
 
 
-exports.scm_public = {
-    host: '3.0.131.60',
-    port: 3306,
-    user: 'medics',
-    pass: 'medics@123',
-    db: 'cogs'
-
-	/*host: 'localhost',
-    port: 3306,
-    user: 'root',
-    pass: 'root',
-    db: 'cogs'*/
-}
-
-
-
 // exports.scm_public = {
-//     host: 'localhost',
+//     host: '3.0.131.60',
+//     port: 3306,
+//     user: 'medics',
+//     pass: 'medics@123',
+//     db: 'cogs'
+//
+// 	/*host: 'localhost',
 //     port: 3306,
 //     user: 'root',
-//     pass: 'praveen',
-//     db: 'cogs'
+//     pass: 'root',
+//     db: 'cogs'*/
 // }
+
+
+
+exports.scm_public = {
+    host: 'localhost',
+    port: 3306,
+    user: 'root',
+    pass: 'praveen',
+    db: 'cogs'
+}
 
 exports.local = {
     host: 'localhost',

@@ -90,7 +90,7 @@ app.post('/api-finptycshbillgroupapproveall',modules.routes.finptycsh_billgroupa
 app.get('/api-declineamount/:branch/:fromdate/:todate',modules.routes.decline_amount)
 app.post('/api-categoryupdate',modules.routes.category_update)
 
-app.get('/api-cogsdetail/:date/:entity/:branch/:department',modules.routes.cogsdetails)
+app.get('/api-cogsdetail/:fdate/:tdate/:entity/:branch/:department',modules.routes.cogsdetails)
 app.post('/api-stockledger',modules.routes.stockledger)
 
 //praveenraj
