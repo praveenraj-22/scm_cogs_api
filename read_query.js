@@ -172,6 +172,7 @@ exports.device_revenue_ytd=read("./queries/device_revenue_YTD.sql");
 //STN
 exports.stns=read("./queries/stn.sql");
 exports.collections=read("./queries/collectionquery.sql");
+exports.collectionsme=read("./queries/collectionme.sql");
 
 exports.revenuedetailstpa=read("./queries/revenue_tpadetails.sql");
 
