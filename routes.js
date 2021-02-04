@@ -3049,8 +3049,9 @@ exports.fin_doctorapprove = (req, res) => {
 exports.fin_doctorreject = (req, res) => {
   console.log(req.body);
   let fin_id = req.body.fin_id;
+  let fin_com=req.body.fin_comm;
   console.log(fin_id);
-  connections.scm_root.query("UPDATE drt_customer SET STATUS=-2,Cancelled_time=NOW() WHERE ID=? ", [fin_id], (err, resupdatedoc) => {
+  connections.scm_root.query("UPDATE drt_customer SET STATUS=-2,Cancelled_time=NOW(),Comments=? WHERE ID=? ", [fin_com,fin_id], (err, resupdatedoc) => {
     console.log(resupdatedoc);
     if (err) console.error(err);
     res.json({
@@ -6313,4 +6314,55 @@ exports.dob = (req, res) => {
     if (err) console.error(err);
     res.json(resdata)
   })
+}
+
+
+exports.main_route_collection_mail = (yesterday, callback) => {
+  let ftddate = yesterday;
+  let temp = new Date(ftddate);
+  let mtddate =
+    temp.getFullYear() +
+    "-" +
+    ("0" + (temp.getMonth() + 1)).slice(-2) +
+    "-" +
+    "01";
+
+  console.log(ftddate);
+  console.log(mtddate);
+
+  connections.scm_public.query("SELECT ROUND(SUM(NET_AMOUNT),0)AS NET_AMOUNT,TRANSACTION_DATE,BILLED,entity FROM `revenue_details` WHERE TRANSACTION_DATE BETWEEN ? AND ? GROUP BY TRANSACTION_DATE,BILLED ", [mtddate, ftddate], (err, resrevdata) => {
+    if (err) {
+      callback("select revenue query error", null);
+    } else {
+      connections.scm_public.query("SELECT PARENT_BRANCH,BRANCH,PAYMENT_OR_REFUND_DATE,SUM(CASH_AMOUNT)+SUM(REFUND_CASH_AMOUNT)  AS CASH_AMOUNT,SUM(CARD_AMOUNT)+SUM(CARD_SERVICE_CHARGE_AMOUNT)+SUM(REFUND_CARD_AMOUNT) AS CARD_AMOUNT,SUM(CARD_SERVICE_CHARGE_AMOUNT) AS CARD_SERVICE_CHARGE_AMOUNT,SUM(CHEQUE_AMOUNT)+SUM(REFUND_CHEQUE_AMOUNT) AS CHEQUE_AMOUNT,SUM(FUND_TRANSFER_AMOUNT) AS FUND_TRANSFER_AMOUNT,SUM(PAYTM_AMOUNT) AS PAYTM_AMOUNT,SUM(DD_AMOUNT) AS DD_AMOUNT,SUM(REFUND_CASH_AMOUNT) AS REFUND_CASH_AMOUNT,SUM(REFUND_CARD_AMOUNT) AS REFUND_CARD_AMOUNT,SUM(REFUND_CHEQUE_AMOUNT) AS REFUND_CHEQUE_AMOUNT,SUM(CREDIT_CHEQUE_AMOUNT)AS CREDIT_CHEQUE_AMOUNT,SUM(CREDIT_CASH_AMOUNT) AS CREDIT_CASH_AMOUNT,SUM(PAYTM_CASH_AMOUNT) AS PAYTM_CASH_AMOUNT,SUM(PAYTM_FUND_AMOUNT) AS PAYTM_FUND_AMOUNT,SUM(ONLINE_AMOUNT) AS ONLINE_AMOUNT FROM collection_detail WHERE PAYMENT_OR_REFUND_DATE BETWEEN ? AND ? GROUP BY BRANCH,PAYMENT_OR_REFUND_DATE ", [mtddate, ftddate], (err, rescolldata) => {
+        if (err) {
+          callback("select collection query error", null);
+        } else {
+          connections.scm_public.query("SELECT entity,CODE,branch FROM branches WHERE is_active=1 AND entity IN ('AEH','AHC','AHI') GROUP BY entity,branch ", (err, resbranch) => {
+            if (err) {
+              callback("select revenue query error", null);
+            } else {
+              mods.nativeFunctions.collection(resrevdata, rescolldata, ftddate, resbranch)
+              .then (final => callback(null,final));
+            }
+          })
+
+        }
+      })
+    }
+  })
+
+
+
+}
+
+exports.collection_email=(emailtemp,callback)=>{
+  connections.scm_public.query(files.aehcollection_email,(error, collectionemailres) => {
+      if (error) {
+		  callback(error,null);
+
+	  }else{
+		  callback(null,collectionemailres);
+	  }
+	});
 }

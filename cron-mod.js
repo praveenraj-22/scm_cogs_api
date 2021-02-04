@@ -643,194 +643,249 @@ exports.schedule = cron.schedule('30 08 * * *', () => {
   })
 })
 
-exports.schedule = cron.schedule('24 14 * * *', () => {
+//collection
+// exports.schedule = cron.schedule('30 09 * * *', () => {
+//   var today = new Date();
+//   var yesterday = new Date(today);
+//   yesterday.setDate(today.getDate() - 1);
+//   var dd = yesterday.getDate();
+//   var mm = yesterday.getMonth() + 1; //January is 0!
+//
+//   var yyyy = yesterday.getFullYear();
+//
+//
+//   var d = new Date();
+//   var day = d.toLocaleDateString();
+//   var dat = d.getDate();
+//   var mon = d.getMonth() + 1;
+//   var yr = d.getFullYear();
+//   var tdat = d.getDate() - 1;
+//   // var todaydate = yr + '/' + mon + '/' + dat;
+//   // var fixdate = yr + '/' + mon + '/' + 1;
+//   var todaydate = yr + '/' + mon + '/' + dat;
+//   var fixdate = yr + '/' + mon + '/' + 1;
+//   var tabledate = tdat + '/' + mon + '/' + yr;
+//
+//
+//
+//   if (fixdate == todaydate) {
+//     console.log(fixdate);
+//     console.log(todaydate);
+//     console.log("if");
+//     if (dd < 10) {
+//       dd = '0' + dd
+//     }
+//     if (mm < 10) {
+//       mm = '0' + mm
+//     }
+//     yesterday = yyyy + '-' + mm + '-' + dd;
+//     connections.scm_public.query(files.aehcollection_email, function(errs, result1, fields) {
+//       //console.log(result1);
+//       if (errs) throw err;
+//       console.log('connected');
+//
+//       connections.scm_public.query(files.collectionsme, function(errs, result, fields) {
+//         if (errs) throw err;
+//         console.log('executed');
+//
+//         var frmid = '';
+//         var toid = '';
+//         var bccid = '';
+//         var ccid = '';
+//         var passcode = '';
+//         for (var j = 0; j < result1.length; j++) {
+//           frmid = result1[j].fromid
+//           toid = result1[j].toid
+//           bccid = result1[j].bccid
+//           ccid = result1[j].ccid
+//           passcode = result1[j].passcode
+//
+//         }
+//         var nodemailer = require('nodemailer');
+//         console.log(frmid);
+//         console.log(passcode);
+//
+//         var transporter = nodemailer.createTransport({
+//           service: 'gmail',
+//           auth: {
+//             user: frmid,
+//             pass: passcode
+//           }
+//         });
+//
+//         var table = '';
+//
+//         if (result.length > 0) {
+//
+//
+//           for (i = 0; i < result.length; i++) {
+//             table += '<tr> <td >' + result[i].DATE + '</td> <td>' + result[i].BILLED + '</td><td>' + result[i].entity + '</td><td>' + result[i].REVENUE + '</td> <td>' + result[i].cashamount + '</td> <td>' + result[i].cardamount + '</td> <td>' + result[i].chequeamount + '</td> <td>' + result[i].paym_amt + '</td> <td>' + result[i].ddamount + '</td> <td>' + result[i].fund_trns_amt + '</td><td>' + result[i].ONLINE_AMOUNT + '</td> <td>' + result[i].FTDTotal + ' </td><td> </td> <td>' + result[i].REVENUEMTD + '</td> <td>' + result[i].cashamountMTD + '</td> <td>' + result[i].cardamountMTD + '</td> <td>' + result[i].chequeamountMTD + '</td> <td>' + result[i].paym_amtMTD + '</td> <td>' + result[i].ddamountMTD + '</td> <td>' + result[i].fund_trns_amtMTD + '</td><td>' + result[i].ONLINE_AMOUNTMTD + '</td> <td>' + result[i].MTDTotal + '</td> </tr>';
+//           }
+//           table = '<html><body> <table border="1" cellspacing="0"><tr><th colspan="22">Branches Collection Report On ' + yesterday + ' </th></tr> <tr><th  colspan="12">FTD </th><th  colspan="10">MTD </th></tr><tr><th>DATE</th><th>BRANCH</th><th>ENTITY</th><th>Revenue</th><th>CASH</th><th>CARD</th><th>CHEQUE</th> <th>PAYTM</th><th>DD</th> <th>FUND TRANSFER</th><th>ONLINE AMOUNT</th> <th>Total FTD</th><th></th><th>Revenue</th><th>CASH</th><th>CARD</th><th>CHEQUE</th> <th>PAYTM</th><th>DD</th> <th>FUND TRANSFER</th><th>ONLINE AMOUNT</th><th>Total MTD</th></tr>' + table + ' </table> <br><b>Note: This report is auto generated, please do not reply.</b> <br><p>For any corrections, please drop a mail to  <a href="mailto:helpdesk@dragarwal.com">helpdesk@dragarwal.com</a>. </p> <br><p>Regards,</p><p>Dr.Agarwal IT Team</p> </body> </html> ';
+//         } else {
+//           table = "No Collections in Branches ";
+//         }
+//
+//         let mailOptions = {
+//           from: frmid,
+//           to: toid,
+//           bcc: bccid,
+//           cc: ccid,
+//           subject: 'Branches Collection Report On ' + yesterday,
+//           html: table
+//         };
+//
+//         transporter.sendMail(mailOptions, function(error, info) {
+//           if (error) {
+//             console.log(error);
+//           } else {
+//             console.log('Email sent: ' + info.response);
+//           }
+//         });
+//
+//
+//       })
+//
+//     })
+//
+//
+//   } else {
+//     console.log("else");
+//     console.log(fixdate);
+//     console.log(todaydate);
+//
+//     if (dd < 10) {
+//       dd = '0' + dd
+//     }
+//     if (mm < 10) {
+//       mm = '0' + mm
+//     }
+//     yesterday = yyyy + '-' + mm + '-' + dd;
+//     connections.scm_public.query(files.aehcollection_email, function(errs, result1, fields) {
+//       //console.log(result1);
+//       if (errs) throw err;
+//       console.log('connected');
+//
+//       connections.scm_public.query(files.collections, function(errs, result, fields) {
+//         if (errs) throw err;
+//         console.log('executed');
+//
+//         var frmid = '';
+//         var toid = '';
+//         var bccid = '';
+//         var ccid = '';
+//         var passcode = '';
+//         for (var j = 0; j < result1.length; j++) {
+//           frmid = result1[j].fromid
+//           toid = result1[j].toid
+//           bccid = result1[j].bccid
+//           ccid = result1[j].ccid
+//           passcode = result1[j].passcode
+//
+//         }
+//         var nodemailer = require('nodemailer');
+//         console.log(frmid);
+//         console.log(passcode);
+//
+//         var transporter = nodemailer.createTransport({
+//           service: 'gmail',
+//           auth: {
+//             user: frmid,
+//             pass: passcode
+//           }
+//         });
+//
+//         var table = '';
+//
+//         if (result.length > 0) {
+//
+//
+//           for (i = 0; i < result.length; i++) {
+//             table += '<tr> <td >' + result[i].DATE + '</td> <td>' + result[i].BILLED + '</td><td>' + result[i].entity + '</td><td>' + result[i].REVENUE + '</td> <td>' + result[i].cashamount + '</td> <td>' + result[i].cardamount + '</td> <td>' + result[i].chequeamount + '</td> <td>' + result[i].paym_amt + '</td> <td>' + result[i].ddamount + '</td> <td>' + result[i].fund_trns_amt + '</td><td>' + result[i].ONLINE_AMOUNT + '</td> <td>' + result[i].FTDTotal + ' </td><td> </td> <td>' + result[i].REVENUEMTD + '</td> <td>' + result[i].cashamountMTD + '</td> <td>' + result[i].cardamountMTD + '</td> <td>' + result[i].chequeamountMTD + '</td> <td>' + result[i].paym_amtMTD + '</td> <td>' + result[i].ddamountMTD + '</td> <td>' + result[i].fund_trns_amtMTD + '</td><td>' + result[i].ONLINE_AMOUNTMTD + '</td> <td>' + result[i].MTDTotal + '</td> </tr>';
+//           }
+//           table = '<html><body> <table border="1" cellspacing="0"><tr><th colspan="22">Branches Collection Report On ' + yesterday + ' </th></tr> <tr><th  colspan="12">FTD </th><th  colspan="10">MTD </th></tr><tr><th>DATE</th><th>BRANCH</th><th>ENTITY</th><th>Revenue</th><th>CASH</th><th>CARD</th><th>CHEQUE</th> <th>PAYTM</th><th>DD</th> <th>FUND TRANSFER</th><th>ONLINE AMOUNT</th> <th>Total FTD</th><th></th><th>Revenue</th><th>CASH</th><th>CARD</th><th>CHEQUE</th> <th>PAYTM</th><th>DD</th> <th>FUND TRANSFER</th><th>ONLINE AMOUNT</th><th>Total MTD</th></tr>' + table + ' </table> <br><b>Note: This report is auto generated, please do not reply.</b> <br><p>For any corrections, please drop a mail to  <a href="mailto:helpdesk@dragarwal.com">helpdesk@dragarwal.com</a>. </p> <br><p>Regards,</p><p>Dr.Agarwal IT Team</p> </body> </html> ';
+//         } else {
+//           table = "No Collections in Branches ";
+//         }
+//
+//         let mailOptions = {
+//           from: frmid,
+//           to: toid,
+//           bcc: bccid,
+//           cc: ccid,
+//           subject: 'Branches Collection Report On ' + yesterday,
+//           html: table
+//         };
+//
+//         transporter.sendMail(mailOptions, function(error, info) {
+//           if (error) {
+//             console.log(error);
+//           } else {
+//             console.log('Email sent: ' + info.response);
+//           }
+//         });
+//
+//
+//       })
+//
+//     })
+//
+//   }
+//
+//
+//
+// })
+
+//collectionnew
+exports.schedule = cron.schedule('42 15 * * *', () => {
   var today = new Date();
   var yesterday = new Date(today);
   yesterday.setDate(today.getDate() - 1);
   var dd = yesterday.getDate();
   var mm = yesterday.getMonth() + 1; //January is 0!
-
   var yyyy = yesterday.getFullYear();
-
-
-  var d = new Date();
-  var day = d.toLocaleDateString();
-  var dat = d.getDate();
-  var mon = d.getMonth() + 1;
-  var yr = d.getFullYear();
-  var tdat = d.getDate() - 1;
-  // var todaydate = yr + '/' + mon + '/' + dat;
-  // var fixdate = yr + '/' + mon + '/' + 1;
-  var todaydate = yr + '/' + mon + '/' + dat;
-  var fixdate = yr + '/' + mon + '/' + 1;
-  var tabledate = tdat + '/' + mon + '/' + yr;
-
-
-
-if(fixdate == todaydate){
-console.log(fixdate);
-console.log(todaydate);
-
   if (dd < 10) {
     dd = '0' + dd
   }
   if (mm < 10) {
     mm = '0' + mm
   }
-  yesterday = yyyy + '-' + mm + '-' + dd;
-  connections.scm_public.query(files.aehcollection_email, function(errs, result1, fields) {
-    //console.log(result1);
-    if (errs) throw err;
-    console.log('connected');
 
-    connections.scm_public.query(files.collectionsme, function(errs, result, fields) {
-      if (errs) throw err;
-      console.log('executed');
+   yesterday = yyyy + '-' + mm + '-' + dd;
+//  yesterday = 2021 + '-' + '01' + '-' + '31';
+  console.log("yes :" + yesterday);
+  var filepath = '/home/ubuntu/scmlogs/collection_email_cron_' + '_' + yesterday + '.txt';
+  routes.main_route_collection_mail(yesterday, (_err, _res) => {
+    if (_err) {
+      console.log(_err);
+      dlog.log(_err, filepath);
+      dlog.cronErrEmail("Collection email not sent", _err);
+    } else {
 
-      var frmid = '';
-      var toid = '';
-      var bccid = '';
-      var ccid = '';
-      var passcode = '';
-      for (var j = 0; j < result1.length; j++) {
-        frmid = result1[j].fromid
-        toid = result1[j].toid
-        bccid = result1[j].bccid
-        ccid = result1[j].ccid
-        passcode = result1[j].passcode
+      nativeFunctions.collectionemail(_res, yesterday).then(
+        (emailtemp) => {
+          routes.collection_email(emailtemp, (_err1, emailres) => {
+              if (_err1) {
+              console.log(_err1);
+              dlog.log(_err1, filepath);
+              dlog.cronErrEmail("Collection email not sent", _err2);
+            } else {
+              dlog.cronEmail(emailtemp, emailres, 5, yesterday, (_err2, _res2) => {
+                if (_err2) {
+                  console.log(_err2);
+                  dlog.log(_err2, filepath);
+                  dlog.cronErrEmail("Collection email not sent", _err2);
 
-      }
-      var nodemailer = require('nodemailer');
-      console.log(frmid);
-      console.log(passcode);
-
-      var transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: frmid,
-          pass: passcode
+                } else {
+                  console.log(_res2);
+                }
+              })
+            }
+          })
         }
-      });
-
-      var table = '';
-
-      if (result.length > 0) {
-
-
-        for (i = 0; i < result.length; i++) {
-          table += '<tr> <td >' + result[i].DATE + '</td> <td>' + result[i].BILLED + '</td><td>' + result[i].entity + '</td><td>' + result[i].REVENUE + '</td> <td>' + result[i].cashamount + '</td> <td>' + result[i].cardamount + '</td> <td>' + result[i].chequeamount + '</td> <td>' + result[i].paym_amt + '</td> <td>' + result[i].ddamount + '</td> <td>' + result[i].fund_trns_amt + '</td><td>' + result[i].ONLINE_AMOUNT + '</td> <td>' + result[i].FTDTotal + ' </td><td> </td> <td>' + result[i].REVENUEMTD + '</td> <td>' + result[i].cashamountMTD + '</td> <td>' + result[i].cardamountMTD + '</td> <td>' + result[i].chequeamountMTD + '</td> <td>' + result[i].paym_amtMTD + '</td> <td>' + result[i].ddamountMTD + '</td> <td>' + result[i].fund_trns_amtMTD + '</td><td>' + result[i].ONLINE_AMOUNTMTD + '</td> <td>' + result[i].MTDTotal + '</td> </tr>';
-        }
-        table = '<html><body> <table border="1" cellspacing="0"><tr><th colspan="22">Branches Collection Report On ' + yesterday + ' </th></tr> <tr><th  colspan="12">FTD </th><th  colspan="10">MTD </th></tr><tr><th>DATE</th><th>BRANCH</th><th>ENTITY</th><th>Revenue</th><th>CASH</th><th>CARD</th><th>CHEQUE</th> <th>PAYTM</th><th>DD</th> <th>FUND TRANSFER</th><th>ONLINE AMOUNT</th> <th>Total FTD</th><th></th><th>Revenue</th><th>CASH</th><th>CARD</th><th>CHEQUE</th> <th>PAYTM</th><th>DD</th> <th>FUND TRANSFER</th><th>ONLINE AMOUNT</th><th>Total MTD</th></tr>' + table + ' </table> <br><b>Note: This report is auto generated, please do not reply.</b> <br><p>For any corrections, please drop a mail to  <a href="mailto:helpdesk@dragarwal.com">helpdesk@dragarwal.com</a>. </p> <br><p>Regards,</p><p>Dr.Agarwal IT Team</p> </body> </html> ';
-      } else {
-        table = "No Collections in Branches ";
-      }
-
-      let mailOptions = {
-        from: frmid,
-        to: toid,
-        bcc: bccid,
-        cc: ccid,
-        subject: 'Branches Collection Report On ' + yesterday,
-        html: table
-      };
-
-      transporter.sendMail(mailOptions, function(error, info) {
-        if (error) {
-          console.log(error);
-        } else {
-          console.log('Email sent: ' + info.response);
-        }
-      });
-
-
-    })
-
+      )
+    }
   })
-
-
-}
-else {
-  console.log(fixdate);
-  console.log(todaydate);
-
-    if (dd < 10) {
-      dd = '0' + dd
-    }
-    if (mm < 10) {
-      mm = '0' + mm
-    }
-    yesterday = yyyy + '-' + mm + '-' + dd;
-    connections.scm_public.query(files.aehcollection_email, function(errs, result1, fields) {
-      //console.log(result1);
-      if (errs) throw err;
-      console.log('connected');
-
-      connections.scm_public.query(files.collections, function(errs, result, fields) {
-        if (errs) throw err;
-        console.log('executed');
-
-        var frmid = '';
-        var toid = '';
-        var bccid = '';
-        var ccid = '';
-        var passcode = '';
-        for (var j = 0; j < result1.length; j++) {
-          frmid = result1[j].fromid
-          toid = result1[j].toid
-          bccid = result1[j].bccid
-          ccid = result1[j].ccid
-          passcode = result1[j].passcode
-
-        }
-        var nodemailer = require('nodemailer');
-        console.log(frmid);
-        console.log(passcode);
-
-        var transporter = nodemailer.createTransport({
-          service: 'gmail',
-          auth: {
-            user: frmid,
-            pass: passcode
-          }
-        });
-
-        var table = '';
-
-        if (result.length > 0) {
-
-
-          for (i = 0; i < result.length; i++) {
-            table += '<tr> <td >' + result[i].DATE + '</td> <td>' + result[i].BILLED + '</td><td>' + result[i].entity + '</td><td>' + result[i].REVENUE + '</td> <td>' + result[i].cashamount + '</td> <td>' + result[i].cardamount + '</td> <td>' + result[i].chequeamount + '</td> <td>' + result[i].paym_amt + '</td> <td>' + result[i].ddamount + '</td> <td>' + result[i].fund_trns_amt + '</td><td>' + result[i].ONLINE_AMOUNT + '</td> <td>' + result[i].FTDTotal + ' </td><td> </td> <td>' + result[i].REVENUEMTD + '</td> <td>' + result[i].cashamountMTD + '</td> <td>' + result[i].cardamountMTD + '</td> <td>' + result[i].chequeamountMTD + '</td> <td>' + result[i].paym_amtMTD + '</td> <td>' + result[i].ddamountMTD + '</td> <td>' + result[i].fund_trns_amtMTD + '</td><td>' + result[i].ONLINE_AMOUNTMTD + '</td> <td>' + result[i].MTDTotal + '</td> </tr>';
-          }
-          table = '<html><body> <table border="1" cellspacing="0"><tr><th colspan="22">Branches Collection Report On ' + yesterday + ' </th></tr> <tr><th  colspan="12">FTD </th><th  colspan="10">MTD </th></tr><tr><th>DATE</th><th>BRANCH</th><th>ENTITY</th><th>Revenue</th><th>CASH</th><th>CARD</th><th>CHEQUE</th> <th>PAYTM</th><th>DD</th> <th>FUND TRANSFER</th><th>ONLINE AMOUNT</th> <th>Total FTD</th><th></th><th>Revenue</th><th>CASH</th><th>CARD</th><th>CHEQUE</th> <th>PAYTM</th><th>DD</th> <th>FUND TRANSFER</th><th>ONLINE AMOUNT</th><th>Total MTD</th></tr>' + table + ' </table> <br><b>Note: This report is auto generated, please do not reply.</b> <br><p>For any corrections, please drop a mail to  <a href="mailto:helpdesk@dragarwal.com">helpdesk@dragarwal.com</a>. </p> <br><p>Regards,</p><p>Dr.Agarwal IT Team</p> </body> </html> ';
-        } else {
-          table = "No Collections in Branches ";
-        }
-
-        let mailOptions = {
-          from: frmid,
-          to: toid,
-          bcc: bccid,
-          cc: ccid,
-          subject: 'Branches Collection Report On ' + yesterday,
-          html: table
-        };
-
-        transporter.sendMail(mailOptions, function(error, info) {
-          if (error) {
-            console.log(error);
-          } else {
-            console.log('Email sent: ' + info.response);
-          }
-        });
-
-
-      })
-
-    })
-
-}
-
 
 
 })
@@ -989,7 +1044,7 @@ exports.schedule = cron.schedule('15 09 * * *', () => {
   });
 
 })
-
+//new opd
 exports.schedule = cron.schedule('05 08 * * *', () => {
   //exports.schedule = cron.schedule('05 14 * * *', () => {
   var today = new Date();
