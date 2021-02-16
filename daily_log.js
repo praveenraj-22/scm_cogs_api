@@ -49,8 +49,8 @@ exports.cronErrEmail=function(argSubject,argMessage){
 	});
 	let mailOptions={
 		from: 'misreport@dragarwal.com',
-		to:'nandhakumar.b@dragarwal.com',
-		cc:"praveenraj.y@dragarwal.com"
+		to:'praveenraj.y@dragarwal.com',
+
 	};
 	mailOptions.subject=argSubject;
     mailOptions.text=argMessage;
@@ -66,14 +66,10 @@ exports.cronErrEmail=function(argSubject,argMessage){
 }
 
 
-exports.cronEmail=function(argTemplate,argEmailDetails,argMailType,argDate,callback){
+exports.cronEmail=function(argTemplate,argEmailDetails,argDate,argMailType,callback){
 	//console.log("email sent");
 	//console.log(argTemplate);
 	//console.log(argEmailDetails[0].fromid);
-	console.log(argTemplate);
-	console.log(argEmailDetails);
-	console.log(argDate);
-	console.log(argMailType);
 
 	let varSubject ='';
 	let dateArr = argDate.split("-");
@@ -115,7 +111,7 @@ exports.cronEmail=function(argTemplate,argEmailDetails,argMailType,argDate,callb
 		varSubject = 'Inactive User Report - '+dateDay+' '+monthName+' '+dateYear;
 	}else if(argMailType==4){
 		varSubject = 'New OPD for Chennai & Other branches till - '+dateDay+' '+monthName+' '+dateYear;
-	}else if(argMailType ==5 ){
+	}else if(argMailType ==6 ){
 varSubject="Branches Collection Report On -"+dateDay+' '+monthName+' '+dateYear;
 	}
 	else{

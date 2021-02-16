@@ -1277,7 +1277,6 @@ let filterEntityOpd = async (dbres2, ftddate, lastyearopd) => {
   aehrevarrlastyear = _.filter(lastyearopd, {
     entity: "AEH"
   });
-
   _.filter(aehrevarr, {
     trans_date: ftddate
   }).forEach(element => {
@@ -6580,16 +6579,22 @@ function mtdGR(opd, opdlastyear) {
 }
 
 
-exports.collection = async (revdata, colldata, ftddate, resbranch) => {
+exports.collection = async (revdata, colldata, ftddate, resbranch, rescashrevdata, rescreditrevdata) => {
   let entitywise = await filterentityrevenue(revdata, ftddate, colldata);
   let branchwise = await filterrevenuecoll(revdata, colldata, ftddate, resbranch)
 
-console.log(branchwise);
+  let cashcreditentitywise = await filterentitycashcredit(revdata, ftddate, colldata, rescashrevdata, rescreditrevdata)
 
-return{
-entitywise,
-branchwise
-}
+  let cashcreditbranchwise = await filterbranchwisecashcredit(revdata, ftddate, colldata, rescashrevdata, rescreditrevdata, resbranch)
+
+
+
+  return {
+    entitywise,
+    branchwise,
+    cashcreditentitywise,
+    cashcreditbranchwise
+  }
 
 
 }
@@ -6619,7 +6624,7 @@ let filterentityrevenue = async (revdata, ftddate, colldata) => {
   ahicolarr = [];
   alin = {};
 
-console.log("ftddate : "+ftddate);
+
   //AEH
   aehrevarr = _.filter(revdata, {
     entity: 'AEH'
@@ -6910,18 +6915,18 @@ let filterrevenuecoll = async (revdata, colldata, ftddate, resbranch) => {
     ftdcolcheq = 0,
     ftdcolpaytm = 0,
     ftdcoldd = 0,
-    ftdcolft=0,
-    ftdcolol=0,
-    ftdcol=0,
-    mtdrev=0,
+    ftdcolft = 0,
+    ftdcolol = 0,
+    ftdcol = 0,
+    mtdrev = 0,
     mtdcolcash = 0,
     mtdcolcard = 0,
     mtdcolcheq = 0,
     mtdcolpaytm = 0,
     mtdcoldd = 0,
-    mtdcolft=0,
-    mtdcolol=0,
-    entity='',
+    mtdcolft = 0,
+    mtdcolol = 0,
+    entity = '',
     branchtmpObj = {};
   rev = 0;
 
@@ -6929,16 +6934,19 @@ let filterrevenuecoll = async (revdata, colldata, ftddate, resbranch) => {
 
     branchtmpObj[branch.CODE] = {};
     (ftdrev = 0)
+
     _.filter(revdata, {
       BILLED: branch.CODE,
       TRANSACTION_DATE: ftddate
     }).forEach(element => {
       ftdrev = element.NET_AMOUNT;
-      entity=element.entity
+      entity = element.entity
     });
     (branchtmpObj[branch.CODE].ftdrev = ftdrev);
-    (branchtmpObj[branch.CODE].entity = entity);
-    (ftdcolcash = 0), (ftdcolcard = 0), (ftdcolcheq = 0), (ftdcolpaytm = 0), (ftdcoldd = 0),(ftdcolft=0),(ftdcolol=0)
+    (branchtmpObj[branch.CODE].entity = branch.entity);
+
+    //collection
+    (ftdcolcash = 0), (ftdcolcard = 0), (ftdcolcheq = 0), (ftdcolpaytm = 0), (ftdcoldd = 0), (ftdcolft = 0), (ftdcolol = 0)
     _.filter(colldata, {
       BRANCH: branch.CODE,
       PAYMENT_OR_REFUND_DATE: ftddate
@@ -6948,10 +6956,10 @@ let filterrevenuecoll = async (revdata, colldata, ftddate, resbranch) => {
       ftdcolcheq = element.CHEQUE_AMOUNT
       ftdcolpaytm = element.PAYTM_AMOUNT
       ftdcoldd = element.DD_AMOUNT
-      ftdcolft =element.FUND_TRANSFER_AMOUNT
-      ftdcolol=element.ONLINE_AMOUNT
+      ftdcolft = element.FUND_TRANSFER_AMOUNT
+      ftdcolol = element.ONLINE_AMOUNT
     });
-    ftdcol=parseInt(ftdcolcash)+parseInt(ftdcolcard)+parseInt(ftdcolcheq)+parseInt(ftdcolpaytm)+parseInt(ftdcoldd)+parseInt(ftdcolft)+parseInt(ftdcolol);
+    ftdcol = parseInt(ftdcolcash) + parseInt(ftdcolcard) + parseInt(ftdcolcheq) + parseInt(ftdcolpaytm) + parseInt(ftdcoldd) + parseInt(ftdcolft) + parseInt(ftdcolol);
 
 
     (branchtmpObj[branch.CODE].ftdcolcash = ftdcolcash);
@@ -6965,79 +6973,765 @@ let filterrevenuecoll = async (revdata, colldata, ftddate, resbranch) => {
 
     /////////////////////mtd///////////////////////////
 
-  (mtdrev = 0)
-  _.filter(revdata, {
-    BILLED: branch.CODE,
-  }).forEach(element => {
-    mtdrev += element.NET_AMOUNT;
-  });
-  (branchtmpObj[branch.CODE].mtdrev = mtdrev);
+    (mtdrev = 0)
+    _.filter(revdata, {
+      BILLED: branch.CODE,
+    }).forEach(element => {
+      mtdrev += element.NET_AMOUNT;
+    });
+    (branchtmpObj[branch.CODE].mtdrev = mtdrev);
 
-  (mtdcolcash = 0), (mtdcolcard = 0), (mtdcolcheq = 0), (mtdcolpaytm = 0), (mtdcoldd = 0),(mtdcolft=0),(mtdcolol=0)
-  _.filter(colldata, {
-    BRANCH: branch.CODE,
 
-  }).forEach(element => {
-    mtdcolcash += element.CASH_AMOUNT
-    mtdcolcard += element.CARD_AMOUNT
-    mtdcolcheq += element.CHEQUE_AMOUNT
-    mtdcolpaytm += element.PAYTM_AMOUNT
-    mtdcoldd += element.DD_AMOUNT
-    mtdcolft +=element.FUND_TRANSFER_AMOUNT
-    mtdcolol +=element.ONLINE_AMOUNT
-  });
-  mtdcol=parseInt(mtdcolcash)+parseInt(mtdcolcard)+parseInt(mtdcolcheq)+parseInt(mtdcolpaytm)+parseInt(mtdcoldd)+parseInt(mtdcolft)+parseInt(mtdcolol);
+    (mtdcolcash = 0), (mtdcolcard = 0), (mtdcolcheq = 0), (mtdcolpaytm = 0), (mtdcoldd = 0), (mtdcolft = 0), (mtdcolol = 0)
+    _.filter(colldata, {
+      BRANCH: branch.CODE,
 
-  (branchtmpObj[branch.CODE].mtdcolcash = mtdcolcash);
-  (branchtmpObj[branch.CODE].mtdcolcard = mtdcolcard);
-  (branchtmpObj[branch.CODE].mtdcolcheq = mtdcolcheq);
-  (branchtmpObj[branch.CODE].mtdcolpaytm = mtdcolpaytm);
-  (branchtmpObj[branch.CODE].mtdcoldd = mtdcoldd);
-  (branchtmpObj[branch.CODE].mtdcolft = mtdcolft);
-  (branchtmpObj[branch.CODE].mtdcolol = mtdcolol);
-  (branchtmpObj[branch.CODE].mtdtotalcol = mtdcol);
+    }).forEach(element => {
+      mtdcolcash += element.CASH_AMOUNT
+      mtdcolcard += element.CARD_AMOUNT
+      mtdcolcheq += element.CHEQUE_AMOUNT
+      mtdcolpaytm += element.PAYTM_AMOUNT
+      mtdcoldd += element.DD_AMOUNT
+      mtdcolft += element.FUND_TRANSFER_AMOUNT
+      mtdcolol += element.ONLINE_AMOUNT
+    });
+    mtdcol = parseInt(mtdcolcash) + parseInt(mtdcolcard) + parseInt(mtdcolcheq) + parseInt(mtdcolpaytm) + parseInt(mtdcoldd) + parseInt(mtdcolft) + parseInt(mtdcolol);
+
+    (branchtmpObj[branch.CODE].mtdcolcash = mtdcolcash);
+    (branchtmpObj[branch.CODE].mtdcolcard = mtdcolcard);
+    (branchtmpObj[branch.CODE].mtdcolcheq = mtdcolcheq);
+    (branchtmpObj[branch.CODE].mtdcolpaytm = mtdcolpaytm);
+    (branchtmpObj[branch.CODE].mtdcoldd = mtdcoldd);
+    (branchtmpObj[branch.CODE].mtdcolft = mtdcolft);
+    (branchtmpObj[branch.CODE].mtdcolol = mtdcolol);
+    (branchtmpObj[branch.CODE].mtdtotalcol = mtdcol);
 
   })
 
-return{
-branch:branchtmpObj
-}
-}
-
-exports.collectionemail=async(finalresult,yesterdaydate) =>{
-  console.log("final template");
-  let templatecollection= await collection_email_template(finalresult,yesterdaydate);
-return templatecollection;
+  return {
+    branch: branchtmpObj
+  }
 }
 
-let collection_email_template=async (finalresult,yesterdaydate)=>{
+let filterentitycashcredit = async (revdata, ftddate, colldata, rescashrevdata, rescreditrevdata) => {
 
-let date=yesterdaydate;
+  let tempObj = {},
+    total
+  rev = 0,
+    revcash = 0,
+    revcredit = 0,
+    col = 0,
+    colmtd = 0,
+    colcash = 0,
+    colcard = 0,
+    colcheq = 0,
+    colpay = 0,
+    coldd = 0,
+    colft = 0,
+    colol = 0,
+    revcashperc = 0,
+    revcreditperc = 0,
+    aeharr = [],
+    aehrevarr = [];
+  aehcashrevarr = [];
+  aehcreditrevarr = [];
+  aehcolvarr = [];
+  ahcarr = [],
+    ahcrevarr = [];
+  ahccashrevarr = [];
+  ahccreditrevarr = [];
+  ahccolarr = [];
+  ahiarr = [],
+    ahirevarr = [];
+  ahicashrevarr = [];
+  ahicreditrevarr = [];
+  ahicolarr = [];
+  alin = {};
 
-console.log(finalresult);
 
-let alin=finalresult.entitywise['alin'];
-let aeh=finalresult.entitywise['aeh'];
-let ahc=finalresult.entitywise['ahc'];
-let ahi=finalresult.entitywise['ahc'];
+  //AEH
+  aehrevarr = _.filter(revdata, {
+    entity: 'AEH'
+  });
+  _.filter(aehrevarr, {
+    TRANSACTION_DATE: ftddate
+  }).forEach(element => {
+    rev += element.NET_AMOUNT
+  });
 
-let branch=finalresult.branchwise.branch;
 
-  let collectiontemplate='<html><body> <table border="1" cellspacing="0"><tr><th colspan="22">Branches Collection Report On ' + yesterdaydate + ' </th></tr> <tr><th  colspan="12">FTD </th><th  colspan="10">MTD </th></tr><tr><th>DATE</th><th>BRANCH</th><th>ENTITY</th><th>Revenue</th><th>CASH</th><th>CARD</th><th>CHEQUE</th> <th>PAYTM</th><th>DD</th> <th>FUND TRANSFER</th><th>ONLINE AMOUNT</th> <th>Total FTD</th><th></th><th>Revenue</th><th>CASH</th><th>CARD</th><th>CHEQUE</th> <th>PAYTM</th><th>DD</th> <th>FUND TRANSFER</th><th>ONLINE AMOUNT</th><th>Total MTD</th></tr>'
+  //AEH cashentitywise
+  aehcashrevarr = _.filter(rescashrevdata, {
+    entity: "AEH"
+  });
 
-for(let key in finalresult.entitywise){
+  _.filter(aehcashrevarr, {
+    TRANSACTION_DATE: ftddate
+  }).forEach(element => {
+    revcash += element.NET_AMOUNT
+  });
 
-collectiontemplate +='<tr> <td >' +yesterdaydate + '</td> <td> </td> <td>'+finalresult.entitywise[key].branch+'</td> <td>'+finalresult.entitywise[key].ftdrev+'</td> <td>'+finalresult.entitywise[key].ftdcollcash+'</td><td>'+finalresult.entitywise[key].ftdcollcard+'</td>  <td>'+finalresult.entitywise[key].ftdcollcheq+'</td> <td>'+finalresult.entitywise[key].ftdcollpay+'</td><td>'+finalresult.entitywise[key].ftdcolldd+'</td> <td>'+finalresult.entitywise[key].ftdcollft+'</td> <td>'+finalresult.entitywise[key].ftdcollol+'</td> <td>'+finalresult.entitywise[key].ftdtotcol+'</td> <td></td><td>'+finalresult.entitywise[key].mtdrev+'</td> <td>'+finalresult.entitywise[key].mtdcolcash+'</td> <td>'+finalresult.entitywise[key].mtdcolcard+'</td> <td>'+finalresult.entitywise[key].mtdcolcheq+'</td> <td>'+finalresult.entitywise[key].mtdcolpay+'</td> <td>'+finalresult.entitywise[key].mtdcoldd+'</td>  <td>'+finalresult.entitywise[key].mtdcolft+'</td> <td>'+finalresult.entitywise[key].mtdcolol+'</td> <td>'+finalresult.entitywise[key].mtdtotcol+'</td> </tr>'
+
+  //AEH creditentitywise
+  aehcreditrevarr = _.filter(rescreditrevdata, {
+    entity: "AEH"
+  });
+  _.filter(aehcreditrevarr, {
+    TRANSACTION_DATE: ftddate
+  }).forEach(element => {
+    revcredit += element.NET_AMOUNT
+  });
+
+
+
+  //COLLECTION
+  aehcolvarr = _.filter(colldata, {
+    PARENT_BRANCH: 'AEH'
+  });
+  _.filter(aehcolvarr, {
+    PAYMENT_OR_REFUND_DATE: ftddate
+  }).forEach((element) => {
+    colcash += element.CASH_AMOUNT
+    colcard += element.CARD_AMOUNT
+    colcheq += element.CHEQUE_AMOUNT
+    colpay += element.PAYTM_AMOUNT
+    coldd += element.DD_AMOUNT
+    colft += element.FUND_TRANSFER_AMOUNT
+    colol += element.ONLINE_AMOUNT
+  });
+
+
+  revcashperc = (revcash / rev) * 100;
+  revcreditperc = (revcredit / rev) * 100;
+
+  tempObj.AEH = {
+    branch: "AEH",
+    ftdcollcash: (colcash / 100000).toFixed(2),
+    ftdcollcard: (colcard / 100000).toFixed(2),
+    ftdcollcheq: (colcheq / 100000).toFixed(2),
+    ftdcollpay: (colpay / 100000).toFixed(2),
+    ftdcolldd: (coldd / 100000).toFixed(2),
+    ftdcollft: (colft / 100000).toFixed(2),
+    ftdcollol: (colol / 100000).toFixed(2),
+    ftdrev: (rev / 100000).toFixed(2),
+    ftdrevcash: (revcash / 100000).toFixed(2),
+    ftdrevcredit: (revcredit / 100000).toFixed(2),
+    ftdrevcashperc: revcashperc.toFixed(2),
+    ftdrevcreditperc: revcreditperc.toFixed(2),
+  }
+
+
+  col = colcash + colcard + colcheq + colpay + coldd + colft + colol;
+  tempObj.AEH.ftdtotcol = (col / 100000).toFixed(2);
+
+  (rev = 0), (revcash = 0), (revcredit = 0), (revcashperc = 0), (revcreditperc = 0), (col = 0), (colcash = 0), (colcard = 0), (colcheq = 0), (colpay = 0), (coldd = 0), (colft = 0), (colol = 0);
+  aehrevarr.forEach(element => {
+    rev += element.NET_AMOUNT
+  })
+  tempObj.AEH.mtdrev = (rev / 100000).toFixed(2);
+
+  //AEH cash rev mtd
+  aehcashrevarr.forEach(element => {
+    revcash += element.NET_AMOUNT
+  })
+  tempObj.AEH.mtdrevcash = (revcash / 100000).toFixed(2);
+
+
+  //AEH credit rev mtd
+  aehcreditrevarr.forEach(element => {
+    revcredit += element.NET_AMOUNT
+  })
+  tempObj.AEH.mtdrevcredit = (revcredit / 100000).toFixed(2);
+
+  revcashperc = (revcash / rev) * 100;
+  revcreditperc = (revcredit / rev) * 100;
+
+
+  ///////mtd//////
+  aehcolvarr.forEach(element => {
+    colcash += element.CASH_AMOUNT
+    colcard += element.CARD_AMOUNT
+    colcheq += element.CHEQUE_AMOUNT
+    colpay += element.PAYTM_AMOUNT
+    coldd += element.DD_AMOUNT
+    colft += element.FUND_TRANSFER_AMOUNT
+    colol += element.ONLINE_AMOUNT
+  })
+
+
+
+  tempObj.AEH.mtdcolcash = (colcash / 100000).toFixed(2);
+  tempObj.AEH.mtdcolcard = (colcard / 100000).toFixed(2);
+  tempObj.AEH.mtdcolcheq = (colcheq / 100000).toFixed(2);
+  tempObj.AEH.mtdcolpay = (colpay / 100000).toFixed(2);
+  tempObj.AEH.mtdcoldd = (coldd / 100000).toFixed(2);
+  tempObj.AEH.mtdcolft = (colft / 100000).toFixed(2);
+  tempObj.AEH.mtdcolol = (colol / 100000).toFixed(2);
+
+  tempObj.AEH.mtdrevcashperc = revcashperc.toFixed(2);
+  tempObj.AEH.mtdrevcreditperc = revcreditperc.toFixed(2);
+
+
+  col = colcash + colcard + colcheq + colpay + coldd + colft + colol;
+
+
+  tempObj.AEH.mtdtotcol = (col / 100000).toFixed(2);
+
+
+  //////////////////////////////////////////////////
+
+
+
+
+  //ahc
+  (rev = 0), (col = 0), (revcash = 0), (revcredit = 0), (revcashperc = 0), (revcreditperc = 0);
+  ahcrevarr = _.filter(revdata, {
+    entity: 'AHC'
+  });
+  _.filter(ahcrevarr, {
+    TRANSACTION_DATE: ftddate
+  }).forEach(element => {
+    rev += element.NET_AMOUNT
+  });
+
+  //AHC cashentitywise
+  ahccashrevarr = _.filter(rescashrevdata, {
+    entity: "AHC"
+  });
+
+  _.filter(ahccashrevarr, {
+    TRANSACTION_DATE: ftddate
+  }).forEach(element => {
+    revcash += element.NET_AMOUNT
+  });
+
+
+  //AHC creditentitywise
+  ahccreditrevarr = _.filter(rescreditrevdata, {
+    entity: "AHC"
+  });
+  _.filter(ahccreditrevarr, {
+    TRANSACTION_DATE: ftddate
+  }).forEach(element => {
+    revcredit += element.NET_AMOUNT
+  });
+
+
+
+
+
+
+
+  //collection
+  (colcash = 0), (colcard = 0), (colcheq = 0), (colpay = 0), (coldd = 0), (colft = 0), (colol = 0);
+  ahccolarr = _.filter(colldata, {
+    PARENT_BRANCH: 'AHC'
+  });
+  _.filter(ahccolarr, {
+    PAYMENT_OR_REFUND_DATE: ftddate
+  }).forEach((element) => {
+
+    colcash += element.CASH_AMOUNT
+    colcard += element.CARD_AMOUNT
+    colcheq += element.CHEQUE_AMOUNT
+    colpay += element.PAYTM_AMOUNT
+    coldd += element.DD_AMOUNT
+    colft += element.FUND_TRANSFER_AMOUNT
+    colol += element.ONLINE_AMOUNT
+  });
+
+  revcashperc = (revcash / rev) * 100;
+  revcreditperc = (revcredit / rev) * 100;
+
+
+  tempObj.AHC = {
+    branch: "AHC",
+    ftdcollcash: (colcash / 100000).toFixed(2),
+    ftdcollcard: (colcard / 100000).toFixed(2),
+    ftdcollcheq: (colcheq / 100000).toFixed(2),
+    ftdcollpay: (colpay / 100000).toFixed(2),
+    ftdcolldd: (coldd / 100000).toFixed(2),
+    ftdcollft: (colft / 100000).toFixed(2),
+    ftdcollol: (colol / 100000).toFixed(2),
+    ftdrev: (rev / 100000).toFixed(2),
+    ftdrevcash: (revcash / 100000).toFixed(2),
+    ftdrevcredit: (revcredit / 100000).toFixed(2),
+    ftdrevcashperc: revcashperc.toFixed(2),
+    ftdrevcreditperc: revcreditperc.toFixed(2),
+  }
+
+  col = colcash + colcard + colcheq + colpay + coldd + colft + colol
+
+  tempObj.AHC.ftdtotcol = (col / 100000).toFixed(2);
+
+  // MTD REV
+  (rev = 0), (revcash = 0), (revcredit = 0), (revcashperc = 0), (revcreditperc = 0), (col = 0), (colcash = 0), (colcard = 0), (colcheq = 0), (colpay = 0), (coldd = 0), (colft = 0), (colol = 0);
+  ahcrevarr.forEach(element => {
+    rev += element.NET_AMOUNT
+  })
+
+  tempObj.AHC.mtdrev = (rev / 100000).toFixed(2);
+
+
+  //AEH cash rev mtd
+  ahccashrevarr.forEach(element => {
+    revcash += element.NET_AMOUNT
+
+  })
+
+  tempObj.AHC.mtdrevcash = (revcash / 100000).toFixed(2);
+
+
+  //AEH credit rev mtd
+  ahccreditrevarr.forEach(element => {
+    revcredit += element.NET_AMOUNT
+  })
+  tempObj.AHC.mtdrevcredit = (revcredit / 100000).toFixed(2);
+
+  revcashperc = (revcash / rev) * 100;
+  revcreditperc = (revcredit / rev) * 100;
+
+
+
+  ///////mtd//////
+  ahccolarr.forEach(element => {
+    colcash += element.CASH_AMOUNT
+    colcard += element.CARD_AMOUNT
+    colcheq += element.CHEQUE_AMOUNT
+    colpay += element.PAYTM_AMOUNT
+    coldd += element.DD_AMOUNT
+    colft += element.FUND_TRANSFER_AMOUNT
+    colol += element.ONLINE_AMOUNT
+  })
+  tempObj.AHC.mtdcolcash = (colcash / 100000).toFixed(2);
+  tempObj.AHC.mtdcolcard = (colcard / 100000).toFixed(2);
+  tempObj.AHC.mtdcolcheq = (colcheq / 100000).toFixed(2);
+  tempObj.AHC.mtdcolpay = (colpay / 100000).toFixed(2);
+  tempObj.AHC.mtdcoldd = (coldd / 100000).toFixed(2);
+  tempObj.AHC.mtdcolft = (colft / 100000).toFixed(2);
+  tempObj.AHC.mtdcolol = (colol / 100000).toFixed(2);
+
+  tempObj.AHC.mtdrevcashperc = revcashperc.toFixed(2);
+  tempObj.AHC.mtdrevcreditperc = revcreditperc.toFixed(2);
+
+
+  col = colcash + colcard + colcheq + colpay + coldd + colft + colol
+
+  tempObj.AHC.mtdtotcol = (col / 100000).toFixed(2);
+
+
+  //////////////////////////////////////////////////
+
+
+
+  //AHI
+  (rev = 0), (col = 0), (revcash = 0), (revcredit = 0), (revcashperc = 0), (revcreditperc = 0);
+  ahirevarr = _.filter(revdata, {
+    entity: 'AHI'
+  });
+  _.filter(ahirevarr, {
+    TRANSACTION_DATE: ftddate
+  }).forEach(element => {
+    rev += element.NET_AMOUNT
+  });
+
+
+  //AHI cashentitywise
+  ahicashrevarr = _.filter(rescashrevdata, {
+    entity: "AHI"
+  });
+
+  _.filter(ahicashrevarr, {
+    TRANSACTION_DATE: ftddate
+  }).forEach(element => {
+    revcash += element.NET_AMOUNT
+  });
+
+
+
+  //AHC creditentitywise
+  ahicreditrevarr = _.filter(rescreditrevdata, {
+    entity: "AHI"
+  });
+  _.filter(ahicreditrevarr, {
+    TRANSACTION_DATE: ftddate
+  }).forEach(element => {
+    revcredit += element.NET_AMOUNT
+  });
+
+
+
+
+  //collection
+  (colcash = 0), (colcard = 0), (colcheq = 0), (colpay = 0), (coldd = 0), (colft = 0), (colol = 0);
+  ahicolarr = _.filter(colldata, {
+    PARENT_BRANCH: 'AHI'
+  });
+  _.filter(ahicolarr, {
+    PAYMENT_OR_REFUND_DATE: ftddate
+  }).forEach((element) => {
+    colcash += element.CASH_AMOUNT
+    colcard += element.CARD_AMOUNT
+    colcheq += element.CHEQUE_AMOUNT
+    colpay += element.PAYTM_AMOUNT
+    coldd += element.DD_AMOUNT
+    colft += element.FUND_TRANSFER_AMOUNT
+    colol += element.ONLINE_AMOUNT
+  });
+  revcashperc = (revcash / rev) * 100;
+  revcreditperc = (revcredit / rev) * 100;
+
+
+  tempObj.AHI = {
+    branch: "AHI",
+    ftdcollcash: (colcash / 100000).toFixed(2),
+    ftdcollcard: (colcard / 100000).toFixed(2),
+    ftdcollcheq: (colcheq / 100000).toFixed(2),
+    ftdcollpay: (colpay / 100000).toFixed(2),
+    ftdcolldd: (coldd / 100000).toFixed(2),
+    ftdcollft: (colft / 100000).toFixed(2),
+    ftdcollol: (colol / 100000).toFixed(2),
+    ftdrev: (rev / 100000).toFixed(2),
+    ftdrevcash: (revcash / 100000).toFixed(2),
+    ftdrevcredit: (revcredit / 100000).toFixed(2),
+    ftdrevcashperc: ((revcashperc.toFixed(2) == 'NaN') ? '0' : (revcashperc.toFixed(2))),
+    ftdrevcreditperc: ((revcreditperc.toFixed(2) == 'NaN') ? '0' : (revcreditperc.toFixed(2))),
+  }
+
+  col = colcash + colcard + colcheq + colpay + coldd + colft + colol
+
+  tempObj.AHI.ftdtotcol = (col/100000).toFixed(2);
+
+
+  (rev = 0), (revcash = 0), (revcredit = 0), (revcashperc = 0), (revcreditperc = 0), (col = 0), (colcash = 0), (colcard = 0), (colcheq = 0), (colpay = 0), (coldd = 0), (colft = 0), (colol = 0);
+  ahirevarr.forEach(element => {
+    rev += element.NET_AMOUNT
+  })
+
+
+
+  tempObj.AHI.mtdrev = (rev / 100000).toFixed(2);
+
+  //AHI cash rev mtd
+  ahicashrevarr.forEach(element => {
+    revcash += element.NET_AMOUNT
+
+  })
+
+  tempObj.AHI.mtdrevcash = (revcash / 100000).toFixed(2);
+
+
+  //AEH credit rev mtd
+  ahicreditrevarr.forEach(element => {
+    revcredit += element.NET_AMOUNT
+  })
+  tempObj.AHI.mtdrevcredit = (revcredit / 100000).toFixed(2);
+
+  revcashperc = (revcash / rev) * 100;
+  revcreditperc = (revcredit / rev) * 100;
+
+
+
+  ///////mtd//////
+  ahicolarr.forEach(element => {
+    colcash += element.CASH_AMOUNT
+    colcard += element.CARD_AMOUNT
+    colcheq += element.CHEQUE_AMOUNT
+    colpay += element.PAYTM_AMOUNT
+    coldd += element.DD_AMOUNT
+    colft += element.FUND_TRANSFER_AMOUNT
+    colol += element.ONLINE_AMOUNT
+  })
+  tempObj.AHI.mtdcolcash = (colcash / 100000).toFixed(2);
+  tempObj.AHI.mtdcolcard = (colcard / 100000).toFixed(2);
+  tempObj.AHI.mtdcolcheq = (colcheq / 100000).toFixed(2);
+  tempObj.AHI.mtdcolpay = (colpay / 100000).toFixed(2);
+  tempObj.AHI.mtdcoldd = (coldd / 100000).toFixed(2);
+  tempObj.AHI.mtdcolft = (colft / 100000).toFixed(2);
+  tempObj.AHI.mtdcolol = (colol / 100000).toFixed(2);
+
+  tempObj.AHI.mtdrevcashperc = revcashperc.toFixed(2);
+  tempObj.AHI.mtdrevcreditperc = revcreditperc.toFixed(2);
+
+  //////////////////////////////////////////////////
+  col = colcash + colcard + colcheq + colpay + coldd + colft + colol
+
+  tempObj.AHI.mtdtotcol = (col / 100000).toFixed(2);
+
+
+  alin["branch"] = "ALL India"
+
+  alin['ftdrev'] = (parseFloat(tempObj.AEH.ftdrev) + parseFloat(tempObj.AHC.ftdrev) + parseFloat(tempObj.AHI.ftdrev)).toFixed(2);
+
+  alin['ftdrevcash'] = (parseFloat(tempObj.AEH.ftdrevcash) + parseFloat(tempObj.AHC.ftdrevcash) + parseFloat(tempObj.AHI.ftdrevcash)).toFixed(2);
+  alin['ftdrevcredit'] = (parseFloat(tempObj.AEH.ftdrevcredit) + parseFloat(tempObj.AHC.ftdrevcredit) + parseFloat(tempObj.AHI.ftdrevcredit)).toFixed(2);
+
+  alin['ftdrevcashperc'] = ((parseFloat(tempObj.AEH.ftdrevcash) + parseFloat(tempObj.AHC.ftdrevcash) + parseFloat(tempObj.AHI.ftdrevcash)) / (parseFloat(tempObj.AEH.ftdrev) + parseFloat(tempObj.AHC.ftdrev) + parseFloat(tempObj.AHI.ftdrev)) * 100).toFixed(2);
+  alin['ftdrevcreditperc'] = ((parseFloat(tempObj.AEH.ftdrevcredit) + parseFloat(tempObj.AHC.ftdrevcredit) + parseFloat(tempObj.AHI.ftdrevcredit)) / (parseFloat(tempObj.AEH.ftdrev) + parseFloat(tempObj.AHC.ftdrev) + parseFloat(tempObj.AHI.ftdrev)) * 100).toFixed(2)
+
+  alin['ftdcollcash'] = parseFloat(tempObj.AEH.ftdcollcash) + parseFloat(tempObj.AHC.ftdcollcash) + parseFloat(tempObj.AHI.ftdcollcash)
+  alin['ftdcollcard'] = parseFloat(tempObj.AEH.ftdcollcard) + parseFloat(tempObj.AHC.ftdcollcard) + parseFloat(tempObj.AHI.ftdcollcard)
+  alin['ftdcollcheq'] = parseFloat(tempObj.AEH.ftdcollcheq) + parseFloat(tempObj.AHC.ftdcollcheq) + parseFloat(tempObj.AHI.ftdcollcheq)
+  alin['ftdcollpay'] = parseFloat(tempObj.AEH.ftdcollpay) + parseFloat(tempObj.AHC.ftdcollpay) + parseFloat(tempObj.AHI.ftdcollpay)
+  alin['ftdcolldd'] = parseFloat(tempObj.AEH.ftdcolldd) + parseFloat(tempObj.AHC.ftdcolldd) + parseFloat(tempObj.AHI.ftdcolldd)
+  alin['ftdcollft'] = parseFloat(tempObj.AEH.ftdcollft) + parseFloat(tempObj.AHC.ftdcollft) + parseFloat(tempObj.AHI.ftdcollft)
+  alin['ftdcollol'] = parseFloat(tempObj.AEH.ftdcollol) + parseFloat(tempObj.AHC.ftdcollol) + parseFloat(tempObj.AHI.ftdcollol)
+  alin['ftdtotcol'] = parseFloat(tempObj.AEH.ftdtotcol) + parseFloat(tempObj.AHC.ftdtotcol) + parseFloat(tempObj.AHI.ftdtotcol)
+
+
+  alin['mtdrev'] = (parseFloat(tempObj.AEH.mtdrev) + parseFloat(tempObj.AHC.mtdrev) + parseFloat(tempObj.AHI.mtdrev)).toFixed(2);
+  alin['mtdrevcash'] = (parseFloat(tempObj.AEH.mtdrevcash) + parseFloat(tempObj.AHC.mtdrevcash) + parseFloat(tempObj.AHI.mtdrevcash)).toFixed(2);
+  alin['mtdrevcredit'] = (parseFloat(tempObj.AEH.mtdrevcredit) + parseFloat(tempObj.AHC.mtdrevcredit) + parseFloat(tempObj.AHI.mtdrevcredit)).toFixed(2);
+
+  alin['mtdrevcashperc'] = ((parseFloat(tempObj.AEH.mtdrevcash) + parseFloat(tempObj.AHC.mtdrevcash) + parseFloat(tempObj.AHI.mtdrevcash)) / (parseFloat(tempObj.AEH.mtdrev) + parseFloat(tempObj.AHC.mtdrev) + parseFloat(tempObj.AHI.mtdrev)) * 100).toFixed(2);
+  alin['mtdrevcreditperc'] = ((parseFloat(tempObj.AEH.mtdrevcredit) + parseFloat(tempObj.AHC.mtdrevcredit) + parseFloat(tempObj.AHI.mtdrevcredit)) / (parseFloat(tempObj.AEH.mtdrev) + parseFloat(tempObj.AHC.mtdrev) + parseFloat(tempObj.AHI.mtdrev)) * 100).toFixed(2)
+
+  alin['mtdcolcash'] = parseFloat(tempObj.AEH.mtdcolcash) + parseFloat(tempObj.AHC.mtdcolcash) + parseFloat(tempObj.AHI.mtdcolcash)
+  alin['mtdcolcard'] = parseFloat(tempObj.AEH.mtdcolcard) + parseFloat(tempObj.AHC.mtdcolcard) + parseFloat(tempObj.AHI.mtdcolcard)
+  alin['mtdcolcheq'] = parseFloat(tempObj.AEH.mtdcolcheq) + parseFloat(tempObj.AHC.mtdcolcheq) + parseFloat(tempObj.AHI.mtdcolcheq)
+  alin['mtdcolpay'] = parseFloat(tempObj.AEH.mtdcolpay) + parseFloat(tempObj.AHC.mtdcolpay) + parseFloat(tempObj.AHI.mtdcolpay)
+  alin['mtdcoldd'] = parseFloat(tempObj.AEH.mtdcoldd) + parseFloat(tempObj.AHC.mtdcoldd) + parseFloat(tempObj.AHI.mtdcoldd)
+  alin['mtdcolft'] = parseFloat(tempObj.AEH.mtdcolft) + parseFloat(tempObj.AHC.mtdcolft) + parseFloat(tempObj.AHI.mtdcolft)
+  alin['mtdcolol'] = parseFloat(tempObj.AEH.mtdcolol) + parseFloat(tempObj.AHC.mtdcolol) + parseFloat(tempObj.AHI.mtdcolol)
+  alin['mtdtotcol'] = parseFloat(tempObj.AEH.mtdtotcol) + parseFloat(tempObj.AHC.mtdtotcol) + parseFloat(tempObj.AHI.mtdtotcol)
+
+
+
+  return {
+    alin: alin,
+    aeh: tempObj.AEH,
+    ahc: tempObj.AHC,
+    ahi: tempObj.AHI
+  }
+
 }
 
+let filterbranchwisecashcredit = async (revdata, ftddate, colldata, rescashrevdata, rescreditrevdata, resbranch) => {
+  let ftdrev = 0,
+    ftdrevcash = 0,
+    ftdrevcredit = 0,
+    ftdrevcashperc = 0,
+    ftdrevcreditperc = 0,
+    ftdcolcash = 0,
+    ftdcolcard = 0,
+    ftdcolcheq = 0,
+    ftdcolpaytm = 0,
+    ftdcoldd = 0,
+    ftdcolft = 0,
+    ftdcolol = 0,
+    ftdcol = 0,
+    mtdrev = 0,
+    mtdrevcash = 0,
+    mtdrevcredit = 0,
+    mtdrevcashperc = 0,
+    mtdrevcreditperc = 0,
+    mtdcolcash = 0,
+    mtdcolcard = 0,
+    mtdcolcheq = 0,
+    mtdcolpaytm = 0,
+    mtdcoldd = 0,
+    mtdcolft = 0,
+    mtdcolol = 0,
+    entity = '',
+    branchtmpObj = {};
 
- for (let key in finalresult.branchwise.branch) {
+  resbranch.forEach(branch => {
+    branchtmpObj[branch.CODE] = {};
+    (ftdrev = 0), (ftdrevcash = 0), (ftdrevcredit = 0);
 
-collectiontemplate += '<tr><td>' +yesterdaydate + '</td> <td>'+key+'</td> <td>'+finalresult.branchwise.branch[key].entity+'</td> <td>'+finalresult.branchwise.branch[key].ftdrev+'</td> <td>'+finalresult.branchwise.branch[key].ftdcolcash+'</td> <td>'+finalresult.branchwise.branch[key].ftdcolcard+'</td> <td>'+finalresult.branchwise.branch[key].ftdcolcheq+'</td> <td>'+finalresult.branchwise.branch[key].ftdcolpaytm+'</td> <td>'+finalresult.branchwise.branch[key].ftdcoldd+'</td><td>'+finalresult.branchwise.branch[key].ftdcolft+'</td> <td>'+finalresult.branchwise.branch[key].ftdcolol+'</td> <td>'+finalresult.branchwise.branch[key].ftdtotalcol+'</td> <td> </td> <td>'+finalresult.branchwise.branch[key].mtdrev+'</td><td>'+finalresult.branchwise.branch[key].mtdcolcash+'</td> <td>'+finalresult.branchwise.branch[key].mtdcolcard+'</td> <td>'+finalresult.branchwise.branch[key].mtdcolcheq+'</td> <td>'+finalresult.branchwise.branch[key].mtdcolpaytm+'</td> <td>'+finalresult.branchwise.branch[key].mtdcoldd+'</td> <td>'+finalresult.branchwise.branch[key].mtdcolft+'</td> <td>'+finalresult.branchwise.branch[key].mtdcolol+'</td> <td>'+finalresult.branchwise.branch[key].mtdtotalcol+'</td>  </tr>';
 
-   }
+        (branchtmpObj[branch.CODE].entity =branch.entity);
 
-   collectiontemplate+='</table><br><b>Note: This report is auto generated, please do not reply.</b> <br><p>For any corrections, please drop a mail to  <a href="mailto:helpdesk@dragarwal.com">helpdesk@dragarwal.com</a>. </p> <br><p>Regards,</p><p>Dr.Agarwal IT Team</p> </body></html>';
+    _.filter(revdata, {
+      BILLED: branch.CODE,
+      TRANSACTION_DATE: ftddate
+    }).forEach(element => {
 
-		return collectiontemplate;
+      ftdrev = element.NET_AMOUNT;
+      entity = element.entity
+
+
+    });
+
+
+    _.filter(rescashrevdata, {
+      BILLED: branch.CODE,
+      TRANSACTION_DATE: ftddate
+    }).forEach(element => {
+      ftdrevcash = element.NET_AMOUNT;
+    });
+    //
+    _.filter(rescreditrevdata, {
+      BILLED: branch.CODE,
+      TRANSACTION_DATE: ftddate
+    }).forEach(element => {
+      ftdrevcredit = element.NET_AMOUNT;
+    });
+
+    (branchtmpObj[branch.CODE].ftdrev = (ftdrev / 100000).toFixed(2));
+    (branchtmpObj[branch.CODE].ftdrevcash = (ftdrevcash / 100000).toFixed(2));
+    (branchtmpObj[branch.CODE].ftdrevcredit = (ftdrevcredit / 100000).toFixed(2));
+
+    (branchtmpObj[branch.CODE].ftdrevcashperc =(ftdrevcash=='0' ? '0' : ((ftdrevcash)/(ftdrev)*100).toFixed(2)) );
+    (branchtmpObj[branch.CODE].ftdrevcreditperc =(ftdrevcredit=='0' ? '0' : ((ftdrevcredit)/(ftdrev)*100).toFixed(2)) );
+
+
+//(branchtmpObj[branch.CODE].ftdrevcashperc =( (ftdrevcash)=='0' ? '0': ((ftdrevcash)/(ftdrev)*100)).toFixed(2));
+// (branchtmpObj[branch.CODE].ftdrevcreditperc =( (ftdrevcredit)=='0' ? '0':((ftdrevcredit)/(ftdrev)*100)).toFixed(2));
+
+
+    //collection
+    (ftdcolcash = 0), (ftdcolcard = 0), (ftdcolcheq = 0), (ftdcolpaytm = 0), (ftdcoldd = 0), (ftdcolft = 0), (ftdcolol = 0)
+    _.filter(colldata, {
+      BRANCH: branch.CODE,
+      PAYMENT_OR_REFUND_DATE: ftddate
+    }).forEach(element => {
+      ftdcolcash = element.CASH_AMOUNT
+      ftdcolcard = element.CARD_AMOUNT
+      ftdcolcheq = element.CHEQUE_AMOUNT
+      ftdcolpaytm = element.PAYTM_AMOUNT
+      ftdcoldd = element.DD_AMOUNT
+      ftdcolft = element.FUND_TRANSFER_AMOUNT
+      ftdcolol = element.ONLINE_AMOUNT
+    });
+    ftdcol = parseInt(ftdcolcash) + parseInt(ftdcolcard) + parseInt(ftdcolcheq) + parseInt(ftdcolpaytm) + parseInt(ftdcoldd) + parseInt(ftdcolft) + parseInt(ftdcolol);
+
+
+    (branchtmpObj[branch.CODE].ftdcolcash = ((ftdcolcash)=='NaN')? '0':ftdcolcash);
+    (branchtmpObj[branch.CODE].ftdcolcard = ((ftdcolcard)=='NaN')? '0':ftdcolcard);
+    (branchtmpObj[branch.CODE].ftdcolcheq = ((ftdcolcheq)=='NaN')? '0':ftdcolcheq);
+    (branchtmpObj[branch.CODE].ftdcolpaytm = ((ftdcolpaytm)=='NaN')? '0':ftdcolpaytm);
+    (branchtmpObj[branch.CODE].ftdcoldd = ((ftdcoldd)=='NaN')? '0':ftdcoldd);
+    (branchtmpObj[branch.CODE].ftdcolft =  ((ftdcolft)=='NaN')? '0':ftdcolft);
+    (branchtmpObj[branch.CODE].ftdcolol =  ((ftdcolol)=='NaN')? '0':ftdcolol);
+    (branchtmpObj[branch.CODE].ftdtotalcol = (ftdcol/100000).toFixed(2));
+
+    //////mtd//////////////////////////////////////////
+    (mtdrev = 0), (mtdrevcash = 0), (mtdrevcredit = 0),(entity='')
+    _.filter(revdata, {
+      BILLED: branch.CODE,
+    }).forEach(element => {
+
+
+      mtdrev += element.NET_AMOUNT;
+
+    });
+
+
+    (branchtmpObj[branch.CODE].mtdrev = (mtdrev / 100000).toFixed(2));
+    //cash
+    _.filter(rescashrevdata, {
+      BILLED: branch.CODE,
+    }).forEach(element => {
+      mtdrevcash += element.NET_AMOUNT;
+    });
+    (branchtmpObj[branch.CODE].mtdrevcash = (mtdrevcash / 100000).toFixed(2));
+    //credit
+    _.filter(rescreditrevdata, {
+      BILLED: branch.CODE,
+    }).forEach(element => {
+      mtdrevcredit += element.NET_AMOUNT;
+    });
+    (mtdcolcash = 0), (mtdcolcard = 0), (mtdcolcheq = 0), (mtdcolpaytm = 0), (mtdcoldd = 0), (mtdcolft = 0), (mtdcolol = 0)
+    _.filter(colldata, {
+      BRANCH: branch.CODE,
+
+    }).forEach(element => {
+      mtdcolcash += element.CASH_AMOUNT
+      mtdcolcard += element.CARD_AMOUNT
+      mtdcolcheq += element.CHEQUE_AMOUNT
+      mtdcolpaytm += element.PAYTM_AMOUNT
+      mtdcoldd += element.DD_AMOUNT
+      mtdcolft += element.FUND_TRANSFER_AMOUNT
+      mtdcolol += element.ONLINE_AMOUNT
+    });
+    mtdcol = parseInt(mtdcolcash) + parseInt(mtdcolcard) + parseInt(mtdcolcheq) + parseInt(mtdcolpaytm) + parseInt(mtdcoldd) + parseInt(mtdcolft) + parseInt(mtdcolol);
+
+
+    (branchtmpObj[branch.CODE].ftdcolcash = ((mtdcolcash)=='NaN')? '0':mtdcolcash);
+    (branchtmpObj[branch.CODE].ftdcolcard = ((mtdcolcard)=='NaN')? '0':mtdcolcard);
+    (branchtmpObj[branch.CODE].ftdcolcheq = ((mtdcolcheq)=='NaN')? '0':mtdcolcheq);
+    (branchtmpObj[branch.CODE].ftdcolpaytm = ((mtdcolpaytm)=='NaN')? '0':mtdcolpaytm);
+    (branchtmpObj[branch.CODE].ftdcoldd = ((mtdcoldd)=='NaN')? '0':mtdcoldd);
+    (branchtmpObj[branch.CODE].ftdcolft =  ((mtdcolft)=='NaN')? '0':mtdcolft);
+    (branchtmpObj[branch.CODE].ftdcolol =  ((mtdcolol)=='NaN')? '0':mtdcolol);
+
+
+    (branchtmpObj[branch.CODE].mtdtotalcol = (mtdcol/100000).toFixed(2));
+
+
+    (branchtmpObj[branch.CODE].mtdrevcredit = ((mtdrevcredit)=='NaN')? '0':( mtdrevcredit/100000).toFixed(2));
+    (branchtmpObj[branch.CODE].mtdrevcashperc =(( ((mtdrevcash) / (mtdrev) * 100).toFixed(2))=='NaN')? '0': ((mtdrevcash) / (mtdrev) * 100).toFixed(2));
+    (branchtmpObj[branch.CODE].mtdrevcreditperc =(( ((mtdrevcredit) / (mtdrev) * 100).toFixed(2))=='NaN')? '0':((mtdrevcredit) / (mtdrev) * 100).toFixed(2));
+
+
+
+
+
+  })
+  return {
+    branch: branchtmpObj
+  }
+
+}
+
+exports.collectionemail = async (finalresult, yesterdaydate) => {
+
+  let templatecollection = await collection_email_template(finalresult, yesterdaydate);
+  return templatecollection;
+}
+
+let collection_email_template = async (finalresult, yesterdaydate) => {
+
+  let date = yesterdaydate;
+
+  let alincc = finalresult.cashcreditentitywise['alin'];
+  let aehcc = finalresult.cashcreditentitywise['aeh'];
+  let ahccc = finalresult.cashcreditentitywise['ahc'];
+  let ahicc = finalresult.cashcreditentitywise['ahc'];
+
+  let branchcc = finalresult.cashcreditbranchwise.branch;
+
+let   collectiontemplate = '<html><body> <table border="1" cellspacing="0"><tr><th colspan="22">Revenue contribution Report On ' + yesterdaydate + ' </th></tr> <tr><th  colspan="10">FTD (in Lakhs) </th><th  colspan="10">MTD (in Lakhs) </th></tr><tr><th>DATE</th><th>BRANCH</th><th>ENTITY</th><th>Revenue</th><th>Cash Revenue</th><th>Cash Revenue %</th><th>Credit Revenue</th> <th>Credit Revenue %</th><th>Col inc Adv</th><th></th><th>Revenue</th><th>Cash Revenue</th><th>Cash Revenue %</th><th>Credit Revenue</th> <th>Credit Revenue %</th><th>Col inc Adv</th> </tr>'
+
+for (let key in finalresult.cashcreditentitywise) {
+
+  collectiontemplate += '<tr> <td >' + yesterdaydate + '</td> <td> </td> <td>' + finalresult.cashcreditentitywise[key].branch + '</td> <td style="text-align:right" >' + finalresult.cashcreditentitywise[key].ftdrev + '</td> <td style="text-align:right">' + finalresult.cashcreditentitywise[key].ftdrevcash + '</td><td style="text-align:right">' + finalresult.cashcreditentitywise[key].ftdrevcashperc + '</td>  <td style="text-align:right">' + finalresult.cashcreditentitywise[key].ftdrevcredit + '</td> <td style="text-align:right">' + finalresult.cashcreditentitywise[key].ftdrevcreditperc + '</td><td style="text-align:right">' + finalresult.cashcreditentitywise[key].ftdtotcol + '</td>  <td></td><td style="text-align:right">' + finalresult.cashcreditentitywise[key].mtdrev + '</td> <td style="text-align:right">' + finalresult.cashcreditentitywise[key].mtdrevcash + '</td> <td style="text-align:right">' + finalresult.cashcreditentitywise[key].mtdrevcashperc + '</td> <td style="text-align:right">' + finalresult.cashcreditentitywise[key].mtdrevcredit + '</td> <td style="text-align:right">' + finalresult.cashcreditentitywise[key].mtdrevcreditperc + '</td> <td style="text-align:right">' + finalresult.cashcreditentitywise[key].mtdtotcol + '</td>  </tr>'
+}
+
+for (let key in finalresult.cashcreditbranchwise.branch) {
+
+  collectiontemplate += '<tr><td>' + yesterdaydate + '</td> <td>' + key + '</td> <td>' + finalresult.cashcreditbranchwise.branch[key].entity + '</td>  <td style="text-align:right">' + finalresult.cashcreditbranchwise.branch[key].ftdrev + '</td> <td style="text-align:right">' + finalresult.cashcreditbranchwise.branch[key].ftdrevcash + '</td> <td style="text-align:right">' + finalresult.cashcreditbranchwise.branch[key].ftdrevcashperc + '</td> <td style="text-align:right">' + finalresult.cashcreditbranchwise.branch[key].ftdrevcredit + '</td> <td style="text-align:right">' + finalresult.cashcreditbranchwise.branch[key].ftdrevcreditperc + '</td> <td style="text-align:right">' + finalresult.cashcreditbranchwise.branch[key].ftdtotalcol + '</td> <td></td> <td style="text-align:right">' + finalresult.cashcreditbranchwise.branch[key].mtdrev + '</td> <td style="text-align:right">' + finalresult.cashcreditbranchwise.branch[key].mtdrevcash + '</td> <td style="text-align:right">' + finalresult.cashcreditbranchwise.branch[key].mtdrevcashperc + '</td> <td style="text-align:right">' + finalresult.cashcreditbranchwise.branch[key].mtdrevcredit + '</td> <td style="text-align:right">' + finalresult.cashcreditbranchwise.branch[key].mtdrevcreditperc + '</td><td style="text-align:right">' + finalresult.cashcreditbranchwise.branch[key].mtdtotalcol + '</td> </tr>';
+
+}
+
+collectiontemplate += '</table><br> <br> <br> <br> <br> <br> <hr> <br> <br> <br> <br> <br> <br>  </body></html>';
+
+
+  let alin = finalresult.entitywise['alin'];
+  let aeh = finalresult.entitywise['aeh'];
+  let ahc = finalresult.entitywise['ahc'];
+  let ahi = finalresult.entitywise['ahc'];
+
+  let branch = finalresult.branchwise.branch;
+
+ collectiontemplate += '<html><body> <table border="1" cellspacing="0"><tr><th colspan="22">Branches Collection Report On ' + yesterdaydate + ' </th></tr> <tr><th  colspan="12">FTD </th><th  colspan="10">MTD </th></tr><tr><th>DATE</th><th>BRANCH</th><th>ENTITY</th><th>Revenue</th><th>CASH</th><th>CARD</th><th>CHEQUE</th> <th>PAYTM</th><th>DD</th> <th>FUND TRANSFER</th><th>ONLINE AMOUNT</th> <th>Total FTD</th><th></th><th>Revenue</th><th>CASH</th><th>CARD</th><th>CHEQUE</th> <th>PAYTM</th><th>DD</th> <th>FUND TRANSFER</th><th>ONLINE AMOUNT</th><th>Total MTD</th></tr>'
+
+  for (let key in finalresult.entitywise) {
+
+    collectiontemplate += '<tr> <td >' + yesterdaydate + '</td> <td> </td> <td>' + finalresult.entitywise[key].branch + '</td> <td style="text-align:right">' + finalresult.entitywise[key].ftdrev + '</td> <td style="text-align:right">' + finalresult.entitywise[key].ftdcollcash + '</td><td style="text-align:right">' + finalresult.entitywise[key].ftdcollcard + '</td>  <td style="text-align:right">' + finalresult.entitywise[key].ftdcollcheq + '</td> <td style="text-align:right">' + finalresult.entitywise[key].ftdcollpay + '</td><td style="text-align:right">' + finalresult.entitywise[key].ftdcolldd + '</td> <td style="text-align:right">' + finalresult.entitywise[key].ftdcollft + '</td> <td style="text-align:right">' + finalresult.entitywise[key].ftdcollol + '</td> <td style="text-align:right">' + finalresult.entitywise[key].ftdtotcol + '</td> <td></td><td style="text-align:right">' + finalresult.entitywise[key].mtdrev + '</td> <td style="text-align:right">' + finalresult.entitywise[key].mtdcolcash + '</td> <td style="text-align:right">' + finalresult.entitywise[key].mtdcolcard + '</td> <td style="text-align:right">' + finalresult.entitywise[key].mtdcolcheq + '</td> <td style="text-align:right">' + finalresult.entitywise[key].mtdcolpay + '</td> <td style="text-align:right">' + finalresult.entitywise[key].mtdcoldd + '</td>  <td style="text-align:right">' + finalresult.entitywise[key].mtdcolft + '</td> <td style="text-align:right">' + finalresult.entitywise[key].mtdcolol + '</td> <td style="text-align:right">' + finalresult.entitywise[key].mtdtotcol + '</td> </tr>'
+  }
+
+
+  for (let key in finalresult.branchwise.branch) {
+
+    collectiontemplate += '<tr><td>' + yesterdaydate + '</td> <td>' + key + '</td> <td>' + finalresult.branchwise.branch[key].entity + '</td> <td style="text-align:right">' + finalresult.branchwise.branch[key].ftdrev + '</td> <td style="text-align:right">' + finalresult.branchwise.branch[key].ftdcolcash + '</td> <td style="text-align:right">' + finalresult.branchwise.branch[key].ftdcolcard + '</td> <td style="text-align:right">' + finalresult.branchwise.branch[key].ftdcolcheq + '</td> <td style="text-align:right">' + finalresult.branchwise.branch[key].ftdcolpaytm + '</td> <td style="text-align:right">' + finalresult.branchwise.branch[key].ftdcoldd + '</td><td style="text-align:right">' + finalresult.branchwise.branch[key].ftdcolft + '</td> <td style="text-align:right">' + finalresult.branchwise.branch[key].ftdcolol + '</td> <td style="text-align:right">' + finalresult.branchwise.branch[key].ftdtotalcol + '</td> <td> </td> <td style="text-align:right">' + finalresult.branchwise.branch[key].mtdrev + '</td><td style="text-align:right">' + finalresult.branchwise.branch[key].mtdcolcash + '</td> <td style="text-align:right">' + finalresult.branchwise.branch[key].mtdcolcard + '</td> <td style="text-align:right">' + finalresult.branchwise.branch[key].mtdcolcheq + '</td> <td style="text-align:right">' + finalresult.branchwise.branch[key].mtdcolpaytm + '</td> <td style="text-align:right">' + finalresult.branchwise.branch[key].mtdcoldd + '</td> <td style="text-align:right">' + finalresult.branchwise.branch[key].mtdcolft + '</td> <td style="text-align:right">' + finalresult.branchwise.branch[key].mtdcolol + '</td> <td style="text-align:right">' + finalresult.branchwise.branch[key].mtdtotalcol + '</td>  </tr>';
+
+  }
+
+  collectiontemplate += '</table><br><b>Note: This report is auto generated, please do not reply.</b> <br><p>For any corrections, please drop a mail to  <a href="mailto:helpdesk@dragarwal.com">helpdesk@dragarwal.com</a>. </p> <br><p>Regards,</p><p>Dr.Agarwal IT Team</p> </body></html>';
+
+//console.log(collectiontemplate);
+
+  return collectiontemplate;
 }
