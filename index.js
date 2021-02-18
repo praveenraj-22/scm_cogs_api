@@ -116,4 +116,6 @@ app.get('/api-tpabillprint/:externalid/:branch/:agencyname',modules.routes.tpabi
 app.get('/api-iwsr/:fromdate/:todate/:entity',modules.routes.iwsr)
 app.get('/api-getdob/:date',modules.routes.dob)
 
+app.get('/api-snapshotrevenue/:branch',modules.routes.snapshotrevenue)
+
 app.listen(8888, () => console.log(`App listening on port 8888`))
