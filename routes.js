@@ -1002,45 +1002,67 @@ console.log(month);
     "-" +
     "01";
 
-// 		const monthNames = ["January", "February", "March", "April", "May", "June",
-//   "July", "August", "September", "October", "November", "December"
-// ];
-	// 	const d = new Date();
-	// 	console.log("d :"+d);
-	// //	console.log(d.getMonth());
-	// 	console.log("monthNames "+monthNames[d.getMonth()]);
-	// console.log(temp.getMonth());
-	// console.log((temp.getMonth() + 1));
 	let ftddatelastyear = (temp.getFullYear()-1)+'-'+ ("0" + (temp.getMonth()+1)).slice(-2)+'-'+("0" + (temp.getDate())).slice(-2);
 	let mtddatelastyear = (temp.getFullYear()-1)+'-'+ ("0" + (temp.getMonth()+1)).slice(-2)+'-01';
 
-  // let mtdopticalquery = "SELECT branch,IF(ftd='',0,SUM(ftd)) AS ftd,entity,region,branchcode,branchname,SUM(targetamount) as targetamount FROM ( SELECT br.branch AS branch ,SUM(rd.NET_AMOUNT) AS ftd ,br.entity AS entity ,br.region AS region ,br.code AS branchcode ,br.branch AS branchname ,0 AS targetamount  FROM  `revenue_details` AS rd INNER JOIN  branches AS br ON CODE=rd.BILLED WHERE UNIT IN ('OPTICALS') AND DATE(TRANSACTION_DATE) BETWEEN '" + mtddate + "' AND '" + ftddate + "' GROUP BY BILLED  UNION ALL SELECT br.branch AS branch ,'' AS ftd ,br.entity AS entity ,br.region AS region ,br.code AS branchcode ,br.branch AS branchname ,IFNULL(tar.targetamount,0) AS targetamount FROM target_optical AS tar INNER JOIN  branches AS br ON br.id=tar.`entityid` WHERE tar.year = YEAR('" + mtddate + "') and tar.month =MONTH('" + mtddate + "')  ) AS A  GROUP BY branch"
-  // let lymtdopticalquery = "SELECT branch,IF(ftd='',0,SUM(ftd)) AS ftd,entity,region,branchcode,branchname,SUM(targetamount) as targetamount FROM ( SELECT br.branch AS branch ,SUM(rd.NET_AMOUNT) AS ftd ,br.entity AS entity ,br.region AS region ,br.code AS branchcode ,br.branch AS branchname ,0 AS targetamount  FROM  `revenue_details` AS rd INNER JOIN  branches AS br ON CODE=rd.BILLED WHERE UNIT IN ('OPTICALS') AND DATE(TRANSACTION_DATE) BETWEEN '" + mtddatelastyear + "' AND '" + ftddatelastyear + "' GROUP BY BILLED  UNION ALL SELECT br.branch AS branch ,'' AS ftd ,br.entity AS entity ,br.region AS region ,br.code AS branchcode ,br.branch AS branchname ,IFNULL(tar.targetamount,0) AS targetamount FROM target_optical AS tar INNER JOIN  branches AS br ON br.id=tar.`entityid` WHERE tar.year = YEAR('" + ftddatelastyear + "') and tar.month =MONTH('" + ftddatelastyear + "')  ) AS A  GROUP BY branch"
-  //
-  // // console.log(mtdopticalquery);
-  // console.log(lymtdopticalquery);
-  connections.scm_public.query(files.mtdopticals,[mtddate,ftddate,mtddate,mtddate], (error, resoptical) => {
+console.log(ftddatelastyear);
+console.log(mtddatelastyear);
 
-    // "SELECT branch,IF(ftd='',0,SUM(ftd)) AS ftd,entity,region,branchcode,branchname,SUM(targetamount) FROM ( SELECT br.branch AS branch ,SUM(rd.NET_AMOUNT) AS ftd ,br.entity AS entity ,br.region AS region ,br.code AS branchcode ,br.branch AS branchname ,0 AS targetamount  FROM  `revenue_details` AS rd INNER JOIN  branches AS br ON CODE=rd.BILLED WHERE UNIT IN ('OPTICALS') AND DATE(TRANSACTION_DATE) BETWEEN '"+mtddate+"' AND '"+ftddate+"' GROUP BY BILLED  UNION ALL SELECT br.branch AS branch ,'' AS ftd ,br.entity AS entity ,br.region AS region ,br.code AS branchcode ,br.branch AS branchname ,IFNULL(tar.targetamount,0) AS targetamount FROM target_optical AS tar INNER JOIN  branches AS br ON br.id=tar.`entityid` WHERE tar.year = YEAR('"+year+"') and tar.month ='"+month+"'  ) AS A  GROUP BY branch",(error,resoptical)=>{
-    // //files.opticals_super,[mtddate,ftddate],(error,resoptical)=>{
-    if (error) console.log(error);
-    console.log("ftd");
-    // console.log(resoptical);
-    connections.scm_public.query(
-      files.lymtdopticals,[mtddatelastyear,ftddatelastyear,ftddatelastyear,ftddatelastyear], (error, reslastyearoptical) => {
-        if (error) console.log(error);
-        console.log("LASTmtd");
-        connections.scm_public.query(
-          "select * from branches", (err, branches) => {
-            if (error) console.log(error);
-            console.log("lymtd");
-            mods.nativeFunctions.newopticals(resoptical, branches, ftddate, reslastyearoptical)
-              .then(final => res.json(final));
-          }
-        );
-      }
-    );
-  });
+
+connections.scm_public.query("SELECT ROUND(SUM(NET_AMOUNT),0)AS NET_AMOUNT,TRANSACTION_DATE,BILLED, branches.billed_entity,branches.branch,branches.code,branches.region AS region,UNIT  FROM `revenue_details`   JOIN branches ON revenue_details.billed=branches.code  WHERE (TRANSACTION_DATE) BETWEEN ? and ?  AND branches.entity IN ('AHC','AEH','AHI')    GROUP BY TRANSACTION_DATE,BILLED , branches.billed_entity,UNIT    ORDER BY     branches.region",[mtddate,ftddate],(err,resmtdopt)=>{
+	if(err) {
+		console.error(err + "select mtd optical err ");
+	}
+	else {
+		connections.scm_public.query("SELECT ROUND(SUM(NET_AMOUNT),0)AS NET_AMOUNT,TRANSACTION_DATE,BILLED, branches.billed_entity,branches.branch,branches.code,branches.region AS region,UNIT  FROM `revenue_details`   JOIN branches ON revenue_details.billed=branches.code  WHERE (TRANSACTION_DATE) BETWEEN ? and ? AND branches.entity IN ('AHC','AEH','AHI')    GROUP BY TRANSACTION_DATE,BILLED , branches.billed_entity,UNIT    ORDER BY     branches.region",[mtddatelastyear,ftddatelastyear],(err,reslymtdopt)=>{
+			if(err) {
+				console.error(err + "select last mtd optical err ");
+			}
+			else {
+				connections.scm_public.query("SELECT * FROM `target_optical`   JOIN branches ON target_optical.entityid=branches.id  WHERE MONTH=MONTH(?) AND YEAR=YEAR(?)",[mtddate,mtddate],(err,restarget)=>{
+					if(err) {
+						console.error(err + "select target optical err ");
+					}
+					else {
+						connections.scm_public.query("SELECT entity,CODE,branch FROM branches WHERE is_active=1 AND entity IN ('AEH','AHC','AHI') GROUP BY entity,branch",(err,resbranch)=>{
+							if(err) {
+							console.error(err + "select branch optical err ");
+							}
+							else {
+								      mods.nativeFunctions.newopticals(resmtdopt, reslymtdopt, restarget, resbranch,ftddate)
+      							.then(final => res.json(final));
+
+							}
+						})
+					}
+				})
+			}
+		})
+	}
+})
+
+  // connections.scm_public.query(files.mtdopticals,[mtddate,ftddate,mtddate,mtddate], (error, resoptical) => {
+	//
+  //   // "SELECT branch,IF(ftd='',0,SUM(ftd)) AS ftd,entity,region,branchcode,branchname,SUM(targetamount) FROM ( SELECT br.branch AS branch ,SUM(rd.NET_AMOUNT) AS ftd ,br.entity AS entity ,br.region AS region ,br.code AS branchcode ,br.branch AS branchname ,0 AS targetamount  FROM  `revenue_details` AS rd INNER JOIN  branches AS br ON CODE=rd.BILLED WHERE UNIT IN ('OPTICALS') AND DATE(TRANSACTION_DATE) BETWEEN '"+mtddate+"' AND '"+ftddate+"' GROUP BY BILLED  UNION ALL SELECT br.branch AS branch ,'' AS ftd ,br.entity AS entity ,br.region AS region ,br.code AS branchcode ,br.branch AS branchname ,IFNULL(tar.targetamount,0) AS targetamount FROM target_optical AS tar INNER JOIN  branches AS br ON br.id=tar.`entityid` WHERE tar.year = YEAR('"+year+"') and tar.month ='"+month+"'  ) AS A  GROUP BY branch",(error,resoptical)=>{
+  //   // //files.opticals_super,[mtddate,ftddate],(error,resoptical)=>{
+  //   if (error) console.log(error);
+  //   console.log("ftd");
+  //   // console.log(resoptical);
+  //   connections.scm_public.query(
+  //     files.lymtdopticals,[mtddatelastyear,ftddatelastyear,ftddatelastyear,ftddatelastyear], (error, reslastyearoptical) => {
+  //       if (error) console.log(error);
+  //       console.log("LASTmtd");
+  //       connections.scm_public.query(
+  //         "select * from branches", (err, branches) => {
+  //           if (error) console.log(error);
+  //           console.log("lymtd");
+  //           mods.nativeFunctions.newopticals(resoptical, branches, ftddate, reslastyearoptical)
+  //             .then(final => res.json(final));
+  //         }
+  //       );
+  //     }
+  //   );
+  // });
 };
 
 

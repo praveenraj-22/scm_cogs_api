@@ -2176,9 +2176,17 @@ exports.newopdnormal = async (
 
 
 
-exports.newopticals = async (dbresoptical, branches, ftddate, dbreslastyearoptical) => {
-  let groupwise = await filterGroupwiseoptical(dbresoptical, ftddate, dbreslastyearoptical);
-  let branchwise = await filterBranchwiseoptical(dbresoptical, ftddate, dbreslastyearoptical, branches)
+exports.newopticals = async (resmtdopt, reslymtdopt, restarget, resbranch,ftddate) => {
+
+  let groupwise = await filterGroupwiseoptical(resmtdopt, ftddate, reslymtdopt,restarget,resbranch);
+
+  let branchwise = await filterBranchwiseoptical(resmtdopt, ftddate, reslymtdopt,restarget,resbranch);
+
+ //   console.log(groupwise);
+ // process.exit()
+//  console.log(branchwise);
+
+
   return {
     group: groupwise.group,
     alin: groupwise.alin,
@@ -2186,7 +2194,7 @@ exports.newopticals = async (dbresoptical, branches, ftddate, dbreslastyearoptic
   };
 };
 
-let filterGroupwiseoptical = async (dbresoptical, ftddate, dbreslastyearoptical) => {
+let filterGroupwiseoptical = async (resmtdopt, ftddate, reslymtdopt,restarget,resbranch) => {
   let tempObj = {},
     opt = 0,
     targetmtdopt = 0,
@@ -2194,7 +2202,7 @@ let filterGroupwiseoptical = async (dbresoptical, ftddate, dbreslastyearoptical)
     mtdopt = 0,
     grouptempObj = {},
     alin = {};
-
+mtdgrssperc=0;
 
   let totalgroup = [
     "Chennai",
@@ -2205,7 +2213,8 @@ let filterGroupwiseoptical = async (dbresoptical, ftddate, dbreslastyearoptical)
     "AP",
     "Kolkata",
     "Odisha",
-    "ROI"
+    "ROI",
+    "MathayaPradesh"
   ];
 
   let totalgroupbranches = {
@@ -2224,62 +2233,59 @@ let filterGroupwiseoptical = async (dbresoptical, ftddate, dbreslastyearoptical)
     Odisha: ["CTK", "BHU"],
     Kolkata: ["KOL", "KAS"],
     Hyderabad: ["DNR", "HIM", "HMH", "MDA", "MPM", "GCB", "SBD", "SNR"],
-    AP: ["GUN", "NEL", "RAJ", "TPT", "VMH"]
-
+    AP: ["GUN", "NEL", "RAJ", "TPT", "VMH"],
+    MathayaPradesh:['JWS','APR','ATA']
   };
 
   totalgroup.forEach(group => {
     grouptempObj[group] = {};
-    (opt = 0), (mtdopt = 0), (optlastyear = 0), (targetmtdopt = 0);
+    (opt = 0), (mtdopt = 0), (optlastyear = 0), (targetmtdopt = 0),(mtdgrssperc=0);
     totalgroupbranches[group].forEach(branch => {
 
-      // _.filter(dbresoptical,{branchcode: branch ,trans_date:ftddate})
-      // .forEach(element =>{opt +=element.ftd;});
-      // (grouptempObj[group].ftdoptrev=Math.round(opt));
-      //
-      // _.filter(dbresoptical,{branchcode: branch ,trans_date:ftddate})
-      // .forEach(element =>{targetmtdopt+=element.targetamount;});
-      // (grouptempObj[group].targetmtdrev=Math.round(targetmtdopt));
 
-      _.filter(dbresoptical, {
-          branchcode: branch
+      _.filter(resmtdopt, {
+          BILLED: branch,
+          UNIT:'OPTICALS'
         })
         .forEach(element => {
-          mtdopt += element.ftd;
+          mtdopt += element.NET_AMOUNT;
         });
       (grouptempObj[group].mtdoptrev = Math.round(mtdopt));
 
-      _.filter(dbreslastyearoptical, {
-          branchcode: branch
+      _.filter(reslymtdopt, {
+          BILLED: branch,
+          UNIT:'OPTICALS'
         })
         .forEach(element => {
-          optlastyear += element.ftd;
+          optlastyear += element.NET_AMOUNT;
         });
       (grouptempObj[group].lstoptrev = Math.round(optlastyear));
 
-      _.filter(dbresoptical, {
-          branchcode: branch
+
+
+
+      _.filter(restarget, {
+          code: branch
         })
         .forEach(element => {
+
           targetmtdopt += parseInt(element.targetamount);
         });
-      (grouptempObj[group].targetmtdrev = Math.round(targetmtdopt))
+      (grouptempObj[group].targetmtdrev = Math.round(targetmtdopt));
 
+    //   mtdgrssperc=(parseInt(grouptempObj[group].mtdoptrev)/parseInt(grouptempObj[group].lstoptrev))
+
+      (grouptempObj[group].mtdoptperc = (((parseInt(grouptempObj[group].mtdoptrev)/parseInt(grouptempObj[group].lstoptrev))-1)*100).toFixed(2) );
+      (grouptempObj[group].mtdoptpercachieved = ((parseInt(grouptempObj[group].mtdoptrev)/parseInt(grouptempObj[group].targetmtdrev))*100).toFixed(2) );
+
+  (grouptempObj[group].groupwise = group);
     }); // end of foreach --> branch
 
-    (grouptempObj[group].mtdoptperc = Math.round(((grouptempObj[group].mtdoptrev) / (grouptempObj[group].lstoptrev) - 1) * 100));
-    // total percentage calc for region
-    (grouptempObj[group].mtdoptpercachieved) = Math.round(((grouptempObj[group].mtdoptrev) / (grouptempObj[group].targetmtdrev)) * 100);
-    //target achieved
-    //(grouptempObj[group].targetachieved=Math.round((()/())*100));
-    (grouptempObj[group].groupwise = group);
-    //console.log(group);
+
   });
 
   alin['groupwise'] = "All India";
-  // alin['ftdoptrev']=grouptempObj['Chennai'].ftdoptrev+grouptempObj['ROTN'].ftdoptrev+grouptempObj['Karnataka'].ftdoptrev
-  //                           +grouptempObj['ROI'].ftdoptrev+grouptempObj['Odisha'].ftdoptrev+grouptempObj['Kolkata'].ftdoptrev
-  //                           +grouptempObj['Hyderabad'].ftdoptrev+grouptempObj['AP'].ftdoptrev;
+
   alin['mtdoptrev'] = grouptempObj['Chennai'].mtdoptrev + grouptempObj['ROTN'].mtdoptrev + grouptempObj['Karnataka'].mtdoptrev +
     grouptempObj['Maharashtra'].mtdoptrev +
     grouptempObj['ROI'].mtdoptrev + grouptempObj['Odisha'].mtdoptrev + grouptempObj['Kolkata'].mtdoptrev +
@@ -2297,16 +2303,14 @@ let filterGroupwiseoptical = async (dbresoptical, ftddate, dbreslastyearoptical)
   // mrdpercentage for all india
   alin['mtdoptpercachieved'] = Math.round(((alin['mtdoptrev']) / (alin['targetmtdrev'])) * 100);
 
-  //console.log(alin);
 
-  //console.log(grouptempObj);
   return {
     alin: alin,
     group: grouptempObj
   };
 };
 
-let filterBranchwiseoptical = async (dbresoptical, ftddate, dbreslastyearoptical, branches) => {
+let filterBranchwiseoptical = async (resmtdopt, ftddate, reslymtdopt,restarget,resbranch) => {
   let opt = 0,
     targetmtdopt = 0,
     mtdopt = 0,
@@ -2349,8 +2353,8 @@ let filterBranchwiseoptical = async (dbresoptical, ftddate, dbreslastyearoptical
     Odisha: ["CTK", "BHU"],
     Kolkata: ["KOL", "KAS"],
     Hyderabad: ["DNR", "HIM", "HMH", "MDA", "MPM", "GCB", "SBD", "SNR"],
-    AP: ["GUN", "NEL", "RAJ", "TPT", "VMH"]
-
+    AP: ["GUN", "NEL", "RAJ", "TPT", "VMH"],
+    MathayaPradesh:['JWS','APR','ATA']
   };
 
   for (let key in totalgroupbranches) {
@@ -2358,15 +2362,19 @@ let filterBranchwiseoptical = async (dbresoptical, ftddate, dbreslastyearoptical
     branchObj[key] = [];
     totalgroupbranches[key].forEach(branch => {
 
-      _.filter(branches, {
-          code: branch
+
+
+
+      _.filter(resbranch, {
+          CODE: branch
         })
         .forEach(element => {
+
           (branchName = element.branch), (code = element.code)
         });
 
-      _.filter(dbresoptical, {
-          branchcode: branch
+      _.filter(restarget, {
+          code: branch
         })
         .forEach(element => {
           targetmtdopt += element.targetamount
@@ -2375,18 +2383,20 @@ let filterBranchwiseoptical = async (dbresoptical, ftddate, dbreslastyearoptical
       // _.filter(dbresoptical,{branchcode: branch,trans_date: ftddate})
       // .forEach(element =>{opt +=element.ftd});
 
-      _.filter(dbresoptical, {
-          branchcode: branch
+      _.filter(resmtdopt, {
+          BILLED: branch,
+          UNIT:'OPTICALS'
         })
         .forEach(element => {
-          mtdopt += element.ftd
+          mtdopt += element.NET_AMOUNT
         });
 
-      _.filter(dbreslastyearoptical, {
-          branchcode: branch
+      _.filter(reslymtdopt, {
+          BILLED: branch,
+          UNIT:'OPTICALS'
         })
         .forEach(element => {
-          optlastyear += element.ftd
+          optlastyear += element.NET_AMOUNT
         });
       // .forEach(element=>{(branchName=element.branch),(code=element.code);});
 
