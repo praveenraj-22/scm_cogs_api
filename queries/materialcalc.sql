@@ -37,7 +37,7 @@ IF((SUM(opticals))=0 OR NULL,0,SUM(opticals)) AS opticalsrevenue,
 , 0 AS surgerycogsperc
 FROM revenue_report
 WHERE DATE(trans_date) BETWEEN DATE_SUB(DATE(NOW()),INTERVAL (DAY(NOW())-1) DAY) AND NOW()
-GROUP BY entity, branch
+GROUP BY  branch
 
 )
 
@@ -224,7 +224,7 @@ IF((SUM(opticals))=0 OR NULL,0,SUM(opticals)) AS opticalsrevenue,
 , 0 AS surgerycogsperc
 FROM revenue_report
 WHERE DATE(trans_date) BETWEEN DATE_SUB(DATE(NOW()),INTERVAL (DAY(NOW())-1) DAY) AND NOW()
-GROUP BY entity, branch
+GROUP BY  branch
 
 )
 
@@ -405,7 +405,7 @@ IF((SUM(opticals))=0 OR NULL,0,SUM(opticals)) AS opticalsrevenue,
 , 0 AS surgerycogsperc
 FROM revenue_report
 WHERE DATE(trans_date) BETWEEN DATE_SUB(DATE(NOW()),INTERVAL (DAY(NOW())-1) DAY) AND NOW()
-GROUP BY entity, branch
+GROUP BY  branch
 
 )
 UNION ALL

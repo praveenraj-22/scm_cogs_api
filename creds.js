@@ -12,7 +12,7 @@ exports.scm_root = {
     user: 'medics',
     pass: 'medics@123',
     db: 'cogs'
-    //
+
 
 	// host: 'localhost',
   //   port: 3306,
@@ -39,12 +39,7 @@ exports.scm_public = {
     pass: 'medics@123',
     db: 'cogs'
 
-	// host: 'localhost',
-  //   port: 3306,
-  //   user: 'root',
-  //   pass: 'praveen',
-  //   db: 'cogs'
-}
+ }
 
 //
 // exports.mis_root = {

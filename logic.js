@@ -5,11 +5,12 @@ const session = require('./modules').cookieSession
 
 exports.adminMain = async (dbres, dbres2, branches, ftddate, vobres, currencyres,currencylastres,breakupres, breakupmtdres) => {
 
-
 	let overseasCurrency = await overseasCurrencyConversion(ftddate,currencyres,currencylastres)
 	let entityWise = await filterEntity(dbres, dbres2, ftddate,overseasCurrency)
-    let groupWise = await filterGroupwise(entityWise.aeharr, entityWise.ahcarr,entityWise.ohcarr, dbres2, branches, ftddate, vobres, breakupres, breakupmtdres, overseasCurrency)
-    return { group: entityWise.group,alin: entityWise.alin, aeh: entityWise.aeh, ahc: entityWise.ahc, ohc: entityWise.ohc,ohcgroup: groupWise.ohc,aehgroup: groupWise.aeh, ahcgroup: groupWise.ahc, branchwise: groupWise.branchwise }
+
+	  let groupWise = await filterGroupwise(entityWise.aeharr, entityWise.ahcarr,entityWise.ohcarr, dbres2, branches, ftddate, vobres, breakupres, breakupmtdres, overseasCurrency)
+//console.log(groupWise);
+	  return { group: entityWise.group,alin: entityWise.alin, aeh: entityWise.aeh, ahc: entityWise.ahc, ohc: entityWise.ohc,ohcgroup: groupWise.ohc,aehgroup: groupWise.aeh, ahcgroup: groupWise.ahc, branchwise: groupWise.branchwise }
 }
 
 exports.othersMain = async (cogs, revenue, individual, group, branches, ftddate, vobres, breakupres, breakupmtdres) => {
@@ -697,9 +698,6 @@ let filterEntity = async (dbres, dbres2, ftddate,overseasCurrency) => {
 
 	alin = {},group = {}
 
-
-
-
     aeharr = _.filter(dbres, { entity: 'AEH' })
     _.filter(aeharr, { trans_date: ftddate }).forEach(element => {
         pha += element.pharmacy;
@@ -727,7 +725,7 @@ let filterEntity = async (dbres, dbres2, ftddate,overseasCurrency) => {
     tempObj.AEH.mtdpha = pha, tempObj.AEH.mtdopt = opt, tempObj.AEH.mtdlab = lab, tempObj.AEH.mtdot = ot, tempObj.AEH.mtd = total, tempObj.AEH.mtdrev = rev, tempObj.AEH.mtd_cogs_percent = cogsPercent(total, rev)
     pha = 0, opt = 0, lab = 0, ot = 0, total = 0, rev = 0
 
-	ahcarr = _.filter(dbres, (v) => _.includes(['AHC','AHI'], v.entity));
+ahcarr = _.filter(dbres, (v) => _.includes(['AHC','AHI'], v.entity));
 
 	//console.log(ahcarr);
     //ahcarr = _.filter(dbres, { entity: 'AHC' })
@@ -1432,7 +1430,9 @@ let filterGroupwise = async (aeh, ahc,ohc, dbres2, branches, ftddate, vobres, br
                 ftd += element.ftd
             })
             aehtempObj[group].ftdpha = ftdpha, aehtempObj[group].ftdopt = ftdopt, aehtempObj[group].ftdlab = ftdlab, aehtempObj[group].ftdot = ftdot, aehtempObj[group].ftd = ftd
-            _.filter(aeh, { branch: branch }).forEach(element => {
+
+				    _.filter(aeh, { branch: branch }).forEach(element => {
+
                 mtdpha += element.pharmacy;
                 mtdopt += element.opticals;
                 mtdlab += element.laboratory;
@@ -1519,6 +1519,7 @@ let filterGroupwise = async (aeh, ahc,ohc, dbres2, branches, ftddate, vobres, br
             else {
                 aehmtdbreakup = 0
             }
+
             // _.filter(surgres, { BILLED: branch, transaction_date: ftddate }).forEach(element => {
             //     ftdotcount = element.count
             // })
@@ -1534,7 +1535,9 @@ let filterGroupwise = async (aeh, ahc,ohc, dbres2, branches, ftddate, vobres, br
             branchObj[key].push({ branch: branchName, code: code, ftdpha: ftdpha, ftdopt: ftdopt, ftdlab: ftdlab, ftdot: ftdot, ftd: ftd, ftdrev: ftdrev, ftdpharev: ftdpharev, ftdoptrev: ftdoptrev, ftdotrev: ftdotrev, ftdlabrev: ftdlabrev, ftdconsultrev: ftdconsultrev, ftdothersrev: ftdothersrev, ftd_cogs_percent: cogsPercent(ftd, ftdrev), mtdpha: mtdpha, mtdopt: mtdopt, mtdlab: mtdlab, mtdot: mtdot, mtd: mtd, mtdrev: mtdrev, mtdpharev: mtdpharev, mtdoptrev: mtdoptrev, mtdotrev: mtdotrev, mtdlabrev: mtdlabrev, mtdconsultrev: mtdconsultrev, mtdothersrev: mtdothersrev, mtd_cogs_percent: cogsPercent(mtd, mtdrev), ftdvobpha: ftdvobpha, ftdvobot: ftdvobot, ftdvobopt: ftdvobopt, ftdvoblab: ftdvoblab, ftdvobcons: ftdvobcons, ftdvobothers: ftdvobothers, ftdvob: ftdvob, ftd_vob_percent: cogsPercent(ftd, ftdvob), mtdvobpha: mtdvobpha, mtdvobopt: mtdvobopt, mtdvoblab: mtdvoblab, mtdvobot: mtdvobot, mtdvobcons: mtdvobcons, mtdvobothers: mtdvobothers, mtdvob: mtdvob, mtd_vob_percent: cogsPercent(mtd, mtdvob), ftdbreakup: aehftdbreakup, mtdbreakup: aehmtdbreakup })
             ftdpha = 0, ftdopt = 0, ftdlab = 0, ftdot = 0, ftd = 0, mtdpha = 0, mtdopt = 0, mtdlab = 0, mtdot = 0, mtd = 0, ftdrev = 0, mtdrev = 0, ftdpharev = 0, ftdoptrev = 0, ftdotrev = 0, ftdlabrev = 0, ftdconsultrev = 0, ftdothersrev = 0, mtdpharev = 0, mtdoptrev = 0, mtdotrev = 0, mtdlabrev = 0, mtdconsultrev = 0, mtdothersrev = 0, code = null, ftdvobot = 0, ftdvobopt = 0, ftdvobpha = 0, ftdvoblab = 0, ftdvobcons = 0, ftdvobothers = 0, ftdvob = 0, mtdvobot = 0, mtdvobopt = 0, mtdvoblab = 0, mtdvobpha = 0, mtdvobcons = 0, mtdvobothers = 0, mtdvob = 0, ftdotcount = 0, mtdotcount = 0, cogsftdotcount = 0, cogsmtdotcount = 0, aehftdbreakup = 0, aehmtdbreakup = 0
         })
+
     }
+
     for (let key in ahcgroupedBranches) {
         branchObj[key] = []
         ahcgroupedBranches[key].forEach(branch => {
