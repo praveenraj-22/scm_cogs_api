@@ -2174,17 +2174,15 @@ exports.newopdnormal = async (
 };
 
 
+exports.newopticals = async (resmtdopt, reslymtdopt, restarget, resbranch, ftddate) => {
 
+  let groupwise = await filterGroupwiseoptical(resmtdopt, ftddate, reslymtdopt, restarget, resbranch);
 
-exports.newopticals = async (resmtdopt, reslymtdopt, restarget, resbranch,ftddate) => {
+  let branchwise = await filterBranchwiseoptical(resmtdopt, ftddate, reslymtdopt, restarget, resbranch);
 
-  let groupwise = await filterGroupwiseoptical(resmtdopt, ftddate, reslymtdopt,restarget,resbranch);
-
-  let branchwise = await filterBranchwiseoptical(resmtdopt, ftddate, reslymtdopt,restarget,resbranch);
-
- //   console.log(groupwise);
- // process.exit()
-//  console.log(branchwise);
+  //   console.log(groupwise);
+  // process.exit()
+  //  console.log(branchwise);
 
 
   return {
@@ -2194,7 +2192,7 @@ exports.newopticals = async (resmtdopt, reslymtdopt, restarget, resbranch,ftddat
   };
 };
 
-let filterGroupwiseoptical = async (resmtdopt, ftddate, reslymtdopt,restarget,resbranch) => {
+let filterGroupwiseoptical = async (resmtdopt, ftddate, reslymtdopt, restarget, resbranch) => {
   let tempObj = {},
     opt = 0,
     targetmtdopt = 0,
@@ -2202,7 +2200,7 @@ let filterGroupwiseoptical = async (resmtdopt, ftddate, reslymtdopt,restarget,re
     mtdopt = 0,
     grouptempObj = {},
     alin = {};
-mtdgrssperc=0;
+  mtdgrssperc = 0;
 
   let totalgroup = [
     "Chennai",
@@ -2211,41 +2209,106 @@ mtdgrssperc=0;
     "Maharashtra",
     "Hyderabad",
     "AP",
+    "Kerala",
     "Kolkata",
+    "Madhyapradesh",
     "Odisha",
     "ROI",
-    "MathayaPradesh"
+
   ];
 
   let totalgroupbranches = {
-    "Chennai": ["ADY", "AMB", "ANN", "ASN", "AVD", "CMH", "EGM", "MGP",
-      "NLR", "NWP", "PMB", "PRR", "TBM", "TLR", "TRC", "TVT", "VLC"
+    "Chennai": [
+      "CMH",
+      "ANN",
+      "ASN",
+      "AVD",
+      "NLR",
+      "PMB",
+      "PRR",
+      "TLR",
+      "TRC",
+      "VLC",
+      "TBM",
+      "ADY",
+      "EGM",
+      "MGP",
+      "NWP",
+      "AMB",
+      "TVT",
     ],
-    Karnataka: ["BMH", "BSK", "CLR", "HUB", "DWD", "INR", "KML", "MCC", "MYS",
-      "PNR", "RJN", "RRN", "SVR", "WFD", "YLK"
+    Karnataka: [
+      "BMH",
+      "WFD",
+      "KML",
+      "CLR",
+      "INR",
+      "PNR",
+      "YLK",
+      "HUB",
+      "MCC",
+      "MYS",
+      "SVR",
+      "BSK",
+      "RRN",
+      "RJN",
+      "DWD",
+
     ],
     Maharashtra: ["VSH", "PUN", "HDP", "CMR"],
-    ROTN: ["APM", "CMB", "DHA", "ERD", "HSR", "KBK", "KNP", "KSN",
-      "MDU", "NVL", "PDY", "SLM", "TCN", "TNJ", "TPR", "TRI",
-      "TVL", "VLR", "VPM"
+
+    ROTN: ["KNP",
+"VLR",
+"KBK",
+"NVL",
+"VPM",
+"DHA",
+"SLM",
+"KSN",
+"ERD",
+"HSR",
+"MDU",
+"TVL",
+"TCN",
+"APM",
+"TRI",
+"TNJ",
+"TPR",
+"CMB",
+'PDY',
     ],
-    ROI: ["TVM", "JPR", "AHM"],
+    ROI: ["JPR", "AHM"],
     Odisha: ["CTK", "BHU"],
     Kolkata: ["KOL", "KAS"],
-    Hyderabad: ["DNR", "HIM", "HMH", "MDA", "MPM", "GCB", "SBD", "SNR"],
-    AP: ["GUN", "NEL", "RAJ", "TPT", "VMH"],
-    MathayaPradesh:['JWS','APR','ATA']
+    Hyderabad: ["DNR",
+"HMH",
+"MDA",
+"SNR",
+"HIM",
+"SBD",
+"MPM",
+"GCB",
+],
+    AP: ["VMH",
+"NEL",
+"GUN",
+"TPT",
+"RAJ",],
+    Madhyapradesh: ['JWS', 'APR', 'ATA'],
+    Kerala:["TVM",
+"KTM"],
+
   };
 
   totalgroup.forEach(group => {
     grouptempObj[group] = {};
-    (opt = 0), (mtdopt = 0), (optlastyear = 0), (targetmtdopt = 0),(mtdgrssperc=0);
+    (opt = 0), (mtdopt = 0), (optlastyear = 0), (targetmtdopt = 0), (mtdgrssperc = 0);
     totalgroupbranches[group].forEach(branch => {
 
 
       _.filter(resmtdopt, {
           BILLED: branch,
-          UNIT:'OPTICALS'
+          UNIT: 'OPTICALS'
         })
         .forEach(element => {
           mtdopt += element.NET_AMOUNT;
@@ -2254,7 +2317,7 @@ mtdgrssperc=0;
 
       _.filter(reslymtdopt, {
           BILLED: branch,
-          UNIT:'OPTICALS'
+          UNIT: 'OPTICALS'
         })
         .forEach(element => {
           optlastyear += element.NET_AMOUNT;
@@ -2273,12 +2336,12 @@ mtdgrssperc=0;
         });
       (grouptempObj[group].targetmtdrev = Math.round(targetmtdopt));
 
-    //   mtdgrssperc=(parseInt(grouptempObj[group].mtdoptrev)/parseInt(grouptempObj[group].lstoptrev))
+      //   mtdgrssperc=(parseInt(grouptempObj[group].mtdoptrev)/parseInt(grouptempObj[group].lstoptrev))
 
-      (grouptempObj[group].mtdoptperc = (((parseInt(grouptempObj[group].mtdoptrev)/parseInt(grouptempObj[group].lstoptrev))-1)*100).toFixed(2) );
-      (grouptempObj[group].mtdoptpercachieved = ((parseInt(grouptempObj[group].mtdoptrev)/parseInt(grouptempObj[group].targetmtdrev))*100).toFixed(2) );
+      (grouptempObj[group].mtdoptperc = (((parseInt(grouptempObj[group].mtdoptrev) / parseInt(grouptempObj[group].lstoptrev)) - 1) * 100).toFixed(2));
+      (grouptempObj[group].mtdoptpercachieved = ((parseInt(grouptempObj[group].mtdoptrev) / parseInt(grouptempObj[group].targetmtdrev)) * 100).toFixed(2));
 
-  (grouptempObj[group].groupwise = group);
+      (grouptempObj[group].groupwise = group);
     }); // end of foreach --> branch
 
 
@@ -2288,16 +2351,18 @@ mtdgrssperc=0;
 
   alin['mtdoptrev'] = grouptempObj['Chennai'].mtdoptrev + grouptempObj['ROTN'].mtdoptrev + grouptempObj['Karnataka'].mtdoptrev +
     grouptempObj['Maharashtra'].mtdoptrev +
-    grouptempObj['ROI'].mtdoptrev + grouptempObj['Odisha'].mtdoptrev + grouptempObj['Kolkata'].mtdoptrev +
-    grouptempObj['Hyderabad'].mtdoptrev + grouptempObj['AP'].mtdoptrev;
+    grouptempObj['Hyderabad'].mtdoptrev + grouptempObj['AP'].mtdoptrev + grouptempObj['Kerala'].mtdoptrev +
+    grouptempObj['Kolkata'].mtdoptrev + grouptempObj['Madhyapradesh'].mtdoptrev+grouptempObj['Odisha'].mtdoptrev + grouptempObj['ROI'].mtdoptrev;
+
   alin['lstoptrev'] = grouptempObj['Chennai'].lstoptrev + grouptempObj['ROTN'].lstoptrev + grouptempObj['Karnataka'].lstoptrev +
-    grouptempObj['Maharashtra'].lstoptrev +
-    grouptempObj['ROI'].lstoptrev + grouptempObj['Odisha'].lstoptrev + grouptempObj['Kolkata'].lstoptrev +
-    grouptempObj['Hyderabad'].lstoptrev + grouptempObj['AP'].lstoptrev;
+  grouptempObj['Maharashtra'].lstoptrev +
+  grouptempObj['Hyderabad'].lstoptrev + grouptempObj['AP'].lstoptrev + grouptempObj['Kerala'].lstoptrev +
+  grouptempObj['Kolkata'].lstoptrev + grouptempObj['Madhyapradesh'].lstoptrev+grouptempObj['Odisha'].lstoptrev + grouptempObj['ROI'].lstoptrev;
+
   alin['targetmtdrev'] = grouptempObj['Chennai'].targetmtdrev + grouptempObj['ROTN'].targetmtdrev + grouptempObj['Karnataka'].targetmtdrev +
-    grouptempObj['Maharashtra'].targetmtdrev +
-    grouptempObj['ROI'].targetmtdrev + grouptempObj['Odisha'].targetmtdrev + grouptempObj['Kolkata'].targetmtdrev +
-    grouptempObj['Hyderabad'].targetmtdrev + grouptempObj['AP'].targetmtdrev;
+  grouptempObj['Maharashtra'].targetmtdrev +
+  grouptempObj['Hyderabad'].targetmtdrev + grouptempObj['AP'].targetmtdrev + grouptempObj['Kerala'].targetmtdrev +
+  grouptempObj['Kolkata'].targetmtdrev + grouptempObj['Madhyapradesh'].targetmtdrev+grouptempObj['Odisha'].targetmtdrev + grouptempObj['ROI'].targetmtdrev;
 
   alin['mtdoptperc'] = Math.round((((alin['mtdoptrev']) / (alin['lstoptrev'])) - 1) * 100);
   // mrdpercentage for all india
@@ -2310,7 +2375,7 @@ mtdgrssperc=0;
   };
 };
 
-let filterBranchwiseoptical = async (resmtdopt, ftddate, reslymtdopt,restarget,resbranch) => {
+let filterBranchwiseoptical = async (resmtdopt, ftddate, reslymtdopt, restarget, resbranch) => {
   let opt = 0,
     targetmtdopt = 0,
     mtdopt = 0,
@@ -2332,29 +2397,94 @@ let filterBranchwiseoptical = async (resmtdopt, ftddate, reslymtdopt,restarget,r
     "Maharashtra",
     "Hyderabad",
     "AP",
+    "Kerala",
     "Kolkata",
+    "Madhyapradesh",
     "Odisha",
-    "ROI"
+    "ROI",
+
   ];
 
   let totalgroupbranches = {
-    "Chennai": ["ADY", "AMB", "ANN", "ASN", "AVD", "CMH", "EGM", "MGP",
-      "NLR", "NWP", "PMB", "PRR", "TBM", "TLR", "TRC", "TVT", "VLC"
+    "Chennai": [
+      "CMH",
+      "ANN",
+      "ASN",
+      "AVD",
+      "NLR",
+      "PMB",
+      "PRR",
+      "TLR",
+      "TRC",
+      "VLC",
+      "TBM",
+      "ADY",
+      "EGM",
+      "MGP",
+      "NWP",
+      "AMB",
+      "TVT",
     ],
-    Karnataka: ["BMH", "BSK", "CLR", "HUB", "DWD", "INR", "KML", "MCC", "MYS",
-      "PNR", "RJN", "RRN", "SVR", "WFD", "YLK"
+    Karnataka: [
+      "BMH",
+      "WFD",
+      "KML",
+      "CLR",
+      "INR",
+      "PNR",
+      "YLK",
+      "HUB",
+      "MCC",
+      "MYS",
+      "SVR",
+      "BSK",
+      "RRN",
+      "RJN",
+      "DWD",
+
     ],
     Maharashtra: ["VSH", "PUN", "HDP", "CMR"],
-    ROTN: ["APM", "CMB", "DHA", "ERD", "HSR", "KBK", "KNP", "KSN",
-      "MDU", "NVL", "PDY", "SLM", "TCN", "TNJ", "TPR", "TRI",
-      "TVL", "VLR", "VPM"
+
+    ROTN: ["KNP",
+"VLR",
+"KBK",
+"NVL",
+"VPM",
+"DHA",
+"SLM",
+"KSN",
+"ERD",
+"HSR",
+"MDU",
+"TVL",
+"TCN",
+"APM",
+"TRI",
+"TNJ",
+"TPR",
+"CMB",
+'PDY',
     ],
-    ROI: ["TVM", "JPR", "AHM"],
+    ROI: ["JPR", "AHM"],
     Odisha: ["CTK", "BHU"],
     Kolkata: ["KOL", "KAS"],
-    Hyderabad: ["DNR", "HIM", "HMH", "MDA", "MPM", "GCB", "SBD", "SNR"],
-    AP: ["GUN", "NEL", "RAJ", "TPT", "VMH"],
-    MathayaPradesh:['JWS','APR','ATA']
+    Hyderabad: ["DNR",
+"HMH",
+"MDA",
+"SNR",
+"HIM",
+"SBD",
+"MPM",
+"GCB",
+],
+    AP: ["VMH",
+"NEL",
+"GUN",
+"TPT",
+"RAJ",],
+    Madhyapradesh: ['JWS', 'APR', 'ATA'],
+    Kerala:["TVM","KTM"],
+
   };
 
   for (let key in totalgroupbranches) {
@@ -2385,7 +2515,7 @@ let filterBranchwiseoptical = async (resmtdopt, ftddate, reslymtdopt,restarget,r
 
       _.filter(resmtdopt, {
           BILLED: branch,
-          UNIT:'OPTICALS'
+          UNIT: 'OPTICALS'
         })
         .forEach(element => {
           mtdopt += element.NET_AMOUNT
@@ -2393,7 +2523,7 @@ let filterBranchwiseoptical = async (resmtdopt, ftddate, reslymtdopt,restarget,r
 
       _.filter(reslymtdopt, {
           BILLED: branch,
-          UNIT:'OPTICALS'
+          UNIT: 'OPTICALS'
         })
         .forEach(element => {
           optlastyear += element.NET_AMOUNT
@@ -2427,6 +2557,8 @@ let filterBranchwiseoptical = async (resmtdopt, ftddate, reslymtdopt,restarget,r
     branch: branchObj
   }
 };
+
+
 
 
 exports.newUsageTrackerNative = async (
@@ -7679,10 +7811,6 @@ let filterbranchwisecashcredit = async (revdata, ftddate, colldata, rescashrevda
 
 
   })
-
-  console.log(branchtmpObj);
-
-
   return {
     branch: branchtmpObj
   }

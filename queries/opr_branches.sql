@@ -1,0 +1,1 @@
+SELECT CONCAT(CODE," - ",branch) AS text,CODE AS shortCode FROM branches WHERE entity IN ('AEH','AHC','AHI') AND CODE!='KTD' AND is_active=1 order by branch asc  

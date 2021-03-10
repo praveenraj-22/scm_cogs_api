@@ -268,6 +268,159 @@ transporter.sendMail(mailOptions, function(error, info){
 
 })
 
+// exports.schedule=cron.schedule('08 15 * * *',() =>{
+//   connections.scm_root.query(files.materialcost,(errs)=> {
+//       if (errs) console.error(errs)
+//     console.log('connected to write');
+//     console.log('generated materialcost');
+//
+//      let sql = `SELECT * FROM materialcost`;
+//    connections.scm_public.query(sql,function(errs,result,fields)
+//  {
+// if (errs) throw err;
+// console.log("connected to readonly");
+// // const Excel = require('exceljs');
+// //
+// // const options = {
+// //   filename: 'myfile.xlsx',
+// //   useStyles: true,
+// //   useSharedStrings: true
+// // };
+// //
+// // const workbook = new Excel.stream.xlsx.WorkbookWriter(options);
+// //
+// // const worksheet = workbook.addWorksheet('my sheet');
+// //
+// //
+// // worksheet.columns = [
+// //     { header: 'Entity', key: 'entity' },
+// //     { header: 'Branch', key: 'branch' },
+// //     { header: 'pharmacy_revenue', key: 'pharmacy_revenue' },
+// //     { header: 'optical_revenue', key: 'optical_revenue' },
+// //     { header: 'surgery_revenue', key: 'surgery_revenue' },
+// //     { header: 'mtd_revenue', key: 'mtd_revenue' },
+// //     { header: 'pharmacy_revenue_perc', key: 'pharmacy_revenue_perc' },
+// //     { header: 'opticals_revenue_perc', key: 'opticals_revenue_perc' },
+// //     { header: 'surgery_revenue_perc', key: 'surgery_revenue_perc' },
+// //     { header: 'pharmacy_cogs', key: 'pharmacy_cogs' },
+// //       { header: 'opticals_cogs', key: 'opticals_cogs' },
+// //         { header: 'surgery_cogs', key: 'surgery_cogs' },
+// //         { header: 'mtd_cogs', key: 'mtd_cogs' },
+// //         { header: 'pharmacy_cogs_perc', key: 'pharmacy_cogs_perc' },
+// //         { header: 'opticals_cogs_perc', key: 'opticals_cogs_perc' },
+// //           { header: 'surgery_cogs_perc', key: 'surgery_cogs_perc' },
+// //             { header: 'MC', key: 'mc' },
+// // ]
+// // var data;
+// //
+// // Object.keys(result).forEach(function(key){
+// //       var row = result[key];
+// // var entity_wise=row.entity;
+// // var branch_wise=row.branch;
+// // var pharmacy_revenue_wise=row.pharmacy_revenue;
+// // var optical_revenue_wise=row.optical_revenue;
+// // var surgery_revenue_wise=row.surgery_revenue;
+// // var mtd_revenue_wise=row.mtd_revenue;
+// // var pharmacy_revenue_perc_wise=row.pharmacy_revenue_perc;
+// // var opticals_revenue_perc_wise=row.opticals_revenue_perc;
+// // var surgery_revenue_perc_wise=row.surgery_revenue_perc;
+// // var pharmacy_cogs_wise=row.pharmacy_cogs;
+// // var opticals_cogs_wise=row.opticals_cogs;
+// // var surgery_cogs_wise=row.surgery_cogs;
+// // var mtd_cogs_wise=row.mtd_cogs;
+// // var pharmacy_cogs_perc_wise=row.pharmacy_cogs_perc;
+// // var opticals_cogs_perc_wise=row.opticals_cogs_perc;
+// // var surgery_cogs_perc_wise=row.surgery_cogs_perc;
+// // var mc_wise=row.MC;
+// //     data = {
+// //       entity: entity_wise,
+// //       branch: branch_wise,
+// //       pharmacy_revenue: pharmacy_revenue_wise,
+// //       optical_revenue: optical_revenue_wise,
+// //       surgery_revenue: surgery_revenue_wise,
+// //       mtd_revenue: mtd_revenue_wise,
+// //       pharmacy_revenue_perc: pharmacy_revenue_perc_wise,
+// //       opticals_revenue_perc: opticals_revenue_perc_wise,
+// //       surgery_revenue_perc:surgery_revenue_perc_wise,
+// //       pharmacy_cogs: pharmacy_cogs_wise,
+// //       opticals_cogs : opticals_cogs_wise,
+// //       surgery_cogs :surgery_cogs_wise,
+// //       mtd_cogs : mtd_cogs_wise,
+// //       pharmacy_cogs_perc :pharmacy_cogs_perc_wise,
+// //       opticals_cogs_perc :opticals_cogs_perc_wise,
+// //       surgery_cogs_perc :surgery_cogs_perc_wise,
+// //       mc:mc_wise
+// //     };
+// //
+// //
+// //
+// // worksheet.addRow(data).commit();
+// //
+// //
+// //
+// //
+// //
+// //
+// // })
+// //
+// //
+// //
+// // workbook.commit().then(function() {
+// //   console.log('excel file cretaed');
+// // });
+// //
+// //
+// //
+//
+//
+//
+//   var nodemailer = require('nodemailer');
+//
+//   var transporter = nodemailer.createTransport({
+//   service: 'gmail',
+//   auth: {
+//     user: 'praveenraj.y@dragarwal.com',
+//     pass: 'praveenrajyv22'
+//   }
+// });
+//
+//   var table =''; //to store html table
+// var date='';
+//   //create html table with data from res.
+//      for(var i=0; i<result.length; i++){
+//
+//
+//        table +='<tr><td>'+ result[i].entity +'</td><td>'+ result[i].branch +'</td><td>'+result[i].surgery_revenue+'</td> <td>'+ result[i].optical_revenue+'</td> <td>'+result[i].pharmacy_revenue+'</td> <td>'+result[i].mtd_revenue+'</td> <td>'+result[i].surgery_revenue_perc+'</td> <td> '+result[i].opticals_revenue_perc +'</td><td>'+result[i].pharmacy_revenue_perc +'</td> <td>'+result[i].surgery_cogs +'</td> <td>'+result[i].opticals_cogs+'</td><td>'+result[i].pharmacy_cogs+'</td><td>'+result[i].mtd_cogs+'</td><td>'+result[i].pharmacy_cogs_perc+'</td><td>'+result[i].opticals_cogs_perc+'</td><td>'+result[i].pharmacy_cogs_perc+'</td><td>'+result[i].Consump+'</td>  </tr>';
+// date =result[i].today_date;
+//
+//      }
+//
+//      table ='<table border="1"><tr><th colspan="17">Revenue vs Cogs '+result.date+' </th></tr><tr><th></th><th></th><th colspan ="4">Revenue</th><th colspan="3">Revenue Contribution</th><th colspan="4">COGS</th><th colspan="3">COGS %</th><th>Material</th></tr><tr><th>Entity</th><th>Branch</th><th>Surgery</th><th>Opticals</th><th>Pharmacy</th><th>MTD</th> <th>Surgery</th> <th>Opticals</th> <th>Pharmacy</th><th>Surgery</th><th>Opticals</th><th>Pharmacy</th> <th>MTD</th> <th>Surgery</th><th>Opticals</th><th>Pharmacy</th><th>Consump %</th> </tr>'+ table +' </table>';
+// //console.log(table);
+//
+//
+// let mailOptions={
+//   from: 'praveenraj.y@dragarwal.com',
+//   to:'praveenraj.yv@gmail.com',
+//   subject: 'Revenue vs Cogs',
+// html: table
+// };
+//
+// transporter.sendMail(mailOptions, function(error, info){
+//   if (error) {
+//     console.log(error);
+//   } else {
+//     console.log('Email sent: ' + info.response);
+//   }
+// });
+//
+//
+//
+//  })
+//   })
+// });
+
+
 
 
 exports.schedule = cron.schedule('00 06 * * *', () => {

@@ -117,5 +117,6 @@ app.get('/api-iwsr/:fromdate/:todate/:entity',modules.routes.iwsr)
 app.get('/api-getdob/:date',modules.routes.dob)
 
 app.get('/api-snapshotrevenue/:branch',modules.routes.snapshotrevenue)
+app.get('/api-opr-branches', modules.routes.opr_branches)
 
 app.listen(8888, () => console.log(`App listening on port 8888`))

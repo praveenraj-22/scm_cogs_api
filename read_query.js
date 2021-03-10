@@ -177,3 +177,5 @@ exports.collectionsme=read("./queries/collectionme.sql");
 exports.revenuedetailstpa=read("./queries/revenue_tpadetails.sql");
 
 exports.dob=read("./queries/dateofbirth.sql");
+
+exports.opr_branches=read("./queries/opr_branches.sql");

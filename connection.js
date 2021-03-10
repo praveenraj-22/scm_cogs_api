@@ -54,31 +54,31 @@ exports.scm_public = mysql.createPool({
     connectionLimit: 10,
     queueLimit: 0
 })
-//
-//
-// exports.mis_root = mysql.createPool({
-//     host: creds.mis_root.host,
-//     user: creds.mis_root.user,
-//     password: creds.mis_root.pass,
-//     database: creds.mis_root.db,
-//     port: creds.mis_root.port,
-//     dateStrings: true,
-//     insecureAuth: true,
-//     multipleStatements: true,
-//     waitForConnections: true,
-//     connectionLimit: 10,
-//     queueLimit: 0
-// })
-//
-// exports.mis_public = mysql.createPool({
-//     host: creds.mis_public.host,
-//     user: creds.mis_public.user,
-//     password: creds.mis_public.pass,
-//     database: creds.mis_public.db,
-//     port: creds.mis_public.port,
-//     dateStrings: true,
-//     multipleStatements: true,
-//     waitForConnections: true,
-//     connectionLimit: 10,
-//     queueLimit: 0
-// })
+
+
+exports.mis_root = mysql.createPool({
+    host: creds.mis_root.host,
+    user: creds.mis_root.user,
+    password: creds.mis_root.pass,
+    database: creds.mis_root.db,
+    port: creds.mis_root.port,
+    dateStrings: true,
+    insecureAuth: true,
+    multipleStatements: true,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+})
+
+exports.mis_public = mysql.createPool({
+    host: creds.mis_public.host,
+    user: creds.mis_public.user,
+    password: creds.mis_public.pass,
+    database: creds.mis_public.db,
+    port: creds.mis_public.port,
+    dateStrings: true,
+    multipleStatements: true,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+})

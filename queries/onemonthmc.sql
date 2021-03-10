@@ -1,6 +1,5 @@
-
 SELECT
-	entity
+	 billed_entity as entity
 	, branch
 	, ROUND(IF((SUM(pharmacyrevenue)/100000)=0 OR NULL,0,SUM(pharmacyrevenue)/100000),1) AS pharmacy_revenue
 	, ROUND(IF((SUM(opticalsrevenue)/100000)=0 OR NULL,0,SUM(opticalsrevenue)/100000),1) AS optical_revenue
@@ -20,7 +19,7 @@ SELECT
 --	,DATE_SUB(CURDATE(), INTERVAL 1 DAY) AS today_date
  FROM (
 (
-SELECT entity, branch,
+SELECT billed_entity, revenue_report.branch,
 IF((SUM(pharmacy))=0 OR NULL,0,SUM(pharmacy))AS pharmacyrevenue,
 IF((SUM(opticals))=0 OR NULL,0,SUM(opticals)) AS opticalsrevenue,
  IF((SUM(laboratory+surgery+consultation+others))=0 OR NULL,0,SUM(laboratory+surgery+consultation+others)) AS surgeryrevenue,
@@ -35,7 +34,7 @@ IF((SUM(opticals))=0 OR NULL,0,SUM(opticals)) AS opticalsrevenue,
 , 0 AS pharmacycogsperc
 , 0 AS opticalscogsperc
 , 0 AS surgerycogsperc
-FROM revenue_report
+FROM revenue_report join branches bh on bh.code=revenue_report.branch
 WHERE DATE(trans_date)
 -- BETWEEN DATE_SUB(DATE(NOW()),INTERVAL (DAY(NOW())-1) DAY) AND NOW()
 BETWEEN
@@ -74,7 +73,7 @@ DATE_FORMAT(CURDATE() - INTERVAL 1 MONTH,'%Y-%m-01') AND LAST_DAY( CURDATE() - I
 )
 ) A WHERE branch NOT IN('NAB','UGD','TZA','ZMB','GHA','RWD','EBN','FLQ','GDL','MDR','BRA','MZQ','NGA','CGU')
 GROUP BY
-entity, branch
+billed_entity, branch
 
 
 UNION ALL
