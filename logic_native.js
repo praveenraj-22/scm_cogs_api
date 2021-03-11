@@ -2211,7 +2211,7 @@ let filterGroupwiseoptical = async (resmtdopt, ftddate, reslymtdopt, restarget, 
     "AP",
     "Kerala",
     "Kolkata",
-    "Madhyapradesh",
+    "Madhya_Pradesh",
     "Odisha",
     "ROI",
 
@@ -2294,7 +2294,7 @@ let filterGroupwiseoptical = async (resmtdopt, ftddate, reslymtdopt, restarget, 
 "GUN",
 "TPT",
 "RAJ",],
-    Madhyapradesh: ['JWS', 'APR', 'ATA'],
+    Madhya_Pradesh: ['JWS', 'APR', 'ATA'],
     Kerala:["TVM",
 "KTM"],
 
@@ -2352,17 +2352,17 @@ let filterGroupwiseoptical = async (resmtdopt, ftddate, reslymtdopt, restarget, 
   alin['mtdoptrev'] = grouptempObj['Chennai'].mtdoptrev + grouptempObj['ROTN'].mtdoptrev + grouptempObj['Karnataka'].mtdoptrev +
     grouptempObj['Maharashtra'].mtdoptrev +
     grouptempObj['Hyderabad'].mtdoptrev + grouptempObj['AP'].mtdoptrev + grouptempObj['Kerala'].mtdoptrev +
-    grouptempObj['Kolkata'].mtdoptrev + grouptempObj['Madhyapradesh'].mtdoptrev+grouptempObj['Odisha'].mtdoptrev + grouptempObj['ROI'].mtdoptrev;
+    grouptempObj['Kolkata'].mtdoptrev + grouptempObj['Madhya_Pradesh'].mtdoptrev+grouptempObj['Odisha'].mtdoptrev + grouptempObj['ROI'].mtdoptrev;
 
   alin['lstoptrev'] = grouptempObj['Chennai'].lstoptrev + grouptempObj['ROTN'].lstoptrev + grouptempObj['Karnataka'].lstoptrev +
   grouptempObj['Maharashtra'].lstoptrev +
   grouptempObj['Hyderabad'].lstoptrev + grouptempObj['AP'].lstoptrev + grouptempObj['Kerala'].lstoptrev +
-  grouptempObj['Kolkata'].lstoptrev + grouptempObj['Madhyapradesh'].lstoptrev+grouptempObj['Odisha'].lstoptrev + grouptempObj['ROI'].lstoptrev;
+  grouptempObj['Kolkata'].lstoptrev + grouptempObj['Madhya_Pradesh'].lstoptrev+grouptempObj['Odisha'].lstoptrev + grouptempObj['ROI'].lstoptrev;
 
   alin['targetmtdrev'] = grouptempObj['Chennai'].targetmtdrev + grouptempObj['ROTN'].targetmtdrev + grouptempObj['Karnataka'].targetmtdrev +
   grouptempObj['Maharashtra'].targetmtdrev +
   grouptempObj['Hyderabad'].targetmtdrev + grouptempObj['AP'].targetmtdrev + grouptempObj['Kerala'].targetmtdrev +
-  grouptempObj['Kolkata'].targetmtdrev + grouptempObj['Madhyapradesh'].targetmtdrev+grouptempObj['Odisha'].targetmtdrev + grouptempObj['ROI'].targetmtdrev;
+  grouptempObj['Kolkata'].targetmtdrev + grouptempObj['Madhya_Pradesh'].targetmtdrev+grouptempObj['Odisha'].targetmtdrev + grouptempObj['ROI'].targetmtdrev;
 
   alin['mtdoptperc'] = Math.round((((alin['mtdoptrev']) / (alin['lstoptrev'])) - 1) * 100);
   // mrdpercentage for all india
@@ -2399,7 +2399,7 @@ let filterBranchwiseoptical = async (resmtdopt, ftddate, reslymtdopt, restarget,
     "AP",
     "Kerala",
     "Kolkata",
-    "Madhyapradesh",
+    "Madhya_Pradesh",
     "Odisha",
     "ROI",
 
@@ -2482,7 +2482,7 @@ let filterBranchwiseoptical = async (resmtdopt, ftddate, reslymtdopt, restarget,
 "GUN",
 "TPT",
 "RAJ",],
-    Madhyapradesh: ['JWS', 'APR', 'ATA'],
+    Madhya_Pradesh: ['JWS', 'APR', 'ATA'],
     Kerala:["TVM","KTM"],
 
   };
@@ -2536,7 +2536,7 @@ let filterBranchwiseoptical = async (resmtdopt, ftddate, reslymtdopt, restarget,
 
         branchcode: branch,
         branch: branchName,
-
+        groupwise:key,
         mtdoptrev: Math.round(mtdopt),
         lstoptrev: Math.round(optlastyear),
         mtdoptperc: Math.round(mtdoptpercentage),
