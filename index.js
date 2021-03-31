@@ -13,7 +13,7 @@ app.use(modules.session({ name: 'session_ID', secret: 'Bi$$DS@@J&a&i&*', resave:
 
 app.use(modules.upload())
 
-modules.cron_job.schedule;
+//modules.cron_job.schedule;
 
 app.get('/api-super/:date', modules.routes.main_route)
 app.get('/api-normal/:date/:name', modules.routes.test_route)

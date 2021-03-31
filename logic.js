@@ -2506,13 +2506,15 @@ function inWords (num) {
 exports.snapshotR = async ( 
   rev_det_res,
   rev_target_res,
-  preFinYearFrom,
+  threeyearsbef,
+  twoyearsbef,
   currentFinYear,
   currentFinYearTo,
   opd_det_res,
   revdetail_res,
   opr_terget_query_res,
   inv_query_res,
+  treat_query_res,
   contact_query_res,
   pha_query_res,
   consul_query_res
@@ -2521,26 +2523,33 @@ exports.snapshotR = async (
 	
 	//console.log(revdetail_res);
 	
-	let reveCalMonthRes = await reveCalMonthWise( rev_det_res,rev_target_res,preFinYearFrom,currentFinYear,currentFinYearTo,opd_det_res,revdetail_res,opr_terget_query_res,inv_query_res,contact_query_res,pha_query_res,consul_query_res);
+	let reveCalMonthRes = await reveCalMonthWise( rev_det_res,rev_target_res,threeyearsbef,twoyearsbef,currentFinYear,currentFinYearTo,opd_det_res,revdetail_res,opr_terget_query_res,inv_query_res,treat_query_res,contact_query_res,pha_query_res,consul_query_res);
 	let reveCalQRes = await reveCalQWise(reveCalMonthRes,opd_det_res);
 	
-	let preyearText = preFinYearFrom.slice(-2)+'-'+currentFinYear.slice(-2);
+	//console.log(String(twoyearsbef));
+	//console.log(threeyearsbef);
+	
+	let thrreyearbeforText = threeyearsbef.slice(-2)+'-'+String(twoyearsbef).slice(-2);
+	let preyearText = String(twoyearsbef).slice(-2)+'-'+currentFinYear.slice(-2);
 	let curyearText = currentFinYear.slice(-2)+'-'+currentFinYearTo.slice(-2);
 	let goalText = 'GOLY % FY'+currentFinYear.slice(-2)+' vs FY'+currentFinYearTo.slice(-2);
-	return {    'preYear' : preyearText,
+	let goalText1 = 'GOLY % FY'+threeyearsbef.slice(-2)+' vs FY'+String(twoyearsbef).slice(-2);
+	return {    'ThirdYearBefore' : thrreyearbeforText,
+	            'preYear' : preyearText,
 				'curYear' : curyearText,
+				'goalText1' : goalText1,
 				'goalText' : goalText,
 				'monthWiseRevenue' :reveCalMonthRes,
 				'QWiseRevenue' :reveCalQRes,
 			}
 };
 
-let reveCalMonthWise = async ( rev_det_res,rev_target_res,preFinYearFrom,currentFinYear,currentFinYearTo,opd_det_res,revdetail_res,opr_terget_query_res,inv_query_res,contact_query_res,pha_query_res,consul_query_res) => {
+let reveCalMonthWise = async ( rev_det_res,rev_target_res,threeyearsbef,twoyearsbef,currentFinYear,currentFinYearTo,opd_det_res,revdetail_res,opr_terget_query_res,inv_query_res,treat_query_res,contact_query_res,pha_query_res,consul_query_res) => {
 	
 	
 	//console.log(opr_terget_query_res);
-	
-	let prevFinYearArr = [parseInt(preFinYearFrom),parseInt(currentFinYear)];
+	let threeYearBeforevFinYearArr = [parseInt(threeyearsbef),parseInt(twoyearsbef)];
+	let prevFinYearArr = [parseInt(twoyearsbef),parseInt(currentFinYear)];
 	let currentFinYearArr = [parseInt(currentFinYear),parseInt(currentFinYearTo)];
 	
 	
@@ -2599,8 +2608,13 @@ let reveCalMonthWise = async ( rev_det_res,rev_target_res,preFinYearFrom,current
 
    //console.log(preFinYearFrom);
    
+   
+    let threeYearBeforFinYearMonthSet = {};
+   threeYearBeforFinYearMonthSet[threeyearsbef] = [4,5,6,7,8,9,10,11,12];
+   threeYearBeforFinYearMonthSet[twoyearsbef] = [1,2,3];
+   
    let prevFinYearMonthSet = {};
-   prevFinYearMonthSet[preFinYearFrom] = [4,5,6,7,8,9,10,11,12];
+   prevFinYearMonthSet[twoyearsbef] = [4,5,6,7,8,9,10,11,12];
    prevFinYearMonthSet[currentFinYear] = [1,2,3];
    
    let curFinYearMonthSet = {};
@@ -2627,7 +2641,7 @@ let reveCalMonthWise = async ( rev_det_res,rev_target_res,preFinYearFrom,current
 	optarr = _.filter(pha_query_res, {  UNIT:'OPTICALS'});
 	phaarr = _.filter(pha_query_res, {  UNIT:'PHARMACY'});
 	
-	treatarr = _.filter(inv_query_res, {  UNIT:'TREATMENT'});
+	treatarr = _.filter(treat_query_res, {  UNIT:'TREATMENT'});
 	invarr = _.filter(inv_query_res, {  UNIT:'INVESTIGATION'});
 	
 	corarr = _.filter(revdetail_res, {  UNIT:'SURGERY', GROUP: 'CORNEA'});
@@ -3840,6 +3854,610 @@ let reveCalMonthWise = async ( rev_det_res,rev_target_res,preFinYearFrom,current
 					
 					console.log((parseFloat((branchObj.currentyeartotal.totalpopd/parseFloat(branchObj.lastyeartotal.totalpopd)-1))*100).toFixed(1));*/
 					
+					
+					
+	/* three year before*/
+	
+	
+	monthWiseObj=[];
+	mtdrevtarget=0;
+	mtdrev = 0;
+	mtdopd = 0;
+	totalrev=0;
+	totaltarget=0;
+	totalopd=0;
+	ctlowend = 0 ,cthighend=0,ctmidend=0;
+	ctlowendcount = 0 ,cthighendcount=0,ctmidendcount=0;
+    ctlowendtotal = 0 ,cthighendtotal=0,ctmidendtotal=0;
+    ctlowendcounttotal = 0 ,cthighendcounttotal=0,ctmidendcounttotal=0;
+    allcatmtd=0,allcatcount=0,allcatcounttotal=0,allcatmtdtotal=0;
+	opdtarget=0,paidrevtarget=0,conschargestarget=0,catlenostarget=0,catmenostarget=0,cathenostarget=0,catlevaluestarget=0,catmevaluestarget=0,cathevaluestarget=0;
+    opdtargettotal=0,paidrevtargettotal=0,conschargestargettotal=0,catlenostargettotal=0,catmenostargettotal=0,cathenostargettotal=0,catlevaluestargettotal=0,catmevaluestargettotal=0,cathevaluestargettotal=0;
+	mtdpha=0,totalpha=0,mtdphacount=0,totalphacount=0,mtdphatarget=0,totalphatarget=0,mtdphacounttarget=0,totalphacounttarget=0;
+	mtdopt=0,totalopt=0,mtdoptcount=0,totaloptcount=0,mtdopttarget=0,totalopttarget=0,mtdoptcounttarget=0,totaloptcounttarget=0	
+
+    mtdtreat=0,totaltreat=0,mtdtreatcount=0,totaltreatcount=0,mtdtreattarget=0,totaltreattarget=0,mtdtreatcounttarget=0,totaltreatcounttarget=0;
+	
+	mtdinv=0,totalinv=0,mtdinvcount=0,totalinvcount=0,mtdinvtarget=0,totalinvtarget=0,mtdinvcounttarget=0,totalinvcounttarget=0;
+
+    mtdcor=0,totalcor=0,mtdcorcount=0,totalcorcount=0,mtdcortarget=0,totalcortarget=0,mtdcorcounttarget=0,totalcorcounttarget=0;
+	
+	mtdref=0,totalref=0,mtdrefcount=0,totalrefcount=0,mtdreftarget=0,totalreftarget=0,mtdrefcounttarget=0,totalrefcounttarget=0;
+
+    mtdosu=0,totalosu=0,mtdosucount=0,totalosucount=0,mtdosutarget=0,totalosutarget=0,mtdosucounttarget=0,totalosucounttarget=0;
+
+    mtdconlens=0,totalconlens=0,mtdconlenscount=0,totalconlenscount=0,mtdconlenstarget=0,totalconlenstarget=0,mtdconlenscounttarget=0,totalconlenscounttarget=0;
+
+    mtdvrin=0,totalvrin=0,mtdvrincount=0,totalvrincount=0,mtdvrintarget=0,totalvrintarget=0,mtdvrincounttarget=0,totalvrincounttarget=0;
+	
+	 mtdtconsu=0,totaltconsu=0,mtdtconsucount=0,totaltconsucount=0,mtdtconsutarget=0,totaltconsutarget=0,mtdtconsucounttarget=0,totaltconsucounttarget=0;
+	 mtdpopd=0,totalpopd=0,mtdpopdcount=0,totalpopdcount=0,mtdpopdtarget=0,totalpopdtarget=0,mtdpopdcounttarget=0,totalpopdcounttarget=0;
+	 
+	 mtdvrsug=0,totalvrsug=0,mtdvrsugcount=0,totalvrsugcount=0,mtdvrsugtarget=0,totalvrsugtarget=0,mtdvrsugcounttarget=0,totalvrsugcounttarget=0;
+	 
+	 mtdoptypp=0,totaloptypp=0,mtdoptypptarget=0,totaloptypptarget=0;
+	 mtdphaypp=0,totalphaypp=0,mtdphaypptarget=0,totalphaypptarget=0;
+	 mtdopdypp=0,totalopdypp=0,mtdopdypptarget=0,totalopdypptarget=0;
+	
+	threeYearBeforevFinYearArr.forEach(year => {		     
+			 threeYearBeforFinYearMonthSet[year].forEach(month => {
+                 mtdrevtarget=0;
+				 mtdrev = 0;
+                 mtdopd = 0;
+				 ctlowend = 0 ,cthighend=0,ctmidend=0;
+				 ctlowendcount = 0 ,cthighendcount=0,ctmidendcount=0;
+				 allcatmtd=0,allcatcount=0;
+                 opdtarget=0,paidrevtarget=0,conschargestarget=0,catlenostarget=0,catmenostarget=0,cathenostarget=0,catlevaluestarget=0,catmevaluestarget=0,cathevaluestarget=0;
+				 
+				  mtdopt=0,mtdoptcount=0,mtdopttarget=0,mtdoptcounttarget=0;
+				  mtdpha=0,mtdphacount=0,mtdphatarget=0,mtdphacounttarget=0;
+				  mtdtreat=0,mtdtreatcount=0,mtdtreattarget=0,mtdtreatcounttarget=0;
+				  mtdinv=0,mtdinvcount=0,mtdinvtarget=0,mtdinvcounttarget=0;
+				  mtdcor=0,mtdcorcount=0,mtdcortarget=0,mtdcorcounttarget=0;
+				  mtdref=0,mtdrefcount=0,mtdreftarget=0,mtdrefcounttarget=0;
+				  mtdosu=0,mtdosucount=0,mtdosutarget=0,mtdosucounttarget=0;
+				  mtdconlens=0,mtdconlenscount=0,mtdconlenstarget=0,mtdconlenscounttarget=0;
+				  mtdvrin=0,mtdvrincount=0,mtdvrintarget=0,mtdvrincounttarget=0;
+				  mtdtconsu=0,mtdtconsucount=0,mtdtconsutarget=0,mtdtconsucounttarget=0;
+				  mtdpopd=0,mtdpopdcount=0,mtdpopdtarget=0,mtdpopdcounttarget=0;
+				  mtdvrsug=0,mtdvrsugcount=0,mtdvrsugtarget=0,mtdvrsugcounttarget=0;
+				  mtdoptypp=0,mtdoptypptarget=0;
+				  mtdphaypp=0,mtdphaypptarget=0;
+				  mtdopdypp=0,mtdopdypptarget=0;
+				 				 
+				 monthText = monthMapping[month];
+
+                 _.filter(rev_det_res, {  'MONTH(trans_date)': month,'yr' : year}).forEach(
+					element => {
+						mtdrev+= element.mtd;
+						//totalrev+= element.mtd;
+						
+				});
+				
+				totalrev+= parseFloat(mtdrev);
+				//totaloptcount+= parseInt(mtdoptcount);
+				
+				
+				_.filter(rev_target_res, {  'target_month': month,'target_year' : year}).forEach(
+					element => {
+						mtdrevtarget+= element.amount;
+						//totaltarget+= element.amount;
+						
+				});
+				totaltarget+= parseFloat(mtdrevtarget);
+				//totaloptcount+= parseInt(mtdoptcount);
+				
+				_.filter(opd_det_res, {   'MONTH(trans_date)': month,'yr' : year}).forEach(
+					element => {
+						mtdopd+= element.mtd;
+						//totalopd+= parseInt(element.mtd);
+						
+						
+				});
+				totalopd+= parseFloat(mtdopd);
+				
+				 mtdopdypp=parseInt((lakshFormatRevenue1(mtdrev)/mtdopd)*100000);
+				 totalopdypp+=parseInt(mtdopdypp);
+				
+				
+				
+				
+				
+				
+				_.filter(catlowarr, {   'MONTH(transaction_date)': month,'yr' : year}).forEach(
+					element => {
+						
+						
+						ctlowend+= element.net_amount;
+						ctlowendcount+= element.ct;
+						//ctlowendtotal+= parseFloat(element.net_amount);
+						//ctlowendcounttotal+= parseInt(element.ct);
+						
+				});
+				ctlowendtotal+= parseFloat(ctlowend);
+				ctlowendcounttotal+= parseInt(ctlowendcount);
+				
+				
+				_.filter(cathigharr, {   'MONTH(transaction_date)': month,'yr' : year}).forEach(
+					element => {
+						cthighend+= element.net_amount;
+						cthighendcount+= element.ct;
+						//cthighendtotal+= parseFloat(element.net_amount);
+						//cthighendcounttotal+= parseInt(element.ct);
+						
+						
+				});
+				cthighendtotal+= parseFloat(cthighend);
+				cthighendcounttotal+= parseInt(cthighendcount);
+				
+				
+				_.filter(catmidarr, {   'MONTH(transaction_date)': month,'yr' : year}).forEach(
+					element => {
+						ctmidend+= element.net_amount;
+						ctmidendcount+= element.ct;
+						//ctmidendtotal+= parseFloat(element.net_amount);
+						//ctmidendcounttotal+= parseInt(element.ct);
+						
+						
+				});
+				ctmidendtotal+= parseFloat(ctmidend);
+				ctmidendcounttotal+= parseInt(ctmidendcount);
+				
+				//allcatmtd=0,allcatcount=0,allcatcounttotal=0,allcatmtdtotal=0;
+				
+				_.filter(catarr, {   'MONTH(transaction_date)': month,'yr' : year}).forEach(
+					element => {
+						allcatmtd += element.net_amount;
+						allcatcount+= element.ct;
+				});
+				
+				_.filter(optarr, {   'MONTH(transaction_date)': month,'yr' : year}).forEach(
+					element => {
+						mtdopt+= element.net_amount;
+						mtdoptcount+= element.ct;
+						
+						
+						
+				});
+				
+				totalopt+= parseFloat(mtdopt);
+				totaloptcount+= parseInt(mtdoptcount);
+				
+				mtdoptypp=parseInt((lakshFormatRevenue1(mtdopt)/mtdoptcount)*100000);				 
+				totaloptypp+=parseInt(mtdoptypp);
+				
+				
+				_.filter(phaarr, {   'MONTH(transaction_date)': month,'yr' : year}).forEach(
+					element => {
+						mtdpha+= element.net_amount;
+						mtdphacount+= element.ct;
+						
+						
+						
+						
+				});
+				totalpha+= parseFloat(mtdpha);
+				totalphacount+= parseInt(mtdphacount);
+				
+				
+				mtdphaypp=parseInt((lakshFormatRevenue1(mtdpha)/mtdphacount)*100000);				 
+				totalphaypp+=parseInt(mtdphaypp);
+				
+				
+				_.filter(treatarr, {   'MONTH(transaction_date)': month,'yr' : year}).forEach(
+					element => {
+						mtdtreat+= element.net_amount;
+						mtdtreatcount+= element.ct;
+						
+						
+						
+						
+				});
+				totaltreat+= parseFloat(mtdtreat);
+				totaltreatcount+= parseInt(mtdtreatcount);
+				
+				
+				_.filter(invarr, {   'MONTH(transaction_date)': month,'yr' : year}).forEach(
+					element => {
+						mtdinv+= element.net_amount;
+						mtdinvcount+= element.ct;
+						
+						
+						
+						
+				});
+				totalinv+= parseFloat(mtdinv);
+				totalinvcount+= parseInt(mtdinvcount);
+				
+				
+				_.filter(corarr, {   'MONTH(transaction_date)': month,'yr' : year}).forEach(
+					element => {
+						mtdcor+= element.net_amount;
+						mtdcorcount+= element.ct;
+						
+						
+						
+						
+				});
+				totalcor+= parseFloat(mtdcor);
+				totalcorcount+= parseInt(mtdcorcount);
+				
+				
+				_.filter(refarr, {   'MONTH(transaction_date)': month,'yr' : year}).forEach(
+					element => {
+						mtdref+= element.net_amount;
+						mtdrefcount+= element.ct;
+						
+						
+						
+						
+				});
+				totalref+= parseFloat(mtdref);
+				totalrefcount+= parseInt(mtdrefcount);
+				
+				
+				
+				_.filter(osuarr1, {   'MONTH(transaction_date)': month,'yr' : year}).forEach(
+					element => {
+						mtdosu+= element.net_amount;
+						mtdosucount+= element.ct;
+						
+						
+						
+						
+				});
+				totalosu+= parseFloat(mtdosu);
+				totalosucount+= parseInt(mtdosucount);
+				
+				
+				_.filter(conlensarr, {   'MONTH(transaction_date)': month,'yr' : year}).forEach(
+					element => {
+						mtdconlens+= element.net_amount;
+						mtdconlenscount+= element.ct;
+						
+						
+						
+						
+				});
+				totalconlens+= parseFloat(mtdconlens);
+				totalconlenscount+= parseInt(mtdconlenscount);
+				
+				
+				_.filter(vrinarr, {   'MONTH(transaction_date)': month,'yr' : year}).forEach(
+					element => {
+						mtdvrin+= element.net_amount;
+						mtdvrincount+= element.ct;
+						
+						
+						
+						
+				});
+				totalvrin+= parseFloat(mtdvrin);
+				totalvrincount+= parseInt(mtdvrincount);
+				
+				
+				_.filter(tconsuarr, {   'MONTH(transaction_date)': month,'yr' : year}).forEach(
+					element => {
+						mtdtconsu+= element.net_amount;
+						mtdtconsucount+= element.ct;
+						
+						
+						
+						
+				});
+				totaltconsu+= parseFloat(mtdtconsu);
+				totaltconsucount+= parseInt(mtdtconsucount);
+				
+				
+				_.filter(popdarr, {   'MONTH(transaction_date)': month,'yr' : year}).forEach(
+					element => {
+						mtdpopd+= element.ct;
+						mtdpopdcount+= element.ct;
+						
+						
+						
+						
+				});
+				totalpopd+= parseFloat(mtdpopd);
+				totalpopdcount+= parseInt(mtdpopdcount);
+				
+				
+				_.filter(vrsugarr, {   'MONTH(transaction_date)': month,'yr' : year}).forEach(
+					element => {
+						mtdvrsug+= element.net_amount;
+						mtdvrsugcount+= element.ct;
+						
+						
+						
+						
+				});
+				totalvrsug+= parseFloat(mtdvrsug);
+				totalvrsugcount+= parseInt(mtdvrsugcount);
+				
+				
+				_.filter(opr_terget_query_res, { 'target_month': month,'target_year' : year}).forEach(
+					element => {
+						
+						
+						
+						opdtarget+= element.target_opd;						
+						
+						
+						conschargestarget+= element.target_conscharges;
+						
+						catlenostarget+= element.target_catlenos;
+						catmenostarget+= element.target_catmenos;
+						cathenostarget+= element.target_cathenos;
+						catlevaluestarget+= element.target_catlevalues;
+						catmevaluestarget+= element.target_catmevalues;
+						cathevaluestarget+= element.target_cathevalues;
+						
+						mtdopttarget+= element.target_opticalordervalues;
+						mtdoptcounttarget+= element.target_opticalordernos;
+						mtdoptypptarget+=parseInt((mtdopttarget/mtdoptcounttarget)*100000);				 
+				        
+						mtdphatarget+= element.target_pharmacyvalues;
+						mtdphacounttarget+= element.target_pharmacynos;						
+						
+						
+						mtdtreattarget+= element.target_investtreatvalues;
+						mtdtreatcounttarget+= element.target_investtreatnos;
+						
+						mtdcortarget+= element.target_corneavalues;
+						mtdcorcounttarget+= element.target_corneanos;
+						mtdreftarget+= element.target_refractivevalues;
+						mtdrefcounttarget+= element.target_refractivenos;
+						
+						mtdosutarget+= element.target_othersurgeryvalues;
+						mtdosucounttarget+= element.target_othersurgerynos;
+						
+						mtdconlenstarget+= element.target_contactlensvalues;
+						mtdconlenscounttarget+= element.target_contactlensnos;
+						mtdvrintarget+= element.target_vrinjvalues;
+						mtdvrincounttarget+= element.target_vrinjnos;
+						
+						mtdtconsutarget+= element.target_conscharges;
+						
+						
+						mtdpopdtarget+= element.target_paidreview;
+						
+						mtdvrsugtarget+= element.target_vrvalues;
+						mtdvrsugcounttarget+= element.target_vrnos;
+						
+						
+						
+						
+				});
+						opdtargettotal+= parseInt(opdtarget);
+						mtdopdypptarget=parseInt((mtdrevtarget/opdtarget)*100000);	
+						totalopdypptarget+=parseInt(mtdopdypptarget);
+						
+						conschargestargettotal+= parseInt(conschargestarget);
+						catlenostargettotal+= parseInt(catlenostarget);
+						catmenostargettotal+= parseInt(catmenostarget);						
+						cathenostargettotal+= parseInt(cathenostarget);
+						catlevaluestargettotal+= parseFloat(catlevaluestarget);
+						catmevaluestargettotal+= parseFloat(catmevaluestarget);
+						cathevaluestargettotal+= parseFloat(cathevaluestarget);
+
+						totalopttarget+= parseFloat(mtdopttarget);
+						totaloptcounttarget+= parseInt(mtdoptcounttarget);
+						mtdoptypptarget=parseInt((mtdopttarget/mtdoptcounttarget)*100000);	
+						totaloptypptarget+=parseInt(mtdoptypptarget);
+						
+						
+						totalphatarget+= parseFloat(mtdphatarget);
+						totalphacounttarget+= parseInt(mtdphacounttarget);
+						mtdphaypptarget=parseInt((mtdphatarget/mtdphacounttarget)*100000);	
+						totalphaypptarget+=parseInt(mtdphaypptarget);
+						
+						totaltreattarget+= parseFloat(mtdtreattarget);
+						totaltreatcounttarget+= parseInt(mtdtreatcounttarget);
+						
+						totalcortarget+= parseFloat(mtdcortarget);
+						totalcorcounttarget+= parseInt(mtdcorcounttarget);
+						totalreftarget+= parseFloat(mtdreftarget);
+						totalrefcounttarget+= parseInt(mtdrefcounttarget);
+						
+						totalosutarget+= parseFloat(mtdosutarget);
+						totalosucounttarget+= parseInt(mtdosucounttarget);
+						
+						totalconlenstarget+= parseFloat(mtdconlenstarget);
+						totalconlenscounttarget+= parseInt(mtdconlenscounttarget);
+						totalvrintarget+= parseFloat(mtdvrintarget);
+						totalvrincounttarget+= parseInt(mtdvrincounttarget);
+						totaltconsutarget+= parseFloat(mtdtconsutarget);
+						totalpopdtarget+= parseInt(mtdpopdtarget);
+						
+						totalvrsugtarget+= parseFloat(mtdvrsugtarget);
+						totalvrsugcounttarget+= parseInt(mtdvrsugcounttarget);
+				
+				 monthWiseObj.push({			
+					monthText : monthText,
+					mtdrev: lakshFormatRevenue1(mtdrev),
+					mtdrevtarget: mtdrevtarget.toFixed(1),
+					
+					mtdopd: mtdopd,
+					mtdopdypp:mtdopdypp,
+					
+					mtdctlowend:lakshFormatRevenue1(ctlowend),
+					mtdcthighend:lakshFormatRevenue1(cthighend),
+					mtdctmidend:lakshFormatRevenue1(ctmidend),
+					mtdctlowendcount:ctlowendcount,
+					mtdcthighendcount:cthighendcount,
+					mtdctmidendcount:ctmidendcount,
+					mtdallcat:lakshFormatRevenue1(allcatmtd),
+					mtdallcatcount:allcatcount,
+					
+					mtdopt:lakshFormatRevenue1(mtdopt),
+					mtdoptcount:parseInt(mtdoptcount),
+					mtdoptypp:mtdoptypp,
+					mtdpha:lakshFormatRevenue1(mtdpha),
+					mtdphacount:parseInt(mtdphacount),
+					mtdphaypp:mtdphaypp,
+					mtdtreatinv:(parseFloat(lakshFormatRevenue1(mtdtreat))+parseFloat(lakshFormatRevenue1(mtdinv))).toFixed(1),
+					mtdtreatcountinv:parseInt(mtdtreatcount)+parseInt(mtdinvcount),
+					
+					mtdcor:lakshFormatRevenue1(mtdcor),
+					mtdcorcount:mtdcorcount,
+					mtdref:lakshFormatRevenue1(mtdref),
+					mtdrefcount:mtdrefcount,
+					
+					mtdosu:lakshFormatRevenue1(mtdosu),
+					mtdosucount:mtdosucount,
+					mtdconlens: lakshFormatRevenue1(mtdconlens),
+					mtdconlenscount: mtdconlenscount,
+					mtdvrin:lakshFormatRevenue1(mtdvrin),
+					mtdvrincount:mtdvrincount,
+					
+					mtdtconsu:lakshFormatRevenue1(mtdtconsu),
+					mtdtconsucount:mtdtconsucount,
+					mtdpopd:mtdpopd,
+					mtdpopdcount:mtdpopdcount,
+					mtdvrsug:lakshFormatRevenue1(mtdvrsug),
+					mtdvrsugcount:mtdvrsugcount,
+					
+					mtdopdtarget: opdtarget,
+					mtdopdypptarget:mtdopdypptarget,
+					
+					
+				    mtdctlowendtarget:catlevaluestarget.toFixed(1),
+					mtdcthighendtarget:cathevaluestarget.toFixed(1),
+					mtdctmidendtarget:catmevaluestarget.toFixed(1),
+					mtdctlowendcounttarget:catlenostarget,
+					mtdcthighendcounttarget:cathenostarget,
+					mtdctmidendcounttarget:catmenostarget,
+					
+					mtdallcattarget:(parseFloat(catlevaluestarget)+parseFloat(catmevaluestarget)+parseFloat(cathevaluestarget)).toFixed(1),
+					mtdallcatcounttarget:parseInt(catlenostarget)+parseInt(catmenostarget)+parseInt(cathenostarget),
+					
+					mtdopttarget: mtdopttarget.toFixed(1),
+					mtdoptcounttarget: mtdoptcounttarget,
+					mtdoptypptarget:mtdoptypptarget,
+					
+					mtdphatarget: mtdphatarget.toFixed(1),
+					mtdphacounttarget: mtdphacounttarget,
+					mtdphaypptarget:mtdphaypptarget,
+					
+					
+					
+					
+					mtdtreatinvtarget: mtdtreattarget.toFixed(1),
+					mtdtreatinvcounttarget: mtdtreatcounttarget,
+					
+					mtdcortarget: mtdcortarget.toFixed(1),
+					mtdcorcounttarget: mtdcorcounttarget,
+					mtdreftarget: mtdreftarget.toFixed(1),
+					mtdrefcounttarget: mtdrefcounttarget,
+					
+					mtdosutarget: mtdosutarget.toFixed(1),
+					mtdosucounttarget: mtdosucounttarget,
+					mtdconlenstarget: mtdconlenstarget.toFixed(1),
+					mtdconlenscounttarget: mtdconlenscounttarget,					
+					mtdvrintarget: mtdvrintarget.toFixed(1),
+					mtdvrincounttarget: mtdvrincounttarget,
+					mtdtconsutarget: mtdtconsutarget.toFixed(1),
+					mtdtconsucounttarget: mtdtconsucounttarget,
+					mtdpopdtarget: mtdpopdtarget,
+					mtdvrsugtarget: mtdvrsugtarget.toFixed(1),
+					mtdvrsugcounttarget: mtdvrsugcounttarget
+				
+				});	
+				 
+				 
+			 });
+	});
+	
+	
+	branchObj['thirdyearmonth'] = monthWiseObj;
+	branchObj['thirdyeartotal'] = {
+					totalrev: lakshFormatRevenue1(totalrev),
+					totaltarget: totaltarget.toFixed(1),
+					
+					totalopd: totalopd,
+					totalopdypp: parseInt(totalopdypp),
+					
+					totalctlowend: lakshFormatRevenue1(ctlowendtotal),
+					totalctmidend: lakshFormatRevenue1(ctmidendtotal),
+					totalcthighend: lakshFormatRevenue1(cthighendtotal),					
+					totalctlowendcount: ctlowendcounttotal,
+					totalctmidendcount: ctmidendcounttotal,
+					totalcthighendcount: cthighendcounttotal,
+					totalallcat: lakshFormatRevenue1(parseFloat(ctlowendtotal)+parseFloat(ctmidendtotal)+parseFloat(cthighendtotal)),
+					totalallcatcount: parseInt(ctlowendcounttotal)+parseInt(ctmidendcounttotal)+parseInt(cthighendcounttotal),
+					
+					totalopt: lakshFormatRevenue1(totalopt),
+					totaloptcount: totaloptcount,
+					totaloptypp: parseInt(totaloptypp),
+					
+					totalpha: lakshFormatRevenue1(totalpha),
+					totalphacount: totalphacount,
+					totalphaypp: parseInt(totalphaypp),
+					
+					totaltreatinv: lakshFormatRevenue1(parseFloat(totaltreat)+parseFloat(totalinv)),
+					totaltreatinvcount: parseInt(totaltreatcount)+parseInt(totalinvcount),
+					
+					totalcor: lakshFormatRevenue1(totalcor),
+					totalcorcount: totalcorcount,
+					totalref: lakshFormatRevenue1(totalref),
+					totalrefcount: totalrefcount,
+					totalosu: lakshFormatRevenue1(totalosu),
+					totalosucount: totalosucount,
+					
+					totalconlens: lakshFormatRevenue1(totalconlens),
+					totalconlenscount: totalconlenscount,
+					totalvrin: lakshFormatRevenue1(totalvrin),
+					totalvrincount: totalvrincount,
+					totaltconsu: lakshFormatRevenue1(totaltconsu),
+					totaltconsucount: totaltconsucount,
+					totalpopd: totalpopd,
+					totalpopdcount: totalpopdcount,
+					totalvrsug: lakshFormatRevenue1(totalvrsug),
+					totalvrsugcount: totalvrsugcount,
+					
+					totalopdtarget: opdtargettotal,
+					totalopdypptarget:parseInt(totalopdypptarget),
+					
+				    totalctlowendtarget:catlevaluestargettotal.toFixed(1),
+					totalcthighendtarget:cathevaluestargettotal.toFixed(1),
+					totalctmidendtarget:catmevaluestargettotal.toFixed(1),
+					totalctlowendcounttarget:catlenostargettotal,
+					totalcthighendcounttarget:cathenostargettotal,
+					totalctmidendcounttarget:catmenostargettotal,
+					totalallcatcounttarget: parseInt(catlenostargettotal)+parseInt(catmenostargettotal)+parseInt(cathenostargettotal),
+					totalallcattarget:(parseFloat(catlevaluestargettotal)+parseFloat(catmevaluestargettotal)+parseFloat(cathevaluestargettotal)).toFixed(1),
+					
+					totalopttarget:totalopttarget.toFixed(1),
+					totaloptcounttarget:totaloptcounttarget,
+					totaloptypptarget:parseInt(totaloptypptarget),
+					
+					totalphatarget:totalphatarget.toFixed(1),
+					totalphacounttarget:totalphacounttarget,
+					totalphaypptarget:parseInt(totalphaypptarget),
+					
+					
+					totaltreatinvtarget:totaltreattarget.toFixed(1),
+					totaltreatinvcounttarget:totaltreatcounttarget,
+					
+					totalcortarget:totalcortarget.toFixed(1),
+					totalcorcounttarget:totalcorcounttarget,
+					totalreftarget:totalreftarget.toFixed(1),
+					totalrefcounttarget:totalrefcounttarget,
+					
+					totalosutarget:totalosutarget.toFixed(1),
+					totalosucounttarget:totalosucounttarget,
+					totalconlenstarget: totalconlenstarget.toFixed(1),
+					totalconlenscounttarget: totalconlenscounttarget,
+					totalvrintarget: totalvrintarget.toFixed(1),
+					totalvrincounttarget: totalvrincounttarget,
+					totaltconsutarget: totaltconsutarget.toFixed(1),
+					totalpopdtarget: totalpopdtarget,
+					totalvrsugtarget: totalvrsugtarget.toFixed(1),
+					totalvrsugcounttarget: totalvrsugcounttarget
+					
+					
+					};
+					
 	
 	branchObj['totalper'] = { mtdrevper : (parseFloat((branchObj.currentyeartotal.totalrev/parseFloat(branchObj.lastyeartotal.totalrev)-1))*100).toFixed(1),
 							mtdtargetper : (parseFloat((branchObj.currentyeartotal.totaltarget/parseFloat(branchObj.lastyeartotal.totaltarget)-1))*100).toFixed(1),
@@ -4140,10 +4758,10 @@ let reveCalQWise = async ( reveCalMonthRes) => {
 					mtdallcatcount : Qctallcount,
 					mtdopt : Qopt.toFixed(1),
 					mtdoptcount : Qoptcount,
-					mtdoptypp : Qoptypp,
+					mtdoptypp : parseFloat((Qopt/Qoptcount)*100000).toFixed(1),
 					mtdpha : Qpha.toFixed(1),
 					mtdphacount : Qphacount,
-					mtdphaypp : Qphaypp,
+					mtdphaypp : parseFloat((Qpha/Qphacount)*100000).toFixed(1),
 					mtdtreatinv : Qtreatinv.toFixed(1),
 					mtdtreatinvcount : Qtreatinvcount,
 					
@@ -4166,7 +4784,7 @@ let reveCalQWise = async ( reveCalMonthRes) => {
 					mtdvrsugcount : Qvrsugcount,
 					
 					mtdopdtarget: Qopdtarget,
-					mtdopdypptarget:Qopdypptarget,
+					mtdopdypptarget:parseFloat((Qrevtar/Qopdtarget)*100000).toFixed(1),
 					
 					
 				    mtdctlowendtarget:Qcatlevaluestarget.toFixed(1),
@@ -4181,10 +4799,10 @@ let reveCalQWise = async ( reveCalMonthRes) => {
 					
 					mtdopttarget:Qopttarget.toFixed(1),
 					mtdoptcounttarget:Qoptcounttarget,
-					mtdoptypptarget:Qoptypptarget,
+					mtdoptypptarget:parseFloat((Qopttarget/Qoptcounttarget)*100000).toFixed(1),
 					mtdphatarget:Qphatarget.toFixed(1),
 					mtdphacounttarget:Qphacounttarget,
-					mtdphaypptarget:Qphaypptarget,
+					mtdphaypptarget:parseFloat((Qphatarget/Qphacounttarget)*100000).toFixed(1),
 					mtdtreatinvtarget:Qtreatinvtarget.toFixed(1),
 					mtdtreatinvcounttarget:Qtreatinvcounttarget,
 					
@@ -4347,7 +4965,7 @@ let reveCalQWise = async ( reveCalMonthRes) => {
 					mtdrev : Qrev.toFixed(1),
 					mtdrevtarget: Qrevtar.toFixed(1),
 					mtdopd : Qopd,
-					mtdopdypp : Qopdypp,
+					mtdopdypp : parseFloat((Qrev/Qopd)*100000).toFixed(1),
 					mtdctlowend : Qctlowend.toFixed(1),
 					mtdctlowendcount : Qctlowendcount,
 					mtdcthighend : Qcthighend.toFixed(1),
@@ -4358,10 +4976,10 @@ let reveCalQWise = async ( reveCalMonthRes) => {
 					mtdallcatcount : Qctallcount,
 					mtdopt : Qopt.toFixed(1),
 					mtdoptcount : Qoptcount,
-					mtdoptypp : Qoptypp,
+					mtdoptypp : parseFloat((Qopt/Qoptcount)*100000).toFixed(1),
 					mtdpha : Qpha.toFixed(1),
 					mtdphacount : Qphacount,
-					mtdphaypp : Qphaypp,
+					mtdphaypp : parseFloat((Qpha/Qphacount)*100000).toFixed(1),
 					mtdtreatinv : Qtreatinv.toFixed(1),
 					mtdtreatinvcount : Qtreatinvcount,
 					
@@ -4385,7 +5003,7 @@ let reveCalQWise = async ( reveCalMonthRes) => {
 					
 					
 					mtdopdtarget: Qopdtarget,
-					mtdopdypptarget:Qopdypptarget,
+					mtdopdypptarget:parseFloat((Qrevtar/Qopdtarget)*100000).toFixed(1),
 					
 				    mtdctlowendtarget:Qcatlevaluestarget.toFixed(1),
 					mtdcthighendtarget:Qcathevaluestarget.toFixed(1),
@@ -4399,10 +5017,10 @@ let reveCalQWise = async ( reveCalMonthRes) => {
 					
 					mtdopttarget:Qopttarget.toFixed(1),
 					mtdoptcounttarget:Qoptcounttarget,
-					mtdoptypptarget:Qoptypptarget,
+					mtdoptypptarget:parseFloat((Qopttarget/Qoptcounttarget)*100000).toFixed(1),
 					mtdphatarget:Qphatarget.toFixed(1),
 					mtdphacounttarget:Qphacounttarget,
-					mtdphaypptarget:Qphaypptarget,
+					mtdphaypptarget:parseFloat((Qphatarget/Qphacounttarget)*100000).toFixed(1),
 					mtdtreatinvtarget:Qtreatinvtarget.toFixed(1),
 					mtdtreatinvcounttarget:Qtreatinvcounttarget,
 					
@@ -4428,12 +5046,229 @@ let reveCalQWise = async ( reveCalMonthRes) => {
 	
 	QObj['currentyearQ'] = QRevenueObj1;
 	
+	
+	
+	Qrev = 0;
+	Qrevtar = 0;
+	Qopd=0;
+	Qctlowend=0;
+	Qctlowendcount=0,Qcthighend=0,Qcthighendcount=0,Qctmidend=0,Qctmidendcount=0,Qctall=0,Qctallcount=0;
+	Qopdtarget=0,Qpaidrevtarget=0,Qconschargestarget=0,Qcatlenostarget=0,Qcatmenostarget=0,Qcathenostarget=0,Qcatlevaluestarget=0,Qcatmevaluestarget=0,Qcathevaluestarget=0,Qallcattarget=0,Qallcatcounttarget=0;
+	Qopt=0,Qoptcount=0,Qopttarget=0,Qoptcounttarget=0;
+	Qpha=0,Qphacount=0,Qphatarget=0,Qphacounttarget=0;
+	Qtreatinv=0,Qtreatinvcount=0,Qtreatinvtarget=0,Qtreatinvcounttarget=0;
+	Qosu=0,Qosucount=0,Qosutarget=0,Qosucounttarget=0;
+	Qconlens=0,Qconlenscount=0,Qconlenstarget=0,Qconlenscounttarget=0;
+	Qvrin=0,Qvrincount=0,Qvrintarget=0,Qvrincounttarget=0;
+	Qtconsu=0,Qtconsucount=0,Qtconsutarget=0,Qtconsucounttarget=0;
+	Qpopd=0,Qpopdcount=0,Qpopdtarget=0,Qpopdcounttarget=0;
+	Qvrsug=0,Qvrsugcount=0,Qvrsugtarget=0,Qvrsugcounttarget=0;
+	Qoptypp=0,Qoptypptarget=0;
+	Qphaypp=0,Qphaypptarget=0;
+	Qopdypp=0,Qopdypptarget=0;
+	QRevenueObj1 = {};
+	QArr.forEach(Q => {
+        Qrev=0;	Qrevtar=0,Qopd=0,Qctlowend=0,Qctlowendcount=0,Qcthighend=0,Qcthighendcount=0,Qctmidend=0,Qctmidendcount=0,Qctall=0,Qctallcount=0;
+		
+		Qopdtarget=0,Qpaidrevtarget=0,Qconschargestarget=0,Qcatlenostarget=0,Qcatmenostarget=0,Qcathenostarget=0,Qcatlevaluestarget=0,Qcatmevaluestarget=0,Qcathevaluestarget=0,Qallcattarget=0,Qallcatcounttarget=0;
+		
+		
+		 Qopt=0,Qoptcount=0,Qopttarget=0,Qoptcounttarget=0;
+		 Qpha=0,Qphacount=0,Qphatarget=0,Qphacounttarget=0;
+		 Qtreatinv=0,Qtreatinvcount=0,Qtreatinvtarget=0,Qtreatinvcounttarget=0;
+		 Qcor=0,Qcorcount=0,Qcortarget=0,Qcorcounttarget=0;
+        Qref=0,Qrefcount=0,Qreftarget=0,Qrefcounttarget=0;
+		Qosu=0,Qosucount=0,Qosutarget=0,Qosucounttarget=0;
+		Qconlens=0,Qconlenscount=0,Qconlenstarget=0,Qconlenscounttarget=0;
+		Qvrin=0,Qvrincount=0,Qvrintarget=0,Qvrincounttarget=0;
+		Qtconsu=0,Qtconsucount=0,Qtconsutarget=0,Qtconsucounttarget=0;
+		Qpopd=0,Qpopdcount=0,Qpopdtarget=0,Qpopdcounttarget=0;
+		Qvrsug=0,Qvrsugcount=0,Qvrsugtarget=0,Qvrsugcounttarget=0;
+		Qoptypp=0,Qoptypptarget=0;
+		Qphaypp=0,Qphaypptarget=0;
+		Qopdypp=0,Qopdypptarget=0;
+        QRevenueObj1[Q] = [];		
+		QGroup[Q].forEach(month => {			
+			_.filter(reveCalMonthRes.thirdyearmonth, {  'monthText': month}).forEach(
+						element => {
+							
+							//console.log(element.monthText);
+							//console.log(element.mtdrev);
+							Qrev+=parseFloat(element.mtdrev);
+							Qrevtar+=parseFloat(element.mtdrevtarget);
+							Qopd+=parseFloat(element.mtdopd);
+							Qopdypp+=parseInt(element.mtdopdypp);
+							Qctlowend+=parseFloat(element.mtdctlowend);
+						    Qctlowendcount+=parseFloat(element.mtdctlowendcount);
+							Qcthighend+=parseFloat(element.mtdcthighend);
+						    Qcthighendcount+=parseFloat(element.mtdcthighendcount);
+							Qctmidend+=parseFloat(element.mtdctmidend);
+						    Qctmidendcount+=parseFloat(element.mtdctmidendcount);
+							Qctall+=parseFloat(element.mtdallcat);
+						    Qctallcount+=parseFloat(element.mtdallcatcount);
+							Qopt+=parseFloat(element.mtdopt);
+						    Qoptcount+=parseFloat(element.mtdoptcount);
+							Qoptypp+=parseInt(element.mtdoptypp);
+							Qpha+=parseFloat(element.mtdpha);
+						    Qphacount+=parseFloat(element.mtdphacount);
+							Qphaypp+=parseInt(element.mtdphaypp);
+							Qtreatinv+=parseFloat(element.mtdtreatinv);
+						    Qtreatinvcount+=parseFloat(element.mtdtreatinvcount);
+							
+							Qcor+=parseFloat(element.mtdcor);
+						    Qcorcount+=parseFloat(element.mtdcorcount);
+							Qref+=parseFloat(element.mtdref);
+						    Qrefcount+=parseFloat(element.mtdrefcount);
+							
+							Qosu+=parseFloat(element.mtdosu);
+						    Qosucount+=parseFloat(element.mtdosucount);
+							Qconlens+=parseFloat(element.mtdconlens);
+						    Qconlenscount+=parseFloat(element.mtdconlenscount);
+							Qvrin+=parseFloat(element.mtdvrin);
+						    Qvrincount+=parseFloat(element.mtdvrincount);
+							
+							Qtconsu+=parseFloat(element.mtdtconsu);
+						    Qtconsucount+=parseFloat(element.mtdtconsucount);
+							
+							Qpopd+=element.mtdpopd;
+						    Qpopdcount+=parseFloat(element.mtdpopdcount);
+							
+							Qvrsug+=parseFloat(element.mtdvrsug);
+						    Qvrsugcount+=parseFloat(element.mtdvrsugcount);
+							
+							Qopdtarget+=parseFloat(element.mtdopdtarget);
+							Qopdypptarget+=parseInt(element.mtdopdypptarget);
+							
+							Qcatlenostarget+=parseFloat(element.mtdctlowendcounttarget);
+						    Qcatmenostarget+=parseFloat(element.mtdctmidendcounttarget);
+							Qcathenostarget+=parseFloat(element.mtdcthighendcounttarget);
+						    Qcatlevaluestarget+=parseFloat(element.mtdctlowendtarget);
+							Qcatmevaluestarget+=parseFloat(element.mtdctmidendtarget);
+						    Qcathevaluestarget+=parseFloat(element.mtdcthighendtarget);
+							
+							Qallcattarget+=parseFloat(element.mtdallcattarget);
+							Qallcatcounttarget+=parseFloat(element.mtdallcatcounttarget);
+							Qopttarget+=parseFloat(element.mtdopttarget);
+							Qoptcounttarget+=parseFloat(element.mtdoptcounttarget);
+							Qoptypptarget+=parseInt(element.mtdoptypptarget);
+							Qphatarget+=parseFloat(element.mtdphatarget);
+							Qphacounttarget+=parseFloat(element.mtdphacounttarget);
+							Qphaypptarget+=parseInt(element.mtdphaypptarget);
+							Qtreatinvtarget+=parseFloat(element.mtdtreatinvtarget);
+							Qtreatinvcounttarget+=parseFloat(element.mtdtreatinvcounttarget);
+							
+							Qcortarget+=parseFloat(element.mtdcortarget);
+							Qcorcounttarget+=parseFloat(element.mtdcorcounttarget);
+							Qreftarget+=parseFloat(element.mtdreftarget);
+							Qrefcounttarget+=parseFloat(element.mtdrefcounttarget);
+							
+							Qosutarget+=parseFloat(element.mtdosutarget);
+							Qosucounttarget+=parseFloat(element.mtdosucounttarget);
+							
+							Qconlenstarget+=parseFloat(element.mtdconlenstarget);
+						    Qconlenscounttarget+=parseFloat(element.mtdconlenscounttarget);
+							
+							Qvrintarget+=parseFloat(element.mtdvrintarget);
+						    Qvrincounttarget+=parseFloat(element.mtdvrincounttarget);
+							Qtconsutarget+=parseFloat(element.mtdtconsutarget);
+						    Qpopdtarget+=element.mtdpopdtarget;
+							Qvrsugtarget+=parseFloat(element.mtdvrsugtarget);
+						    Qvrsugcounttarget+=parseFloat(element.mtdvrsugcounttarget);
+			});
+			
+			
+		});
+		QRevenueObj1[Q].push({			
+					mtdrev : Qrev.toFixed(1),
+					mtdrevtarget: Qrevtar.toFixed(1),
+					mtdopd : Qopd,
+					mtdopdypp : parseFloat((Qrev/Qopd)*100000).toFixed(1),
+					mtdctlowend : Qctlowend.toFixed(1),
+					mtdctlowendcount : Qctlowendcount,
+					mtdcthighend : Qcthighend.toFixed(1),
+					mtdcthighendcount : Qcthighendcount,
+					mtdctmidend : Qctmidend.toFixed(1),
+					mtdctmidendcount : Qctmidendcount,
+					mtdallcat : Qctall.toFixed(1),
+					mtdallcatcount : Qctallcount,
+					mtdopt : Qopt.toFixed(1),
+					mtdoptcount : Qoptcount,
+					mtdoptypp : parseFloat((Qopt/Qoptcount)*100000).toFixed(1),
+					mtdpha : Qpha.toFixed(1),
+					mtdphacount : Qphacount,
+					mtdphaypp : parseFloat((Qpha/Qphacount)*100000).toFixed(1),
+					mtdtreatinv : Qtreatinv.toFixed(1),
+					mtdtreatinvcount : Qtreatinvcount,
+					
+					mtdcor : Qcor.toFixed(1),
+					mtdcorcount : Qcorcount,
+					mtdref : Qref.toFixed(1),
+					mtdrefcount : Qrefcount,
+					
+					mtdosu : Qosu.toFixed(1),
+					mtdosucount : Qosucount,
+					mtdconlens : Qconlens.toFixed(1),
+					mtdconlenscount : Qconlenscount,
+					mtdvrin : Qvrin.toFixed(1),
+					mtdvrincount : Qvrincount,
+					mtdtconsu : Qtconsu.toFixed(1),
+					mtdtconsucount : Qtconsucount,
+					mtdpopd : Qpopd,
+					mtdpopdcount : Qpopdcount,
+					mtdvrsug : Qvrsug.toFixed(1),
+					mtdvrsugcount : Qvrsugcount,
+					
+					
+					mtdopdtarget: Qopdtarget,
+					mtdopdypptarget:parseFloat((Qrevtar/Qopdtarget)*100000).toFixed(1),
+					
+				    mtdctlowendtarget:Qcatlevaluestarget.toFixed(1),
+					mtdcthighendtarget:Qcathevaluestarget.toFixed(1),
+					mtdctmidendtarget:Qcatmevaluestarget.toFixed(1),
+					mtdctlowendcounttarget:Qcatlenostarget,
+					mtdcthighendcounttarget:Qcathenostarget,
+					mtdctmidendcounttarget:Qcatmenostarget,
+					
+					mtdallcattarget:Qallcattarget.toFixed(1),
+					mtdallcatcounttarget:Qallcatcounttarget,
+					
+					mtdopttarget:Qopttarget.toFixed(1),
+					mtdoptcounttarget:Qoptcounttarget,
+					mtdoptypptarget:parseFloat((Qopttarget/Qoptcounttarget)*100000).toFixed(1),
+					mtdphatarget:Qphatarget.toFixed(1),
+					mtdphacounttarget:Qphacounttarget,
+					mtdphaypptarget:parseFloat((Qphatarget/Qphacounttarget)*100000).toFixed(1),
+					mtdtreatinvtarget:Qtreatinvtarget.toFixed(1),
+					mtdtreatinvcounttarget:Qtreatinvcounttarget,
+					
+					mtdcortarget:Qcortarget.toFixed(1),
+					mtdcorcounttarget:Qcorcounttarget,
+					mtdreftarget:Qreftarget.toFixed(1),
+					mtdrefcounttarget:Qrefcounttarget,
+					mtdosutarget:Qosutarget.toFixed(1),
+					mtdosucounttarget:Qosucounttarget,
+				    mtdconlenstarget : Qconlenstarget.toFixed(1),
+					mtdconlenscounttarget : Qconlenscounttarget,
+					mtdvrintarget : Qvrintarget.toFixed(1),
+					mtdvrincounttarget : Qvrincounttarget,
+					mtdtconsutarget : Qtconsutarget.toFixed(1),
+					mtdpopdtarget : Qpopdtarget,
+					mtdvrsugtarget : Qvrsugtarget.toFixed(1),
+					mtdvrsugcounttarget : Qvrsugcounttarget
+			});
+			
+		
+		
+	});
+	
+	QObj['thirdyearQ'] = QRevenueObj1;
+	
 
 	
 	QRevenueObj3 = {};
 	for (let key in QObj.lastyearQ) {
 		QRevenueObj3[key] = [];
-		console.log(QObj.currentyearQ[key][0].mtdrev);
+		//console.log(QObj.currentyearQ[key][0].mtdrev);
 		
 		
 		QRevenueObj3[key].push({			

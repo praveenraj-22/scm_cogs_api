@@ -7,18 +7,18 @@ exports.ideamed = {
 }
 
 exports.scm_root = {
-    host: '3.0.131.60',
+    // host: '3.0.131.60',
+    // port: 3306,
+    // user: 'medics',
+    // pass: 'medics@123',
+    // db: 'cogs'
+
+
+	host: 'localhost',
     port: 3306,
-    user: 'medics',
-    pass: 'medics@123',
+    user: 'root',
+    pass: 'praveen',
     db: 'cogs'
-
-
-	// host: 'localhost',
-  //   port: 3306,
-  //   user: 'root',
-  //   pass: 'praveen',
-  //   db: 'cogs'
 
 
 }
@@ -33,27 +33,26 @@ exports.scm_root = {
 
 
 exports.scm_public = {
-    host: '3.0.131.60',
-    port: 3306,
-    user: 'medics',
-    pass: 'medics@123',
-    db: 'cogs'
-    //
-	// host: 'localhost',
-  //   port: 3306,
-  //   user: 'root',
-  //   pass: 'praveen',
-  //   db: 'cogs'
+    // host: '3.0.131.60',
+    // port: 3306,
+    // user: 'medics',
+    // pass: 'medics@123',
+    // db: 'cogs'
 
+	host: 'localhost',
+    port: 3306,
+    user: 'root',
+    pass: 'praveen',
+    db: 'cogs'
 }
 
 
 exports.mis_root = {
-    // host: '13.251.255.12',
-    // port: 3306,
-    // user: 'misagarwal',
-    // pass: '@g@rw@1@!@#',
-    // db: 'mis'
+    host: '13.251.255.12',
+    port: 3306,
+    user: 'misagarwal',
+    pass: '@g@rw@1@!@#',
+    db: 'mis'
 
 
 	/*host: 'localhost',
@@ -67,12 +66,12 @@ exports.mis_root = {
 
 
 exports.mis_public = {
-    // host: '13.251.255.12',
-    // port: 3306,
-    // user: 'misagarwal',
-    // pass: '@g@rw@1@!@#',
-    // db: 'mis'
-    //
+    host: '13.251.255.12',
+    port: 3306,
+    user: 'misagarwal',
+    pass: '@g@rw@1@!@#',
+    db: 'mis'
+
 
 	/*host: 'localhost',
     port: 3306,

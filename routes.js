@@ -48,7 +48,7 @@ var entityMapping = {
 	'AHC' : ['AMN','VMH','NEL','GUN','TPT','RAJ','TBM','ADY','EGM','MGP','NWP','AMB','TVT','BMH','JGN','WFD','KML','CLR','INR','PNR','YLK','HUB',"DWD",'MCC','MYS','SVR','BSK','RRN','RJN','VSH','PUN','HDP',"IND","JWS","APR","ATA","KWA",'CTK','BHU','PDY','TVL','TCN','APM','TRI','TNJ','TPR','CMB','DNR','HMH','MDA','SNR','HIM','SBD','MPM','GCB','KOL','KAS','TVM','KTM'],
 	'ALL' : ['CMH','ANN','ASN','AVD','NLR','PMB','PRR','TLR','TRC','VLC','JPR','KNP','VLR','KBK','NVL','VPM','DHA','SLM','KSN','ERD','HSR','MDU','AMN','VMH','NEL','GUN','TPT','RAJ','TBM','ADY','EGM','MGP','NWP','AMB','TVT','BMH','JGN','WFD','KML','CLR','INR','PNR','YLK','HUB',"DWD",'MCC','MYS','SVR','BSK','RRN','RJN','VSH','PUN','HDP',"IND","JWS","APR","ATA","KWA",'CTK','BHU','PDY','TVL','TCN','APM','TRI','TNJ','TPR','CMB','DNR','HMH','MDA','SNR','HIM','SBD','MPM','GCB','KOL','KAS','TVM','KTM'],
 	'AHI' : ['VSH'],
-	
+
 }
 
 
@@ -207,7 +207,7 @@ exports.testLogin = (req, res) => {
   let user = req.body.user.trim();
 //  console.log('roye.js user ',user);
   let pass = req.body.pass.trim();
-//  console.log(' route.js pass ', pass); 
+//  console.log(' route.js pass ', pass);
     connections.scm_public.query(
       "select * from users where emp_id = ? and password = ? and is_active=1",
       [user,pass],
@@ -215,9 +215,9 @@ exports.testLogin = (req, res) => {
         if (err) console.error(err);
         if (result.length === 0) {
           res.json({ isAuthenticated: false });
-        } else {		
+        } else {
 			connections.scm_public.query("update  users set last_login=now() where emp_id ='"+user+"' ",(err1, result) => {
-				if (err) console.error(err1);				
+				if (err) console.error(err1);
 			  });
           res.json({ isAuthenticated: true, role: result[0].role ,userName : result[0].name });
           // mods.session.user = JSON.stringify(user)
@@ -233,7 +233,7 @@ exports.testLogin = (req, res) => {
         }
       }
     );
-  
+
 };
 
 
@@ -243,14 +243,14 @@ exports.changePassword = (req, res) => {
    let user = req.body.user.trim();
   let pass = req.body.confirmpassword.trim();
 
-  console.log("update  users set password='"+pass+"' where emp_id ='"+user+"' ");  
+  console.log("update  users set password='"+pass+"' where emp_id ='"+user+"' ");
 	connections.scm_public.query("update  users set password='"+pass+"' where emp_id ='"+user+"'",(err1, result) => {
 		if (err1){
-				res.json({ isAuthenticated: false});		
+				res.json({ isAuthenticated: false});
 		}else{
 			res.json({ isAuthenticated: true});
 		}
-				
+
 	  });
 };
 
@@ -490,7 +490,7 @@ exports.region = (req, res) => {
   // } else {
 //  console.log('main_route_revenue');
   let entity = req.params.entity;
- 
+
   connections.scm_public.query(
     files.regionlist,
     [entity],
@@ -531,27 +531,27 @@ function getColumn(year, month) {
 
 
 function whereConditionBuild(argEntity,argRegion){
-	
+
 	if(argEntity!='undefined' && argRegion!='undefined'){
 		var branchesarr = regionMapping[argEntity][argRegion];
 	}else if(argEntity=='undefined' && argRegion!='undefined'){
 		var branchesarr = regionMapping[argRegion];
 	}
-			  
+
 	var branchIN = '';
-	var branchlist = '';			 
+	var branchlist = '';
 	for (let key in branchesarr) {
-	branchIN+="'"+branchesarr[key]+"',"; 
-	} 
+	branchIN+="'"+branchesarr[key]+"',";
+	}
 	var branchlist = branchIN.substr(0, branchIN.length-1);
 	if(branchlist){
 		return ' and branch in ('+branchlist+') ';
 	}else{
 		return '';
-	}	
-			 
-	
-	
+	}
+
+
+
 }
 
 exports.monthlyData = (req, res) => {
@@ -575,14 +575,14 @@ exports.monthlyData = (req, res) => {
                 }
             }, (err, results) => {
                 if (err) {
-                   // reject(err);				   
+                   // reject(err);
 				   res.json(err);
-                   
-                } else {					
+
+                } else {
 					res.json(results);
                     //resolve(results);
                 }
-                
+
             });
 
         });
@@ -597,34 +597,34 @@ exports.monthRevenue = (req, res,callback) => {
 		 let entity = req.params.entity;
 		 let region = req.params.region;
 		 let branch = req.params.branch;
-		 
+
 		 if(ftddate!='undefined' && entity!='undefined' && region!='undefined' &&  branch!='undefined'){
-			
+
 			 var sqlquery = 'select  sum(pharmacy) as pharmacy,sum(opticals) as opticals,sum(laboratory) as laboratory,sum(surgery) as surgery,sum(consultation) as consultation,sum(others) as others,sum(ftd) as ftd from  	revenue_report where entity="'+entity+'"  and branch="'+branch+'" and trans_date between "'+start+'" and "'+end+'"';
-		 }else if(ftddate!='undefined' && entity!='undefined' && region!='undefined' &&  branch=='undefined'){			 
-			  var whereCondition = whereConditionBuild(entity,region);	 
-			 
+		 }else if(ftddate!='undefined' && entity!='undefined' && region!='undefined' &&  branch=='undefined'){
+			  var whereCondition = whereConditionBuild(entity,region);
+
 			var sqlquery = 'select branch,sum(ftd) as ftd from 	revenue_report   where entity="'+entity+'"'+whereCondition+'  and trans_date between "'+start+'" and "'+end+'" group by branch';
-		 }else if(ftddate!='undefined' && entity!='undefined' && region=='undefined' &&  branch=='undefined'){			 		 
+		 }else if(ftddate!='undefined' && entity!='undefined' && region=='undefined' &&  branch=='undefined'){
 			 var sqlquery = 'select branch,sum(ftd) as ftd from 	revenue_report   where entity="'+entity+'"  and trans_date between "'+start+'" and "'+end+'" group by branch';
-		 }else if(ftddate!='undefined' && entity=='undefined' && region!='undefined' &&  branch=='undefined'){			
+		 }else if(ftddate!='undefined' && entity=='undefined' && region!='undefined' &&  branch=='undefined'){
 			 var whereCondition = whereConditionBuild(entity,region);
 			 var sqlquery = 'select branch,sum(ftd) as ftd from 	revenue_report   where entity!="'+entity+'"'+whereCondition+'  and trans_date between "'+start+'" and "'+end+'" group by branch';
 		 }else{
 			 var sqlquery = 'select branch,sum(ftd) as ftd from 	revenue_report   where entity in ("AEH","AHC") and  trans_date between "'+start+'" and "'+end+'" group by branch';
-		 }		 
-		connections.scm_public.query(sqlquery,(err, cogsres,fields) => {			
+		 }
+		connections.scm_public.query(sqlquery,(err, cogsres,fields) => {
 			if (err) {
 				 callback(err, null);
 			}else{
 				 callback(null, cogsres);
-			}		
+			}
 		});
-		 
+
 	 }catch (error) {
             callback(error, null);
      }
-	
+
 };
 
 exports.monthCogs = (req, res,callback) => {
@@ -635,15 +635,15 @@ exports.monthCogs = (req, res,callback) => {
 		 let entity = req.params.entity;
 		 let region = req.params.region;
 		 let branch = req.params.branch;
-		 if(ftddate!='undefined' && entity!='undefined' && region!='undefined' &&  branch!='undefined'){			 
+		 if(ftddate!='undefined' && entity!='undefined' && region!='undefined' &&  branch!='undefined'){
 			 var sqlquery = 'select  sum(pharmacy) as pharmacy,sum(opticals) as opticals,sum(laboratory) as laboratory,sum(operation_theatre) as operation_theatre,sum(ftd) as ftd from  cogs_report where entity="'+entity+'"  and branch="'+branch+'" and trans_date between "'+start+'" and "'+end+'"';
 		 }else if(ftddate!='undefined' && entity!='undefined' && region!='undefined' &&  branch=='undefined'){
-			 var whereCondition = whereConditionBuild(entity,region);			 
+			 var whereCondition = whereConditionBuild(entity,region);
 			 var sqlquery = 'select branch,sum(ftd) as ftd from cogs_report   where entity="'+entity+'"'+whereCondition+'  and trans_date between "'+start+'" and "'+end+'" group by branch';
 		 }else if(ftddate!='undefined' && entity!='undefined' && region=='undefined' &&  branch=='undefined'){
 			 var sqlquery = 'select branch,sum(ftd) as ftd from cogs_report   where entity="'+entity+'"  and trans_date between "'+start+'" and "'+end+'" group by branch';
 		 }else if(ftddate!='undefined' && entity=='undefined' && region!='undefined' &&  branch=='undefined'){
-			 
+
 			  var whereCondition = whereConditionBuild(entity,region);
 			var sqlquery = 'select branch,sum(ftd) as ftd from cogs_report   where entity!="'+entity+'"'+whereCondition+'  and trans_date between "'+start+'" and "'+end+'" group by branch';
 		 }else{
@@ -655,17 +655,17 @@ exports.monthCogs = (req, res,callback) => {
 			}else{
 				 callback(null, cogsres);
 			}
-		
+
 		});
-		 
+
 	 }catch (error) {
             callback(error, null);
      }
-	
+
 };
 
 
-exports.main_ot = (req, res) => {	
+exports.main_ot = (req, res) => {
   return new Promise((resolve, reject) => {
             async.parallel({
 				montlyOT: (callback) => {
@@ -681,7 +681,7 @@ exports.main_ot = (req, res) => {
                         callback(_err, _res);
                     });
 
-                }			
+                }
 				,
                 montlyCattractCogs: (callback) => {
 
@@ -706,25 +706,25 @@ exports.main_ot = (req, res) => {
                     });
 
                 }
-				
+
             }, (err, results) => {
                 if (err) {
-                   // reject(err);				   
+                   // reject(err);
 				   res.json(err);
-                   
+
                 } else {
-					 
+
 					res.json(mods.nativeFunctions.formation(results,req.params.date));
                     //resolve(results);
                 }
-                
+
             });
 
     });
 };
 
 exports.monthlyOTRevenue = (req, res,callback) => {
-	
+
 	  try {
 		 let ftddate = req.params.date;
 		 let temp = new Date(ftddate);
@@ -734,50 +734,50 @@ exports.monthlyOTRevenue = (req, res,callback) => {
 			("0" + (temp.getMonth() + 1)).slice(-2) +
 			"-" +
 			"01";
-		 
-		 //SELECT count(item_code) FROM `cogs_details` WHERE trans_date between '2019-07-01' and '2019-07-31' and item_name in (select name from mapping where type='CATARACT') 
-		 
+
+		 //SELECT count(item_code) FROM `cogs_details` WHERE trans_date between '2019-07-01' and '2019-07-31' and item_name in (select name from mapping where type='CATARACT')
+
 		 // SELECT COUNT(item_code),branch FROM `cogs_details` WHERE trans_date BETWEEN '2019-07-01' AND '2019-07-31' AND item_name IN (SELECT NAME FROM cogs_item_mapping WHERE TYPE='CATARACT') GROUP BY branch
-		 
-		 
-		 
-		 
+
+
+
+
 		//SELECT entity,TRANSACTION_DATE AS trans_date,BILLED AS branch,`group` FROM revenue_details WHERE `group` IN ("CATARACT","REFRACTIVE","VITREO RETINAL") AND  TRANSACTION_DATE BETWEEN "2019-07-01" AND "2019-07-31" GROUP BY BILLED
-		 var sqlquery = 'select entity,TRANSACTION_DATE as trans_date,BILLED as branch,`group` from revenue_details_native where `group` in ("CATARACT","REFRACTIVE","VITREO RETINAL") and UNIT="SURGERY" and  TRANSACTION_DATE between "'+mtddate+'" and "'+ftddate+'"';		 
-		connections.scm_public.query(sqlquery,(err, otRevenueResults) => {			
+		 var sqlquery = 'select entity,TRANSACTION_DATE as trans_date,BILLED as branch,`group` from revenue_details_native where `group` in ("CATARACT","REFRACTIVE","VITREO RETINAL") and UNIT="SURGERY" and  TRANSACTION_DATE between "'+mtddate+'" and "'+ftddate+'"';
+		connections.scm_public.query(sqlquery,(err, otRevenueResults) => {
 			if (err) {
 				 callback(err, null);
 			}else{
-				
-				
+
+
 				 callback(null, otRevenueResults);
-			}		
+			}
 		});
-		 
+
 	 }catch (error) {
             callback(error, null);
      }
-	
+
 };
 
 
-exports.branchesDetails = (req, res,callback) => {	
+exports.branchesDetails = (req, res,callback) => {
 	  try {
 		 var sqlquery = 'select * from branches where is_active=1';
-		connections.scm_public.query(sqlquery,(err, brancheresults) => {			
+		connections.scm_public.query(sqlquery,(err, brancheresults) => {
 			if (err) {
 				 callback(err, null);
-			}else{				
+			}else{
 				 callback(null, brancheresults);
-			}		
+			}
 		});
-		 
+
 	 }catch (error) {
             callback(error, null);
      }
-	
+
 };
-exports.cattractCogs = (req, res,callback) => {	
+exports.cattractCogs = (req, res,callback) => {
 	  try {
 		 let ftddate = req.params.date;
 		 let temp = new Date(ftddate);
@@ -786,25 +786,25 @@ exports.cattractCogs = (req, res,callback) => {
 			"-" +
 			("0" + (temp.getMonth() + 1)).slice(-2) +
 			"-" +
-			"01";	 
-		 //var sqlquery = "SELECT item_code,branch,trans_date FROM `cogs_details` WHERE trans_date BETWEEN '"+mtddate+"' AND '"+ftddate+"' AND item_name IN (SELECT NAME FROM cogs_item_mapping WHERE TYPE='CATARACT')";		 
+			"01";
+		 //var sqlquery = "SELECT item_code,branch,trans_date FROM `cogs_details` WHERE trans_date BETWEEN '"+mtddate+"' AND '"+ftddate+"' AND item_name IN (SELECT NAME FROM cogs_item_mapping WHERE TYPE='CATARACT')";
 		 var sqlquery = "SELECT A.item_code AS item_code,A.branch AS branch,A.trans_date AS trans_date FROM cogs_details AS A,cogs_item_mapping AS B WHERE  A.trans_date BETWEEN '"+mtddate+"' AND '"+ftddate+"' AND A.item_code=B.code AND B.TYPE='CATARACT'";
-		connections.scm_public.query(sqlquery,(err, cattrachCogsRes) => {			
+		connections.scm_public.query(sqlquery,(err, cattrachCogsRes) => {
 			if (err) {
 				 callback(err, null);
 			}else{
-				 
+
 				 callback(null, cattrachCogsRes);
-			}		
+			}
 		});
-		 
+
 	 }catch (error) {
             callback(error, null);
      }
-	
+
 };
 exports.refractiveCogs = (req, res,callback) => {
-	
+
 	  try {
 		 let ftddate = req.params.date;
 		 let temp = new Date(ftddate);
@@ -813,29 +813,29 @@ exports.refractiveCogs = (req, res,callback) => {
 			"-" +
 			("0" + (temp.getMonth() + 1)).slice(-2) +
 			"-" +
-			"01";	 
+			"01";
 		 //var sqlquery = "SELECT item_code,branch,trans_date FROM `cogs_details` WHERE trans_date BETWEEN '"+mtddate+"' AND '"+ftddate+"' AND item_name IN (SELECT NAME FROM cogs_item_mapping WHERE TYPE='Refractive')";
-		 
+
 		  var sqlquery = "SELECT A.item_code AS item_code,A.branch AS branch,A.trans_date AS trans_date FROM cogs_details AS A,cogs_item_mapping AS B WHERE  A.trans_date BETWEEN '"+mtddate+"' AND '"+ftddate+"' AND A.item_code=B.code AND B.TYPE='Refractive'";
-		 
-			 
-		connections.scm_public.query(sqlquery,(err, refractiveCogsRes) => {			
+
+
+		connections.scm_public.query(sqlquery,(err, refractiveCogsRes) => {
 			if (err) {
 				 callback(err, null);
 			}else{
-				
-				
+
+
 				 callback(null, refractiveCogsRes);
-			}		
+			}
 		});
-		 
+
 	 }catch (error) {
             callback(error, null);
      }
-	
+
 };
 exports.vitreoRetinalCogs = (req, res,callback) => {
-	
+
 	  try {
 		 let ftddate = req.params.date;
 		 let temp = new Date(ftddate);
@@ -844,24 +844,24 @@ exports.vitreoRetinalCogs = (req, res,callback) => {
 			"-" +
 			("0" + (temp.getMonth() + 1)).slice(-2) +
 			"-" +
-			"01";		
-		 //var sqlquery = "SELECT item_code,branch,trans_date FROM `cogs_details` WHERE trans_date BETWEEN '"+mtddate+"' AND '"+ftddate+"' AND item_name IN (SELECT NAME FROM cogs_item_mapping WHERE TYPE='Vitreo Retinal')";	
+			"01";
+		 //var sqlquery = "SELECT item_code,branch,trans_date FROM `cogs_details` WHERE trans_date BETWEEN '"+mtddate+"' AND '"+ftddate+"' AND item_name IN (SELECT NAME FROM cogs_item_mapping WHERE TYPE='Vitreo Retinal')";
 
-var sqlquery = "SELECT A.item_code AS item_code,A.branch AS branch,A.trans_date AS trans_date FROM cogs_details AS A,cogs_item_mapping AS B WHERE  A.trans_date BETWEEN '"+mtddate+"' AND '"+ftddate+"' AND A.item_code=B.code AND B.TYPE='Vitreo Retinal'";		 
-		connections.scm_public.query(sqlquery,(err, vitreoRetinalCogsRes) => {			
+var sqlquery = "SELECT A.item_code AS item_code,A.branch AS branch,A.trans_date AS trans_date FROM cogs_details AS A,cogs_item_mapping AS B WHERE  A.trans_date BETWEEN '"+mtddate+"' AND '"+ftddate+"' AND A.item_code=B.code AND B.TYPE='Vitreo Retinal'";
+		connections.scm_public.query(sqlquery,(err, vitreoRetinalCogsRes) => {
 			if (err) {
 				 callback(err, null);
 			}else{
-				
-				
+
+
 				 callback(null, vitreoRetinalCogsRes);
-			}		
+			}
 		});
-		 
+
 	 }catch (error) {
             callback(error, null);
      }
-	
+
 };
 
 
@@ -878,36 +878,36 @@ exports.main_route_newopd = (req, res) => {
     ("0" + (temp.getMonth() + 1)).slice(-2) +
     "-" +
     "01";
-	
+
 	let ftddatelastyear = (temp.getFullYear()-1)+'-'+ ("0" + (temp.getMonth()+1)).slice(-2)+'-'+("0" + (temp.getDate())).slice(-2);
 	let mtddatelastyear = (temp.getFullYear()-1)+'-'+ ("0" + (temp.getMonth()+1)).slice(-2)+'-01';
-	
-	
+
+
   connections.scm_public.query(
     files.new_opd_super,
     [mtddate, ftddate],
     (error, resnewopd) => {
-      if (error) console.error(error);	  
+      if (error) console.error(error);
 	  connections.scm_public.query(
 		files.new_opd_super,
 		[mtddatelastyear, ftddatelastyear],
 		(error, reslastyearopd) => {
-		if (error) console.error(error);	  
+		if (error) console.error(error);
 		  connections.scm_public.query(
 			"select * from branches",
 			(err, branchres) => {
-			  if (err) console.error(err);          
+			  if (err) console.error(err);
 					  mods.nativeFunctions
 						.newopdNative(
 						  resnewopd,
 						  branchres,
 						  ftddate,
 						  reslastyearopd,
-						  
+
 						)
 						.then(final => res.json(final));
 					}
-				  );			   
+				  );
 		}
 		);
 	}
@@ -952,7 +952,7 @@ exports.main_route_newopd_normal = (req, res) => {
         [mtddate, ftddate, individualBranches],
         (error, resnewopd) => {
           if (error) console.error(error);
-		  
+
 		connections.scm_public.query(
         files.new_opd_normal,
         [mtddatelastyear, ftddatelastyear, individualBranches],
@@ -961,7 +961,7 @@ exports.main_route_newopd_normal = (req, res) => {
           connections.scm_public.query(
             "select * from branches",
             (err, branchres) => {
-              if (err) console.error(err);              
+              if (err) console.error(err);
                       mods.nativeFunctions
                         .newopdnormal(
                           resnewopd,
@@ -1005,7 +1005,7 @@ exports.opticals = (req, res) => {
   let ftddatelastyear = (temp.getFullYear() - 1) + '-' + ("0" + (temp.getMonth() + 1)).slice(-2) + '-' + ("0" + (temp.getDate())).slice(-2);
   let mtddatelastyear = (temp.getFullYear() - 1) + '-' + ("0" + (temp.getMonth() + 1)).slice(-2) + '-01';
 
-  
+
   connections.scm_public.query("SELECT ROUND(SUM(NET_AMOUNT),0)AS NET_AMOUNT,TRANSACTION_DATE,BILLED, branches.billed_entity,branches.branch,branches.code,branches.region AS region,UNIT  FROM `revenue_details`   JOIN branches ON revenue_details.billed=branches.code  WHERE (TRANSACTION_DATE) BETWEEN ? and ?  AND branches.entity IN ('AHC','AEH','AHI')    GROUP BY TRANSACTION_DATE,BILLED , branches.billed_entity,UNIT    ORDER BY     branches.region", [mtddate, ftddate], (err, resmtdopt) => {
     if (err) {
       console.error(err + "select mtd optical err ");
@@ -1033,29 +1033,6 @@ exports.opticals = (req, res) => {
       })
     }
   })
-
-  // connections.scm_public.query(files.mtdopticals,[mtddate,ftddate,mtddate,mtddate], (error, resoptical) => {
-  //
-  //   // "SELECT branch,IF(ftd='',0,SUM(ftd)) AS ftd,entity,region,branchcode,branchname,SUM(targetamount) FROM ( SELECT br.branch AS branch ,SUM(rd.NET_AMOUNT) AS ftd ,br.entity AS entity ,br.region AS region ,br.code AS branchcode ,br.branch AS branchname ,0 AS targetamount  FROM  `revenue_details` AS rd INNER JOIN  branches AS br ON CODE=rd.BILLED WHERE UNIT IN ('OPTICALS') AND DATE(TRANSACTION_DATE) BETWEEN '"+mtddate+"' AND '"+ftddate+"' GROUP BY BILLED  UNION ALL SELECT br.branch AS branch ,'' AS ftd ,br.entity AS entity ,br.region AS region ,br.code AS branchcode ,br.branch AS branchname ,IFNULL(tar.targetamount,0) AS targetamount FROM target_optical AS tar INNER JOIN  branches AS br ON br.id=tar.`entityid` WHERE tar.year = YEAR('"+year+"') and tar.month ='"+month+"'  ) AS A  GROUP BY branch",(error,resoptical)=>{
-  //   // //files.opticals_super,[mtddate,ftddate],(error,resoptical)=>{
-  //   if (error) console.log(error);
-  //   console.log("ftd");
-  //   // console.log(resoptical);
-  //   connections.scm_public.query(
-  //     files.lymtdopticals,[mtddatelastyear,ftddatelastyear,ftddatelastyear,ftddatelastyear], (error, reslastyearoptical) => {
-  //       if (error) console.log(error);
-  //       console.log("LASTmtd");
-  //       connections.scm_public.query(
-  //         "select * from branches", (err, branches) => {
-  //           if (error) console.log(error);
-  //           console.log("lymtd");
-  //           mods.nativeFunctions.newopticals(resoptical, branches, ftddate, reslastyearoptical)
-  //             .then(final => res.json(final));
-  //         }
-  //       );
-  //     }
-  //   );
-  // });
 };
 
 
@@ -1250,26 +1227,26 @@ exports.main_route_usage_tracker = (req, res) => {
     ("0" + (temp.getMonth() + 1)).slice(-2) +
     "-" +
     "01";
-	
+
 	let ftddatelastyear = (temp.getFullYear()-1)+'-'+ ("0" + (temp.getMonth()+1)).slice(-2)+'-'+("0" + (temp.getDate())).slice(-2);
 	let mtddatelastyear = (temp.getFullYear()-1)+'-'+ ("0" + (temp.getMonth()+1)).slice(-2)+'-01';
-	
+
 	let tarArr = ftddate.split("-");
 	let tarMonth = tarArr[1];
 	let tarYear = tarArr[0];
-	
-	
+
+
 	if(tarMonth<04){
 		var ytdyear = tarYear-1;
 	}else{
 		var ytdyear = tarYear;
 	}
-	
+
 	let ytdfrom  = ytdyear+'-04'+'-01';
-	
+
   connections.scm_public.query(files.new_opd_super,[mtddate, ftddate],(error, resnewopd) => {
-      if (error){ 
-		console.log(error);	
+      if (error){
+		console.log(error);
 	  }else{
 	  connections.scm_public.query(files.device_history,[mtddate, ftddate],(error, resdevicehistory) => {
 		if (error) {
@@ -1278,24 +1255,24 @@ exports.main_route_usage_tracker = (req, res) => {
 			connections.scm_public.query(files.device_history_ytd,[ytdfrom, ftddate],(error, resdevicehistoryytd) => {
 			if (error) {
 				console.log(error);
-			}else{		
+			}else{
 			connections.scm_public.query(files.device_revenue,[mtddate, ftddate],(error, resdevicerevenue) => {
-				if (error){ 
-					console.log(error); 
+				if (error){
+					console.log(error);
 				}else{
 					connections.scm_public.query(files.device_revenue_ytd,[ytdfrom, ftddate],(error, resdevicerevenueytd) => {
-				if (error){ 
-					console.log(error); 
-				}else{	
-				  //console.log(resdevicerevenueytd);	
+				if (error){
+					console.log(error);
+				}else{
+				  //console.log(resdevicerevenueytd);
 				  connections.scm_public.query("select br.entity as entity,br.region as region,br.code as branch,br.branch as branchname,tr.total from branches as br  LEFT JOIN usage_track_target as tr ON br.id=tr.branch_id AND target_month='"+tarMonth+"' AND target_year='"+tarYear+"'",(err, targetres) => {
 						if (err){
 							console.log(err);
-						}else{						
+						}else{
 						  connections.scm_public.query("select * from branches",(err, branchres) => {
-							  if (err){ 
+							  if (err){
 							  console.log(err);
-							  }else{          
+							  }else{
 									  mods.nativeFunctions
 										.newUsageTrackerNative(
 										  resnewopd,
@@ -1305,10 +1282,10 @@ exports.main_route_usage_tracker = (req, res) => {
 										  targetres,
 										  resdevicerevenue,
 										  resdevicehistoryytd,
-										  resdevicerevenueytd										  
+										  resdevicerevenueytd
 										)
 										.then(final => res.json(final));
-							  }		
+							  }
 									});
 						}
 				  });
@@ -1318,7 +1295,7 @@ exports.main_route_usage_tracker = (req, res) => {
 				});
 			}
 			});
-	    }		
+	    }
 		});
 		}
 	});
@@ -1374,31 +1351,31 @@ exports.main_route_usage_tracker_new = (req, res) => {
     ("0" + (temp.getMonth() + 1)).slice(-2) +
     "-" +
     "01";
-	
+
 	let ftddatelastyear = (temp.getFullYear()-1)+'-'+ ("0" + (temp.getMonth()+1)).slice(-2)+'-'+("0" + (temp.getDate())).slice(-2);
 	let mtddatelastyear = (temp.getFullYear()-1)+'-'+ ("0" + (temp.getMonth()+1)).slice(-2)+'-01';
-	
+
 	let tarArr = ftddate.split("-");
 	let tarMonth = tarArr[1];
 	let tarYear = tarArr[0];
-	
+
   connections.scm_public.query(
     files.new_opd_super,
     [mtddate, ftddate],
     (error, resnewopd) => {
-      if (error) console.error(error);	
+      if (error) console.error(error);
 	  connections.scm_public.query(
 		files.device_history,
 		[mtddate, ftddate],
 		(error, resdevicehistory) => {
-		if (error) console.error(error);		   
+		if (error) console.error(error);
 			connections.scm_public.query(
 			files.device_revenue,
 			[mtddate, ftddate],
 			(error, resdevicerevenue) => {
-			if (error) console.error(error);		  
+			if (error) console.error(error);
           connections.scm_public.query("select br.entity as entity,br.region as region,br.code as branch,br.branch as branchname,tr.total,tr.amount from branches as br  LEFT JOIN usage_track_target as tr ON br.id=tr.branch_id AND target_month='"+tarMonth+"' AND target_year='"+tarYear+"'",(err, targetres) => {
-				if (err)console.log(err);		
+				if (err)console.log(err);
 				  connections.scm_public.query(
 					"select * from branches",
 					(err, branchres) => {
@@ -1416,7 +1393,7 @@ exports.main_route_usage_tracker_new = (req, res) => {
 								  targetres,
 								  resdevicerevenue,
 								  currres,
-                                  curr_last_res								  
+                                  curr_last_res
 								)
 								.then(final => res.json(final));
 							}
@@ -1430,7 +1407,7 @@ exports.main_route_usage_tracker_new = (req, res) => {
 		 }
 		 );
 
-		  
+
 		}
 		);
 	}
@@ -2305,22 +2282,22 @@ exports.main_route_usage_tracker_new_email = (yesterday,callback) => {
     ("0" + (temp.getMonth() + 1)).slice(-2) +
     "-" +
     "01";
-	
+
   let tarArr = ftddate.split("-");
   let tarMonth = tarArr[1];
   let tarYear = tarArr[0];
-  
+
   console.log(ftddate);
   console.log(mtddate);
-	
+
   connections.scm_public.query(
     files.new_opd_super,
     [mtddate, ftddate],
     (error, resnewopd) => {
-		
+
       if (error)  {
 		  callback("new opd select query error",null);
-	 }else{	
+	 }else{
 	  connections.scm_public.query(
 		files.device_history,
 		[mtddate, ftddate],
@@ -2332,28 +2309,28 @@ exports.main_route_usage_tracker_new_email = (yesterday,callback) => {
 			files.device_revenue,
 			[mtddate, ftddate],
 			(error, resdevicerevenue) => {
-			if(error){  
+			if(error){
 				callback("device_revenue select query error",null);
-			}else{			
+			}else{
           connections.scm_public.query("select br.entity as entity,br.region as region,br.code as branch,br.branch as branchname,tr.total,tr.amount from branches as br  LEFT JOIN usage_track_target as tr ON br.id=tr.branch_id AND target_month='"+tarMonth+"' AND target_year='"+tarYear+"'",(err, targetres) => {
-				if(err){ 
+				if(err){
 					callback("target join query  error",null);
 				}else{
 					connections.scm_public.query(files.currency_details, [mtddate, ftddate],(currerr, currres) => {
 					 if (currerr) {
-						console.log(currerr);					
+						console.log(currerr);
 					 }else{
 						 connections.scm_public.query(files.currency_det_last_mth, (curr_last_err, curr_last_res) => {
 						 if (curr_last_err) {
 							console.log(curr_last_err);
 						  }else{
-						 
+
 							  connections.scm_public.query(
 								"select * from branches",
 								(err, branchres) => {
 								  if(err) {
 									  callback("branches query  error",null);
-								  }else{  
+								  }else{
 										  mods.nativeFunctions
 											.newUsageTrackerNativeNew(
 											  resnewopd,
@@ -2363,14 +2340,14 @@ exports.main_route_usage_tracker_new_email = (yesterday,callback) => {
 											  targetres,
 											  resdevicerevenue,
 											  currres,
-											  curr_last_res											  
+											  curr_last_res
 											)
 											.then(final => callback(null,final));
 								 }
 										});
 						  }
 						  });
-							
+
 					}
 					});
 				}
@@ -2379,7 +2356,7 @@ exports.main_route_usage_tracker_new_email = (yesterday,callback) => {
 		 }
 		 );
 		 }
-		  
+
 		}
 		);
 		}
@@ -2390,10 +2367,10 @@ exports.main_route_usage_tracker_new_email = (yesterday,callback) => {
 
 
 
-exports.avaEmailList = (emailtemp,callback) =>{	
+exports.avaEmailList = (emailtemp,callback) =>{
 	connections.scm_public.query("select fromid,toid,bccid,ccid,passcode from email where scmtype='avaemail'",(error, domesticemailres) => {
       if (error) {
-		  callback("select email query",null);		
+		  callback("select email query",null);
 	  }else{
 		  callback(null,domesticemailres);
 	  }
@@ -3174,26 +3151,26 @@ exports.expense_date=(req,res)=>{
 
 
 
-exports.revvscogs_services = (req, res) => {  
+exports.revvscogs_services = (req, res) => {
 	     let ftddate = req.params.date;
 		 let mothYear = ftddate.split("-");
 		 let year = mothYear[0];
-		 let month = mothYear[1];	 
+		 let month = mothYear[1];
 		 if(month<04){
 			year =  year-1;
-		 }	 
-		 
+		 }
+
 		 let start='',end='';
 		 if(req.params.type == 'Month'){
 			 start = ftddate+'-01';
 			 end = ftddate+'-31';
 		 }else{
 			 start = year+'-04-01';
-			 end = ftddate+'-31'; 
+			 end = ftddate+'-31';
 		 }
 		 let entity = req.params.entity;
 		 let region = req.params.region;
-		 let branch = req.params.branch; 
+		 let branch = req.params.branch;
 		 var revenueqry = '',revReferalQry1='',revReferalQry2='';
 		 var cogsqry = '';
 		 if(entity=='AEH'){
@@ -3202,155 +3179,155 @@ exports.revvscogs_services = (req, res) => {
 			 var entitycondition = " entity in ('AHC','AHI')";
 		 }
 		 if(ftddate!='undefined' && entity!='undefined' && region!='undefined' &&  branch!='undefined'){
-			 
-			
-			
+
+
+
 			 revenueqry = 'select  * from  revenue_details where '+entitycondition+'  and BILLED="'+branch+'" and TRANSACTION_DATE between "'+start+'" and "'+end+'" and id!=""';
 			 cogsqry = 'select  * from  cogs_details where '+entitycondition+'  and branch="'+branch+'" and trans_date between "'+start+'" and "'+end+'" and  id!=""';
-			 
-			 revReferalQry1 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE="'+branch+'" and BILLED!="'+branch+'" and TRANSACTION_DATE between "'+start+'" and "'+end+'" and  id!=""'; 
-			 
-			 revReferalQry2 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE!="'+branch+'" and BILLED="'+branch+'" and TRANSACTION_DATE between "'+start+'" and "'+end+'" and  id!=""'; 
-			 
-			 
+
+			 revReferalQry1 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE="'+branch+'" and BILLED!="'+branch+'" and TRANSACTION_DATE between "'+start+'" and "'+end+'" and  id!=""';
+
+			 revReferalQry2 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE!="'+branch+'" and BILLED="'+branch+'" and TRANSACTION_DATE between "'+start+'" and "'+end+'" and  id!=""';
+
+
 		 }else if(ftddate!='undefined' && entity!='undefined' && region!='undefined' &&  branch=='undefined'){
-			 
+
 			 console.log(777777777);
 			// var whereCondition1 = whereConditionBuild1(entity,region);
              //var whereCondition = whereConditionBuild(entity,region);
-             var branches = branchList(entity,region);			 
+             var branches = branchList(entity,region);
 			 revenueqry = 'select UNIT,`GROUP`,SUBGROUP,ITEMCODE,NET_AMOUNT from  revenue_details   where '+entitycondition+' and BILLED in '+branches+'   and TRANSACTION_DATE between "'+start+'" and "'+end+'" and  id!=""';
-			  
-			  
+
+
 			  cogsqry = 'select top,second,`group`,sub_group,item_code,actual_value from  cogs_details   where '+entitycondition+' and branch in '+branches+'  and trans_date between "'+start+'" and "'+end+'" and  id!=""';
-			  
-			 revReferalQry1 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE IN '+branches+' and BILLED NOT IN '+branches+' and TRANSACTION_DATE between "'+start+'" and "'+end+'" and  id!=""'; 
-			 
-			 revReferalQry2 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE NOT IN '+branches+' and BILLED IN '+branches+' and TRANSACTION_DATE between "'+start+'" and "'+end+'" and  id!=""'; 
-			  
+
+			 revReferalQry1 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE IN '+branches+' and BILLED NOT IN '+branches+' and TRANSACTION_DATE between "'+start+'" and "'+end+'" and  id!=""';
+
+			 revReferalQry2 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE NOT IN '+branches+' and BILLED IN '+branches+' and TRANSACTION_DATE between "'+start+'" and "'+end+'" and  id!=""';
+
 		 }else if(ftddate!='undefined' && entity!='undefined' && region=='undefined' &&  branch=='undefined'){
 			 console.log(8888888888888);
 			 var branches = branchList(entity,region);
-			 
+
 			 revenueqry = 'select UNIT,`GROUP`,SUBGROUP,ITEMCODE,NET_AMOUNT from  revenue_details   where '+entitycondition+'  and TRANSACTION_DATE between "'+start+'" and "'+end+'" and  id!=""';
 			 cogsqry = 'select top,second,`group`,sub_group,item_code,actual_value from  cogs_details   where '+entitycondition+'  and trans_date between "'+start+'" and "'+end+'" and  id!=""';
-			 
-			 revReferalQry1 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE IN '+branches+' and BILLED NOT IN '+branches+' and TRANSACTION_DATE between "'+start+'" and "'+end+'" and  id!=""'; 
-			 
-			 revReferalQry2 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE NOT IN '+branches+' and BILLED IN '+branches+' and TRANSACTION_DATE between "'+start+'" and "'+end+'" and  id!=""'; 
-			 
-			 
+
+			 revReferalQry1 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE IN '+branches+' and BILLED NOT IN '+branches+' and TRANSACTION_DATE between "'+start+'" and "'+end+'" and  id!=""';
+
+			 revReferalQry2 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE NOT IN '+branches+' and BILLED IN '+branches+' and TRANSACTION_DATE between "'+start+'" and "'+end+'" and  id!=""';
+
+
 		 }else if(ftddate!='undefined' && entity=='undefined' && region!='undefined' &&  branch=='undefined'){
 			console.log(99999999999999);
 			//var whereCondition1 = whereConditionBuild1(entity,region);
 			//var whereCondition = whereConditionBuild(entity,region);
-			
+
 			 var branches = branchList(entity,region);
 			revenueqry = 'select * from  revenue_details   where entity in ("AEH","AHC","AHI") and BILLED in '+branches+'  and TRANSACTION_DATE between "'+start+'" and "'+end+'" and  id!=""';
 			cogsqry = 'select * from  cogs_details   where entity in ("AEH","AHC","AHI") and branch in '+branches+'   and trans_date between "'+start+'" and "'+end+'" and  id!=""';
-			
-			revReferalQry1 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE IN '+branches+' and BILLED NOT IN '+branches+' and TRANSACTION_DATE between "'+start+'" and "'+end+'" and  id!=""'; 
-			 
-			 revReferalQry2 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE NOT IN '+branches+' and BILLED IN '+branches+' and TRANSACTION_DATE between "'+start+'" and "'+end+'" and  id!=""'; 
-			
-			
-			
+
+			revReferalQry1 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE IN '+branches+' and BILLED NOT IN '+branches+' and TRANSACTION_DATE between "'+start+'" and "'+end+'" and  id!=""';
+
+			 revReferalQry2 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE NOT IN '+branches+' and BILLED IN '+branches+' and TRANSACTION_DATE between "'+start+'" and "'+end+'" and  id!=""';
+
+
+
 		 }else{
 			 console.log(101010101010);
 			 var branches = branchList(entity,region);
 			 revenueqry = 'select * from  revenue_details   where entity in ("AEH","AHC","AHI") and TRANSACTION_DATE between "'+start+'" and "'+end+'"';
 			 cogsqry = 'select * from  cogs_details   where entity in ("AEH","AHC","AHI") and trans_date between "'+start+'" and "'+end+'" ';
-			 
-			 
-			revReferalQry1 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE IN '+branches+' and BILLED NOT IN '+branches+' and TRANSACTION_DATE between "'+start+'" and "'+end+'"'; 
-			 
-			 revReferalQry2 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE NOT IN '+branches+' and BILLED IN '+branches+' and TRANSACTION_DATE between "'+start+'" and "'+end+'"'; 
-			
-			 
-			 
-			 
+
+
+			revReferalQry1 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE IN '+branches+' and BILLED NOT IN '+branches+' and TRANSACTION_DATE between "'+start+'" and "'+end+'"';
+
+			 revReferalQry2 = 'select  sum(NET_AMOUNT) as NET_AMOUNT from  revenue_details where NATIVE NOT IN '+branches+' and BILLED IN '+branches+' and TRANSACTION_DATE between "'+start+'" and "'+end+'"';
+
+
+
+
 		 }
             async.parallel({
-				revenue: (callback) => {					
+				revenue: (callback) => {
 					  connections.scm_public.query(revenueqry,(error, revresults) => {
 						  callback(error, revresults);
 					  });
 
                 },
 				cogs: (callback) => {
-                    connections.scm_public.query(cogsqry,(error, cogsres) => {						  
+                    connections.scm_public.query(cogsqry,(error, cogsres) => {
 						  callback(error, cogsres);
-						 
+
 					  });
 
-                }			
+                }
 				,
                 revenue1: (callback) => {
-                    connections.scm_public.query(revReferalQry1,(error, revreferres1) => {						   
-						  callback(error, revreferres1);						 
+                    connections.scm_public.query(revReferalQry1,(error, revreferres1) => {
+						  callback(error, revreferres1);
 					  });
 
                 }
 				,
 				revenue2: (callback) => {
-                    connections.scm_public.query(revReferalQry2,(error, revreferres2) => {						 
+                    connections.scm_public.query(revReferalQry2,(error, revreferres2) => {
 						  callback(error, revreferres2);
 					  });
 
                 }
-				
-				
+
+
             }, (err, results) => {
-                if (err) {                   
+                if (err) {
 				   res.json(err);
-                   
-                } else {					
+
+                } else {
 					mods.nativeFunctions
 									.revCogsServices(
 									  results.revenue,
 									  results.cogs,
 									  results.revenue1,
-									  results.revenue2,                     
+									  results.revenue2,
 									)
 									.then(final => res.json(final));
-					 
-					
+
+
                     //resolve(results);
                 }
-                
+
             });
 
-    
+
 };
 
 
 /*function whereConditionBuild1(argEntity,argRegion){
-	
+
 	if(argEntity!='undefined' && argRegion!='undefined'){
 		var branchesarr = regionMapping[argEntity][argRegion];
 	}else if(argEntity=='undefined' && argRegion!='undefined'){
 		var branchesarr = regionMapping[argRegion];
 	}
-			  
+
 	var branchIN = '';
-	var branchlist = '';			 
+	var branchlist = '';
 	for (let key in branchesarr) {
-	branchIN+="'"+branchesarr[key]+"',"; 
-	} 
+	branchIN+="'"+branchesarr[key]+"',";
+	}
 	var branchlist = branchIN.substr(0, branchIN.length-1);
 	if(branchlist){
 		return ' and BILLED in ('+branchlist+') ';
 	}else{
 		return '';
-	}	
-			 
-	
-	
+	}
+
+
+
 }*/
 
 
 function branchList(argEntity,argRegion){
-	
+
 	if(argEntity!='undefined' && argRegion!='undefined'){
 		var branchesarr = regionMapping[argEntity][argRegion];
 	}else if(argEntity=='undefined' && argRegion!='undefined'){
@@ -3360,21 +3337,21 @@ function branchList(argEntity,argRegion){
 	}else if(argEntity=='undefined' && argRegion=='undefined'){
 		var branchesarr = entityMapping['ALL'];
 	}
-			  
+
 	var branchIN = '';
-	var branchlist = '';			 
+	var branchlist = '';
 	for (let key in branchesarr) {
-	branchIN+="'"+branchesarr[key]+"',"; 
-	} 
+	branchIN+="'"+branchesarr[key]+"',";
+	}
 	var branchlist = branchIN.substr(0, branchIN.length-1);
 	if(branchlist){
 		return '  ('+branchlist+') ';
 	}else{
 		return '';
-	}	
-			 
-	
-	
+	}
+
+
+
 }
 
 
@@ -3610,10 +3587,10 @@ exports.bill_submit = async (req, res) => {
 
 
 
-let  branchamountResult = async (branch) =>  {	
+let  branchamountResult = async (branch) =>  {
     console.log("2222222");
 	 console.log(branch);
-	
+
 		return  new Promise(resolve => {
 			connections.scm_public.query("select branch,credit,debit,balance,notify_amount from pettycash_allocate_amount where branch='"+branch+"' and status=1 ",(error, branchAmountRes) => {
 				if (error) {
@@ -3621,7 +3598,7 @@ let  branchamountResult = async (branch) =>  {
 					console.log("333333");
 					resolve({"result":"error"})
 				}else{
-					
+
 					console.log(branchAmountRes);
 					if(branchAmountRes.length>0){
 					  console.log("44444");
@@ -3635,29 +3612,29 @@ let  branchamountResult = async (branch) =>  {
 			});
 		});
 
-	
+
 };
 
-let moveVoucherFile = async (req) =>  {	
-	
+let moveVoucherFile = async (req) =>  {
+
 	upoload = req.files;
     if(upoload!=null && upoload.fileVoucher!=null){
 		return  new Promise(resolve => {
-			  if (upoload.fileVoucher.mimetype == "image/jpeg" || upoload.fileVoucher.mimetype == "image/png" || upoload.fileVoucher.mimetype == "image/gif" || upoload.fileVoucher.mimetype == "application/pdf") {						
+			  if (upoload.fileVoucher.mimetype == "image/jpeg" || upoload.fileVoucher.mimetype == "image/png" || upoload.fileVoucher.mimetype == "image/gif" || upoload.fileVoucher.mimetype == "application/pdf") {
 					time = new Date().getTime();
 					oldfilename = upoload.fileVoucher.name;
-					filext = oldfilename.split('.').pop();	
+					filext = oldfilename.split('.').pop();
 					newfilename = time+'_voucher'+'.'+filext;
 					//voucherFilePath = 'D:/git/cogs-api-new-final/voucher/' + newfilename;
-					voucherFilePath = '/var/www/andaman/voucher/' + newfilename;					
-					console.log("uploadPath : " + voucherFilePath);				
+					voucherFilePath = '/var/www/andaman/voucher/' + newfilename;
+					console.log("uploadPath : " + voucherFilePath);
 					upoload.fileVoucher.mv(voucherFilePath, function(err) {
 					  if (err) {
 						resolve({"result":null})
 					  }else{
-						resolve({"result":newfilename}) 
+						resolve({"result":newfilename})
 					  }
-					 
+
 					});
 			}
 		});
@@ -3667,27 +3644,27 @@ let moveVoucherFile = async (req) =>  {
 };
 
 let moveBillFile = async (req) =>  {
-//new Date().getTime()	
+//new Date().getTime()
    console.log("billfile");
    //console.log(billFile);
    upoload = req.files;
     if(upoload!=null && upoload.fileBill!=null){
 		return  new Promise(resolve => {
-			  if (upoload.fileBill.mimetype == "image/jpeg" || upoload.fileBill.mimetype == "image/png" || upoload.fileBill.mimetype == "image/gif" || upoload.fileBill.mimetype == "application/pdf") {					
+			  if (upoload.fileBill.mimetype == "image/jpeg" || upoload.fileBill.mimetype == "image/png" || upoload.fileBill.mimetype == "image/gif" || upoload.fileBill.mimetype == "application/pdf") {
 					time = new Date().getTime();
 					oldfilename = upoload.fileBill.name;
-					filext = oldfilename.split('.').pop();	
+					filext = oldfilename.split('.').pop();
 					newfilename = time+'_bill'+'.'+filext;
 					//billFilePath = 'D:/git/cogs-api-new-final/bill/' + newfilename;
 					billFilePath = '/var/www/andaman/bill/' + newfilename;
-					console.log("uploadPath : " + billFilePath);				
+					console.log("uploadPath : " + billFilePath);
 					upoload.fileBill.mv(billFilePath, function(err) {
 					  if (err) {
 						resolve({"result":null})
 					  }else{
-						resolve({"result":newfilename}) 
+						resolve({"result":newfilename})
 					  }
-					 
+
 					});
 				}
 		});
@@ -3703,20 +3680,20 @@ let insertData = async (creditAmount,debitamountCalculate,balanceAmount,notifica
 				var stats = 0;
 				if(debitamountCalculate>=notificationAmount){
 					stats = 1;
-				}				
+				}
 				connections.scm_public.getConnection((err, con) => {
 					if (err) {
 							resolve({"result":"inserterror"});
 				    }
-					
-					
-					con.beginTransaction(err => {					
+
+
+					con.beginTransaction(err => {
 						 if (err) {
 							resolve({"result":"inserterror"});
-						 }					 
+						 }
 						 var insertQry = "insert into petty_cash set branch='"+branch+"',voucher_no='"+voucherno+"',categoty_id="+category+",vendorname='"+vendorname+"',bill_no='"+billno+"',bill_date='"+billdate+"',remarks='"+remarks+"',debit="+amount+",bill_submission='"+sumbissiondate+"',voucher_attach='"+voucherName+"',bill_attch='"+billName+"',status="+stats+",created_date=now(),ch_id='"+chid+"'";
-						
-						connections.scm_public.query(insertQry,(insrtError, insrtRes) => {						
+
+						connections.scm_public.query(insertQry,(insrtError, insrtRes) => {
 						if (insrtError) {
 							con.rollback((rollbackErr) => {
 								if (rollbackErr) {
@@ -3725,9 +3702,9 @@ let insertData = async (creditAmount,debitamountCalculate,balanceAmount,notifica
 									resolve({"result":"inserterror"});
 								}
 							});
-					    }else{		
-							var updateQry = "update pettycash_allocated_amount set debit'"+debitamountCalculate+"',balance='"+balanceAmount+"' where branch='"+branch+"'";	
-							
+					    }else{
+							var updateQry = "update pettycash_allocated_amount set debit'"+debitamountCalculate+"',balance='"+balanceAmount+"' where branch='"+branch+"'";
+
 							console.log(updateQry);
 							connections.scm_public.query(updateQry,(updateError, updateRes) => {
 								if (updateError) {
@@ -3740,36 +3717,36 @@ let insertData = async (creditAmount,debitamountCalculate,balanceAmount,notifica
 											resolve({"result":"updateerror"});
 										}
 									});
-								} 
+								}
 								con.commit((commitError) => {
 									if (commitError) {
 										resolve({"result":"commiterror"});
 									}
 									resolve({"result":"success"});
-									
+
 								});
-								
+
 							});
 						}
-					});	
-					});				
+					});
+					});
 				});
-				
+
 			});*/
 		return  new Promise(resolve => {
 			var stats = 0;
-			
-			
+
+
 			console.log("inside insert data");
 			console.log(debitamountCalculate);
 			console.log(notificationAmount);
-			
-			
+
+
 			if(debitamountCalculate>=notificationAmount){
 				stats = 1;
 			}
   			var insertQry = "insert into pettycash set branch='"+branch+"',voucher_no='"+voucherno+"',category_id="+category+",vendorname='"+vendorname+"',bill_no='"+billno+"',bill_date='"+billdate+"',remarks='"+remarks+"',debit="+amount+",bill_submission='"+sumbissiondate+"',voucher_attach='"+voucherName+"',bill_attch='"+billName+"',status="+stats+",created_date=now(),ch_id='"+chid+"'";
-			
+
 			console.log(insertQry);
     var js = voucherno.slice(11);
     var cutjs = js.slice(0, -5);
@@ -3781,13 +3758,13 @@ let insertData = async (creditAmount,debitamountCalculate,balanceAmount,notifica
 					console.log("333333");
 					resolve({"result":"inserterror"});
 				}else{
-                    var updateQry = "update pettycash_allocate_amount set debit='"+debitamountCalculate+"',balance='"+balanceAmount+"' where branch='"+branch+"'";					
+                    var updateQry = "update pettycash_allocate_amount set debit='"+debitamountCalculate+"',balance='"+balanceAmount+"' where branch='"+branch+"'";
 					connections.scm_public.query(updateQry,(updateErr, updateRes) => {
 						if(updateErr){
-							
+
 							console.log("XXXXXXXXXX");
 							var last_id = insrtRes.insertId;
-							
+
 							var delQry = "delete from pettycash where sno="+last_id+"";
 							console.log(delQry);
 							connections.scm_public.query(delQry,(delErr, updateRes) => {
@@ -3797,25 +3774,25 @@ let insertData = async (creditAmount,debitamountCalculate,balanceAmount,notifica
 									resolve({"result":"updateerror"});
 								}
 							});
-							
+
 						}else{
-							
+
 							connections.scm_root.query("update pettycash_voucher set sequence_no=? where branch=?", [cutjs, branch], (err, resvoucher) => {
 							if (err){
 								resolve({"result":"updateerror"});
 							}else{
 								resolve({"result": "success"});
-							}							  
+							}
 							});
-							
-							
-							
-							
+
+
+
+
 						}
 					});
 				}
 			});
-			 
+
 		});
 };
 
@@ -3889,23 +3866,23 @@ exports.petty_cash_details = (req, res) => {
 
 exports.download_voucher = (req, res) => {
   let filename = req.params.download
-  //console.log(filepath);  
+  //console.log(filepath);
   var fileLocation = '/var/www/andaman/voucher/'+filename;
   //var fileLocation = 'D:/git/cogs-api-new-final/voucher/'+filename;
-  
+
   console.log(fileLocation);
- 
+
   res.download(fileLocation);
-}	
+}
 exports.download_bill = (req, res) => {
   let filename = req.params.download
   //console.log(filepath);
-  
+
   var fileLocation = '/var/www/andaman/bill/'+filename;
   //var fileLocation = 'D:/git/cogs-api-new-final/bill/'+filename;
- 
+
   res.download(fileLocation);
-}	 
+}
 
 
 //petty cash preveen
@@ -4811,23 +4788,23 @@ exports.category_update = (req, res) => {
 }
 
 
-exports.main_route_inactive_user = (day,callback) => {	
-  connections.scm_public.query("select qry from inactive_query where sno=1",(error, inactiveres) => {		
+exports.main_route_inactive_user = (day,callback) => {
+  connections.scm_public.query("select qry from inactive_query where sno=1",(error, inactiveres) => {
       if (error)  {
 		  callback("inactive_query  error",null);
-	  }else{		  
+	  }else{
 	  connections.ideamed.query(inactiveres[0].qry,(error, inactUsers) => {
 		if(error){
 			callback("ideamed inactive query error",null);
 		}else{
-			
+
 			   if(inactUsers.length>0){
 					mods.nativeFunctions.inactiveEmail(inactUsers).then(final => callback(null,final));
 			   }else{
 				   callback(null,"No inactive users");
 			   }
 		}
-		  
+
 		}
 		);
 		}
@@ -4836,10 +4813,10 @@ exports.main_route_inactive_user = (day,callback) => {
   // }
 };
 
-exports.inactiveEmailList = (emailtemp,callback) =>{	
+exports.inactiveEmailList = (emailtemp,callback) =>{
 	connections.scm_public.query("select fromid,toid,bccid,ccid,passcode from email where scmtype='inactiveemail'",(error, inactivemailres) => {
       if (error) {
-		  callback("select email query",null);		
+		  callback("select email query",null);
 	  }else{
 		  callback(null,inactivemailres);
 	  }
@@ -4848,10 +4825,10 @@ exports.inactiveEmailList = (emailtemp,callback) =>{
 
 
 
-exports.avaOverseasEmailList = (emailtemp,callback) =>{	
+exports.avaOverseasEmailList = (emailtemp,callback) =>{
 	connections.scm_public.query("select fromid,toid,bccid,ccid,passcode from email where scmtype='avaoverseasemail'",(error, domesticemailres) => {
       if (error) {
-		  callback("select email query",null);		
+		  callback("select email query",null);
 	  }else{
 		  callback(null,domesticemailres);
 	  }
@@ -4870,32 +4847,32 @@ exports.main_route_newopd_mail = (yesterday,callback) => {
     ("0" + (temp.getMonth() + 1)).slice(-2) +
     "-" +
     "01";
-	
+
 	let ftddatelastyear = (temp.getFullYear()-1)+'-'+ ("0" + (temp.getMonth()+1)).slice(-2)+'-'+("0" + (temp.getDate())).slice(-2);
 	let mtddatelastyear = (temp.getFullYear()-1)+'-'+ ("0" + (temp.getMonth()+1)).slice(-2)+'-01';
-	
-	
+
+
   connections.scm_public.query(files.new_opd_super,[mtddate, ftddate],(error, resnewopd) => {
       if (error) {
 		  callback("select new opd query error",null);
-	 }else{	  
+	 }else{
 		  connections.scm_public.query(files.new_opd_super,[mtddatelastyear, ftddatelastyear],(error, reslastyearopd) => {
 			if (error) {
 				callback("select new opd last yar query error",null);
-			}else{	  
+			}else{
 			  connections.scm_public.query(
 				"select * from branches",
 				(err, branchres) => {
-				  if (err){ 
+				  if (err){
 					callback("select branch query error",null);
-				  }else{          
+				  }else{
 						  mods.nativeFunctions
 							.newopdNative(
 							  resnewopd,
 							  branchres,
 							  ftddate,
 							  reslastyearopd,
-							  
+
 							)
 							.then(final => callback(null,final));
 				  }
@@ -4912,10 +4889,10 @@ exports.main_route_newopd_mail = (yesterday,callback) => {
 
 
 
-exports.opdEmailList = (emailtemp,callback) =>{	
+exports.opdEmailList = (emailtemp,callback) =>{
 	connections.scm_public.query("select fromid,toid,bccid,ccid,passcode from email where scmtype='newopd'",(error, domesticemailres) => {
       if (error) {
-		  callback("select email query",null);		
+		  callback("select email query",null);
 	  }else{
 		  callback(null,domesticemailres);
 	  }
@@ -5704,8 +5681,8 @@ exports.tpabill_sub = (req, res) => {
 
 
 
-exports.materialcogs_email = (yesterday,callback) => { 
- 
+exports.materialcogs_email = (yesterday,callback) => {
+
 //  console.log('main_route');
   // if (sess.superUser === undefined) {
   //   res.json({ msg: "Not Authorised" });
@@ -5721,7 +5698,7 @@ exports.materialcogs_email = (yesterday,callback) => {
   connections.scm_public.query(files.cogsSuper, [mtddate, ftddate],(error, cogsresults) =>  {
     if (error){
 		callback("select cogs query error",null);
-	}else{ 
+	}else{
 		connections.scm_public.query(files.revenueSuper,[mtddate, ftddate],(error, revresults) => {
 			if (error) {
 				callback("select revenue_report query error",null);
@@ -5729,45 +5706,45 @@ exports.materialcogs_email = (yesterday,callback) => {
 				connections.scm_public.query("select * from branches",(err, branchres) => {
 					if (err) {
 						callback("select branches query error",null);
-					}else{					
+					}else{
 						connections.scm_public.query(files.currency_det_last_mth,  (currency_last_err, currency_last_res) => {
 						if (currency_last_err) {
 							callback("select currenct latest query error",null);
 						}else{
 							connections.scm_public.query(files.currency_details, [mtddate, ftddate], (currencyerr, currencyres) => {
-							 if (currencyerr){ 
+							 if (currencyerr){
 								callback("select currenct query query error",null);
-							 }else{				 
-							  
+							 }else{
+
 									mods.functions
 									  .materialcogs(
 										cogsresults,
 										revresults,
 										branchres,
-										ftddate,									
+										ftddate,
 										currencyres,
-										currency_last_res									
+										currency_last_res
 									  )
 									  .then(final => callback(null,final));
 							 }
 							});
-						
+
 						}
 						});
-					}					  
-				  });			
+					}
+				  });
 			}
-		  });	
-	}	
+		  });
+	}
   });
   // }
 
 };
 
-exports.materialCogsOverseasEmailList = (emailtemp,callback) =>{	
+exports.materialCogsOverseasEmailList = (emailtemp,callback) =>{
 	connections.scm_public.query("select fromid,toid,bccid,ccid,passcode from email where scmtype='scm_materialcost_overseas'",(error, domesticemailres) => {
       if (error) {
-		  callback("select email query",null);		
+		  callback("select email query",null);
 	  }else{
 		  callback(null,domesticemailres);
 	  }
@@ -5887,43 +5864,43 @@ fixeddate:resdata
 exports.deleteStockLedger = (currentmonth,yesterdaymonth,yesterday,callback) => {
 	//currentmonth = 11;
 	//yesterdaymonth =10;
-	
-	var today = new Date();	
+
+	var today = new Date();
 	var twodaysbefore = new Date(today);
 	twodaysbefore.setDate(today.getDate() - 2);
 	var dd1 = twodaysbefore.getDate();
 	var mm1 = twodaysbefore.getMonth()+1; //January is 0!
 	var yyyy1 = twodaysbefore.getFullYear();
-	
-	
-	var monthlastdate  = new Date(yyyy1, mm1, 0).getDate();	
+
+
+	var monthlastdate  = new Date(yyyy1, mm1, 0).getDate();
 	console.log("monthlastdate");
 	console.log(monthlastdate);
-	
-	
-	if(dd1<10){dd1='0'+dd1} if(mm1<10){mm1='0'+mm1} 
+
+
+	if(dd1<10){dd1='0'+dd1} if(mm1<10){mm1='0'+mm1}
 	twodaysbefore = yyyy1+'-'+mm1+'-'+dd1;
-	
+
 	console.log("twodaysbefore");
 	console.log(twodaysbefore);
 	//process.exit(1);
-	
-	if(dd1!=monthlastdate){		
+
+	if(dd1!=monthlastdate){
 		console.log("delete from stock_ledger where PREVDATE='" + twodaysbefore + "' and DESCRIPTION IN ('AEH','AHC','AHI','OHC')");
 		connections.scm_public.query("delete from stock_ledger where PREVDATE='" + twodaysbefore + "' and DESCRIPTION IN ('AEH','AHC','AHI','OHC')",(error, res) => {
 		  if (error) {
-			  callback("delete query error",null);		
+			  callback("delete query error",null);
 		  }else{
 			 callback(null,res);
 		  }
 		});
-		
+
 	}else{
-		
+
 		callback(null,'success');
 	}
-	
-	
+
+
 }
 
 
@@ -5932,41 +5909,41 @@ exports.deleteStockLedger = (currentmonth,yesterdaymonth,yesterday,callback) => 
 
 
 exports.deleteStockLedgerOverseas = (currentmonth,yesterdaymonth,yesterday,callback) => {
-		
-	var today = new Date();	
+
+	var today = new Date();
 	var twodaysbefore = new Date(today);
-	twodaysbefore.setDate(today.getDate() - 2);	
+	twodaysbefore.setDate(today.getDate() - 2);
 	var dd1 = twodaysbefore.getDate();
 	var mm1 = twodaysbefore.getMonth()+1; //January is 0!
 	var yyyy1 = twodaysbefore.getFullYear();
-	
+
 	var monthlastdate = new Date(yyyy1, mm1, 0).getDate();
 	console.log("monthlastdate");
 	console.log(monthlastdate);
-	
-	if(dd1<10){dd1='0'+dd1} if(mm1<10){mm1='0'+mm1} 
-	twodaysbefore = yyyy1+'-'+mm1+'-'+dd1;	
-	
+
+	if(dd1<10){dd1='0'+dd1} if(mm1<10){mm1='0'+mm1}
+	twodaysbefore = yyyy1+'-'+mm1+'-'+dd1;
+
 	console.log("twodaysbefore");
 	console.log(twodaysbefore);
 	//process.exit(1);
-	
-	if(dd1!=monthlastdate){		
+
+	if(dd1!=monthlastdate){
 		console.log("delete from stock_ledger where PREVDATE='" + twodaysbefore + "' and DESCRIPTION NOT IN ('AEH','AHC','AHI','OHC')");
 		connections.scm_public.query("delete from stock_ledger where PREVDATE='" + twodaysbefore + "' and DESCRIPTION NOT IN ('AEH','AHC','AHI','OHC')",(error, res) => {
 		  if (error) {
-			  callback("delete query error",null);		
+			  callback("delete query error",null);
 		  }else{
 			 callback(null,res);
 		  }
 		});
-		
+
 	}else{
-		
+
 		callback(null,'success');
 	}
-	
-	
+
+
 }
 
 
@@ -5979,13 +5956,13 @@ exports.stockledger = (req, res) => {
   let departnment = req.body.departnment;
   let start = fromdate + '-01';
   let end = fromdate + '-31';
-  
-  
-  
-  
-  
+
+
+
+
+
   let whereCondition = '';
-  if(entity=='AEH' || entity=='AHC' || entity=='AHI'){	  
+  if(entity=='AEH' || entity=='AHC' || entity=='AHI'){
 	  whereCondition+= " DESCRIPTION='"+entity+"' and ";
   }if(entity=='OHC'){
 	  whereCondition+= " DESCRIPTION NOT IN ('AEH','AHC','AHI','OHC') and ";
@@ -6001,7 +5978,7 @@ exports.stockledger = (req, res) => {
 	  whereCondition+= " DEPARTMENT_NAME in ("+departnment+") and ";
   }
   let transquery="select * from stock_ledger WHERE "+whereCondition+ " PREVDATE between '" + start + "' and '" + end + "' order by DESCRIPTION ASC";
-  
+
   console.log(transquery);
       connections.scm_public.query(transquery, (err, resstockledger) => {
         if (err) console.error(err);
@@ -6011,7 +5988,7 @@ exports.stockledger = (req, res) => {
           }
         })
   })
-  
+
 }
 
 
@@ -6177,7 +6154,7 @@ exports.tpabillprint = (req, res) => {
   let branch = req.params.branch;
   let agencyname = req.params.agencyname;
   let tpaagencyname='';
-  
+
   var agency_name=agencyname;
 
 	if(agency_name=='Reliance General Insurance Co. Ltd'){
@@ -6267,38 +6244,38 @@ exports.tpabillprint = (req, res) => {
 				connections.scm_public.query("select * from branches where code='" + branch + "'",(branch_err, branchres) => {
 					if (branch_err) {
 						res.json({"ResponseCode": 203,"ResponseMsg": "No data found"});
-					}else{					
+					}else{
 						connections.scm_public.query("select * from tpa_master where tpa_name='" + tpaagencyname + "'",  (tpa_temp_err, tpa_temp_res) => {
 						if ((tpa_temp_err) || (tpa_temp_res.length==0)) {
 							res.json({"ResponseCode": 203,"ResponseMsg": "No bill print found for this agency"});
 						}else{
-							connections.scm_public.query("select * from service_mapping where tpa_id='" + tpa_temp_res[0].id + "'", (ser_mapp_err, ser_mapp_res) => {								
-							if (ser_mapp_err){ 
+							connections.scm_public.query("select * from service_mapping where tpa_id='" + tpa_temp_res[0].id + "'", (ser_mapp_err, ser_mapp_res) => {
+							if (ser_mapp_err){
 								res.json({"ResponseCode": 204,"ResponseMsg": "No data found"});
-							 }else{				 
-							  
+							 }else{
+
 									mods.functions
-									  .tpaBillPrint(										
+									  .tpaBillPrint(
 										rev_det_tpa_res,
 										branchres,
-										tpa_temp_res,									
+										tpa_temp_res,
 										ser_mapp_res,
 										tpaagencyname
 									  )
 									  .then(final => res.send(final));
 							 }
 							});
-						
+
 						}
 						});
-					}					  
-				  });			
+					}
+				  });
 			}
-		  });	
-	
-	
-	
-  
+		  });
+
+
+
+
   // }
 };
 
@@ -6357,8 +6334,8 @@ if(err) console.error(err);
 
 
 var branchMappringMis = {'CMH':1,'ANN':2,'ASN':3,'AVD':4,'NLR':5,'PMB':6,'PRR':7,'TLR':8,'TRC':9,'VLC':10,'KNP':11,'VLR':12,'KBK':13,'NVL':14,'VPM':15,'DHA':16,'SLM':17,'KSN':18,'ERD':19,'HSR':20,'JPR':21,'MDU':22,'TBM':23,'ADY':24,'EGM':25,'MGP':26,'NWP':27,'PDY':28,'TVL':29,'TCN':30,'APM':31,'TRI':32,'TNJ':33,'AMN':34,'BMH':35,'WFD':36,'KML':37,'CLR':38,'INR':39,'PNR':40,'YLK':41,'HUB':42,'MCC':43,'MYS':44,'DNR':45,'HMH':46,'MDA':47,'SNR':48,'HIM':49,'SBD':50,'VMH':51,'NEL':52,'GUN':53,'TPT':54,'RAJ':55,'TVM':56,'KOL':57,'KAS':58,'PUN':59,'AHM':60,'IND':61,'CTK':62,'BHU':63,'TPR':64,'AMB':65,'SVR':66,'BSK':67,'RRN':68,'TVT':69,'MPM':70,'RJN':72,'MDR':73,'MZQ':74,'BRA':75,'NGA':76,'RWD':77,'EBN':78,'FLQ':79,'GDL':80,'ZMB':81,'GHA':82,'NAB':83,'UGD':84,'TZA':85,'CMB':86,'JGN':87,'HDP':88,'VSH':99,'CGU':90,'JWS':91,'APR':92,'ATA':93,'KWA':94,'KTM':95,'GCB':96,'CMR':97,'DWD':98}
-						
-var oprRegionMappingBranchCode = {		
+
+var oprRegionMappingBranchCode = {
 		'Chennai'		: ['CMH','ANN','ASN','AVD','NLR','PMB','PRR','TLR','TRC','VLC','TBM','ADY','EGM','MGP','NWP','AMB','TVT'],
 		'Karnataka' 	: ['BMH','WFD','KML','CLR','INR','PNR','YLK','HUB',"DWD",'MCC','MYS','SVR','BSK','RRN','RJN','JGN'],
 		'Maharashtra' 	: ['VSH','PUN','HDP',"CMR"],
@@ -6373,7 +6350,7 @@ var oprRegionMappingBranchCode = {
 		'Tamil Nadu'	: ['CMH','ANN','ASN','AVD','NLR','PMB','PRR','TLR','TRC','VLC','TBM','ADY','EGM','MGP','NWP','AMB','TVT','KNP','VLR','KBK','NVL','VPM','DHA','SLM','KSN','ERD','HSR','MDU','TVL','TCN','APM','TRI','TNJ','TPR','CMB','PDY']
 		};
 
-var oprRegionMappingBranchId = {		
+var oprRegionMappingBranchId = {
 		'Chennai'		: [1,2,3,4,5,6,7,8,9,10,23,24,25,26,27,65,69],
 		'Karnataka' 	: [35,36,37,38,39,40,41,98,43,44,66,67,68,72,87],
 		'Maharashtra' 	: [99,59,88,97],
@@ -6386,57 +6363,57 @@ var oprRegionMappingBranchId = {
 		'Kolkata'		: [57,58],
 		'Kerala'		: [56,95],
 		'Tamil Nadu'	: [1,2,3,4,5,6,7,8,9,10,23,24,25,26,27,65,69,11,12,13,14,15,16,17,18,19,20,22,29,31,32,33,62,86,28]
-		};	
+		};
 
 
 
 
 function oprwhereConditionBuild(argRegion){
-	
+
 	if(argRegion!='undefined'){
 		var branchesarr = oprRegionMappingBranchCode[argRegion];
 	}
-			  
+
 	var branchIN = '';
-	var branchlist = '';			 
+	var branchlist = '';
 	for (let key in branchesarr) {
-	branchIN+="'"+branchesarr[key]+"',"; 
-	} 
+	branchIN+="'"+branchesarr[key]+"',";
+	}
 	var branchlist = branchIN.substr(0, branchIN.length-1);
 	if(branchlist){
 		return ' ('+branchlist+') ';
 	}else{
 		return '';
-	}	
-			 
-	
-	
+	}
+
+
+
 }
 function oprwhereConditionBuild1(argRegion){
-	
+
 	if(argRegion!='undefined'){
 		var branchesarr = oprRegionMappingBranchId[argRegion];
 	}
-			  
+
 	var branchIN = '';
-	var branchlist = '';			 
+	var branchlist = '';
 	for (let key in branchesarr) {
-	branchIN+=""+branchesarr[key]+","; 
-	} 
+	branchIN+=""+branchesarr[key]+",";
+	}
 	var branchlist = branchIN.substr(0, branchIN.length-1);
 	if(branchlist){
 		return ' ('+branchlist+') ';
 	}else{
 		return '';
-	}	
-			 
-	
-	
-}		
+	}
 
 
-exports.snapshotrevenueOld = (req, res) => {  
-  
+
+}
+
+
+exports.snapshotrevenueOld = (req, res) => {
+
   let branch = req.params.branch;
   var fiscalyear = "";var preFinYear = "";
   var today = new Date();
@@ -6446,19 +6423,19 @@ exports.snapshotrevenueOld = (req, res) => {
     fiscalyear = today.getFullYear() + "-" + (today.getFullYear() + 1)
   }
   var currentfinyear = fiscalyear.split("-");
-  
-  
+
+
   var prefinyearfrom = currentfinyear[0]-1;
   var prefinyearto = currentfinyear[1];
-  
+
   preFinYear = prefinyearfrom + "-" + prefinyearfrom+1;
   var preFinYearArr = preFinYear.split("-");
-  
-  
+
+
   let fromyear = prefinyearfrom+'-04-01';
   let toyear = prefinyearto+'-03-31';
-  
-  
+
+
   let whereCondition = '';
   let whereTargetCondition = '';
   let whereRevenDetailbrach = '';
@@ -6480,52 +6457,52 @@ exports.snapshotrevenueOld = (req, res) => {
 		  whereRevenDetailbrach = " 	NATIVE in "+oprwherRes+" and";
 		  whereOPRtarget = " target_branch in "+oprwherRes+" and";
 	  }
-	  
+
   }
-  
+
   //SELECT SUM(ftd) AS mtd,MONTH(trans_date), YEAR(trans_date) AS yr FROM revenue WHERE trans_date BETWEEN '" + fromyear + "' AND '" + toyear + "'  GROUP BY MONTH(trans_date),YEAR(trans_date)
-  
+
   let revenueqry="SELECT SUM(ftd) as mtd,MONTH(trans_date), YEAR(trans_date) AS yr FROM revenue WHERE "+whereCondition+ "  trans_date BETWEEN '" + fromyear + "' AND '" + toyear + "' GROUP BY YEAR(trans_date),MONTH(trans_date)";
-  
+
   //SELECT SUM(amount) AS mtd,target_month, target_year FROM target WHERE branch_id=1 AND target_year IN (2019,2020,2021) GROUP BY  target_year,target_month
-  
-  
+
+
   let targetquery = "SELECT amount,target_month, target_year FROM target WHERE "+whereTargetCondition+ "  target_year >=" + prefinyearfrom + " and target_year <= " + prefinyearto + " GROUP BY  target_year,target_month,branch_id";
-  
-  
+
+
   let opdquery = "SELECT SUM(ftd_count) as mtd,MONTH(trans_date), YEAR(trans_date) AS yr FROM op_details WHERE "+whereCondition+ "  trans_date BETWEEN '" + fromyear + "' AND '" + toyear + "' GROUP BY YEAR(trans_date),MONTH(trans_date)";
-  
+
   //let rev_det_query = "SELECT `GROUP`,SUBGROUP,SUM(net_amount) as net_amount,MONTH(transaction_date), YEAR(transaction_date) AS yr,COUNT(1) as ct FROM revenue_details WHERE "+whereRevenDetailbrach+ " transaction_date BETWEEN '" + fromyear + "' AND '" + toyear + "' AND `unit`='SURGERY'   GROUP BY YEAR(transaction_date),MONTH(transaction_date),SUBGROUP,`GROUP`";
-  
-  
+
+
   //let rev_det_query = "SELECT UNIT,`GROUP`,VISIT_TYPE,SUBGROUP,SUM(net_amount) as net_amount,MONTH(transaction_date), YEAR(transaction_date) AS yr,SUM(QUANTITY) as ct FROM revenue_details WHERE "+whereRevenDetailbrach+ " transaction_date BETWEEN '" + fromyear + "' AND '" + toyear + "' and UNIT='surgery'   GROUP BY YEAR(transaction_date),MONTH(transaction_date),UNIT,SUBGROUP,`GROUP`,VISIT_TYPE";
-  
+
   let rev_det_query = "SELECT UNIT,`GROUP`,SUBGROUP,SUM(net_amount) as net_amount,MONTH(transaction_date), YEAR(transaction_date) AS yr,SUM(QUANTITY) as ct FROM revenue_details WHERE "+whereRevenDetailbrach+ " transaction_date BETWEEN '" + fromyear + "' AND '" + toyear + "' and UNIT='SURGERY'  GROUP BY YEAR(transaction_date),MONTH(transaction_date),UNIT,SUBGROUP,`GROUP`";
-  
-  
+
+
   let inv_query = "SELECT UNIT,SUM(net_amount) as net_amount,MONTH(transaction_date), YEAR(transaction_date) AS yr,SUM(QUANTITY) as ct FROM revenue_details WHERE "+whereRevenDetailbrach+ " transaction_date BETWEEN '" + fromyear + "' AND '" + toyear + "' and UNIT IN ('INVESTIGATION','TREATMENT')  GROUP BY YEAR(transaction_date),MONTH(transaction_date),UNIT";
-  
+
   let contact_query = "SELECT `GROUP`,SUM(net_amount) as net_amount,MONTH(transaction_date), YEAR(transaction_date) AS yr,SUM(QUANTITY) as ct FROM revenue_details WHERE "+whereRevenDetailbrach+ " transaction_date BETWEEN '" + fromyear + "' AND '" + toyear + "' and `GROUP`='CONTACT LENS'  GROUP BY YEAR(transaction_date),MONTH(transaction_date)";
-  
-  
+
+
   let pha_query = "SELECT UNIT,SUM(net_amount) as net_amount,MONTH(transaction_date), YEAR(transaction_date) AS yr,SUM(QUANTITY) as ct FROM revenue_details WHERE "+whereRevenDetailbrach+ " transaction_date BETWEEN '" + fromyear + "' AND '" + toyear + "' and UNIT IN ('PHARMACY','OPTICALS')  GROUP BY YEAR(transaction_date),MONTH(transaction_date),UNIT";
-  
+
   let consul_query = "SELECT `GROUP`,VISIT_TYPE,SUM(net_amount) as net_amount,MONTH(transaction_date), YEAR(transaction_date) AS yr,SUM(QUANTITY) as ct FROM revenue_details WHERE "+whereRevenDetailbrach+ " transaction_date BETWEEN '" + fromyear + "' AND '" + toyear + "' and `GROUP`='CONSULTATION'  GROUP BY YEAR(transaction_date),MONTH(transaction_date),VISIT_TYPE";
-  
-  
-  
+
+
+
    let opr_terget_query = "SELECT * FROM oprdata_target WHERE "+whereOPRtarget+ "  target_year >=" + prefinyearfrom + " and target_year <= " + prefinyearto + " GROUP BY  target_year,target_month,target_branch";
-   
-   
-   
-   
+
+
+
+
    /*console.log(revenueqry);
    console.log(targetquery);
    console.log(opdquery);
    console.log(rev_det_query);
    console.log(opr_terget_query);*/
-   
-   
+
+
   connections.mis_public.query(revenueqry,(rev_det_err, rev_det_res) => {
 			if ((rev_det_err) || (rev_det_res.length==0)) {
 			//if (rev_det_tpa_err) {
@@ -6580,10 +6557,10 @@ exports.snapshotrevenueOld = (req, res) => {
 													 }else{
 														 console.log("queru9");
 														mods.functions
-														  .snapshotR(									
+														  .snapshotR(
 															rev_det_res,
 															rev_target_res,
-															preFinYearArr[0],										
+															preFinYearArr[0],
 															currentfinyear[0],
 															currentfinyear[1],
 															opd_det_res,
@@ -6593,19 +6570,19 @@ exports.snapshotrevenueOld = (req, res) => {
 															contact_query_res,
 															pha_query_res,
 															consul_query_res
-															
-																							
+
+
 														  )
 														  .then(final => res.send(final));
-													}					  
+													}
 													});
-											}					  
+											}
 											});
-										}					  
+										}
 										});
-									  }					  
+									  }
 									  });
-									}					  
+									}
 								});
 							}
 						});
@@ -6615,9 +6592,10 @@ exports.snapshotrevenueOld = (req, res) => {
                 });
 			}
 		  });
-  
+
 
 }
+
 
 
 exports.snapshotrevenue = (req, res) => {
@@ -6631,19 +6609,22 @@ exports.snapshotrevenue = (req, res) => {
     fiscalyear = today.getFullYear() + "-" + (today.getFullYear() + 1)
   }
   var currentfinyear = fiscalyear.split("-");
-  
-  
-  var prefinyearfrom = currentfinyear[0]-1;
+
+
+  var prefinyearfrom = currentfinyear[0]-2;
   var prefinyearto = currentfinyear[1];
-  
+
   preFinYear = prefinyearfrom + "-" + prefinyearfrom+1;
   var preFinYearArr = preFinYear.split("-");
-  
-  
+
+
   let fromyear = prefinyearfrom+'-04-01';
   let toyear = prefinyearto+'-03-31';
-  
-  
+
+
+  var threeyearsbef = preFinYearArr[0];
+  var twoyearsbef = currentfinyear[0]-1;
+
   let whereCondition = '';
   let whereTargetCondition = '';
   let whereRevenDetailbrach = '';
@@ -6665,11 +6646,11 @@ exports.snapshotrevenue = (req, res) => {
 		  whereRevenDetailbrach = " 	NATIVE in "+oprwherRes+" and";
 		  whereOPRtarget = " target_branch in "+oprwherRes+" and";
 	  }
-	  
+
   }
 
 
-	
+
   return new Promise((resolve, reject) => {
             async.parallel({
 				revenue: (callback) => {
@@ -6686,7 +6667,7 @@ exports.snapshotrevenue = (req, res) => {
                         callback(_err, _res);
                     });
 
-                }			
+                }
 				,
                 opd: (callback) => {
 
@@ -6707,6 +6688,14 @@ exports.snapshotrevenue = (req, res) => {
 				invest: (callback) => {
 
                     this.investQuery(fromyear, toyear,whereRevenDetailbrach, (_err, _res) => {
+                        callback(_err, _res);
+                    });
+
+                }
+				,
+				treat: (callback) => {
+
+                    this.treatQuery(fromyear, toyear,whereRevenDetailbrach, (_err, _res) => {
                         callback(_err, _res);
                     });
 
@@ -6743,40 +6732,42 @@ exports.snapshotrevenue = (req, res) => {
                     });
 
                 }
-				
+
             }, (err, results) => {
                 if (err) {
-                   // reject(err);				   
+                   // reject(err);
 				   res.json(err);
-                   
+
                 } else {
-					
+
 					//console.log(results);
-					 
+
 					//res.json(mods.nativeFunctions.formation(results,req.params.date));
                     //resolve(results);
-					
-					mods.functions.snapshotR(					
+
+					mods.functions.snapshotR(
 						results.revenue,
 						results.revenuetarget,
-						preFinYearArr[0],										
+						threeyearsbef,
+						twoyearsbef,
 						currentfinyear[0],
 						currentfinyear[1],
 						results.opd,
 						results.surgery,
 						results.oprtarget,
 						results.invest,
+						results.treat,
 						results.contact,
 						results.pharmacy,
 						results.consul
-						
-														
+
+
 					  )
 					  .then(final => res.send(final));
-					
-					
+
+
                 }
-                
+
             });
 
     });
@@ -6784,181 +6775,211 @@ exports.snapshotrevenue = (req, res) => {
 
 
 exports.revenueQuery = (fromyear, toyear,whereCondition,callback) => {
-	
+
 	  try {
 		let revenueqry="SELECT SUM(ftd) as mtd,MONTH(trans_date), YEAR(trans_date) AS yr FROM revenue WHERE "+whereCondition+ "  trans_date BETWEEN '" + fromyear + "' AND '" + toyear + "' GROUP BY YEAR(trans_date),MONTH(trans_date)";
-		connections.mis_public.query(revenueqry,(rev_det_err, rev_det_res) => {			
+		connections.mis_public.query(revenueqry,(rev_det_err, rev_det_res) => {
 			if (rev_det_err) {
 				 callback(rev_det_err, null);
 			}else{
-				
-				
+
+
 				 callback(null, rev_det_res);
-			}		
+			}
 		});
-		 
+
 	 }catch (error) {
             callback(error, null);
      }
-	
+
 };
 
 exports.revenueTargetQuery = (prefinyearfrom, prefinyearto,whereTargetCondition,callback) => {
-	
+
 	  try {
-		let targetquery = "SELECT amount,target_month, target_year FROM target WHERE "+whereTargetCondition+ "  target_year >=" + prefinyearfrom + " and target_year <= " + prefinyearto + " GROUP BY  target_year,target_month,branch_id";
-		connections.mis_public.query(targetquery,(rev_target_err, rev_target_res) => {			
+		let targetquery = "SELECT amount,target_month, target_year FROM target WHERE "+whereTargetCondition+ "  target_year >=" + prefinyearfrom + " and target_year <= " + prefinyearto + " GROUP BY  target_year,target_month";
+		connections.mis_public.query(targetquery,(rev_target_err, rev_target_res) => {
 			if (rev_target_err) {
 				 callback(rev_target_err, null);
 			}else{
-				
-				
+
+
 				 callback(null, rev_target_res);
-			}		
+			}
 		});
-		 
+
 	 }catch (error) {
             callback(error, null);
      }
-	
+
 };
 
 exports.opdQuery = (fromyear, toyear,whereCondition,callback) => {
-	
+
 	  try {
 		let opd_query = "SELECT SUM(ftd_count) as mtd,MONTH(trans_date), YEAR(trans_date) AS yr FROM op_details WHERE "+whereCondition+ "  trans_date BETWEEN '" + fromyear + "' AND '" + toyear + "' GROUP BY YEAR(trans_date),MONTH(trans_date)";
-		connections.scm_public.query(opd_query,(opd_det_err, opd_det_res) => {			
+		connections.scm_public.query(opd_query,(opd_det_err, opd_det_res) => {
 			if (opd_det_err) {
 				 callback(opd_det_err, null);
 			}else{
-				
-				
+
+
 				 callback(null, opd_det_res);
-			}		
+			}
 		});
-		 
+
 	 }catch (error) {
             callback(error, null);
      }
-	
+
 };
 exports.surgeryQuery = (fromyear, toyear,whereRevenDetailbrach,callback) => {
-	
+
 	  try {
-		let rev_det_query = "SELECT UNIT,`GROUP`,SUBGROUP,SUM(net_amount) as net_amount,MONTH(transaction_date), YEAR(transaction_date) AS yr,SUM(QUANTITY) as ct FROM revenue_details WHERE "+whereRevenDetailbrach+ " transaction_date BETWEEN '" + fromyear + "' AND '" + toyear + "' and UNIT='SURGERY'  GROUP BY YEAR(transaction_date),MONTH(transaction_date),UNIT,SUBGROUP,`GROUP`";
-		connections.scm_public.query(rev_det_query,(revdetail_err, revdetail_res) => {			
+		let rev_det_query = "SELECT UNIT,`GROUP`,SUBGROUP,SUM(net_amount) as net_amount,MONTH(transaction_date), YEAR(transaction_date) AS yr,SUM(QUANTITY) as ct FROM revenue_details WHERE id>0 and   "+whereRevenDetailbrach+ " transaction_date BETWEEN '" + fromyear + "' AND '" + toyear + "' and UNIT='SURGERY'    GROUP BY YEAR(transaction_date),MONTH(transaction_date),UNIT,SUBGROUP,`GROUP`";
+
+		//console.log(rev_det_query);
+		connections.scm_public.query(rev_det_query,(revdetail_err, revdetail_res) => {
 			if (revdetail_err) {
 				 callback(revdetail_err, null);
 			}else{
-				
-				
+
+
 				 callback(null, revdetail_res);
-			}		
+			}
 		});
-		 
+
 	 }catch (error) {
             callback(error, null);
      }
-	
+
 };
 exports.investQuery = (fromyear, toyear,whereRevenDetailbrach,callback) => {
-	
+
 	  try {
-		let inv_query = "SELECT UNIT,SUM(net_amount) as net_amount,MONTH(transaction_date), YEAR(transaction_date) AS yr,SUM(QUANTITY) as ct FROM revenue_details WHERE "+whereRevenDetailbrach+ " transaction_date BETWEEN '" + fromyear + "' AND '" + toyear + "' and UNIT IN ('INVESTIGATION','TREATMENT')  GROUP BY YEAR(transaction_date),MONTH(transaction_date),UNIT";
-		connections.scm_public.query(inv_query,(inv_query_err, inv_query_res) => {			
+		let inv_query = "SELECT UNIT,SUM(net_amount) as net_amount,MONTH(transaction_date), YEAR(transaction_date) AS yr,SUM(QUANTITY) as ct FROM revenue_details WHERE id>0 and "+whereRevenDetailbrach+ " transaction_date BETWEEN '" + fromyear + "' AND '" + toyear + "' and UNIT='INVESTIGATION'   GROUP BY YEAR(transaction_date),MONTH(transaction_date),UNIT";
+
+		//console.log(inv_query);
+		connections.scm_public.query(inv_query,(inv_query_err, inv_query_res) => {
 			if (inv_query_err) {
 				 callback(inv_query_err, null);
 			}else{
-				
-				
+
+
 				 callback(null, inv_query_res);
-			}		
+			}
 		});
-		 
+
 	 }catch (error) {
             callback(error, null);
      }
-	
+
+};
+exports.treatQuery = (fromyear, toyear,whereRevenDetailbrach,callback) => {
+
+	  try {
+		let treat_query = "SELECT UNIT,SUM(net_amount) as net_amount,MONTH(transaction_date), YEAR(transaction_date) AS yr,SUM(QUANTITY) as ct FROM revenue_details WHERE id>0 and "+whereRevenDetailbrach+ " transaction_date BETWEEN '" + fromyear + "' AND '" + toyear + "' and UNIT='TREATMENT'   GROUP BY YEAR(transaction_date),MONTH(transaction_date),UNIT";
+
+		//console.log(treat_query);
+		connections.scm_public.query(treat_query,(treat_query_err, treat_query_res) => {
+			if (treat_query_err) {
+				 callback(treat_query_err, null);
+			}else{
+
+
+				 callback(null, treat_query_res);
+			}
+		});
+
+	 }catch (error) {
+            callback(error, null);
+     }
+
 };
 exports.contactQuery = (fromyear, toyear,whereRevenDetailbrach,callback) => {
-	
+
 	  try {
-		let contact_query = "SELECT `GROUP`,SUM(net_amount) as net_amount,MONTH(transaction_date), YEAR(transaction_date) AS yr,SUM(QUANTITY) as ct FROM revenue_details WHERE "+whereRevenDetailbrach+ " transaction_date BETWEEN '" + fromyear + "' AND '" + toyear + "' and `GROUP`='CONTACT LENS'  GROUP BY YEAR(transaction_date),MONTH(transaction_date)";
-		connections.scm_public.query(contact_query,(contact_query_err, contact_query_res) => {			
+		let contact_query = "SELECT `GROUP`,SUM(net_amount) as net_amount,MONTH(transaction_date), YEAR(transaction_date) AS yr,SUM(QUANTITY) as ct FROM revenue_details WHERE id>0 and "+whereRevenDetailbrach+ " transaction_date BETWEEN '" + fromyear + "' AND '" + toyear + "' and `GROUP`='CONTACT LENS'  GROUP BY YEAR(transaction_date),MONTH(transaction_date)";
+		//console.log(contact_query);
+		connections.scm_public.query(contact_query,(contact_query_err, contact_query_res) => {
 			if (contact_query_err) {
 				 callback(contact_query_err, null);
 			}else{
-				
-				
+
+
 				 callback(null, contact_query_res);
-			}		
+			}
 		});
-		 
+
 	 }catch (error) {
             callback(error, null);
      }
-	
+
 };
 exports.pharmacyQuery = (fromyear, toyear,whereRevenDetailbrach,callback) => {
-	
+
 	  try {
-		 let pha_query = "SELECT UNIT,SUM(net_amount) as net_amount,MONTH(transaction_date), YEAR(transaction_date) AS yr,SUM(QUANTITY) as ct FROM revenue_details WHERE "+whereRevenDetailbrach+ " transaction_date BETWEEN '" + fromyear + "' AND '" + toyear + "' and UNIT IN ('PHARMACY','OPTICALS')  GROUP BY YEAR(transaction_date),MONTH(transaction_date),UNIT";
-		connections.scm_public.query(pha_query,(pha_query_err, pha_query_res) => {			
+		 let pha_query = "SELECT UNIT,SUM(net_amount) as net_amount,MONTH(transaction_date), YEAR(transaction_date) AS yr,COUNT(DISTINCT(billno)) as ct FROM revenue_details WHERE id>0 and "+whereRevenDetailbrach+ " transaction_date BETWEEN '" + fromyear + "' AND '" + toyear + "' and UNIT IN ('PHARMACY','OPTICALS')   GROUP BY YEAR(transaction_date),MONTH(transaction_date),UNIT";
+		 //console.log(pha_query);
+		connections.scm_public.query(pha_query,(pha_query_err, pha_query_res) => {
 			if (pha_query_err) {
 				 callback(pha_query_err, null);
 			}else{
-				
-				
+
+
 				 callback(null, pha_query_res);
-			}		
+			}
 		});
-		 
+
 	 }catch (error) {
             callback(error, null);
      }
-	
+
 };
 
 exports.consulQuery = (fromyear, toyear,whereRevenDetailbrach,callback) => {
-	
+
 	  try {
-		 let consul_query = "SELECT `GROUP`,VISIT_TYPE,SUM(net_amount) as net_amount,MONTH(transaction_date), YEAR(transaction_date) AS yr,SUM(QUANTITY) as ct FROM revenue_details WHERE "+whereRevenDetailbrach+ " transaction_date BETWEEN '" + fromyear + "' AND '" + toyear + "' and `GROUP`='CONSULTATION'  GROUP BY YEAR(transaction_date),MONTH(transaction_date),VISIT_TYPE";
-		connections.scm_public.query(consul_query,(consul_query_err, consul_query_res) => {			
+		 let consul_query = "SELECT `GROUP`,VISIT_TYPE,SUM(net_amount) as net_amount,MONTH(transaction_date), YEAR(transaction_date) AS yr,SUM(QUANTITY) as ct FROM revenue_details WHERE id>0 and "+whereRevenDetailbrach+ " transaction_date BETWEEN '" + fromyear + "' AND '" + toyear + "' and `GROUP`='CONSULTATION'  GROUP BY YEAR(transaction_date),MONTH(transaction_date),VISIT_TYPE";
+		 //console.log(consul_query);
+		connections.scm_public.query(consul_query,(consul_query_err, consul_query_res) => {
 			if (consul_query_err) {
 				 callback(consul_query_err, null);
 			}else{
-				
-				
+
+
 				 callback(null, consul_query_res);
-			}		
+			}
 		});
-		 
+
 	 }catch (error) {
             callback(error, null);
      }
-	
+
 };
 
 
 exports.oprtargetQuery = (prefinyearfrom, prefinyearto,whereOPRtarget,callback) => {
-	
+
 	  try {
 		  let opr_terget_query = "SELECT * FROM oprdata_target WHERE "+whereOPRtarget+ "  target_year >=" + prefinyearfrom + " and target_year <= " + prefinyearto + " GROUP BY  target_year,target_month,target_branch";
-		connections.scm_public.query(opr_terget_query,(opr_terget_query_err, opr_terget_query_res) => {			
+		connections.scm_public.query(opr_terget_query,(opr_terget_query_err, opr_terget_query_res) => {
 			if (opr_terget_query_err) {
 				 callback(opr_terget_query_err, null);
 			}else{
-				
-				
+
+
 				 callback(null, opr_terget_query_res);
-			}		
+			}
 		});
-		 
+
 	 }catch (error) {
             callback(error, null);
      }
-	
+
 };
+
+
 
 
 exports.opr_branches = (req, res) => {
@@ -6987,7 +7008,7 @@ exports.main_route_collection_mail = (yesterday, callback) => {
     if (err) {
       callback("select revenue query error", null);
     } else {
-			
+
       connections.scm_public.query("SELECT PARENT_BRANCH,BRANCH,PAYMENT_OR_REFUND_DATE,SUM(CASH_AMOUNT)+SUM(REFUND_CASH_AMOUNT)  AS CASH_AMOUNT,SUM(CARD_AMOUNT)+SUM(CARD_SERVICE_CHARGE_AMOUNT)+SUM(REFUND_CARD_AMOUNT) AS CARD_AMOUNT,SUM(CARD_SERVICE_CHARGE_AMOUNT) AS CARD_SERVICE_CHARGE_AMOUNT,SUM(CHEQUE_AMOUNT)+SUM(REFUND_CHEQUE_AMOUNT) AS CHEQUE_AMOUNT,SUM(FUND_TRANSFER_AMOUNT) AS FUND_TRANSFER_AMOUNT,SUM(PAYTM_AMOUNT) AS PAYTM_AMOUNT,SUM(DD_AMOUNT) AS DD_AMOUNT,SUM(REFUND_CASH_AMOUNT) AS REFUND_CASH_AMOUNT,SUM(REFUND_CARD_AMOUNT) AS REFUND_CARD_AMOUNT,SUM(REFUND_CHEQUE_AMOUNT) AS REFUND_CHEQUE_AMOUNT,SUM(CREDIT_CHEQUE_AMOUNT)AS CREDIT_CHEQUE_AMOUNT,SUM(CREDIT_CASH_AMOUNT) AS CREDIT_CASH_AMOUNT,SUM(PAYTM_CASH_AMOUNT) AS PAYTM_CASH_AMOUNT,SUM(PAYTM_FUND_AMOUNT) AS PAYTM_FUND_AMOUNT,SUM(ONLINE_AMOUNT) AS ONLINE_AMOUNT FROM collection_detail WHERE PAYMENT_OR_REFUND_DATE BETWEEN ? AND ? GROUP BY BRANCH,PAYMENT_OR_REFUND_DATE ", [mtddate, ftddate], (err, rescolldata) => {
         if (err) {
           callback("select collection query error", null);
