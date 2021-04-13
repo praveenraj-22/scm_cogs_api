@@ -7483,3 +7483,26 @@ collectiontemplate += '</table><br> <br> <br> <br> <br> <br> <hr> <br> <br> <br>
 
   return collectiontemplate;
 }
+
+exports.intrasitEmail=async(finalresult) =>{
+
+ let intransit_template=await intransitEmailtemplate(finalresult)
+
+ return intransit_template;
+
+}
+
+let intransitEmailtemplate =async (finalresult)=>{
+
+let intransittemplate="<html> <body> <table cellpadding='5' border='1' style='border-collapse: collapse; border-spacing: 0;border-color: black'> <tr> <td align='center'><b>Description</b></td><td align='center'><b>Issuing Department </b></td><td align='center'><b>Receiving Department</b></td><td align='center'><b>Transaction No </b></td><td align='center'><b>Item Name</b></td><td align='center'><b>Batch No</b></td><td align='center'><b>Expiry date</b></td><td align='center'><b>Intransit Quantity</b></td><td align='center'><b>Issue Date</b></td><td align='center'><b>User Created</b></td><td align='center'><b>Unit Price</b></td><td align='center'><b>Mrp</b></td><td align='center'><b>Status</b></td></tr>"
+
+finalresult.forEach(element => {
+intransittemplate +="<tr><td>"+element.DESCRIPTION+"</td><td>"+element.ISSUING_DEPARTMENT+"</td><td>"+element.RECEIVING_DEPARTMENT+"</td><td>"+element.TRANSACTION_NO+"</td><td>"+element.ITEM_NAME+"</td><td>"+element.BATCH_NUMBER+"</td><td>"+element.EXPIRY_DATE+"</td><td>"+element.INTRANSIST_QUANTITY+"</td><td>"+element.ISSUESDATE+"</td><td>"+element.USER_CREATED+"</td><td>"+element.UNIT_PRICE+"</td><td>"+element.MRP+"</td><td>"+element.STATUS+"</td></tr>"
+
+});
+
+intransittemplate +='</table><br><b>Note: This report is auto generated, please do not reply.</b> <br><p>For any corrections, please drop a mail to  <a href="mailto:helpdesk@dragarwal.com">helpdesk@dragarwal.com</a>. </p> <br><p>Regards,</p><p>Dr.Agarwal IT Team</p></body></html>';
+
+return intransittemplate
+
+}

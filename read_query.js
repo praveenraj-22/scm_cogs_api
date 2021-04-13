@@ -179,3 +179,5 @@ exports.revenuedetailstpa=read("./queries/revenue_tpadetails.sql");
 exports.dob=read("./queries/dateofbirth.sql");
 
 exports.opr_branches=read("./queries/opr_branches.sql");
+
+exports.in_transit=read("./queries/intransit_15.sql");

@@ -6,20 +6,20 @@ const nodemailer = require('nodemailer');
 exports.log=function(message,filepath){
 	var today = new Date();
 	var dd = today.getDate();
-	var mm = today.getMonth()+1; 
+	var mm = today.getMonth()+1;
 	var yyyy = today.getFullYear();
 	var hour    = today.getHours();
 	var minute  = today.getMinutes();
-	var second  = today.getSeconds(); 
-	if(dd<10) 
+	var second  = today.getSeconds();
+	if(dd<10)
 	{
 		dd='0'+dd;
-	} 
+	}
 
-	if(mm<10) 
+	if(mm<10)
 	{
 		mm='0'+mm;
-	} 
+	}
 	if(hour.toString().length == 1) {
 			 hour = '0'+hour;
 		}
@@ -28,12 +28,12 @@ exports.log=function(message,filepath){
 		}
 		if(second.toString().length == 1) {
 			 second = '0'+second;
-		}   
+		}
 	var today1=yyyy+'-'+mm+'-'+dd;
-	var dateTime = yyyy+'-'+mm+'-'+dd+' '+hour+':'+minute+':'+second; 
+	var dateTime = yyyy+'-'+mm+'-'+dd+' '+hour+':'+minute+':'+second;
 	var content=dateTime+" "+message+'\r\n';
 	var stream = fs.createWriteStream(filepath, {flags: 'a'});
-	stream.write(content); 
+	stream.write(content);
 	stream.end();
 }
 
@@ -49,12 +49,12 @@ exports.cronErrEmail=function(argSubject,argMessage){
 	});
 	let mailOptions={
 		from: 'misreport@dragarwal.com',
-		to:'nandhakumar.b@dragarwal.com',	
-		
+		to:'nandhakumar.b@dragarwal.com',
+
 	};
 	mailOptions.subject=argSubject;
     mailOptions.text=argMessage;
-	
+
 	//console.log(mailOptions);
 	transporter.sendMail(mailOptions, function(error, info){
 	if (error) {
@@ -70,7 +70,7 @@ exports.cronEmail=function(argTemplate,argEmailDetails,argDate,argMailType,callb
 	//console.log("email sent");
 	//console.log(argTemplate);
 	//console.log(argEmailDetails[0].fromid);
-	
+
 	let varSubject ='';
 	let dateArr = argDate.split("-");
 	let dateDay = dateArr[2];
@@ -102,7 +102,7 @@ exports.cronEmail=function(argTemplate,argEmailDetails,argDate,argMailType,callb
 	}else if(dateMonth==12){
 		monthName='Dec';
 	}
-	
+
 	if(argMailType==1){
 		varSubject = 'AVA report - '+dateDay+' '+monthName+' '+dateYear;
 	}else if(argMailType==3){
@@ -111,19 +111,24 @@ exports.cronEmail=function(argTemplate,argEmailDetails,argDate,argMailType,callb
 		varSubject = 'Inactive User Report - '+dateDay+' '+monthName+' '+dateYear;
 	}else if(argMailType==4){
 		varSubject = 'New OPD for Chennai & Other branches till - '+dateDay+' '+monthName+' '+dateYear;
-	}else if(argMailType ==6 ){
+	}
+	else if(argMailType ==6 ){
 varSubject="Branches Collection Report On -"+dateDay+' '+monthName+' '+dateYear;
 	}
+	else if(argMailType ==8 ){
+varSubject="Intransit Report On -"+dateDay+' '+monthName+' '+dateYear;
+	}
+
 	else{
 		varSubject = 'Revenue vs Cogs Overseas  as on - '+dateDay+' '+monthName+' '+dateYear;
-	}	
+	}
 	//console.log(varSubject);
 
     //console.log(argEmailDetails);
 	//process.exit(1);
 
 
-	
+
 	var transporter = nodemailer.createTransport({
 	service: 'gmail',
 	auth: {
@@ -147,6 +152,5 @@ varSubject="Branches Collection Report On -"+dateDay+' '+monthName+' '+dateYear;
 		callback(null,info.response);
 	}
 	});
-	
-}
 
+}
