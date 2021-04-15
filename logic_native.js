@@ -1976,25 +1976,158 @@ exports.newopdnormal = async (
 };
 
 
-exports.newopticals = async (resmtdopt, reslymtdopt, restarget, resbranch, ftddate) => {
+exports.newopticals = async (resmtdopt, reslymtdopt, restarget, resbranch, ftddate,currency_last_res,currencyres,lstcurrencyres) => {
 
-  let groupwise = await filterGroupwiseoptical(resmtdopt, ftddate, reslymtdopt, restarget, resbranch);
+ 	let overseasCurrency = await overseasCurrencyConversionOpt(ftddate,currencyres,currency_last_res,lstcurrencyres)
 
-  let branchwise = await filterBranchwiseoptical(resmtdopt, ftddate, reslymtdopt, restarget, resbranch);
+  let groupwise = await filterGroupwiseoptical(resmtdopt, ftddate, reslymtdopt, restarget, resbranch,overseasCurrency);
 
-  //   console.log(groupwise);
-  // process.exit()
-  //  console.log(branchwise);
-
+  let branchwise = await filterBranchwiseoptical(resmtdopt, ftddate, reslymtdopt, restarget, resbranch,overseasCurrency);
 
   return {
     group: groupwise.group,
-    alin: groupwise.alin,
-    branch: branchwise.branch
+     alin: groupwise.alin,
+     branch: branchwise.branch,
+     Group:groupwise.Group
   };
 };
 
-let filterGroupwiseoptical = async (resmtdopt, ftddate, reslymtdopt, restarget, resbranch) => {
+let overseasCurrencyConversionOpt = async (ftddate, currencyres, currencylastres, currres_lst_year) => {
+
+  let overseasftd = 0,
+    overseasmtd = 0,
+    mozamftd = 0,
+    mozammtd = 0,
+    overseastempObj = {},
+    mauritiusftd = 0,
+    mauritiusmtd = 0,
+    overseaslasttempObj = {},
+    overseaslastftd = 0,
+    overseaslastmtd = 0,
+    overseas_last_arr = [];
+
+
+  let overseasCountryCode = ['MDR', 'NGA', 'RWD', 'ZMB', 'GHA', 'NAB', 'UGD', 'TZA', 'MZN', 'MUR'];
+  var lastdate = currencylastres[0].currency_date;
+
+  if (currencyres.length > 0) {
+
+    overseasCountryCode.forEach(countrycode => {
+      overseasftd = 0, overseasmtd = 0, overseaslastftd = 0, overseaslastmtd = 0;
+      overseastempObj[countrycode] = {};
+      _.filter(currencyres, {
+        country_code: countrycode,
+        currency_date: ftddate
+      }).forEach(element => {
+        overseasftd += parseFloat(element.INR_rate);
+      })
+
+
+      overseas_last_arr = _.filter(currres_lst_year, {
+        country_code: countrycode
+      })
+      overseas_last_arr.forEach(element => {
+        overseaslastmtd += parseFloat(element.INR_rate);
+      })
+      overseaslastmtd = overseaslastmtd / (overseas_last_arr.length);
+      if (isNaN(overseaslastmtd) == true) {
+        overseaslastmtd = 0;
+      }
+
+
+      if (overseasftd == 0) {
+        _.filter(currencylastres, {
+          country_code: countrycode,
+          currency_date: lastdate
+        }).forEach(element => {
+          overseasftd = element.INR_rate;
+          overseasmtd = element.INR_rate;
+        })
+      } else {
+        let overseasarr = _.filter(currencyres, {
+          country_code: countrycode
+        })
+        overseasarr.forEach(element => {
+
+          overseasmtd += parseFloat(element.INR_rate);
+        })
+        overseasmtd = overseasmtd / (overseasarr.length);
+      }
+      overseastempObj[countrycode].ftd = overseasmtd;
+      overseastempObj[countrycode].mtd = overseasmtd;
+      overseastempObj[countrycode].lastmtd = overseaslastmtd;
+    })
+
+  } else if ((currencyres.length == 0) && (currencylastres.length > 0)) {
+    overseasCountryCode.forEach(countrycode => {
+      overseasftd = 0, overseasmtd = 0, overseaslastftd = 0, overseaslastmtd = 0;
+      overseastempObj[countrycode] = {};
+      _.filter(currencylastres, {
+        country_code: countrycode,
+        currency_date: lastdate
+      }).forEach(element => {
+        overseasftd = element.INR_rate;
+        overseasmtd = element.INR_rate;
+      })
+      overseas_last_arr = _.filter(currres_lst_year, {
+        country_code: countrycode
+      })
+      overseas_last_arr.forEach(element => {
+        overseaslastmtd += parseFloat(element.INR_rate);
+      })
+      overseaslastmtd = overseaslastmtd / (overseas_last_arr.length);
+      if (isNaN(overseaslastmtd) == true) {
+        overseaslastmtd = 0;
+      }
+
+      overseastempObj[countrycode].ftd = overseasftd;
+      overseastempObj[countrycode].mtd = overseasmtd;
+      overseastempObj[countrycode].lastmtd = overseaslastmtd;
+    })
+
+
+  }
+
+  if ((Object.keys(overseastempObj).length) > 0) {
+    overseastempObj['CGU'] = {
+      'ftd': overseastempObj.RWD.ftd,
+      'mtd': overseastempObj.RWD.mtd,
+      'lastmtd': overseastempObj.RWD.lastmtd
+    };
+    overseastempObj['MZQ'] = {
+      'ftd': overseastempObj.MZN.ftd,
+      'mtd': overseastempObj.MZN.mtd,
+      'lastmtd': overseastempObj.MZN.lastmtd
+    };
+    overseastempObj['BRA'] = {
+      'ftd': overseastempObj.MZN.ftd,
+      'mtd': overseastempObj.MZN.mtd,
+      'lastmtd': overseastempObj.MZN.lastmtd
+    };
+    overseastempObj['GDL'] = {
+      'ftd': overseastempObj.MUR.ftd,
+      'mtd': overseastempObj.MUR.mtd,
+      'lastmtd': overseastempObj.MUR.lastmtd
+    };
+    overseastempObj['FLQ'] = {
+      'ftd': overseastempObj.MUR.ftd,
+      'mtd': overseastempObj.MUR.mtd,
+      'lastmtd': overseastempObj.MUR.lastmtd
+    };
+    overseastempObj['EBN'] = {
+      'ftd': overseastempObj.MUR.ftd,
+      'mtd': overseastempObj.MUR.mtd,
+      'lastmtd': overseastempObj.MUR.lastmtd
+    };
+  }
+
+
+  return overseastempObj;
+
+}
+
+
+let filterGroupwiseoptical = async (resmtdopt, ftddate, reslymtdopt, restarget, resbranch,overseasCurrency) => {
   let tempObj = {},
     opt = 0,
     targetmtdopt = 0,
@@ -2002,9 +2135,11 @@ let filterGroupwiseoptical = async (resmtdopt, ftddate, reslymtdopt, restarget, 
     mtdopt = 0,
     grouptempObj = {},
     alin = {};
+    group={};
   mtdgrssperc = 0;
-
+let ovrcalcmtdrev=0,ovrcalclymtdrev=0,calcmtdrev=0,calclymtdrev=0
   let totalgroup = [
+    "OHC",
     "Chennai",
     "ROTN",
     "Karnataka",
@@ -2020,6 +2155,7 @@ let filterGroupwiseoptical = async (resmtdopt, ftddate, reslymtdopt, restarget, 
   ];
 
   let totalgroupbranches = {
+    "OHC":['UGD','TZA','ZMB','GHA','RWD','CGU','MZQ','BRA','EBN','FLQ','GDL','MDR','NAB','NGA'],
     "Chennai": [
       "CMH",
       "ANN",
@@ -2105,47 +2241,179 @@ let filterGroupwiseoptical = async (resmtdopt, ftddate, reslymtdopt, restarget, 
 
   totalgroup.forEach(group => {
     grouptempObj[group] = {};
-    (opt = 0), (mtdopt = 0), (optlastyear = 0), (targetmtdopt = 0), (mtdgrssperc = 0);
-    totalgroupbranches[group].forEach(branch => {
+    if(group=='OHC'){
+      totalgroupbranches[group].forEach(branch => {
+        (opt = 0), (mtdopt = 0), (optlastyear = 0), (targetmtdopt = 0), (mtdgrssperc = 0);
+
+          _.filter(resmtdopt, {
+              BILLED: branch,
+              UNIT: 'OPTICALS'
+            })
+            .forEach(element => {
+              mtdopt += element.NET_AMOUNT;
+            });
+            ovrcalcmtdrev+=Math.round(mtdopt)*overseasCurrency[branch].mtd;
+            (grouptempObj[group].mtdoptrev = ovrcalcmtdrev);
+
+          _.filter(reslymtdopt, {
+              BILLED: branch,
+              UNIT: 'OPTICALS'
+            })
+            .forEach(element => {
+              optlastyear += element.NET_AMOUNT;
+            });
+
+            ovrcalclymtdrev +=Math.round(optlastyear)*overseasCurrency[branch].lastmtd;
+          (grouptempObj[group].lstoptrev = ovrcalclymtdrev);
 
 
-      _.filter(resmtdopt, {
-          BILLED: branch,
-          UNIT: 'OPTICALS'
-        })
-        .forEach(element => {
-          mtdopt += element.NET_AMOUNT;
-        });
-      (grouptempObj[group].mtdoptrev = Math.round(mtdopt));
 
-      _.filter(reslymtdopt, {
-          BILLED: branch,
-          UNIT: 'OPTICALS'
-        })
-        .forEach(element => {
-          optlastyear += element.NET_AMOUNT;
-        });
-      (grouptempObj[group].lstoptrev = Math.round(optlastyear));
+        _.filter(restarget, {
+            code: branch
+          })
+          .forEach(element => {
+
+            targetmtdopt += parseInt(element.targetamount);
+          });
+        (grouptempObj[group].targetmtdrev = Math.round(targetmtdopt));
 
 
 
 
-      _.filter(restarget, {
-          code: branch
-        })
-        .forEach(element => {
+        //   mtdgrssperc=(parseInt(grouptempObj[group].mtdoptrev)/parseInt(grouptempObj[group].lstoptrev))
 
-          targetmtdopt += parseInt(element.targetamount);
-        });
-      (grouptempObj[group].targetmtdrev = Math.round(targetmtdopt));
+        (grouptempObj[group].mtdoptperc = (((parseInt(grouptempObj[group].mtdoptrev) / parseInt(grouptempObj[group].lstoptrev)) - 1) * 100).toFixed(2));
+        (grouptempObj[group].mtdoptpercachieved = ((parseInt(grouptempObj[group].mtdoptrev) / parseInt(grouptempObj[group].targetmtdrev)) * 100).toFixed(2));
 
-      //   mtdgrssperc=(parseInt(grouptempObj[group].mtdoptrev)/parseInt(grouptempObj[group].lstoptrev))
+        (grouptempObj[group].groupwise = group);
+      }); // end of foreach --> branch
 
-      (grouptempObj[group].mtdoptperc = (((parseInt(grouptempObj[group].mtdoptrev) / parseInt(grouptempObj[group].lstoptrev)) - 1) * 100).toFixed(2));
-      (grouptempObj[group].mtdoptpercachieved = ((parseInt(grouptempObj[group].mtdoptrev) / parseInt(grouptempObj[group].targetmtdrev)) * 100).toFixed(2));
+    }
+    else {
+      (opt = 0), (mtdopt = 0), (optlastyear = 0), (targetmtdopt = 0), (mtdgrssperc = 0);
+     totalgroupbranches[group].forEach(branch => {
 
-      (grouptempObj[group].groupwise = group);
-    }); // end of foreach --> branch
+
+       _.filter(resmtdopt, {
+           BILLED: branch,
+           UNIT: 'OPTICALS'
+         })
+         .forEach(element => {
+           mtdopt += element.NET_AMOUNT;
+         });
+       (grouptempObj[group].mtdoptrev = Math.round(mtdopt));
+
+       _.filter(reslymtdopt, {
+           BILLED: branch,
+           UNIT: 'OPTICALS'
+         })
+         .forEach(element => {
+           optlastyear += element.NET_AMOUNT;
+         });
+       (grouptempObj[group].lstoptrev = Math.round(optlastyear));
+
+
+
+
+       _.filter(restarget, {
+           code: branch
+         })
+         .forEach(element => {
+
+           targetmtdopt += parseInt(element.targetamount);
+         });
+       (grouptempObj[group].targetmtdrev = Math.round(targetmtdopt));
+
+       //   mtdgrssperc=(parseInt(grouptempObj[group].mtdoptrev)/parseInt(grouptempObj[group].lstoptrev))
+
+       (grouptempObj[group].mtdoptperc = (((parseInt(grouptempObj[group].mtdoptrev) / parseInt(grouptempObj[group].lstoptrev)) - 1) * 100).toFixed(2));
+       (grouptempObj[group].mtdoptpercachieved = ((parseInt(grouptempObj[group].mtdoptrev) / parseInt(grouptempObj[group].targetmtdrev)) * 100).toFixed(2));
+
+       (grouptempObj[group].groupwise = group);
+     }); // end of foreach --> branch
+
+
+    }
+    // (opt = 0), (mtdopt = 0), (optlastyear = 0), (targetmtdopt = 0), (mtdgrssperc = 0);
+    // totalgroupbranches[group].forEach(branch => {
+    //
+    //
+    //   if(branch=='UGD'||branch=='TZA'||branch=='ZMB'||branch=='GHA'||branch=='RWD'||branch=='CGU'||branch=='MZQ'||branch=='BRA'||branch=='EBN'||branch=='FLQ'|branch=='GDL'||branch=='MDR'||branch=='NGA'||branch=='NAB')
+    //   {
+    //
+    //
+    //     _.filter(resmtdopt, {
+    //         BILLED: branch,
+    //         UNIT: 'OPTICALS'
+    //       })
+    //       .forEach(element => {
+    //         mtdopt += element.NET_AMOUNT;
+    //       });
+    //       ovrcalcmtdrev+=Math.round(mtdopt)*overseasCurrency[branch].mtd;
+    //       (grouptempObj[group].mtdoptrev = ovrcalcmtdrev);
+    //
+    //     _.filter(reslymtdopt, {
+    //         BILLED: branch,
+    //         UNIT: 'OPTICALS'
+    //       })
+    //       .forEach(element => {
+    //         optlastyear += element.NET_AMOUNT;
+    //       });
+    //
+    //       ovrcalclymtdrev +=Math.round(optlastyear)*overseasCurrency[branch].lastmtd;
+    //     (grouptempObj[group].lstoptrev = ovrcalclymtdrev);
+    //
+    //
+    //   }
+    //   else {
+    //
+    //     _.filter(resmtdopt, {
+    //         BILLED: branch,
+    //         UNIT: 'OPTICALS'
+    //       })
+    //       .forEach(element => {
+    //         mtdopt += element.NET_AMOUNT;
+    //       });
+    //
+    //
+    //       (grouptempObj[group].mtdoptrev = Math.round(mtdopt));
+    //       console.log(grouptempObj[group].mtdoptrev);
+    //
+    //     _.filter(reslymtdopt, {
+    //         BILLED: branch,
+    //         UNIT: 'OPTICALS'
+    //       })
+    //       .forEach(element => {
+    //         optlastyear += element.NET_AMOUNT;
+    //       });
+    //     (grouptempObj[group].lstoptrev += Math.round(optlastyear));
+    //
+    //   }
+    //
+    //
+    //
+    //
+    //
+    //
+    //   _.filter(restarget, {
+    //       code: branch
+    //     })
+    //     .forEach(element => {
+    //
+    //       targetmtdopt += parseInt(element.targetamount);
+    //     });
+    //   (grouptempObj[group].targetmtdrev = Math.round(targetmtdopt));
+    //
+    //
+    //
+    //
+    //   //   mtdgrssperc=(parseInt(grouptempObj[group].mtdoptrev)/parseInt(grouptempObj[group].lstoptrev))
+    //
+    //   (grouptempObj[group].mtdoptperc = (((parseInt(grouptempObj[group].mtdoptrev) / parseInt(grouptempObj[group].lstoptrev)) - 1) * 100).toFixed(2));
+    //   (grouptempObj[group].mtdoptpercachieved = ((parseInt(grouptempObj[group].mtdoptrev) / parseInt(grouptempObj[group].targetmtdrev)) * 100).toFixed(2));
+    //
+    //   (grouptempObj[group].groupwise = group);
+    // }); // end of foreach --> branch
 
 
   });
@@ -2172,18 +2440,28 @@ let filterGroupwiseoptical = async (resmtdopt, ftddate, reslymtdopt, restarget, 
   alin['mtdoptpercachieved'] = Math.round(((alin['mtdoptrev']) / (alin['targetmtdrev'])) * 100);
 
 
+  group['groupwise']='Group';
+  group['mtdoptrev']=  alin['mtdoptrev']+ grouptempObj['OHC'].mtdoptrev;
+  group['lstoptrev']=  alin['lstoptrev']+ grouptempObj['OHC'].lstoptrev;
+  group['targetmtdrev']=  alin['targetmtdrev']+ grouptempObj['OHC'].targetmtdrev;
+  group['mtdoptperc']=  Math.round((((group['mtdoptrev']) / (group['lstoptrev'])) - 1) * 100);
+  group['mtdoptpercachieved'] = Math.round(((group['mtdoptrev']) / (group['targetmtdrev'])) * 100);
+
   return {
+    Group:group,
     alin: alin,
     group: grouptempObj
+
   };
 };
 
-let filterBranchwiseoptical = async (resmtdopt, ftddate, reslymtdopt, restarget, resbranch) => {
+let filterBranchwiseoptical = async (resmtdopt, ftddate, reslymtdopt, restarget, resbranch,overseasCurrency) => {
   let opt = 0,
     targetmtdopt = 0,
     mtdopt = 0,
     optlastyear = 0,
     //targetmtdopt=0,
+
     mtdoptpercentage = 0,
     targetachieved = 0,
     grouptempObj = {},
@@ -2193,7 +2471,9 @@ let filterBranchwiseoptical = async (resmtdopt, ftddate, reslymtdopt, restarget,
     mtdoptrev = 0,
     mtdoptrevlastyear = 0,
     code = null;
+let ovrcalcmtdrev=0,ovrcalclymtdrev=0
   let totalgroup = [
+    "OHC",
     "Chennai",
     "ROTN",
     "Karnataka",
@@ -2209,7 +2489,8 @@ let filterBranchwiseoptical = async (resmtdopt, ftddate, reslymtdopt, restarget,
   ];
 
   let totalgroupbranches = {
-    "Chennai": [
+    "OHC":['UGD','TZA','ZMB','GHA','RWD','CGU','MZQ','BRA','EBN','FLQ','GDL','MDR','NAB','NGA'],
+      "Chennai": [
       "CMH",
       "ANN",
       "ASN",
@@ -2293,9 +2574,13 @@ let filterBranchwiseoptical = async (resmtdopt, ftddate, reslymtdopt, restarget,
 
   for (let key in totalgroupbranches) {
     //   branchObj[key] = [];
+
+
+
+
+
     branchObj[key] = [];
     totalgroupbranches[key].forEach(branch => {
-
 
 
 
@@ -2314,17 +2599,38 @@ let filterBranchwiseoptical = async (resmtdopt, ftddate, reslymtdopt, restarget,
           targetmtdopt += element.targetamount
         });
 
-      // _.filter(dbresoptical,{branchcode: branch,trans_date: ftddate})
-      // .forEach(element =>{opt +=element.ftd});
+  if(branch=='UGD'||branch=='TZA'||branch=='ZMB'||branch=='GHA'||branch=='RWD'||branch=='CGU'||branch=='MZQ'||branch=='BRA'||branch=='EBN'||branch=='FLQ'|branch=='GDL'||branch=='MDR'||branch=='NGA'||branch=='NAB'){
+    _.filter(resmtdopt, {
+        BILLED: branch,
+        UNIT: 'OPTICALS'
+      })
 
-      _.filter(resmtdopt, {
-          BILLED: branch,
-          UNIT: 'OPTICALS'
-        })
-        .forEach(element => {
-          mtdopt += element.NET_AMOUNT
-        });
+      .forEach(element => {
+        mtdopt += element.NET_AMOUNT
+      });
 
+
+        mtdopt=mtdopt*overseasCurrency[branch].mtd;
+
+
+        _.filter(reslymtdopt, {
+            BILLED: branch,
+            UNIT: 'OPTICALS'
+          })
+          .forEach(element => {
+            optlastyear += element.NET_AMOUNT
+          });
+
+          optlastyear=optlastyear*overseasCurrency[branch].lastmtd;
+  }
+  else {
+    _.filter(resmtdopt, {
+        BILLED: branch,
+        UNIT: 'OPTICALS'
+      })
+      .forEach(element => {
+        mtdopt += element.NET_AMOUNT
+      });
       _.filter(reslymtdopt, {
           BILLED: branch,
           UNIT: 'OPTICALS'
@@ -2332,6 +2638,12 @@ let filterBranchwiseoptical = async (resmtdopt, ftddate, reslymtdopt, restarget,
         .forEach(element => {
           optlastyear += element.NET_AMOUNT
         });
+
+
+  }
+
+
+
       // .forEach(element=>{(branchName=element.branch),(code=element.code);});
 
       mtdoptpercentage = Math.round(((mtdopt) / (optlastyear) - 1) * 100);
@@ -7494,10 +7806,10 @@ exports.intrasitEmail=async(finalresult) =>{
 
 let intransitEmailtemplate =async (finalresult)=>{
 
-let intransittemplate="<html> <body> <table cellpadding='5' border='1' style='border-collapse: collapse; border-spacing: 0;border-color: black'> <tr> <td align='center'><b>Description</b></td><td align='center'><b>Issuing Department </b></td><td align='center'><b>Receiving Department</b></td><td align='center'><b>Transaction No </b></td><td align='center'><b>Item Name</b></td><td align='center'><b>Batch No</b></td><td align='center'><b>Expiry date</b></td><td align='center'><b>Intransit Quantity</b></td><td align='center'><b>Issue Date</b></td><td align='center'><b>User Created</b></td><td align='center'><b>Unit Price</b></td><td align='center'><b>Mrp</b></td><td align='center'><b>Status</b></td></tr>"
+let intransittemplate="<html> <body> <table cellpadding='5' border='1' style='border-collapse: collapse; border-spacing: 0;border-color: black'> <tr> <td align='center'><b>Description</b></td><td align='center'><b>Issuing Department </b></td><td align='center'><b>Receiving Department</b></td><td align='center'><b>Transaction No </b></td><td align='center'><b>Item Name</b></td><td align='center'><b>Batch No</b></td><td align='center'><b>Expiry date</b></td><td align='center'><b>Intransit Quantity</b></td><td align='center'><b>Issue Date</b></td><td align='center'><b>User Created</b></td><td align='center'><b>Unit Price</b></td><td align='center'><b>Mrp</b></td><td align='center'><b>Status</b></td><td align='center'><b>TotalValue</b></td></tr>"
 
 finalresult.forEach(element => {
-intransittemplate +="<tr><td>"+element.DESCRIPTION+"</td><td>"+element.ISSUING_DEPARTMENT+"</td><td>"+element.RECEIVING_DEPARTMENT+"</td><td>"+element.TRANSACTION_NO+"</td><td>"+element.ITEM_NAME+"</td><td>"+element.BATCH_NUMBER+"</td><td>"+element.EXPIRY_DATE+"</td><td>"+element.INTRANSIST_QUANTITY+"</td><td>"+element.ISSUESDATE+"</td><td>"+element.USER_CREATED+"</td><td>"+element.UNIT_PRICE+"</td><td>"+element.MRP+"</td><td>"+element.STATUS+"</td></tr>"
+intransittemplate +="<tr><td>"+element.DESCRIPTION+"</td><td>"+element.ISSUING_DEPARTMENT+"</td><td>"+element.RECEIVING_DEPARTMENT+"</td><td>"+element.TRANSACTION_NO+"</td><td>"+element.ITEM_NAME+"</td><td>"+element.BATCH_NUMBER+"</td><td>"+element.EXPIRY_DATE+"</td><td>"+element.INTRANSIST_QUANTITY+"</td><td>"+element.ISSUESDATE+"</td><td>"+element.USER_CREATED+"</td><td>"+element.UNIT_PRICE+"</td><td>"+element.MRP+"</td><td>"+element.STATUS+"</td> <td>"+element.TOTALVALUE+"</td></tr>"
 
 });
 

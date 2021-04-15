@@ -1017,11 +1017,11 @@ exports.opticals = (req, res) => {
   let mtddatelastyear = (temp.getFullYear() - 1) + '-' + ("0" + (temp.getMonth() + 1)).slice(-2) + '-01';
 
 
-  connections.scm_public.query("SELECT ROUND(SUM(NET_AMOUNT),0)AS NET_AMOUNT,TRANSACTION_DATE,BILLED, branches.billed_entity,branches.branch,branches.code,branches.region AS region,UNIT  FROM `revenue_details`   JOIN branches ON revenue_details.billed=branches.code  WHERE (TRANSACTION_DATE) BETWEEN ? and ?  AND branches.entity IN ('AHC','AEH','AHI')    GROUP BY TRANSACTION_DATE,BILLED , branches.billed_entity,UNIT    ORDER BY     branches.region", [mtddate, ftddate], (err, resmtdopt) => {
+  connections.scm_public.query("SELECT ROUND(SUM(NET_AMOUNT),0)AS NET_AMOUNT,TRANSACTION_DATE,BILLED, branches.billed_entity,branches.branch,branches.code,branches.region AS region,UNIT  FROM `revenue_details`   JOIN branches ON revenue_details.billed=branches.code  WHERE (TRANSACTION_DATE) BETWEEN ? and ?     GROUP BY TRANSACTION_DATE,BILLED , branches.billed_entity,UNIT    ORDER BY     branches.region", [mtddate, ftddate], (err, resmtdopt) => {
     if (err) {
       console.error(err + "select mtd optical err ");
     } else {
-      connections.scm_public.query("SELECT ROUND(SUM(NET_AMOUNT),0)AS NET_AMOUNT,TRANSACTION_DATE,BILLED, branches.billed_entity,branches.branch,branches.code,branches.region AS region,UNIT  FROM `revenue_details`   JOIN branches ON revenue_details.billed=branches.code  WHERE (TRANSACTION_DATE) BETWEEN ? and ? AND branches.entity IN ('AHC','AEH','AHI')    GROUP BY TRANSACTION_DATE,BILLED , branches.billed_entity,UNIT    ORDER BY     branches.region", [mtddatelastyear, ftddatelastyear], (err, reslymtdopt) => {
+      connections.scm_public.query("SELECT ROUND(SUM(NET_AMOUNT),0)AS NET_AMOUNT,TRANSACTION_DATE,BILLED, branches.billed_entity,branches.branch,branches.code,branches.region AS region,UNIT  FROM `revenue_details`   JOIN branches ON revenue_details.billed=branches.code  WHERE (TRANSACTION_DATE) BETWEEN ? and ?    GROUP BY TRANSACTION_DATE,BILLED , branches.billed_entity,UNIT    ORDER BY     branches.region", [mtddatelastyear, ftddatelastyear], (err, reslymtdopt) => {
         if (err) {
           console.error(err + "select last mtd optical err ");
         } else {
@@ -1029,12 +1029,31 @@ exports.opticals = (req, res) => {
             if (err) {
               console.error(err + "select target optical err ");
             } else {
-              connections.scm_public.query("SELECT entity,CODE,branch FROM branches WHERE is_active=1 AND entity IN ('AEH','AHC','AHI') GROUP BY entity,branch", (err, resbranch) => {
+              connections.scm_public.query("SELECT entity,CODE,branch FROM branches WHERE is_active=1  GROUP BY entity,branch", (err, resbranch) => {
                 if (err) {
                   console.error(err + "select branch optical err ");
                 } else {
-                  mods.nativeFunctions.newopticals(resmtdopt, reslymtdopt, restarget, resbranch, ftddate)
-                    .then(final => res.json(final));
+                  connections.scm_public.query(files.currency_det_last_mth, (err, currency_last_res) => {
+                    if(err){console.error(err + "select lastest currency optical err ");}
+                    else {
+                        connections.scm_public.query(files.currency_details, [mtddate, ftddate], (currencyerr, currencyres) => {
+                          if(err) {console.error(err + "select  currency optical err ");}
+                          else {
+                            connections.scm_public.query(files.currency_details, [mtddatelastyear, ftddatelastyear], (err, lstcurrencyres) => {
+                              if(err){console.error(err +" last year cuurency optical error");}
+                              else {
+                                                  mods.nativeFunctions.newopticals(resmtdopt, reslymtdopt, restarget, resbranch, ftddate,currency_last_res,currencyres,lstcurrencyres)
+                                                    .then(final => res.json(final));
+
+                              }
+                            })
+                          }
+                        })
+
+
+                    }
+                  })
+
 
                 }
               })
