@@ -181,3 +181,8 @@ exports.dob=read("./queries/dateofbirth.sql");
 exports.opr_branches=read("./queries/opr_branches.sql");
 
 exports.in_transit=read("./queries/intransit_15.sql");
+
+exports.total_collection=read("./queries/totalcollection.sql");
+exports.total_collectiondate=read("./queries/totalcollection_date.sql");
+
+exports.collection_recon_update=read("./queries/collectionrecon_update.sql");

@@ -1919,7 +1919,7 @@ exports.fin_branch = (req, res) => {
     grouptempObj = {},
     branchOBJ = [];
   connections.scm_public.query(
-    " SELECT branch AS TEXT,CODE AS shortCode FROM branches WHERE entity NOT IN ('OHC') UNION SELECT 'Eye Research Center' AS TEXT ,'ECMH' AS shortCode",
+    " SELECT branch AS TEXT,CODE AS shortCode FROM branches WHERE entity NOT IN ('OHC') AND is_active=1 UNION SELECT 'Eye Research Center' AS TEXT ,'ECMH' AS shortCode",
 
     (error, branchesresults) => {
       if (error) console.error(error);
@@ -7210,4 +7210,286 @@ exports.intransitEmailList=(emailtemp,callback)=>{
     }
 
   })
+}
+
+
+//praveenraj
+
+
+exports.collectionrecon=(req,res)=>{
+
+  let branch= req.params.branch;
+  let fdate= req.params.date;
+  let start = fdate + '-01';
+  let end = fdate + '-31';
+
+  console.log(branch);
+  console.log(start);
+  console.log(end);
+
+  connections.scm_public.query("SELECT cr.*,csh.category AS cash_remark,crd.category AS card_remark FROM collection_recon AS cr LEFT JOIN `collection_recon_status` AS csh ON csh.id=cr.CASH_DEP_STATUS LEFT JOIN `collection_recon_status` AS crd ON crd.id=cr.CARD_DEP_STATUS WHERE PAYMENT_OR_REFUND_DATE BETWEEN ? AND ? and BRANCH=? ",[start,end,branch],(err,resdata)=>{
+    if(err) {console.error(err)}
+    else {
+      res.json({
+        "result":{
+          "collection":resdata
+        }
+      })
+    }
+  })
+}
+
+exports.fin_collectionrecon=(req,res)=>{
+
+
+  let fdate= req.params.date;
+
+
+  connections.scm_public.query("SELECT cr.*,csh.category AS cash_remark,crd.category AS card_remark FROM collection_recon AS cr LEFT JOIN `collection_recon_status` AS csh ON csh.id=cr.CASH_DEP_STATUS LEFT JOIN `collection_recon_status` AS crd ON crd.id=cr.CARD_DEP_STATUS WHERE PAYMENT_OR_REFUND_DATE=? ",[fdate],(err,resdata)=>{
+    if(err) {console.error(err)}
+    else {
+      res.json({
+        "result":{
+          "collection":resdata
+        }
+      })
+    }
+  })
+}
+
+
+
+exports.Month_collectionrecon=(req,res)=>{
+
+  let branch= req.params.branch;
+  let fdate= req.params.date;
+  let start = fdate + '-01';
+  let end = fdate + '-31';
+
+  console.log(branch);
+  console.log(start);
+  console.log(end);
+
+  connections.scm_public.query("SELECT cr.*,csh.category AS cash_remark,crd.category AS card_remark FROM collection_recon AS cr LEFT JOIN `collection_recon_status` AS csh ON csh.id=cr.CASH_DEP_STATUS LEFT JOIN `collection_recon_status` AS crd ON crd.id=cr.CARD_DEP_STATUS WHERE PAYMENT_OR_REFUND_DATE BETWEEN ? AND ? and BRANCH=? ",[start,end,branch],(err,resdata)=>{
+    if(err) {console.error(err)}
+    else {
+      res.json({
+        "result":{
+          "collection":resdata
+        }
+      })
+    }
+  })
+}
+
+exports.Date_collectionrecon=(req,res)=>{
+
+
+  let fdate= req.params.date;
+
+  connections.scm_public.query("SELECT cr.*,csh.category AS cash_remark,crd.category AS card_remark FROM collection_recon AS cr LEFT JOIN `collection_recon_status` AS csh ON csh.id=cr.CASH_DEP_STATUS LEFT JOIN `collection_recon_status` AS crd ON crd.id=cr.CARD_DEP_STATUS WHERE PAYMENT_OR_REFUND_DATE=? ",[fdate],(err,resdata)=>{
+    if(err) {console.error(err)}
+    else {
+      res.json({
+        "result":{
+          "collection":resdata
+        }
+      })
+    }
+  })
+}
+
+
+exports.deposit_amount=(req,res)=>{
+
+  let postingdate=req.body.postingdate;
+  let imcash=req.body.imcash;
+  let cashcoll=req.body.cashcoll;
+  let imcard=req.body.imcard;
+  let cardcoll=req.body.cardcoll;
+  let remarks=req.body.remarks;
+  let branch=req.body.branch;
+  // let cashcolldate=req.body.cashcolldate;
+  // let cardcolldate=req.body.cardcolldate;
+  let prev_colldate=req.body.prev_colldate;
+  let statusch_cash =req.body.statusch_cash;
+  let statusch_card=req.body.statusch_card;
+
+
+console.log(postingdate +" "+imcash+" "+cashcoll +" "+imcard+" "+cardcoll+" "+remarks+" "+branch+" "+prev_colldate +" "+statusch_cash+" "+statusch_card);
+
+//Cash
+
+connections.scm_public.query("select * from collection_recon where PAYMENT_OR_REFUND_DATE =? and branch=?",[postingdate,branch],(err,resdata)=>{
+
+if(err)
+{
+  console.error(err);
+}
+else {
+
+//cash
+if(resdata[0].CASH_DEP_STATUS==null){
+
+connections.scm_root.query("update collection_recon set CASH_DEPOSIT=?,CASH_DEP_DATE=NOW(),CASH_DEP_STATUS=?,CH_REMARKS=?,MODIFIED_TIME=NOW() WHERE PAYMENT_OR_REFUND_DATE=? and BRANCH=?",[cashcoll,statusch_cash,remarks,postingdate,branch],(err,rescashdata)=>{
+  if(err){
+    console.error(err);
+  }
+  else {
+    connections.scm_root.query("UPDATE collection_recon SET CASH_DIFF= ( SELECT * FROM (SELECT SUM(A.CASH_DEPOSIT)+SUM(A.CASH_ADMIN)-SUM(A.CASH_AMOUNT) AS CST FROM collection_recon AS A WHERE A.BRANCH=? )AS B) WHERE PARENT_BRANCH IN ('AEH','AHC','AHI')  AND PAYMENT_OR_REFUND_DATE=curdate() AND BRANCH=?",[branch,branch],(err,resdatas)=>{
+      if(err){
+        console.error(err);
+      }
+
+    })
+  }
+})
+}
+
+//card
+if(resdata[0].CARD_DEP_DATE==null){
+  connections.scm_root.query("update collection_recon set CARD_DEPOSIT=?,CARD_DEP_DATE=now(),CARD_DEP_STATUS=?,CH_REMARKS=?,MODIFIED_TIME=NOW() WHERE PAYMENT_OR_REFUND_DATE=? and BRANCH=?",[cardcoll,statusch_card,remarks,postingdate,branch],(err,rescarddata)=>{
+    if(err){
+      console.error(err);
+    }
+    else {
+      connections.scm_root.query("UPDATE collection_recon SET CARD_DIFF=(SELECT * FROM (SELECT SUM(A.CARD_DEPOSIT)+SUM(A.CARD_ADMIN)-SUM(A.CARD_AMOUNT) AS CRT FROM collection_recon AS A WHERE A.BRANCH=?)AS B) WHERE PARENT_BRANCH IN ('AEH','AHC','AHI')  AND PAYMENT_OR_REFUND_DATE=curdate() AND BRANCH=?",[branch,branch],(err,resdatas)=>{
+        if(err){
+          console.error(err);
+        }
+
+      })
+    }
+  })
+}
+
+
+
+
+}
+
+
+
+
+})
+
+        res.json({
+          dataupdated:true
+        })
+
+
+}
+
+exports.collectionrecondata=(req,res)=>{
+  let branch=req.params.branch;
+  let date=req.params.date;
+
+connections.scm_public.query("SELECT * FROM collection_recon WHERE PAYMENT_OR_REFUND_DATE BETWEEN DATE_SUB(?,INTERVAL 1 DAY) AND ? AND BRANCH=? ",[date,date,branch],(err,resdata)=>{
+  if(err){
+ console.error(err);
+  }
+  else {
+      res.json(resdata);
+  }
+})
+
+}
+
+exports.get_totalcollection=(req,res)=>{
+  let branch= req.params.branch;
+  let fdate= req.params.date;
+  let start = fdate + '-01';
+  let end = fdate + '-31';
+console.log("hit in backend");
+
+console.log(branch);
+
+
+
+
+      connections.scm_public.query(files.total_collection,[start,end,branch],(err,resdata)=>{
+        if(err){
+          console.error(err);
+        }
+        else {
+            res.json(resdata);
+        }
+      })
+
+
+}
+
+exports.get_fintotalcollection=(req,res)=>{
+  let fdate= req.params.date;
+console.log("hit in backend");
+
+
+
+
+      connections.scm_public.query(files.total_collectiondate,[fdate],(err,resdata)=>{
+        if(err){
+          console.error(err);
+        }
+        else {
+            res.json(resdata);
+        }
+      })
+  }
+
+
+
+
+exports.getcolldata_status=(req,res)=>{
+
+connections.scm_public.query("SELECT id,category FROM `collection_recon_status` WHERE active_status=1",(err,resdata)=>{
+  if(err)
+{
+  console.error(err);
+}
+else {
+      res.json(resdata);
+}
+
+})
+}
+
+
+exports.fin_depositamount=(req,res)=>{
+let postingdate=req.body.postingdate;
+let collcashfin=req.body.collcashfin;
+let collcardfin=req.body.collcardfin;
+let remarks=req.body.remarks;
+let branch=req.body.branch;
+console.log(postingdate +" "+collcashfin+" "+collcardfin +" "+remarks+" "+branch );
+
+  console.log("hti in backend qweqw");
+connections.scm_root.query("update collection_recon set CASH_ADMIN=?,CASH_FIN_DATE=NOW(),CARD_ADMIN=?,CARD_FIN_DATE=NOW(),FINANCE_REMARKS=? WHERE BRANCH=? AND PAYMENT_OR_REFUND_DATE=?",[collcashfin,collcardfin,remarks,branch,postingdate],(err,updateresdata)=>{
+  if (err){
+    console.error(err);
+  }
+  else {
+      console.log(updateresdata);
+    connections.scm_root.query("UPDATE collection_recon SET CASH_DIFF= ( SELECT * FROM (SELECT SUM(A.CASH_DEPOSIT)+SUM(A.CASH_ADMIN)-SUM(A.CASH_AMOUNT) AS CST FROM collection_recon AS A WHERE A.BRANCH=? )AS B) WHERE PARENT_BRANCH IN ('AEH','AHC','AHI')  AND PAYMENT_OR_REFUND_DATE=curdate() AND BRANCH=?",[branch,branch],(err,cashresdatas)=>{
+      if(err){
+        console.error(err);
+      }
+      else {
+        console.log(cashresdatas);
+        connections.scm_root.query("UPDATE collection_recon SET CARD_DIFF=(SELECT * FROM (SELECT SUM(A.CARD_DEPOSIT)+SUM(A.CARD_ADMIN)-SUM(A.CARD_AMOUNT) AS CRT FROM collection_recon AS A WHERE A.BRANCH=?)AS B) WHERE PARENT_BRANCH IN ('AEH','AHC','AHI')  AND PAYMENT_OR_REFUND_DATE=curdate() AND BRANCH=?",[branch,branch],(err,cardresdatas)=>{
+          if(err){
+            console.error(err);
+          }
+          else {
+            console.log(cardresdatas);
+            res.json({
+              dataupdated:true
+            })
+}
+        })
+      }
+
+    })
+  }
+})
+
 }

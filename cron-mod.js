@@ -382,42 +382,42 @@ exports.schedule = cron.schedule('00 06 * * *', () => {
 
   console.log('completed');
 })
-
-exports.schedule = cron.schedule('45 22 * * *', () => {
-  //exports.schedule = cron.schedule('13 17 * * *', () => {
-  connections.ideamed.getConnection((err, con) => {
-    if (err) console.log('Connection Error.')
-    con.query(files.cogsbackup, (ideaerr, ideares) => {
-      if (ideaerr) console.error(ideaerr)
-      console.log('Connected to Ideamed.')
-      console.log('Inserting Records for Cogs table.Please Wait...')
-      con.beginTransaction(err => {
-        if (err) console.error(err)
-        ideares.forEach(record => {
-          connections.scm_root.query('insert into cogs_details set ?', record, (error) => {
-            if (error) {
-              return con.rollback(function() {
-                console.error(error)
-              });
-            }
-            con.commit(function(err) {
-              if (err) {
-                return con.rollback(function() {
-                  console.error(err)
-                });
-              }
-            });
-          })
-        })
-
-      })
-      console.log('completed');
-    })
-  })
-
-  console.log('start');
-
-})
+//
+// exports.schedule = cron.schedule('45 22 * * *', () => {
+//   //exports.schedule = cron.schedule('13 17 * * *', () => {
+//   connections.ideamed.getConnection((err, con) => {
+//     if (err) console.log('Connection Error.')
+//     con.query(files.cogsbackup, (ideaerr, ideares) => {
+//       if (ideaerr) console.error(ideaerr)
+//       console.log('Connected to Ideamed.')
+//       console.log('Inserting Records for Cogs table.Please Wait...')
+//       con.beginTransaction(err => {
+//         if (err) console.error(err)
+//         ideares.forEach(record => {
+//           connections.scm_root.query('insert into cogs_details set ?', record, (error) => {
+//             if (error) {
+//               return con.rollback(function() {
+//                 console.error(error)
+//               });
+//             }
+//             con.commit(function(err) {
+//               if (err) {
+//                 return con.rollback(function() {
+//                   console.error(err)
+//                 });
+//               }
+//             });
+//           })
+//         })
+//
+//       })
+//       console.log('completed');
+//     })
+//   })
+//
+//   console.log('start');
+//
+// })
 
 exports.schedule = cron.schedule('30 07 * * *', () => {
   //exports.schedule = cron.schedule('58 10 * * *', () => {
@@ -610,9 +610,11 @@ exports.schedule = cron.schedule('00 07 * * *', () => {
   console.log('completed');
 })
 
-exports.schedule = cron.schedule('30 08 * * *', () => {
-  //exports.schedule = cron.schedule('09 11 * * *',() =>{
-  connections.ideamed.getConnection((err, con) => {
+//collection recon
+//exports.schedule = cron.schedule('00 01 * * *', () => {
+  exports.schedule = cron.schedule('24 20 * * *', () => {
+    console.log("connected");
+    connections.ideamed.getConnection((err, con) => {
     if (err) console.error('connection error');
     con.query(files.collectiondetailim, (collectionerr, collectioneres) => {
       if (collectionerr) console.error(collectionerr);
@@ -620,6 +622,7 @@ exports.schedule = cron.schedule('30 08 * * *', () => {
       console.log('inserting in collection_detail table.please wait.....');
       con.beginTransaction(err => {
         if (err) console.error(err);
+        console.log("1");
         collectioneres.forEach(records => {
           connections.scm_root.query("insert into collection_detail set ?", records, (error) => {
             if (error) {
@@ -627,21 +630,59 @@ exports.schedule = cron.schedule('30 08 * * *', () => {
                 console.error(error)
               });
             }
-            con.commit(function(err) {
-              if (err) {
-                return con.rollback(function() {
-                  console.error(err);
-                });
-              }
-            })
-
           })
         })
+
+        console.log("hit in 2");
+        connections.scm_root.query("INSERT INTO collection_recon(PARENT_BRANCH,BRANCH,REGION,PAYMENT_OR_REFUND_DATE)  SELECT entity,CODE,region,date_add(curdate(),interval 1 day) FROM branches WHERE entity IN ('AEH','AHC','AHI') ORDER BY CODE ASC",(err,resdata)=>{
+          if(err){
+            return con.rollback(function() {
+              console.error(err)
+            });
+          }
+          else {
+            con.commit(function(err) {
+               if (err) {
+                 return con.rollback(function() {
+                   console.error(err);
+                 });
+               }
+             })
+
+          }
+
+        })
+
+        // connections.scm_public.query(" SELECT CODE FROM `branches` WHERE entity IN ('AEH','AHC','AHI')",(err,resdatta)=>{
+        //   if(err)
+        //   {
+        //     console.error(err);
+        //   }
+        //   else {
+        //     resdatta.forEach(recc=>{
+        //             connections.scm_root.query("UPDATE collection_recon SET CASH_DIFF=(SELECT * FROM (SELECT SUM(A.CASH_DEPOSIT)+SUM(A.CASH_ADMIN)-SUM(A.CASH_AMOUNT) AS CST FROM collection_recon AS A WHERE A.BRANCH=?)AS B),CARD_DIFF= (SELECT * FROM (SELECT SUM(A.CARD_DEPOSIT)+SUM(A.CARD_ADMIN)-SUM(A.CARD_AMOUNT) AS CRT  FROM collection_recon AS A WHERE A.BRANCH=?)AS B) WHERE PARENT_BRANCH IN ('AEH','AHC','AHI') AND PAYMENT_OR_REFUND_DATE=CURDATE() AND BRANCH=?",[recc.CODE,recc.CODE,recc.CODE],(err,resdatas=>{
+        //               if(err){
+        //                 console.error(err);
+        //               }
+        //
+        //             })
+        //           )
+        //     })
+        //
+        //     console.log("completed");
+        //
+        //   }
+        //
+        // })
+
       })
+
       console.log('completed');
     })
+    con.release();
   })
 })
+
 
 exports.schedule = cron.schedule('30 09 * * *', () => {
 
@@ -1353,7 +1394,7 @@ exports.schedule = cron.schedule('45 06 * * *', () => {
 
 //praveen 15days intransit Report
 
-exports.schedule=cron.schedule('* * * * *',() =>{
+exports.schedule=cron.schedule('10 02 * * *',() =>{
 
  var date = new Date();
  var lstDay =new Date(date.getFullYear(), date.getMonth() + 1, 0);
@@ -1419,3 +1460,143 @@ console.log(lastday);
 
 
 })
+
+//collection_recon -2
+//exports.schedule = cron.schedule("30 01 * * *",()=>{
+exports.schedule = cron.schedule("36 21 * * *",()=>{
+console.log("hit in cron ");
+
+connections.scm_root.getConnection((err,con)=>{
+  console.log("connection established");
+    if(err) console.error("error");
+
+    con.query(files.collection_recon_update,(err,collresdata)=>{
+      console.log("query executed");
+      if(err) console.error(err);
+      console.log("connected to medics");
+      console.log("updating in collection recon");
+      con.beginTransaction(err=>{
+        if(err) console.error(err);
+
+        collresdata.forEach(records=>{
+          // Current date update
+        con.query("update collection_recon set CASH_AMOUNT=?,CARD_AMOUNT=?,CHEQUE_AMOUNT=?,FUND_TRANSFER_AMOUNT=?,PAYTM_AMOUNT=?,DD_AMOUNT=?,ONLINE_AMOUNT=? WHERE PAYMENT_OR_REFUND_DATE=? AND BRANCH=?",[records.CASH_AMOUNT,records.CARD_AMOUNT,records.CHEQUE_AMOUNT,records.FUND_TRANSFER_AMOUNT,records.PAYTM_AMOUNT,records.DD_AMOUNT,records.ONLINE_AMOUNT,records.PAYMENT_OR_REFUND_DATE,records.BRANCH],(err,resdata)=>{
+            if (err) {
+              return con.rollback(function() {
+                console.error(error)
+              });
+            }
+            else {
+              // update next date in recon
+              con.query("UPDATE collection_recon SET CASH_DIFF=(SELECT * FROM (SELECT SUM(A.CASH_DEPOSIT)+SUM(A.CASH_ADMIN)-SUM(A.CASH_AMOUNT) AS CST FROM collection_recon AS A WHERE A.BRANCH=? )AS B),CARD_DIFF= (SELECT * FROM (SELECT SUM(A.CARD_DEPOSIT)+SUM(A.CARD_ADMIN)-SUM(A.CARD_AMOUNT) AS CRT FROM collection_recon AS A WHERE A.BRANCH=?)AS B) WHERE PARENT_BRANCH IN ('AEH','AHC','AHI') AND PAYMENT_OR_REFUND_DATE between curdate() and DATE_ADD(curdate(),INTERVAL 1 DAY) AND BRANCH=?",[records.BRANCH,records.BRANCH,records.BRANCH],(err,resdatas=>{
+
+                if(err){
+                  console.error(err);
+                }
+                else{
+
+                  con.commit(function(err) {
+                     if (err) {
+                       return con.rollback(function() {
+                         console.error(err);
+                       });
+                     }
+                   })
+
+
+                  // con.query(" SELECT CODE FROM `branches` WHERE entity IN ('AEH','AHC','AHI')",(err,resdatta)=>{
+                  //   if(err)
+                  //   {
+                  //     console.error(err);
+                  //   }
+                  //   else {
+                  //
+                  //
+                  //     resdatta.forEach(recc=>{
+                  //           con.query("UPDATE collection_recon SET CASH_DIFF=(SELECT * FROM (SELECT SUM(A.CASH_DEPOSIT)+SUM(A.CASH_ADMIN)-SUM(A.CASH_AMOUNT) AS CST FROM collection_recon AS A WHERE A.BRANCH=?)AS B),CARD_DIFF= (SELECT * FROM (SELECT SUM(A.CARD_DEPOSIT)+SUM(A.CARD_ADMIN)-SUM(A.CARD_AMOUNT) AS CRT  FROM collection_recon AS A WHERE A.BRANCH=?)AS B) WHERE PARENT_BRANCH IN ('AEH','AHC','AHI') AND PAYMENT_OR_REFUND_DATE=curdate() AND BRANCH=?",[recc.CODE,recc.CODE,recc.CODE],(err,resdatas=>{
+                  //               if(err){
+                  //                 console.error(err);
+                  //               }
+                  //               else {
+                  //                 con.commit(function(err) {
+                  //                    if (err) {
+                  //                      return con.rollback(function() {
+                  //                        console.error(err);
+                  //                      });
+                  //                    }
+                  //                  })
+                  //
+                  //               }
+                  //
+                  //
+                  //             })
+                  //           )
+                  //     })
+                  //
+                  //     console.log("completed");
+                  //
+                  //   }
+                  //
+                  // })
+
+
+
+
+                  console.log("updated");
+                }
+
+              })
+            )
+
+
+
+            }
+
+
+
+
+
+
+
+          })
+
+
+        })
+
+
+
+
+      })
+    con.release();
+    })
+
+})
+
+})
+//
+// exports.schedule = cron.schedule('18 21 * * *', () => {
+//
+//       connections.scm_public.query(" SELECT CODE FROM `branches` WHERE entity IN ('AEH','AHC','AHI')",(err,resdatta)=>{
+//         if(err)
+//         {
+//           console.error(err);
+//         }
+//         else {
+//           resdatta.forEach(recc=>{
+//                   connections.scm_root.query("UPDATE collection_recon SET CASH_DIFF=(SELECT * FROM (SELECT SUM(A.CASH_DEPOSIT)+SUM(A.CASH_ADMIN)-SUM(A.CASH_AMOUNT) AS CST FROM collection_recon AS A WHERE A.BRANCH=?)AS B),CARD_DIFF= (SELECT * FROM (SELECT SUM(A.CARD_DEPOSIT)+SUM(A.CARD_ADMIN)-SUM(A.CARD_AMOUNT) AS CRT  FROM collection_recon AS A WHERE A.BRANCH=?)AS B) WHERE PARENT_BRANCH IN ('AEH','AHC','AHI') AND PAYMENT_OR_REFUND_DATE='2021-06-07' AND BRANCH=?",[recc.CODE,recc.CODE,recc.CODE],(err,resdatas=>{
+//                     if(err){
+//                       console.error(err);
+//                     }
+//
+//
+//                   })
+//                 )
+//           })
+//
+//           console.log("completed");
+//
+//         }
+//
+//       })
+//
+// })
